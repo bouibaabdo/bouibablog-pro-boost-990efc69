@@ -53,7 +53,6 @@ export async function streamImage(
     },
   });
 
-  let lastDataUrl: string | undefined;
   const reader = res.body.pipeThrough(new TextDecoderStream()).getReader();
   try {
     while (true) {
