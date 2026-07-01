@@ -535,7 +535,7 @@ function YKMatchCard({
           </span>
         ) : (
           <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 text-primary px-2 py-0.5 font-semibold text-[11px]">
-            <Clock className="h-3 w-3" /> {m.time}
+            <Clock className="h-3 w-3" /> {moroccoTime}
           </span>
         )}
       </div>
