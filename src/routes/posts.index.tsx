@@ -34,14 +34,15 @@ export const Route = createFileRoute("/posts/")({
       context.queryClient.ensureQueryData(labelsQO),
     ]);
   },
-  head: ({ loaderData: _l, params: _p }) => ({
+  head: () => ({
     meta: [
       { title: "المقالات — Bouiba Academy" },
       { name: "description", content: "تصفح جميع مقالات ودروس أكاديمية بويبة في الذكاء الاصطناعي." },
       { property: "og:title", content: "المقالات — Bouiba Academy" },
-      { property: "og:url", content: "/posts" },
+      { property: "og:description", content: "مكتبة كاملة من الدروس والمقالات العربية حول أدوات وتطبيقات الذكاء الاصطناعي." },
+      { property: "og:url", content: "https://edu.bouibacademy.me/posts" },
     ],
-    links: [{ rel: "canonical", href: "/posts" }],
+    links: [{ rel: "canonical", href: "https://edu.bouibacademy.me/posts" }],
   }),
   component: PostsPage,
   errorComponent: ({ error }) => (
@@ -58,6 +59,7 @@ function PostsPage() {
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
+      <main>
 
       <section className="hero-bg border-b border-border">
         <div className="container-page py-14 md:py-20 text-center">
@@ -111,6 +113,7 @@ function PostsPage() {
         )}
       </div>
 
+      </main>
       <SiteFooter />
     </div>
   );

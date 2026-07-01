@@ -25,6 +25,12 @@ export const Route = createFileRoute("/")({
       context.queryClient.ensureQueryData(labelsQueryOptions),
     ]);
   },
+  head: () => ({
+    meta: [
+      { property: "og:url", content: "https://edu.bouibacademy.me/" },
+    ],
+    links: [{ rel: "canonical", href: "https://edu.bouibacademy.me/" }],
+  }),
   component: HomePage,
   errorComponent: ({ error }) => (
     <div className="p-10 text-center text-muted-foreground">تعذر تحميل المحتوى: {error.message}</div>
@@ -48,6 +54,7 @@ function HomePage() {
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
+      <main>
 
       {/* HERO */}
       <section className="relative hero-bg overflow-hidden">
@@ -171,6 +178,7 @@ function HomePage() {
         </section>
       )}
 
+      </main>
       <SiteFooter />
     </div>
   );

@@ -7,8 +7,11 @@ export const Route = createFileRoute("/tools/translate")({
     meta: [
       { title: "الترجمة الاحترافية — أدوات AI | Bouiba Academy" },
       { name: "description", content: "ترجمة نصوص بين العربية والإنجليزية والفرنسية بجودة عالية." },
+      { property: "og:title", content: "الترجمة الاحترافية — Bouiba Academy" },
+      { property: "og:description", content: "ترجم بين العربية والإنجليزية والفرنسية بأسلوب طبيعي ودقيق." },
+      { property: "og:url", content: "https://edu.bouibacademy.me/tools/translate" },
     ],
-    links: [{ rel: "canonical", href: "/tools/translate" }],
+    links: [{ rel: "canonical", href: "https://edu.bouibacademy.me/tools/translate" }],
   }),
   component: () => (
     <TextToolShell

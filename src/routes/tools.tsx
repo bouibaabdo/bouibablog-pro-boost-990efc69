@@ -16,9 +16,9 @@ export const Route = createFileRoute("/tools")({
         property: "og:description",
         content: "أدوات AI مجانية تعمل مباشرة داخل موقع Bouiba Academy.",
       },
-      { property: "og:url", content: "/tools" },
+      { property: "og:url", content: "https://edu.bouibacademy.me/tools" },
     ],
-    links: [{ rel: "canonical", href: "/tools" }],
+    links: [{ rel: "canonical", href: "https://edu.bouibacademy.me/tools" }],
   }),
   component: ToolsLayout,
 });

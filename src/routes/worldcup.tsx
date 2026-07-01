@@ -58,7 +58,7 @@ export const Route = createFileRoute("/worldcup")({
   },
   head: () => ({
     meta: [
-      { title: "كأس العالم 2026 — الجدول الكامل، الترتيب، وقنوات البث المباشر" },
+      { title: "كأس العالم 2026 — جدول، ترتيب وبث مباشر" },
       {
         name: "description",
         content:
@@ -70,8 +70,9 @@ export const Route = createFileRoute("/worldcup")({
         content: "جدول شامل، ترتيب المجموعات، ومباريات اليوم مع القنوات الناقلة وروابط المشاهدة المباشرة.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://edu.bouibacademy.me/worldcup" },
     ],
-    links: [{ rel: "canonical", href: "/worldcup" }],
+    links: [{ rel: "canonical", href: "https://edu.bouibacademy.me/worldcup" }],
   }),
   component: WorldCupPage,
   errorComponent: ({ error }) => (
@@ -777,6 +778,7 @@ function WorldCupPage() {
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
+      <main>
 
       {/* HERO */}
       <section className="relative hero-bg overflow-hidden border-b border-border">
@@ -1053,6 +1055,7 @@ function WorldCupPage() {
         )}
       </section>
 
+      </main>
       <SiteFooter />
       {watch && (
         <StreamModal
