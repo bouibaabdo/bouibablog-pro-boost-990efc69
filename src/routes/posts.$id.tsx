@@ -15,7 +15,7 @@ function makeQuery(id: string) {
 
 function formatDate(iso: string) {
   try {
-    return new Intl.DateTimeFormat("ar-EG", { year: "numeric", month: "long", day: "numeric" }).format(new Date(iso));
+    return new Intl.DateTimeFormat("ar-EG-u-nu-latn", { year: "numeric", month: "long", day: "numeric" }).format(new Date(iso));
   } catch {
     return iso;
   }
