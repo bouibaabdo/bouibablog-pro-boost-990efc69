@@ -77,3 +77,59 @@ export const getWorldCupMatches = createServerFn({ method: "GET" }).handler(asyn
   const matches = (json.events ?? []).map(transformEvent).sort((a, b) => a.timestamp.localeCompare(b.timestamp));
   return { matches };
 });
+
+export interface WCStanding {
+  rank: number;
+  team: string;
+  badge?: string;
+  group: string;
+  played: number;
+  win: number;
+  draw: number;
+  loss: number;
+  gf: number;
+  ga: number;
+  gd: number;
+  points: number;
+  form?: string;
+}
+
+interface RawStanding {
+  intRank: string;
+  strTeam: string;
+  strBadge?: string;
+  strGroup: string;
+  intPlayed: string;
+  intWin: string;
+  intDraw: string;
+  intLoss: string;
+  intGoalsFor: string;
+  intGoalsAgainst: string;
+  intGoalDifference: string;
+  intPoints: string;
+  strForm?: string;
+}
+
+export const getWorldCupStandings = createServerFn({ method: "GET" }).handler(async () => {
+  const url = `${API}/lookuptable.php?l=${LEAGUE_ID}&s=${SEASON}`;
+  const res = await fetch(url, { headers: { Accept: "application/json" } });
+  if (!res.ok) return { standings: [] as WCStanding[] };
+  const json = (await res.json()) as { table: RawStanding[] | null };
+  const standings: WCStanding[] = (json.table ?? []).map((r) => ({
+    rank: Number(r.intRank),
+    team: r.strTeam,
+    badge: r.strBadge,
+    group: r.strGroup,
+    played: Number(r.intPlayed),
+    win: Number(r.intWin),
+    draw: Number(r.intDraw),
+    loss: Number(r.intLoss),
+    gf: Number(r.intGoalsFor),
+    ga: Number(r.intGoalsAgainst),
+    gd: Number(r.intGoalDifference),
+    points: Number(r.intPoints),
+    form: r.strForm,
+  }));
+  return { standings };
+});
+
