@@ -728,14 +728,14 @@ function WorldCupPage() {
 
         {/* LIVE — Yallakora */}
         {tab === "live" && (
-          <div className="space-y-10">
-            <div className="text-center mb-6">
+          <div className="space-y-12">
+            <div className="text-center mb-2">
               <h2 className="font-display text-2xl md:text-3xl font-bold">
-                بث مباشر — مباريات اليوم مع القنوات الناقلة
+                بث مباشر — جدول كامل مع القنوات الناقلة
               </h2>
-              <p className="mt-2 text-sm text-muted-foreground">
-                بيانات محدّثة من <span className="font-semibold">يلا كورة</span> — أوقات بتوقيت الرياض،
-                مع القناة الرسمية الناقلة ورابط مباشر لصفحة البث.
+              <p className="mt-2 text-sm text-muted-foreground max-w-2xl mx-auto">
+                جدول شامل لمباريات الأمس واليوم والغد مصدره <span className="font-semibold text-foreground">يلا كورة</span>،
+                مع القناة الرسمية والمعلّق. المباريات المتاح لها بث مدمج تُشاهَد داخل الموقع بضغطة زر.
               </p>
             </div>
 
@@ -749,27 +749,66 @@ function WorldCupPage() {
                   </div>
                 )}
 
-                {yk.today.length > 0 && (
-                  <div>
-                    <h3 className="font-display font-bold text-lg text-primary mb-4">
-                      اليوم · {yk.today.length} مباراة
-                    </h3>
-                    <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                      {yk.today.map((m) => (
-                        <YKMatchCard key={m.id} m={m} />
-                      ))}
-                    </div>
-                  </div>
-                )}
+                {(() => {
+                  const liveNow = yk.today.filter((m) => m.live);
+                  const upcomingToday = yk.today.filter((m) => !m.live && !m.finished);
+                  const finishedToday = yk.today.filter((m) => m.finished);
+                  return (
+                    <>
+                      {liveNow.length > 0 && (
+                        <div className="relative">
+                          <div className="absolute -inset-4 rounded-3xl bg-gradient-to-br from-red-500/10 via-transparent to-transparent pointer-events-none" />
+                          <div className="relative flex items-center gap-3 mb-5">
+                            <span className="inline-flex items-center gap-2 rounded-full bg-red-600 text-white px-3 py-1 text-xs font-extrabold shadow-lg shadow-red-500/30">
+                              <span className="h-2 w-2 rounded-full bg-white animate-pulse" /> مباشر الآن
+                            </span>
+                            <h3 className="font-display font-extrabold text-xl">{liveNow.length} مباراة تُبثّ حالياً</h3>
+                          </div>
+                          <div className="relative grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                            {liveNow.map((m) => (
+                              <YKMatchCard key={m.id} m={m} srcMatches={srcMatches} onWatch={onWatch} featured />
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {upcomingToday.length > 0 && (
+                        <div>
+                          <h3 className="font-display font-bold text-lg text-primary mb-4 flex items-center gap-2">
+                            <Clock className="h-5 w-5" /> اليوم · {upcomingToday.length} مباراة قادمة
+                          </h3>
+                          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                            {upcomingToday.map((m) => (
+                              <YKMatchCard key={m.id} m={m} srcMatches={srcMatches} onWatch={onWatch} />
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {finishedToday.length > 0 && (
+                        <div>
+                          <h3 className="font-display font-bold text-lg text-emerald-600 mb-4">
+                            نتائج اليوم · {finishedToday.length} مباراة
+                          </h3>
+                          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                            {finishedToday.map((m) => (
+                              <YKMatchCard key={m.id} m={m} srcMatches={srcMatches} onWatch={onWatch} />
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  );
+                })()}
 
                 {yk.tomorrow.length > 0 && (
                   <div>
-                    <h3 className="font-display font-bold text-lg text-primary mb-4">
-                      الغد · {yk.tomorrow.length} مباراة
+                    <h3 className="font-display font-bold text-lg text-primary mb-4 flex items-center gap-2">
+                      <Calendar className="h-5 w-5" /> الغد · {yk.tomorrow.length} مباراة
                     </h3>
                     <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                       {yk.tomorrow.map((m) => (
-                        <YKMatchCard key={m.id} m={m} />
+                        <YKMatchCard key={m.id} m={m} srcMatches={srcMatches} onWatch={onWatch} />
                       ))}
                     </div>
                   </div>
@@ -778,11 +817,11 @@ function WorldCupPage() {
                 {yk.yesterday.length > 0 && (
                   <div>
                     <h3 className="font-display font-bold text-lg text-muted-foreground mb-4">
-                      أمس · {yk.yesterday.length} مباراة
+                      نتائج الأمس · {yk.yesterday.length} مباراة
                     </h3>
                     <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                       {yk.yesterday.map((m) => (
-                        <YKMatchCard key={m.id} m={m} />
+                        <YKMatchCard key={m.id} m={m} srcMatches={srcMatches} onWatch={onWatch} />
                       ))}
                     </div>
                   </div>
@@ -791,6 +830,7 @@ function WorldCupPage() {
             )}
           </div>
         )}
+
 
         {/* TODAY */}
         {tab === "today" && (
