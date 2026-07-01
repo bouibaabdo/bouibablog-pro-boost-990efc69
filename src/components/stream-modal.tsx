@@ -158,39 +158,38 @@ export function StreamModal({
                   active.id === s.id &&
                   active.streamNo === s.streamNo;
                 return (
-                  return (
-                    <div key={`${s.source}-${s.id}-${s.streamNo}-${i}`} className="inline-flex overflow-hidden rounded-lg border border-border bg-surface">
-                      <button
-                        onClick={() => setActive(s)}
-                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold transition ${
-                          isActive
-                            ? "bg-primary text-primary-foreground"
-                            : "hover:text-primary hover:bg-accent"
-                        }`}
-                      >
-                        <span className="uppercase">{s.source}</span>
-                        <span className="opacity-70">#{s.streamNo}</span>
-                        {s.hd && (
-                          <span className="rounded bg-emerald-500/15 text-emerald-600 px-1.5 py-0.5 text-[10px] font-bold">
-                            HD
-                          </span>
-                        )}
-                        {s.language && (
-                          <span className="opacity-70 uppercase text-[10px]">{s.language}</span>
-                        )}
-                      </button>
-                      <a
-                        href={embedUrl(s)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label="فتح المصدر مباشرة"
-                        title="فتح المصدر مباشرة بدون iframe"
-                        className="inline-flex items-center justify-center border-r border-border px-2 text-muted-foreground hover:text-primary hover:bg-accent transition"
-                      >
-                        <ExternalLink className="h-3.5 w-3.5" />
-                      </a>
-                    </div>
-                  );
+                  <div key={`${s.source}-${s.id}-${s.streamNo}-${i}`} className="inline-flex overflow-hidden rounded-lg border border-border bg-surface">
+                    <button
+                      onClick={() => setActive(s)}
+                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold transition ${
+                        isActive
+                          ? "bg-primary text-primary-foreground"
+                          : "hover:text-primary hover:bg-accent"
+                      }`}
+                    >
+                      <span className="uppercase">{s.source}</span>
+                      <span className="opacity-70">#{s.streamNo}</span>
+                      {s.hd && (
+                        <span className="rounded bg-emerald-500/15 text-emerald-600 px-1.5 py-0.5 text-[10px] font-bold">
+                          HD
+                        </span>
+                      )}
+                      {s.language && (
+                        <span className="opacity-70 uppercase text-[10px]">{s.language}</span>
+                      )}
+                    </button>
+                    <a
+                      href={embedUrl(s)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="فتح المصدر مباشرة"
+                      title="فتح المصدر مباشرة بدون iframe"
+                      className="inline-flex items-center justify-center border-r border-border px-2 text-muted-foreground hover:text-primary hover:bg-accent transition"
+                    >
+                      <ExternalLink className="h-3.5 w-3.5" />
+                    </a>
+                  </div>
+                );
               })}
             </div>
             <p className="text-[10px] text-muted-foreground mt-3 leading-relaxed">
