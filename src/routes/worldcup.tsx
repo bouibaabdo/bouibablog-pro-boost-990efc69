@@ -164,9 +164,13 @@ const OFFICIAL_STREAMS = [
   },
 ];
 
-function formatDateAr(iso: string) {
+const MATCH_TIMEZONE = "Africa/Casablanca";
+const MATCH_TIMEZONE_LABEL = "بتوقيت المغرب";
+
+function formatDateAr(iso: string, timeZone = MATCH_TIMEZONE) {
   try {
     return new Intl.DateTimeFormat("ar-EG", {
+      timeZone,
       weekday: "long",
       day: "numeric",
       month: "long",
@@ -178,9 +182,10 @@ function formatDateAr(iso: string) {
     return iso;
   }
 }
-function formatDayAr(dateStr: string) {
+function formatDayAr(dateStr: string, timeZone = MATCH_TIMEZONE) {
   try {
     return new Intl.DateTimeFormat("ar-EG", {
+      timeZone,
       weekday: "long",
       day: "numeric",
       month: "long",
@@ -190,13 +195,19 @@ function formatDayAr(dateStr: string) {
     return dateStr;
   }
 }
-function formatTimeAr(iso: string) {
+function formatTimeAr(iso: string, timeZone = MATCH_TIMEZONE) {
   try {
-    return new Intl.DateTimeFormat("ar-EG", { hour: "2-digit", minute: "2-digit", hour12: true }).format(new Date(iso));
+    return new Intl.DateTimeFormat("ar-EG", {
+      timeZone,
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    }).format(new Date(iso));
   } catch {
     return "";
   }
 }
+
 
 function useCountdown(target: number) {
   const [now, setNow] = useState<number | null>(null);
