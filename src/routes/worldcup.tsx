@@ -191,19 +191,38 @@ function formatTimeAr(iso: string) {
 }
 
 function useCountdown(target: number) {
-  const [now, setNow] = useState(() => Date.now());
+  const [now, setNow] = useState<number | null>(null);
   useEffect(() => {
+    setNow(Date.now());
     const t = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(t);
   }, []);
-  const diff = Math.max(0, target - now);
+  const diff = now == null ? 0 : Math.max(0, target - now);
   return {
     d: Math.floor(diff / 86400000),
     h: Math.floor((diff % 86400000) / 3600000),
     m: Math.floor((diff % 3600000) / 60000),
     s: Math.floor((diff % 60000) / 1000),
-    done: diff === 0,
+    done: now != null && diff === 0,
+    ready: now != null,
   };
+}
+
+// Convert Yallakora "11:00 PM" (Riyadh, UTC+3) into an ISO string for SRC fuzzy matching.
+function ykKickoffIso(day: "yesterday" | "today" | "tomorrow", time: string): string {
+  const now = new Date();
+  const base = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+  if (day === "yesterday") base.setUTCDate(base.getUTCDate() - 1);
+  if (day === "tomorrow") base.setUTCDate(base.getUTCDate() + 1);
+  const m = time.match(/(\d{1,2}):(\d{2})\s*(AM|PM|ص|م)?/i);
+  if (!m) return base.toISOString();
+  let h = Number(m[1]);
+  const min = Number(m[2]);
+  const ap = (m[3] || "").toUpperCase();
+  if ((ap === "PM" || ap === "م") && h < 12) h += 12;
+  if ((ap === "AM" || ap === "ص") && h === 12) h = 0;
+  base.setUTCHours(h - 3, min, 0, 0); // Riyadh = UTC+3
+  return base.toISOString();
 }
 
 function statusOf(m: WCMatch) {
