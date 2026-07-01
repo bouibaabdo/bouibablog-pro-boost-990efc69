@@ -127,9 +127,9 @@ export function StreamModal({
               allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
               allowFullScreen
               referrerPolicy="no-referrer"
-              sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-presentation"
               className="absolute inset-0 h-full w-full"
             />
+
           )}
         </div>
 
