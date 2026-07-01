@@ -683,7 +683,7 @@ function WorldCupPage() {
             ))}
           </div>
 
-          {!cd.done && (
+          {cd.ready && !cd.done && (
             <div className="mt-6 inline-flex items-center gap-3 rounded-2xl border border-border bg-card px-6 py-4 shadow-card">
               {[
                 { v: cd.d, l: "يوم" },
