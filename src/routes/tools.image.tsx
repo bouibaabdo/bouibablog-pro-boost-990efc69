@@ -32,10 +32,20 @@ function ImageTool() {
     setSrc(null);
     setIsFinal(false);
     try {
-      await streamImage("/api/tools/image", prompt.trim(), (dataUrl, final) => {
-        setSrc(dataUrl);
-        if (final) setIsFinal(true);
+      const res = await fetch("/api/tools/image", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: prompt.trim() }),
       });
+      const data = (await res.json().catch(() => ({}))) as {
+        dataUrl?: string;
+        error?: string;
+      };
+      if (!res.ok || !data.dataUrl) {
+        throw new Error(data.error || `فشل التوليد: ${res.status}`);
+      }
+      setSrc(data.dataUrl);
+      setIsFinal(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : "حدث خطأ غير متوقع");
     } finally {
