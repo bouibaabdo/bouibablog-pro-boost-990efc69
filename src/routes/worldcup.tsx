@@ -74,7 +74,7 @@ function useCountdown(target: number) {
   return { d, h, m, s, done: diff === 0 };
 }
 
-function MatchCard({ m }: { m: WCMatch }) {
+function MatchCard({ m, favIds }: { m: WCMatch; favIds: Set<string> }) {
   const isFinished = m.status === "FT" || (m.homeScore != null && m.awayScore != null);
   const isLive = m.status === "LIVE" || m.status === "1H" || m.status === "2H" || m.status === "HT";
   const isUpcoming = !isFinished && !isLive;
@@ -86,17 +86,35 @@ function MatchCard({ m }: { m: WCMatch }) {
           <Trophy className="h-3.5 w-3.5 text-primary" />
           {m.round}
         </span>
-        {isLive && (
-          <span className="inline-flex items-center gap-1.5 text-red-500 font-semibold">
-            <span className="h-2 w-2 rounded-full bg-red-500 animate-pulse" /> مباشر
-          </span>
-        )}
-        {isFinished && <span className="font-semibold text-emerald-600">انتهت</span>}
-        {isUpcoming && (
-          <span className="inline-flex items-center gap-1">
-            <Clock className="h-3.5 w-3.5" /> قادمة
-          </span>
-        )}
+        <div className="flex items-center gap-2">
+          {isLive && (
+            <span className="inline-flex items-center gap-1.5 text-red-500 font-semibold">
+              <span className="h-2 w-2 rounded-full bg-red-500 animate-pulse" /> مباشر
+            </span>
+          )}
+          {isFinished && <span className="font-semibold text-emerald-600">انتهت</span>}
+          {isUpcoming && (
+            <span className="inline-flex items-center gap-1">
+              <Clock className="h-3.5 w-3.5" /> قادمة
+            </span>
+          )}
+          {!isFinished && (
+            <FavoriteButton
+              size="sm"
+              matchId={m.id}
+              initiallyFavorited={favIds.has(m.id)}
+              kickoffAt={m.timestamp}
+              matchData={{
+                home: m.home,
+                away: m.away,
+                homeBadge: m.homeBadge,
+                awayBadge: m.awayBadge,
+                venue: m.venue,
+                round: m.round,
+              }}
+            />
+          )}
+        </div>
       </div>
 
       <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
