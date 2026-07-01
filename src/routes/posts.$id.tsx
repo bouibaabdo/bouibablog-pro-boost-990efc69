@@ -29,7 +29,11 @@ export const Route = createFileRoute("/posts/$id")({
   },
   head: ({ params, loaderData }) => {
     const post = loaderData;
-    const title = post ? `${post.title.slice(0, 65)} — Bouiba Academy` : "مقال — Bouiba Academy";
+    const SUFFIX = " — Bouiba Academy";
+    const maxTitle = 60 - SUFFIX.length;
+    const rawTitle = post?.title ?? "مقال";
+    const shortTitle = rawTitle.length > maxTitle ? rawTitle.slice(0, maxTitle - 1).trimEnd() + "…" : rawTitle;
+    const title = `${shortTitle}${SUFFIX}`;
     const desc = post ? post.excerpt.slice(0, 160) : "مقال من أكاديمية بويبة للذكاء الاصطناعي.";
     const canonical = `https://edu.bouibacademy.me/posts/${params.id}`;
     const meta: Array<Record<string, string>> = [

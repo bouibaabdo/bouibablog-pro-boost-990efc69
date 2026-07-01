@@ -84,12 +84,14 @@ export function TextToolShell({
       <form onSubmit={run} className="space-y-4">
         {showTargetLang && (
           <div className="flex items-center gap-2">
-            <label className="text-sm font-medium text-muted-foreground">الترجمة إلى:</label>
+            <label htmlFor="tool-target-lang" className="text-sm font-medium text-muted-foreground">الترجمة إلى:</label>
             <select
+              id="tool-target-lang"
               value={target}
               onChange={(e) => setTarget(e.target.value as "ar" | "en" | "fr")}
               className="rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
               disabled={loading}
+              aria-label="لغة الترجمة المستهدفة"
             >
               <option value="en">الإنجليزية</option>
               <option value="ar">العربية</option>
@@ -97,11 +99,14 @@ export function TextToolShell({
             </select>
           </div>
         )}
+        <label htmlFor="tool-input" className="sr-only">{title}</label>
         <textarea
+          id="tool-input"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder={placeholder}
           rows={minRows}
+          aria-label={title}
           className="w-full rounded-xl border border-border bg-background px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-primary/50 resize-y"
           disabled={loading}
         />

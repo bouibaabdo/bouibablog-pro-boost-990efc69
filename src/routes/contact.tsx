@@ -7,11 +7,12 @@ export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
       { title: "تواصل معنا — Bouiba Academy" },
-      { name: "description", content: "تواصل مع فريق Bouiba Academy — أسئلة، تعاون، أو اقتراحات." },
+      { name: "description", content: "تواصل مع فريق Bouiba Academy — لأسئلتك، اقتراحاتك، أو فرص التعاون في محتوى الذكاء الاصطناعي العربي." },
       { property: "og:title", content: "تواصل معنا — Bouiba Academy" },
-      { property: "og:url", content: "/contact" },
+      { property: "og:description", content: "راسل فريق Bouiba Academy لأي سؤال، اقتراح، أو تعاون في محتوى الذكاء الاصطناعي." },
+      { property: "og:url", content: "https://edu.bouibacademy.me/contact" },
     ],
-    links: [{ rel: "canonical", href: "/contact" }],
+    links: [{ rel: "canonical", href: "https://edu.bouibacademy.me/contact" }],
   }),
   component: ContactPage,
 });
@@ -20,12 +21,12 @@ function ContactPage() {
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
-
+      <main>
       <section className="hero-bg border-b border-border">
         <div className="container-page py-16 md:py-24 text-center max-w-2xl">
           <p className="text-sm font-semibold text-primary mb-3">تواصل</p>
           <h1 className="font-display text-4xl md:text-6xl font-extrabold">لنبقَ على تواصل</h1>
-          <p className="mt-4 text-lg text-muted-foreground">
+          <p className="mt-4 text-lg text-foreground/80">
             سؤال، اقتراح، أو فكرة للتعاون؟ يسعدنا استقبال رسائلك.
           </p>
         </div>
@@ -56,25 +57,41 @@ function ContactPage() {
           <h2 className="font-display text-2xl font-bold mb-6">أرسل رسالة</h2>
           <div className="grid gap-4">
             <div className="grid sm:grid-cols-2 gap-4">
-              <input
-                type="text"
-                placeholder="الاسم"
-                className="rounded-lg border border-input bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-              />
-              <input
-                type="email"
-                placeholder="البريد الإلكتروني"
-                className="rounded-lg border border-input bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-              />
+              <div>
+                <label htmlFor="contact-name" className="sr-only">الاسم</label>
+                <input
+                  id="contact-name"
+                  type="text"
+                  placeholder="الاسم"
+                  aria-label="الاسم"
+                  className="w-full rounded-lg border border-input bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                />
+              </div>
+              <div>
+                <label htmlFor="contact-email" className="sr-only">البريد الإلكتروني</label>
+                <input
+                  id="contact-email"
+                  type="email"
+                  placeholder="البريد الإلكتروني"
+                  aria-label="البريد الإلكتروني"
+                  className="w-full rounded-lg border border-input bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                />
+              </div>
             </div>
+            <label htmlFor="contact-subject" className="sr-only">الموضوع</label>
             <input
+              id="contact-subject"
               type="text"
               placeholder="الموضوع"
+              aria-label="الموضوع"
               className="rounded-lg border border-input bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
             />
+            <label htmlFor="contact-message" className="sr-only">الرسالة</label>
             <textarea
+              id="contact-message"
               rows={5}
               placeholder="رسالتك..."
+              aria-label="نص الرسالة"
               className="rounded-lg border border-input bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring resize-none"
             />
             <button
@@ -86,7 +103,7 @@ function ContactPage() {
           </div>
         </form>
       </section>
-
+      </main>
       <SiteFooter />
     </div>
   );

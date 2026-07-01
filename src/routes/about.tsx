@@ -9,6 +9,7 @@ export const Route = createFileRoute("/about")({
       { title: "عن الأكاديمية — Bouiba Academy" },
       { name: "description", content: "تعرّف على Bouiba Academy — منصة عربية متخصصة في محتوى الذكاء الاصطناعي." },
       { property: "og:title", content: "عن الأكاديمية — Bouiba Academy" },
+      { property: "og:description", content: "منصة عربية مستقلة لتعليم الذكاء الاصطناعي: دروس عملية، مراجعات نزيهة، وأخبار موثوقة بلغة واضحة." },
       { property: "og:url", content: "https://edu.bouibacademy.me/about" },
     ],
     links: [{ rel: "canonical", href: "https://edu.bouibacademy.me/about" }],
