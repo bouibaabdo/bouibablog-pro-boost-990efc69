@@ -415,6 +415,10 @@ function WorldCupPage() {
   const cd = useCountdown(TOURNAMENT_START);
   const [tab, setTab] = useState<Tab>("today");
   useBrowserReminders();
+  const [watch, setWatch] = useState<{ id: string; title: string; fallback: string } | null>(null);
+  const { data: srcMatches = [] } = useQuery(srcQuery);
+  const onWatch = (id: string, title: string, fallback: string) =>
+    setWatch({ id, title, fallback });
 
   const { data: favData } = useQuery({
     queryKey: ["favorites", "ids"],
