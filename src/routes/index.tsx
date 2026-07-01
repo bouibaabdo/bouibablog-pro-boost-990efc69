@@ -25,6 +25,12 @@ export const Route = createFileRoute("/")({
       context.queryClient.ensureQueryData(labelsQueryOptions),
     ]);
   },
+  head: () => ({
+    meta: [
+      { property: "og:url", content: "https://edu.bouibacademy.me/" },
+    ],
+    links: [{ rel: "canonical", href: "https://edu.bouibacademy.me/" }],
+  }),
   component: HomePage,
   errorComponent: ({ error }) => (
     <div className="p-10 text-center text-muted-foreground">تعذر تحميل المحتوى: {error.message}</div>
