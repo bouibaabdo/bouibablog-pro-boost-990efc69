@@ -37,9 +37,13 @@ function parseImg(html: string): { alt?: string; src?: string } {
 }
 
 function parseCard(html: string, day: YKMatch["day"]): YKMatch | null {
-  const root = parse(`<div>${html}</div>`);
-  const t1 = root.querySelector(".TM_Team.TM1");
-  const t2 = root.querySelector(".TM_Team.TM2");
+  // node-html-parser's class selectors are unreliable when the source uses
+  // single-quoted attributes (yallak0ra mixes both). Normalize to double quotes.
+  const normalized = html.replace(/=\s*'([^']*)'/g, '="$1"');
+  const root = parse(`<div>${normalized}</div>`);
+  const teams = root.querySelectorAll(".TM_Team");
+  const t1 = teams.find((t) => (t.getAttribute("class") || "").includes("TM1"));
+  const t2 = teams.find((t) => (t.getAttribute("class") || "").includes("TM2"));
   if (!t1 || !t2) return null;
   const homeName = t1.querySelector(".TM_Name")?.text.trim() || "";
   const awayName = t2.querySelector(".TM_Name")?.text.trim() || "";
@@ -51,7 +55,8 @@ function parseCard(html: string, day: YKMatch["day"]): YKMatch | null {
   const awayScore = scoreEls[1]?.text.trim();
   const status = root.querySelector(".MT_Stat")?.text.trim() || "";
   const infos = root.querySelectorAll(".MT_Info li span").map((s) => s.text.trim());
-  const link = root.querySelector("a[href*='/matches/']")?.getAttribute("href") || "";
+  const link = root.querySelector("a[href]")?.getAttribute("href") || "";
+
   const finished = status.includes("انتهت");
   const live =
     !finished &&
