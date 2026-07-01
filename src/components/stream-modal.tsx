@@ -71,6 +71,8 @@ export function StreamModal({
   matchId,
   title,
   fallbackSearch,
+  directUrl,
+  directLabel,
   onClose,
 }: {
   matchId: string;
