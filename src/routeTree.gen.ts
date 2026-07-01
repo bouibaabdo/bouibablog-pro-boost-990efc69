@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WorldcupRouteImport } from './routes/worldcup'
 import { Route as ToolsRouteImport } from './routes/tools'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -25,6 +26,11 @@ import { Route as PostsIdRouteImport } from './routes/posts.$id'
 import { Route as ApiToolsTextRouteImport } from './routes/api/tools/text'
 import { Route as ApiToolsImageRouteImport } from './routes/api/tools/image'
 
+const WorldcupRoute = WorldcupRouteImport.update({
+  id: '/worldcup',
+  path: '/worldcup',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ToolsRoute = ToolsRouteImport.update({
   id: '/tools',
   path: '/tools',
@@ -107,6 +113,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/tools': typeof ToolsRouteWithChildren
+  '/worldcup': typeof WorldcupRoute
   '/posts/$id': typeof PostsIdRoute
   '/tools/ideas': typeof ToolsIdeasRoute
   '/tools/image': typeof ToolsImageRoute
@@ -123,6 +130,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/worldcup': typeof WorldcupRoute
   '/posts/$id': typeof PostsIdRoute
   '/tools/ideas': typeof ToolsIdeasRoute
   '/tools/image': typeof ToolsImageRoute
@@ -141,6 +149,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/tools': typeof ToolsRouteWithChildren
+  '/worldcup': typeof WorldcupRoute
   '/posts/$id': typeof PostsIdRoute
   '/tools/ideas': typeof ToolsIdeasRoute
   '/tools/image': typeof ToolsImageRoute
@@ -160,6 +169,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/sitemap.xml'
     | '/tools'
+    | '/worldcup'
     | '/posts/$id'
     | '/tools/ideas'
     | '/tools/image'
@@ -176,6 +186,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/contact'
     | '/sitemap.xml'
+    | '/worldcup'
     | '/posts/$id'
     | '/tools/ideas'
     | '/tools/image'
@@ -193,6 +204,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/sitemap.xml'
     | '/tools'
+    | '/worldcup'
     | '/posts/$id'
     | '/tools/ideas'
     | '/tools/image'
@@ -211,6 +223,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   ToolsRoute: typeof ToolsRouteWithChildren
+  WorldcupRoute: typeof WorldcupRoute
   PostsIdRoute: typeof PostsIdRoute
   PostsIndexRoute: typeof PostsIndexRoute
   ApiToolsImageRoute: typeof ApiToolsImageRoute
@@ -219,6 +232,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/worldcup': {
+      id: '/worldcup'
+      path: '/worldcup'
+      fullPath: '/worldcup'
+      preLoaderRoute: typeof WorldcupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/tools': {
       id: '/tools'
       path: '/tools'
@@ -353,6 +373,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   ToolsRoute: ToolsRouteWithChildren,
+  WorldcupRoute: WorldcupRoute,
   PostsIdRoute: PostsIdRoute,
   PostsIndexRoute: PostsIndexRoute,
   ApiToolsImageRoute: ApiToolsImageRoute,
