@@ -803,7 +803,7 @@ function WorldCupPage() {
               </p>
             </div>
 
-            {!yk ? (
+            {!ykReconciled ? (
               <div className="text-center py-16 text-muted-foreground">جارٍ تحميل مباريات اليوم…</div>
             ) : (
               <>
