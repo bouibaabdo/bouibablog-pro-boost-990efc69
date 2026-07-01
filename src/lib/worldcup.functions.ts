@@ -21,6 +21,7 @@ export interface WCMatch {
 }
 
 interface RawEvent {
+  idLeague?: string;
   idEvent: string;
   strHomeTeam: string;
   strAwayTeam: string;
@@ -70,13 +71,31 @@ function transformEvent(e: RawEvent): WCMatch {
 }
 
 export const getWorldCupMatches = createServerFn({ method: "GET" }).handler(async () => {
-  const url = `${API}/eventsseason.php?id=${LEAGUE_ID}&s=${SEASON}`;
-  const res = await fetch(url, { headers: { Accept: "application/json" } });
-  if (!res.ok) return { matches: [] as WCMatch[] };
-  const json = (await res.json()) as { events: RawEvent[] | null };
-  const matches = (json.events ?? []).map(transformEvent).sort((a, b) => a.timestamp.localeCompare(b.timestamp));
+  const urls = [
+    `${API}/eventsseason.php?id=${LEAGUE_ID}&s=${SEASON}`,
+    `${API}/eventspastleague.php?id=${LEAGUE_ID}`,
+    `${API}/eventsnextleague.php?id=${LEAGUE_ID}`,
+  ];
+  const results = await Promise.all(
+    urls.map((u) =>
+      fetch(u, { headers: { Accept: "application/json" } })
+        .then((r) => (r.ok ? (r.json() as Promise<{ events: RawEvent[] | null }>) : { events: [] }))
+        .catch(() => ({ events: [] as RawEvent[] | null })),
+    ),
+  );
+  const merged = new Map<string, RawEvent>();
+  for (const r of results) {
+    for (const ev of r.events ?? []) {
+      if (ev.idLeague && ev.idLeague !== LEAGUE_ID) continue;
+      merged.set(ev.idEvent, ev);
+    }
+  }
+  const matches = Array.from(merged.values())
+    .map(transformEvent)
+    .sort((a, b) => a.timestamp.localeCompare(b.timestamp));
   return { matches };
 });
+
 
 export interface WCStanding {
   rank: number;
