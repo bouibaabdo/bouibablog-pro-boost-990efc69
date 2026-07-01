@@ -359,14 +359,14 @@ function MatchCard({
         </div>
       </div>
 
-      <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+      <div dir="ltr" className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
         <div className="flex flex-col items-center text-center gap-2">
           {m.homeBadge ? (
             <img src={m.homeBadge} alt={m.home} loading="lazy" className="h-14 w-14 object-contain" />
           ) : (
             <div className="h-14 w-14 rounded-full bg-surface-muted" />
           )}
-          <span className="font-semibold text-sm">{m.home}</span>
+          <span dir="rtl" className="font-semibold text-sm">{m.home}</span>
         </div>
 
         <div className="text-center min-w-[80px]">
@@ -385,9 +385,10 @@ function MatchCard({
           ) : (
             <div className="h-14 w-14 rounded-full bg-surface-muted" />
           )}
-          <span className="font-semibold text-sm">{m.away}</span>
+          <span dir="rtl" className="font-semibold text-sm">{m.away}</span>
         </div>
       </div>
+
 
       <div className="mt-4 pt-4 border-t border-border text-xs text-muted-foreground space-y-1.5">
         <div className="flex items-center gap-1.5">
@@ -495,14 +496,14 @@ function YKMatchCard({
         )}
       </div>
 
-      <div className="relative grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+      <div dir="ltr" className="relative grid grid-cols-[1fr_auto_1fr] items-center gap-3">
         <div className="flex flex-col items-center text-center gap-2">
           {m.homeBadge ? (
             <img src={m.homeBadge} alt={m.home} loading="lazy" className="h-16 w-16 object-contain drop-shadow-sm" />
           ) : (
             <div className="h-16 w-16 rounded-full bg-surface-muted" />
           )}
-          <span className="font-semibold text-sm leading-tight">{m.home}</span>
+          <span dir="rtl" className="font-semibold text-sm leading-tight">{m.home}</span>
         </div>
         <div className="text-center min-w-[84px]">
           {m.finished || m.live ? (
@@ -514,7 +515,7 @@ function YKMatchCard({
           ) : (
             <div className="inline-flex flex-col items-center">
               <div className="font-display text-2xl font-extrabold gradient-text">VS</div>
-              <div className="mt-1 text-[10px] text-muted-foreground">بتوقيت الرياض</div>
+              <div dir="rtl" className="mt-1 text-[10px] text-muted-foreground">بتوقيت الرياض</div>
             </div>
           )}
         </div>
@@ -524,9 +525,10 @@ function YKMatchCard({
           ) : (
             <div className="h-16 w-16 rounded-full bg-surface-muted" />
           )}
-          <span className="font-semibold text-sm leading-tight">{m.away}</span>
+          <span dir="rtl" className="font-semibold text-sm leading-tight">{m.away}</span>
         </div>
       </div>
+
 
       {(m.channel || m.commentator) && (
         <div className="relative mt-4 pt-4 border-t border-border grid grid-cols-2 gap-2 text-xs">
