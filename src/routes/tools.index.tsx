@@ -46,6 +46,21 @@ const TOOLS = [
 ] as const;
 
 function ToolsIndex() {
+  const [enabledKeys, setEnabledKeys] = useState<Set<string> | null>(null);
+  useEffect(() => {
+    supabase
+      .from("admin_ai_tools")
+      .select("tool_key,enabled")
+      .then(({ data }) => {
+        if (!data) return setEnabledKeys(null);
+        setEnabledKeys(new Set(data.filter((t: any) => t.enabled).map((t: any) => t.tool_key)));
+      });
+  }, []);
+  const visibleTools = TOOLS.filter((t) => {
+    if (!enabledKeys) return true;
+    const key = t.to.replace("/tools/", "");
+    return enabledKeys.has(key);
+  });
   return (
     <>
       <section className="hero-bg border-b border-border">
