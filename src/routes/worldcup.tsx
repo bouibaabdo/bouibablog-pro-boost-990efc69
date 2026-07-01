@@ -834,25 +834,68 @@ function WorldCupPage() {
 
       {/* TABS */}
       <section className="container-page py-8">
-        <div className="flex flex-wrap gap-2 justify-center mb-8">
-          {tabs.map((t) => (
-            <button
-              key={t.key}
-              onClick={() => setTab(t.key)}
-              className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
-                tab === t.key
-                  ? "bg-primary text-primary-foreground border-primary"
-                  : "bg-surface border-border hover:border-primary hover:text-primary"
-              }`}
-            >
-              {t.label}
-              {t.count != null && (
-                <span className={`text-xs rounded-full px-2 py-0.5 ${tab === t.key ? "bg-primary-foreground/20" : "bg-accent"}`}>
-                  {t.count}
-                </span>
-              )}
-            </button>
-          ))}
+        <div className="relative mx-auto max-w-3xl mb-8">
+          <div className="absolute -top-3 right-4 z-10">
+            <span className="inline-block rounded-t-lg border border-b-0 border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground shadow-soft">
+              بتوقيت القاهرة
+            </span>
+          </div>
+
+          <div className="rounded-2xl border border-border bg-card p-3 md:p-4 shadow-card">
+            <div className="rounded-xl bg-[hsl(140_70%_22%)] text-white text-center font-display text-xl md:text-2xl font-extrabold py-3 md:py-4 shadow-soft">
+              جدول المباريات
+            </div>
+
+            <div className="mt-3 grid grid-cols-3 gap-2 md:gap-3">
+              {tabs.slice(0, 3).reverse().map((t, idx) => {
+                const palette = [
+                  "bg-[hsl(210_75%_35%)]",
+                  "bg-[hsl(140_70%_28%)]",
+                  "bg-[hsl(25_85%_42%)]",
+                ][idx];
+                const isActive = tab === t.key;
+                return (
+                  <button
+                    key={t.key}
+                    onClick={() => setTab(t.key)}
+                    className={`rounded-xl px-3 py-3 text-sm md:text-base font-bold text-white transition-all shadow-soft ${palette} ${
+                      isActive ? "ring-2 ring-offset-2 ring-offset-card ring-white/50 scale-[1.02]" : "opacity-90 hover:opacity-100"
+                    }`}
+                  >
+                    {t.label}
+                    {t.count != null && (
+                      <span className="mr-2 inline-flex items-center justify-center rounded-full bg-white/25 text-white text-[11px] min-w-5 px-1.5">
+                        {t.count}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+
+            {tabs.length > 3 && (
+              <div className="mt-3 flex flex-wrap gap-2 justify-center">
+                {tabs.slice(3).map((t) => (
+                  <button
+                    key={t.key}
+                    onClick={() => setTab(t.key)}
+                    className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs md:text-sm font-medium transition-colors ${
+                      tab === t.key
+                        ? "bg-primary text-primary-foreground border-primary"
+                        : "bg-surface border-border hover:border-primary hover:text-primary"
+                    }`}
+                  >
+                    {t.label}
+                    {t.count != null && (
+                      <span className={`text-[11px] rounded-full px-2 py-0.5 ${tab === t.key ? "bg-primary-foreground/20" : "bg-accent"}`}>
+                        {t.count}
+                      </span>
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* LIVE — Yallakora */}
