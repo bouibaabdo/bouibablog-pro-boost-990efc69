@@ -181,6 +181,19 @@ function WorldCupPage() {
   const { data } = useSuspenseQuery(wcQuery);
   const cd = useCountdown(TOURNAMENT_START);
   const [filter, setFilter] = useState<Filter>("all");
+  useBrowserReminders();
+
+  const { data: favData } = useQuery({
+    queryKey: ["favorites", "ids"],
+    queryFn: async () => {
+      const { data: session } = await supabase.auth.getSession();
+      if (!session.session) return { ids: [] as string[] };
+      const { data: rows } = await supabase.from("match_favorites").select("match_id");
+      return { ids: (rows ?? []).map((r) => r.match_id as string) };
+    },
+    staleTime: 30_000,
+  });
+  const favIds = useMemo(() => new Set(favData?.ids ?? []), [favData]);
 
   const now = Date.now();
   const todayStr = new Date().toISOString().slice(0, 10);
