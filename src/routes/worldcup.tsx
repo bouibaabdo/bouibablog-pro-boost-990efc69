@@ -807,16 +807,16 @@ function WorldCupPage() {
               <div className="text-center py-16 text-muted-foreground">جارٍ تحميل مباريات اليوم…</div>
             ) : (
               <>
-                {yk.today.length === 0 && yk.tomorrow.length === 0 && yk.yesterday.length === 0 && (
+                {ykReconciled.today.length === 0 && ykReconciled.tomorrow.length === 0 && ykReconciled.yesterday.length === 0 && (
                   <div className="text-center py-16 text-muted-foreground rounded-2xl border border-dashed border-border">
                     تعذّر جلب المباريات من يلا كورة الآن. حاول مجدّدًا بعد قليل.
                   </div>
                 )}
 
                 {(() => {
-                  const liveNow = yk.today.filter((m) => m.live);
-                  const upcomingToday = yk.today.filter((m) => !m.live && !m.finished);
-                  const finishedToday = yk.today.filter((m) => m.finished);
+                  const liveNow = ykReconciled.today.filter((m) => m.live);
+                  const upcomingToday = ykReconciled.today.filter((m) => !m.live && !m.finished);
+                  const finishedToday = ykReconciled.today.filter((m) => m.finished);
                   return (
                     <>
                       {liveNow.length > 0 && (
@@ -865,26 +865,26 @@ function WorldCupPage() {
                   );
                 })()}
 
-                {yk.tomorrow.length > 0 && (
+                {ykReconciled.tomorrow.length > 0 && (
                   <div>
                     <h3 className="font-display font-bold text-lg text-primary mb-4 flex items-center gap-2">
-                      <Calendar className="h-5 w-5" /> الغد · {yk.tomorrow.length} مباراة
+                      <Calendar className="h-5 w-5" /> الغد · {ykReconciled.tomorrow.length} مباراة
                     </h3>
                     <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                      {yk.tomorrow.map((m) => (
+                      {ykReconciled.tomorrow.map((m) => (
                         <YKMatchCard key={m.id} m={m} srcMatches={srcMatches} onWatch={onWatch} />
                       ))}
                     </div>
                   </div>
                 )}
 
-                {yk.yesterday.length > 0 && (
+                {ykReconciled.yesterday.length > 0 && (
                   <div>
                     <h3 className="font-display font-bold text-lg text-muted-foreground mb-4">
-                      نتائج الأمس · {yk.yesterday.length} مباراة
+                      نتائج الأمس · {ykReconciled.yesterday.length} مباراة
                     </h3>
                     <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                      {yk.yesterday.map((m) => (
+                      {ykReconciled.yesterday.map((m) => (
                         <YKMatchCard key={m.id} m={m} srcMatches={srcMatches} onWatch={onWatch} />
                       ))}
                     </div>
