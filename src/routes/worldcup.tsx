@@ -169,7 +169,7 @@ const MATCH_TIMEZONE_LABEL = "بتوقيت المغرب";
 
 function formatDateAr(iso: string, timeZone = MATCH_TIMEZONE) {
   try {
-    return new Intl.DateTimeFormat("ar-EG", {
+    return new Intl.DateTimeFormat("ar-EG-u-nu-latn", {
       timeZone,
       weekday: "long",
       day: "numeric",
@@ -184,7 +184,7 @@ function formatDateAr(iso: string, timeZone = MATCH_TIMEZONE) {
 }
 function formatDayAr(dateStr: string, timeZone = MATCH_TIMEZONE) {
   try {
-    return new Intl.DateTimeFormat("ar-EG", {
+    return new Intl.DateTimeFormat("ar-EG-u-nu-latn", {
       timeZone,
       weekday: "long",
       day: "numeric",
@@ -197,7 +197,7 @@ function formatDayAr(dateStr: string, timeZone = MATCH_TIMEZONE) {
 }
 function formatTimeAr(iso: string, timeZone = MATCH_TIMEZONE) {
   try {
-    return new Intl.DateTimeFormat("ar-EG", {
+    return new Intl.DateTimeFormat("ar-EG-u-nu-latn", {
       timeZone,
       hour: "2-digit",
       minute: "2-digit",

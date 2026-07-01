@@ -4,7 +4,7 @@ import type { BloggerPost } from "@/lib/blogger.functions";
 
 function formatDate(iso: string) {
   try {
-    return new Intl.DateTimeFormat("ar-EG", {
+    return new Intl.DateTimeFormat("ar-EG-u-nu-latn", {
       year: "numeric",
       month: "long",
       day: "numeric",

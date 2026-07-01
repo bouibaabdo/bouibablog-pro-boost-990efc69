@@ -129,7 +129,7 @@ function FavoritesPage() {
         <div className="grid gap-4 md:grid-cols-2">
           {favs.map((f) => {
             const kickoff = new Date(f.kickoff_at);
-            const fmt = new Intl.DateTimeFormat("ar-EG", {
+            const fmt = new Intl.DateTimeFormat("ar-EG-u-nu-latn", {
               weekday: "long", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit", hour12: true,
             }).format(kickoff);
             const past = kickoff.getTime() < Date.now();
