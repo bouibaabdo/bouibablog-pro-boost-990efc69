@@ -72,7 +72,7 @@ function ToolsIndex() {
               <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-background shadow-soft ring-1 ring-border">
                 <t.icon className="h-6 w-6 text-primary" />
               </div>
-              <h3 className="mt-4 font-display text-xl font-bold text-foreground">{t.title}</h3>
+              <h2 className="mt-4 font-display text-xl font-bold text-foreground">{t.title}</h2>
               <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{t.desc}</p>
               <span className="mt-4 inline-block text-sm font-semibold text-primary group-hover:underline">
                 جرّبها الآن ←
