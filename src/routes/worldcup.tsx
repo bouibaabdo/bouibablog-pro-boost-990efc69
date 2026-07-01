@@ -554,7 +554,10 @@ function WorldCupPage() {
     return s.upcoming && new Date(m.timestamp).getTime() > now;
   }).length;
 
+  const ykTodayCount = yk?.today.length ?? 0;
+  const ykLiveCount = yk?.today.filter((m) => m.live).length ?? 0;
   const tabs: { key: Tab; label: string; count?: number }[] = [
+    { key: "live", label: "بث مباشر (يلا كورة)", count: ykLiveCount || ykTodayCount },
     { key: "today", label: "مباريات اليوم", count: todayMatches.length },
     { key: "all", label: "الجدول الكامل", count: data.matches.length },
     { key: "standings", label: "ترتيب المجموعات", count: standingsData.standings.length },
