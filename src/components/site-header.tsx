@@ -5,8 +5,7 @@ import { Menu, X, Sparkles } from "lucide-react";
 const NAV = [
   { to: "/", label: "الرئيسية" },
   { to: "/posts", label: "المقالات", search: {} as { label?: string } },
-  { to: "/posts", label: "دروس", search: { label: "دروس" } },
-  { to: "/posts", label: "أدوات AI", search: { label: "أدوات" } },
+  { to: "/tools", label: "أدوات AI" },
   { to: "/about", label: "عن الأكاديمية" },
   { to: "/contact", label: "تواصل" },
 ] as const;
