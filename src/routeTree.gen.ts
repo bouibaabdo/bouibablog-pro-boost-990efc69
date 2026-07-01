@@ -13,6 +13,7 @@ import { Route as PostsRouteImport } from './routes/posts'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SitemapXmlRouteImport } from './routes/sitemap.xml'
 import { Route as PostsIdRouteImport } from './routes/posts.$id'
 
 const PostsRoute = PostsRouteImport.update({
@@ -35,6 +36,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SitemapXmlRoute = SitemapXmlRouteImport.update({
+  id: '/sitemap/xml',
+  path: '/sitemap/xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PostsIdRoute = PostsIdRouteImport.update({
   id: '/$id',
   path: '/$id',
@@ -47,6 +53,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/posts': typeof PostsRouteWithChildren
   '/posts/$id': typeof PostsIdRoute
+  '/sitemap/xml': typeof SitemapXmlRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -54,6 +61,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/posts': typeof PostsRouteWithChildren
   '/posts/$id': typeof PostsIdRoute
+  '/sitemap/xml': typeof SitemapXmlRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,13 +70,27 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/posts': typeof PostsRouteWithChildren
   '/posts/$id': typeof PostsIdRoute
+  '/sitemap/xml': typeof SitemapXmlRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/contact' | '/posts' | '/posts/$id'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/contact'
+    | '/posts'
+    | '/posts/$id'
+    | '/sitemap/xml'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/contact' | '/posts' | '/posts/$id'
-  id: '__root__' | '/' | '/about' | '/contact' | '/posts' | '/posts/$id'
+  to: '/' | '/about' | '/contact' | '/posts' | '/posts/$id' | '/sitemap/xml'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/contact'
+    | '/posts'
+    | '/posts/$id'
+    | '/sitemap/xml'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -76,6 +98,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   ContactRoute: typeof ContactRoute
   PostsRoute: typeof PostsRouteWithChildren
+  SitemapXmlRoute: typeof SitemapXmlRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -108,6 +131,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/sitemap/xml': {
+      id: '/sitemap/xml'
+      path: '/sitemap/xml'
+      fullPath: '/sitemap/xml'
+      preLoaderRoute: typeof SitemapXmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/posts/$id': {
       id: '/posts/$id'
       path: '/$id'
@@ -133,17 +163,8 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   ContactRoute: ContactRoute,
   PostsRoute: PostsRouteWithChildren,
+  SitemapXmlRoute: SitemapXmlRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
