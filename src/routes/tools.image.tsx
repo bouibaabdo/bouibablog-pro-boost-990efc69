@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { ImageIcon, Loader2, Download, ArrowRight } from "lucide-react";
-import { streamImage } from "@/lib/streamImage";
+
 
 export const Route = createFileRoute("/tools/image")({
   head: () => ({
