@@ -1,10 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { queryOptions, useSuspenseQuery, useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { Calendar, MapPin, Trophy, Radio, ExternalLink, Clock } from "lucide-react";
 import { getWorldCupMatches, type WCMatch } from "@/lib/worldcup.functions";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { FavoriteButton } from "@/components/favorite-button";
+import { useBrowserReminders } from "@/hooks/use-browser-reminders";
+import { supabase } from "@/integrations/supabase/client";
 
 const wcQuery = queryOptions({
   queryKey: ["worldcup", "2026"],
