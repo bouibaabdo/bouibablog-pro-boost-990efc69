@@ -9,9 +9,22 @@ export const Route = createFileRoute("/about")({
       { title: "عن الأكاديمية — Bouiba Academy" },
       { name: "description", content: "تعرّف على Bouiba Academy — منصة عربية متخصصة في محتوى الذكاء الاصطناعي." },
       { property: "og:title", content: "عن الأكاديمية — Bouiba Academy" },
-      { property: "og:url", content: "/about" },
+      { property: "og:url", content: "https://edu.bouibacademy.me/about" },
     ],
-    links: [{ rel: "canonical", href: "/about" }],
+    links: [{ rel: "canonical", href: "https://edu.bouibacademy.me/about" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: "Bouiba Academy",
+          url: "https://edu.bouibacademy.me",
+          description: "منصة عربية متخصصة في تعليم ومحتوى الذكاء الاصطناعي.",
+          sameAs: ["https://www.bouibacademy.me"],
+        }),
+      },
+    ],
   }),
   component: AboutPage,
 });

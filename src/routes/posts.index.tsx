@@ -99,6 +99,7 @@ function PostsPage() {
           ))}
         </div>
 
+        <h2 className="sr-only">قائمة المقالات</h2>
         {data.posts.length === 0 ? (
           <div className="text-center py-20 text-muted-foreground">لا توجد مقالات في هذا التصنيف بعد.</div>
         ) : (

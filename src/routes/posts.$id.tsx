@@ -25,15 +25,46 @@ export const Route = createFileRoute("/posts/$id")({
   loader: async ({ context, params }) => {
     const post = await context.queryClient.ensureQueryData(makeQuery(params.id));
     if (!post) throw notFound();
+    return post;
   },
-  head: ({ params, loaderData: _ }) => {
+  head: ({ params, loaderData }) => {
+    const post = loaderData;
+    const title = post ? `${post.title.slice(0, 65)} — Bouiba Academy` : "مقال — Bouiba Academy";
+    const desc = post ? post.excerpt.slice(0, 160) : "مقال من أكاديمية بويبة للذكاء الاصطناعي.";
+    const canonical = `https://edu.bouibacademy.me/posts/${params.id}`;
+    const meta: Array<Record<string, string>> = [
+      { title },
+      { name: "description", content: desc },
+      { property: "og:type", content: "article" },
+      { property: "og:title", content: post?.title ?? "مقال — Bouiba Academy" },
+      { property: "og:description", content: desc },
+      { property: "og:url", content: canonical },
+    ];
+    if (post?.thumbnail) {
+      meta.push({ property: "og:image", content: post.thumbnail });
+      meta.push({ name: "twitter:image", content: post.thumbnail });
+    }
     return {
-      meta: [
-        { title: "مقال — Bouiba Academy" },
-        { property: "og:type", content: "article" },
-        { property: "og:url", content: `/posts/${params.id}` },
-      ],
-      links: [{ rel: "canonical", href: `/posts/${params.id}` }],
+      meta,
+      links: [{ rel: "canonical", href: canonical }],
+      scripts: post
+        ? [
+            {
+              type: "application/ld+json",
+              children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "Article",
+                headline: post.title,
+                datePublished: post.published,
+                dateModified: post.updated,
+                author: { "@type": "Person", name: post.author },
+                image: post.thumbnail,
+                mainEntityOfPage: canonical,
+                publisher: { "@type": "Organization", name: "Bouiba Academy" },
+              }),
+            },
+          ]
+        : [],
     };
   },
   component: PostPage,

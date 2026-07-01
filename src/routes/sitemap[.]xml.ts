@@ -9,16 +9,23 @@ interface SitemapEntry {
   priority?: string;
 }
 
+const BASE_URL = "https://edu.bouibacademy.me";
+
 export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {
-      GET: async ({ request }) => {
-        const baseUrl = new URL(request.url).origin;
+      GET: async () => {
         const result = await getPosts({ data: { max: 500 } });
 
         const entries: SitemapEntry[] = [
           { path: "/", changefreq: "weekly", priority: "1.0" },
           { path: "/posts", changefreq: "daily", priority: "0.9" },
+          { path: "/tools", changefreq: "weekly", priority: "0.8" },
+          { path: "/tools/image", changefreq: "monthly", priority: "0.7" },
+          { path: "/tools/summarize", changefreq: "monthly", priority: "0.7" },
+          { path: "/tools/ideas", changefreq: "monthly", priority: "0.7" },
+          { path: "/tools/translate", changefreq: "monthly", priority: "0.7" },
+          { path: "/tools/seo", changefreq: "monthly", priority: "0.7" },
           { path: "/about", changefreq: "monthly", priority: "0.5" },
           { path: "/contact", changefreq: "monthly", priority: "0.5" },
         ];
@@ -35,7 +42,7 @@ export const Route = createFileRoute("/sitemap.xml")({
         const urls = entries.map((e) =>
           [
             `  <url>`,
-            `    <loc>${baseUrl}${e.path}</loc>`,
+            `    <loc>${BASE_URL}${e.path}</loc>`,
             e.lastmod ? `    <lastmod>${e.lastmod}</lastmod>` : null,
             e.changefreq ? `    <changefreq>${e.changefreq}</changefreq>` : null,
             e.priority ? `    <priority>${e.priority}</priority>` : null,
