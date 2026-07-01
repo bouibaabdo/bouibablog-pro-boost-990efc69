@@ -41,9 +41,10 @@ function parseCard(html: string, day: YKMatch["day"]): YKMatch | null {
   // single-quoted attributes (yallak0ra mixes both). Normalize to double quotes.
   const normalized = html.replace(/=\s*'([^']*)'/g, '="$1"');
   const root = parse(`<div>${normalized}</div>`);
-  const teams = root.querySelectorAll(".TM_Team");
+  const teams = root.querySelectorAll(".MT_Team");
   const t1 = teams.find((t) => (t.getAttribute("class") || "").includes("TM1"));
   const t2 = teams.find((t) => (t.getAttribute("class") || "").includes("TM2"));
+
   if (!t1 || !t2) return null;
   const homeName = t1.querySelector(".TM_Name")?.text.trim() || "";
   const awayName = t2.querySelector(".TM_Name")?.text.trim() || "";
