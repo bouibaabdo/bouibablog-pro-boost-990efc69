@@ -848,7 +848,7 @@ function WorldCupPage() {
         <div className="relative mx-auto max-w-3xl mb-8">
           <div className="absolute -top-3 right-4 z-10">
             <span className="inline-block rounded-t-lg border border-b-0 border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground shadow-soft">
-              بتوقيت القاهرة
+              {MATCH_TIMEZONE_LABEL}
             </span>
           </div>
 
