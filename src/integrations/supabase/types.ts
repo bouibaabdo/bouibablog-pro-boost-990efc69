@@ -14,7 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      match_favorites: {
+        Row: {
+          created_at: string
+          id: string
+          kickoff_at: string
+          match_data: Json
+          match_id: string
+          notify_browser: boolean
+          notify_email: boolean
+          sent_1h: boolean
+          sent_24h: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          kickoff_at: string
+          match_data: Json
+          match_id: string
+          notify_browser?: boolean
+          notify_email?: boolean
+          sent_1h?: boolean
+          sent_24h?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          kickoff_at?: string
+          match_data?: Json
+          match_id?: string
+          notify_browser?: boolean
+          notify_email?: boolean
+          sent_1h?: boolean
+          sent_24h?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
