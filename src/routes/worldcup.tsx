@@ -494,6 +494,7 @@ function YKMatchCard({
   featured?: boolean;
 }) {
   const iso = useMemo(() => ykKickoffIso(m.day, m.time), [m.day, m.time]);
+  const moroccoTime = useMemo(() => formatTimeAr(iso), [iso]);
   const src = useMemo(
     () => (srcMatches.length ? findMatch(srcMatches, m.home, m.away, iso) : null),
     [srcMatches, m.home, m.away, iso],
