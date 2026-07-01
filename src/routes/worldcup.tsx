@@ -15,6 +15,7 @@ import { useBrowserReminders } from "@/hooks/use-browser-reminders";
 import { supabase } from "@/integrations/supabase/client";
 import { StreamModal } from "@/components/stream-modal";
 import { fetchFootballMatches, findMatch, type SRCMatch } from "@/lib/sportsrc";
+import { getYallakoraMatches, type YKMatch } from "@/lib/yallakora.functions";
 
 const srcQuery = queryOptions({
   queryKey: ["sportsrc", "football"],
@@ -33,6 +34,13 @@ const standingsQuery = queryOptions({
   queryFn: () => getWorldCupStandings(),
   staleTime: 5 * 60_000,
 });
+const ykQuery = queryOptions({
+  queryKey: ["yallakora", "matches"],
+  queryFn: () => getYallakoraMatches(),
+  staleTime: 60_000,
+  refetchInterval: 120_000,
+});
+
 
 export const Route = createFileRoute("/worldcup")({
   loader: async ({ context }) => {
