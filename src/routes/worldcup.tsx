@@ -893,7 +893,7 @@ function WorldCupPage() {
                           </div>
                           <div className="relative grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                             {liveNow.map((m) => (
-                              <YKMatchCard key={m.id} m={m} srcMatches={srcMatches} onWatch={onWatch} featured />
+                              <YKMatchCard key={m.id} m={m} srcMatches={srcMatches} onWatch={onWatch} ysStreamMap={ysStreamMap} featured />
                             ))}
                           </div>
                         </div>
@@ -906,7 +906,7 @@ function WorldCupPage() {
                           </h3>
                           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                             {upcomingToday.map((m) => (
-                              <YKMatchCard key={m.id} m={m} srcMatches={srcMatches} onWatch={onWatch} />
+                              <YKMatchCard key={m.id} m={m} srcMatches={srcMatches} onWatch={onWatch} ysStreamMap={ysStreamMap} />
                             ))}
                           </div>
                         </div>
@@ -919,7 +919,7 @@ function WorldCupPage() {
                           </h3>
                           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                             {finishedToday.map((m) => (
-                              <YKMatchCard key={m.id} m={m} srcMatches={srcMatches} onWatch={onWatch} />
+                              <YKMatchCard key={m.id} m={m} srcMatches={srcMatches} onWatch={onWatch} ysStreamMap={ysStreamMap} />
                             ))}
                           </div>
                         </div>
@@ -935,7 +935,7 @@ function WorldCupPage() {
                     </h3>
                     <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                       {ykReconciled.tomorrow.map((m) => (
-                        <YKMatchCard key={m.id} m={m} srcMatches={srcMatches} onWatch={onWatch} />
+                        <YKMatchCard key={m.id} m={m} srcMatches={srcMatches} onWatch={onWatch} ysStreamMap={ysStreamMap} />
                       ))}
                     </div>
                   </div>
@@ -948,7 +948,7 @@ function WorldCupPage() {
                     </h3>
                     <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                       {ykReconciled.yesterday.map((m) => (
-                        <YKMatchCard key={m.id} m={m} srcMatches={srcMatches} onWatch={onWatch} />
+                        <YKMatchCard key={m.id} m={m} srcMatches={srcMatches} onWatch={onWatch} ysStreamMap={ysStreamMap} />
                       ))}
                     </div>
                   </div>
@@ -975,7 +975,7 @@ function WorldCupPage() {
             ) : (
               <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 {todayMatches.map((m) => (
-                  <MatchCard key={m.id} m={m} favIds={favIds} srcMatches={srcMatches} onWatch={onWatch} />
+                  <MatchCard key={m.id} m={m} favIds={favIds} srcMatches={srcMatches} onWatch={onWatch} ysStreamMap={ysStreamMap} />
                 ))}
               </div>
             )}
@@ -996,7 +996,7 @@ function WorldCupPage() {
                 </div>
                 <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                   {matches.map((m) => (
-                    <MatchCard key={m.id} m={m} favIds={favIds} srcMatches={srcMatches} onWatch={onWatch} />
+                    <MatchCard key={m.id} m={m} favIds={favIds} srcMatches={srcMatches} onWatch={onWatch} ysStreamMap={ysStreamMap} />
                   ))}
                 </div>
               </div>
