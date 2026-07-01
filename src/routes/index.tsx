@@ -54,6 +54,7 @@ function HomePage() {
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
+      <main>
 
       {/* HERO */}
       <section className="relative hero-bg overflow-hidden">
@@ -177,6 +178,7 @@ function HomePage() {
         </section>
       )}
 
+      </main>
       <SiteFooter />
     </div>
   );

@@ -59,6 +59,7 @@ function PostsPage() {
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
+      <main>
 
       <section className="hero-bg border-b border-border">
         <div className="container-page py-14 md:py-20 text-center">
@@ -112,6 +113,7 @@ function PostsPage() {
         )}
       </div>
 
+      </main>
       <SiteFooter />
     </div>
   );

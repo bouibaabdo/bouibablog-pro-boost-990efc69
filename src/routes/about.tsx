@@ -34,6 +34,7 @@ function AboutPage() {
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
+      <main>
 
       <section className="hero-bg border-b border-border">
         <div className="container-page py-16 md:py-24 text-center max-w-3xl">
@@ -68,6 +69,7 @@ function AboutPage() {
         </div>
       </section>
 
+      </main>
       <SiteFooter />
     </div>
   );

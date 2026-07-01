@@ -778,6 +778,7 @@ function WorldCupPage() {
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
+      <main>
 
       {/* HERO */}
       <section className="relative hero-bg overflow-hidden border-b border-border">
@@ -1054,6 +1055,7 @@ function WorldCupPage() {
         )}
       </section>
 
+      </main>
       <SiteFooter />
       {watch && (
         <StreamModal
