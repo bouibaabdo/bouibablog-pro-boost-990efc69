@@ -9,15 +9,27 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ToolsRouteImport } from './routes/tools'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ToolsIndexRouteImport } from './routes/tools.index'
 import { Route as PostsIndexRouteImport } from './routes/posts.index'
+import { Route as ToolsTranslateRouteImport } from './routes/tools.translate'
+import { Route as ToolsSummarizeRouteImport } from './routes/tools.summarize'
+import { Route as ToolsSeoRouteImport } from './routes/tools.seo'
+import { Route as ToolsImageRouteImport } from './routes/tools.image'
+import { Route as ToolsIdeasRouteImport } from './routes/tools.ideas'
 import { Route as PostsIdRouteImport } from './routes/posts.$id'
 import { Route as ApiToolsTextRouteImport } from './routes/api/tools/text'
 import { Route as ApiToolsImageRouteImport } from './routes/api/tools/image'
 
+const ToolsRoute = ToolsRouteImport.update({
+  id: '/tools',
+  path: '/tools',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
@@ -38,10 +50,40 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ToolsIndexRoute = ToolsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ToolsRoute,
+} as any)
 const PostsIndexRoute = PostsIndexRouteImport.update({
   id: '/posts/',
   path: '/posts/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const ToolsTranslateRoute = ToolsTranslateRouteImport.update({
+  id: '/translate',
+  path: '/translate',
+  getParentRoute: () => ToolsRoute,
+} as any)
+const ToolsSummarizeRoute = ToolsSummarizeRouteImport.update({
+  id: '/summarize',
+  path: '/summarize',
+  getParentRoute: () => ToolsRoute,
+} as any)
+const ToolsSeoRoute = ToolsSeoRouteImport.update({
+  id: '/seo',
+  path: '/seo',
+  getParentRoute: () => ToolsRoute,
+} as any)
+const ToolsImageRoute = ToolsImageRouteImport.update({
+  id: '/image',
+  path: '/image',
+  getParentRoute: () => ToolsRoute,
+} as any)
+const ToolsIdeasRoute = ToolsIdeasRouteImport.update({
+  id: '/ideas',
+  path: '/ideas',
+  getParentRoute: () => ToolsRoute,
 } as any)
 const PostsIdRoute = PostsIdRouteImport.update({
   id: '/posts/$id',
@@ -64,8 +106,15 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/tools': typeof ToolsRouteWithChildren
   '/posts/$id': typeof PostsIdRoute
+  '/tools/ideas': typeof ToolsIdeasRoute
+  '/tools/image': typeof ToolsImageRoute
+  '/tools/seo': typeof ToolsSeoRoute
+  '/tools/summarize': typeof ToolsSummarizeRoute
+  '/tools/translate': typeof ToolsTranslateRoute
   '/posts/': typeof PostsIndexRoute
+  '/tools/': typeof ToolsIndexRoute
   '/api/tools/image': typeof ApiToolsImageRoute
   '/api/tools/text': typeof ApiToolsTextRoute
 }
@@ -75,7 +124,13 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/posts/$id': typeof PostsIdRoute
+  '/tools/ideas': typeof ToolsIdeasRoute
+  '/tools/image': typeof ToolsImageRoute
+  '/tools/seo': typeof ToolsSeoRoute
+  '/tools/summarize': typeof ToolsSummarizeRoute
+  '/tools/translate': typeof ToolsTranslateRoute
   '/posts': typeof PostsIndexRoute
+  '/tools': typeof ToolsIndexRoute
   '/api/tools/image': typeof ApiToolsImageRoute
   '/api/tools/text': typeof ApiToolsTextRoute
 }
@@ -85,8 +140,15 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/tools': typeof ToolsRouteWithChildren
   '/posts/$id': typeof PostsIdRoute
+  '/tools/ideas': typeof ToolsIdeasRoute
+  '/tools/image': typeof ToolsImageRoute
+  '/tools/seo': typeof ToolsSeoRoute
+  '/tools/summarize': typeof ToolsSummarizeRoute
+  '/tools/translate': typeof ToolsTranslateRoute
   '/posts/': typeof PostsIndexRoute
+  '/tools/': typeof ToolsIndexRoute
   '/api/tools/image': typeof ApiToolsImageRoute
   '/api/tools/text': typeof ApiToolsTextRoute
 }
@@ -97,8 +159,15 @@ export interface FileRouteTypes {
     | '/about'
     | '/contact'
     | '/sitemap.xml'
+    | '/tools'
     | '/posts/$id'
+    | '/tools/ideas'
+    | '/tools/image'
+    | '/tools/seo'
+    | '/tools/summarize'
+    | '/tools/translate'
     | '/posts/'
+    | '/tools/'
     | '/api/tools/image'
     | '/api/tools/text'
   fileRoutesByTo: FileRoutesByTo
@@ -108,7 +177,13 @@ export interface FileRouteTypes {
     | '/contact'
     | '/sitemap.xml'
     | '/posts/$id'
+    | '/tools/ideas'
+    | '/tools/image'
+    | '/tools/seo'
+    | '/tools/summarize'
+    | '/tools/translate'
     | '/posts'
+    | '/tools'
     | '/api/tools/image'
     | '/api/tools/text'
   id:
@@ -117,8 +192,15 @@ export interface FileRouteTypes {
     | '/about'
     | '/contact'
     | '/sitemap.xml'
+    | '/tools'
     | '/posts/$id'
+    | '/tools/ideas'
+    | '/tools/image'
+    | '/tools/seo'
+    | '/tools/summarize'
+    | '/tools/translate'
     | '/posts/'
+    | '/tools/'
     | '/api/tools/image'
     | '/api/tools/text'
   fileRoutesById: FileRoutesById
@@ -128,6 +210,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   ContactRoute: typeof ContactRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  ToolsRoute: typeof ToolsRouteWithChildren
   PostsIdRoute: typeof PostsIdRoute
   PostsIndexRoute: typeof PostsIndexRoute
   ApiToolsImageRoute: typeof ApiToolsImageRoute
@@ -136,6 +219,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/tools': {
+      id: '/tools'
+      path: '/tools'
+      fullPath: '/tools'
+      preLoaderRoute: typeof ToolsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sitemap.xml': {
       id: '/sitemap.xml'
       path: '/sitemap.xml'
@@ -164,12 +254,54 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tools/': {
+      id: '/tools/'
+      path: '/'
+      fullPath: '/tools/'
+      preLoaderRoute: typeof ToolsIndexRouteImport
+      parentRoute: typeof ToolsRoute
+    }
     '/posts/': {
       id: '/posts/'
       path: '/posts'
       fullPath: '/posts/'
       preLoaderRoute: typeof PostsIndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/tools/translate': {
+      id: '/tools/translate'
+      path: '/translate'
+      fullPath: '/tools/translate'
+      preLoaderRoute: typeof ToolsTranslateRouteImport
+      parentRoute: typeof ToolsRoute
+    }
+    '/tools/summarize': {
+      id: '/tools/summarize'
+      path: '/summarize'
+      fullPath: '/tools/summarize'
+      preLoaderRoute: typeof ToolsSummarizeRouteImport
+      parentRoute: typeof ToolsRoute
+    }
+    '/tools/seo': {
+      id: '/tools/seo'
+      path: '/seo'
+      fullPath: '/tools/seo'
+      preLoaderRoute: typeof ToolsSeoRouteImport
+      parentRoute: typeof ToolsRoute
+    }
+    '/tools/image': {
+      id: '/tools/image'
+      path: '/image'
+      fullPath: '/tools/image'
+      preLoaderRoute: typeof ToolsImageRouteImport
+      parentRoute: typeof ToolsRoute
+    }
+    '/tools/ideas': {
+      id: '/tools/ideas'
+      path: '/ideas'
+      fullPath: '/tools/ideas'
+      preLoaderRoute: typeof ToolsIdeasRouteImport
+      parentRoute: typeof ToolsRoute
     }
     '/posts/$id': {
       id: '/posts/$id'
@@ -195,11 +327,32 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface ToolsRouteChildren {
+  ToolsIdeasRoute: typeof ToolsIdeasRoute
+  ToolsImageRoute: typeof ToolsImageRoute
+  ToolsSeoRoute: typeof ToolsSeoRoute
+  ToolsSummarizeRoute: typeof ToolsSummarizeRoute
+  ToolsTranslateRoute: typeof ToolsTranslateRoute
+  ToolsIndexRoute: typeof ToolsIndexRoute
+}
+
+const ToolsRouteChildren: ToolsRouteChildren = {
+  ToolsIdeasRoute: ToolsIdeasRoute,
+  ToolsImageRoute: ToolsImageRoute,
+  ToolsSeoRoute: ToolsSeoRoute,
+  ToolsSummarizeRoute: ToolsSummarizeRoute,
+  ToolsTranslateRoute: ToolsTranslateRoute,
+  ToolsIndexRoute: ToolsIndexRoute,
+}
+
+const ToolsRouteWithChildren = ToolsRoute._addFileChildren(ToolsRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   ContactRoute: ContactRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  ToolsRoute: ToolsRouteWithChildren,
   PostsIdRoute: PostsIdRoute,
   PostsIndexRoute: PostsIndexRoute,
   ApiToolsImageRoute: ApiToolsImageRoute,
