@@ -472,11 +472,13 @@ function YKMatchCard({
   m,
   srcMatches,
   onWatch,
+  ysStreamMap,
   featured = false,
 }: {
   m: YKMatch;
   srcMatches: SRCMatch[];
-  onWatch: (srcId: string, title: string, fallbackSearch: string) => void;
+  onWatch: (srcId: string, title: string, fallbackSearch: string, directUrl?: string) => void;
+  ysStreamMap?: Map<string, string>;
   featured?: boolean;
 }) {
   const iso = useMemo(() => ykKickoffIso(m.day, m.time), [m.day, m.time]);
@@ -484,6 +486,11 @@ function YKMatchCard({
     () => (srcMatches.length ? findMatch(srcMatches, m.home, m.away, iso) : null),
     [srcMatches, m.home, m.away, iso],
   );
+  const ysUrl = useMemo(() => {
+    if (!ysStreamMap) return undefined;
+    const k = `${m.home.replace(/\s+/g, "").toLowerCase()}|${m.away.replace(/\s+/g, "").toLowerCase()}`;
+    return ysStreamMap.get(k);
+  }, [ysStreamMap, m.home, m.away]);
   const title = `${m.home} vs ${m.away}`;
 
   return (
