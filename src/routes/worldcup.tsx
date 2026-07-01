@@ -559,7 +559,7 @@ function YKMatchCard({
           ) : (
             <div className="inline-flex flex-col items-center">
               <div className="font-display text-2xl font-extrabold gradient-text">VS</div>
-              <div dir="rtl" className="mt-1 text-[10px] text-muted-foreground">بتوقيت الرياض</div>
+              <div dir="rtl" className="mt-1 text-[10px] text-muted-foreground">{MATCH_TIMEZONE_LABEL}</div>
             </div>
           )}
         </div>
