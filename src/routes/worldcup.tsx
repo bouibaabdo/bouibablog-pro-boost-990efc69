@@ -315,11 +315,13 @@ function MatchCard({
   favIds,
   srcMatches,
   onWatch,
+  ysStreamMap,
 }: {
   m: WCMatch;
   favIds: Set<string>;
   srcMatches: SRCMatch[];
-  onWatch: (srcId: string, title: string, fallbackSearch: string) => void;
+  onWatch: (srcId: string, title: string, fallbackSearch: string, directUrl?: string) => void;
+  ysStreamMap?: Map<string, string>;
 }) {
   const s = statusOf(m);
   const src = useMemo(
@@ -327,6 +329,11 @@ function MatchCard({
     [srcMatches, m.home, m.away, m.timestamp],
   );
   const searchQ = `${m.home} vs ${m.away}`;
+  const ysUrl = useMemo(() => {
+    if (!ysStreamMap) return undefined;
+    const k = `${m.home.replace(/\s+/g, "").toLowerCase()}|${m.away.replace(/\s+/g, "").toLowerCase()}`;
+    return ysStreamMap.get(k);
+  }, [ysStreamMap, m.home, m.away]);
 
   return (
     <div className="rounded-2xl border border-border bg-card p-5 shadow-card hover:shadow-elegant transition-all">
