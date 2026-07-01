@@ -64,7 +64,7 @@ export const updateFavoritePrefs = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
-    const patch: Record<string, boolean> = {};
+    const patch: { notify_email?: boolean; notify_browser?: boolean } = {};
     if (data.notify_email !== undefined) patch.notify_email = data.notify_email;
     if (data.notify_browser !== undefined) patch.notify_browser = data.notify_browser;
     const { error } = await context.supabase
