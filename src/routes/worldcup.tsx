@@ -649,13 +649,31 @@ function WorldCupPage() {
   const { data } = useSuspenseQuery(wcQuery);
   const { data: standingsData } = useSuspenseQuery(standingsQuery);
   const { data: yk } = useQuery(ykQuery);
+  const { data: ys } = useQuery(ysQuery);
   const cd = useCountdown(TOURNAMENT_START);
   const [tab, setTab] = useState<Tab>("live");
   useBrowserReminders();
-  const [watch, setWatch] = useState<{ id: string; title: string; fallback: string } | null>(null);
+  const [watch, setWatch] = useState<
+    { id: string; title: string; fallback: string; directUrl?: string; directLabel?: string } | null
+  >(null);
   const { data: srcMatches = [] } = useQuery(srcQuery);
-  const onWatch = (id: string, title: string, fallback: string) =>
-    setWatch({ id, title, fallback });
+  const onWatch = (id: string, title: string, fallback: string, directUrl?: string) =>
+    setWatch({ id, title, fallback, directUrl, directLabel: directUrl ? "يلا سلّيت" : undefined });
+
+  // Build a fast lookup from Yallasellit for direct stream URLs, keyed by normalized team pairs.
+  const ysStreamMap = useMemo(() => {
+    const m = new Map<string, string>();
+    const norm = (s: string) => s.replace(/\s+/g, "").toLowerCase();
+    const push = (home: string, away: string, url?: string) => {
+      if (!url) return;
+      m.set(`${norm(home)}|${norm(away)}`, url);
+      m.set(`${norm(away)}|${norm(home)}`, url);
+    };
+    ys?.today.forEach((x) => push(x.home, x.away, x.streamUrl));
+    ys?.tomorrow.forEach((x) => push(x.home, x.away, x.streamUrl));
+    ys?.yesterday.forEach((x) => push(x.home, x.away, x.streamUrl));
+    return m;
+  }, [ys]);
 
   const { data: favData } = useQuery({
     queryKey: ["favorites", "ids"],
