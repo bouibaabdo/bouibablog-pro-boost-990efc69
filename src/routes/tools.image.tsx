@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { ImageIcon, Loader2, Download, ArrowRight } from "lucide-react";
-import { streamImage } from "@/lib/streamImage";
+
 
 export const Route = createFileRoute("/tools/image")({
   head: () => ({
@@ -32,10 +32,20 @@ function ImageTool() {
     setSrc(null);
     setIsFinal(false);
     try {
-      await streamImage("/api/tools/image", prompt.trim(), (dataUrl, final) => {
-        setSrc(dataUrl);
-        if (final) setIsFinal(true);
+      const res = await fetch("/api/tools/image", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: prompt.trim() }),
       });
+      const data = (await res.json().catch(() => ({}))) as {
+        dataUrl?: string;
+        error?: string;
+      };
+      if (!res.ok || !data.dataUrl) {
+        throw new Error(data.error || `فشل التوليد: ${res.status}`);
+      }
+      setSrc(data.dataUrl);
+      setIsFinal(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : "حدث خطأ غير متوقع");
     } finally {
