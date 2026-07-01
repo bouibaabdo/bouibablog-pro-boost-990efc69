@@ -690,8 +690,19 @@ function WorldCupPage() {
           return s.upcoming && new Date(m.timestamp).getTime() > nowMs;
         }).length;
 
-  const ykTodayCount = yk?.today.length ?? 0;
-  const ykLiveCount = yk?.today.filter((m) => m.live).length ?? 0;
+  // Reconcile YK with TheSportsDB authoritative scores (priority: TheSportsDB).
+  const ykReconciled = useMemo(() => {
+    if (!yk) return null;
+    const wc = data.matches;
+    return {
+      yesterday: yk.yesterday.map((m) => reconcileYk(m, wc)),
+      today: yk.today.map((m) => reconcileYk(m, wc)),
+      tomorrow: yk.tomorrow.map((m) => reconcileYk(m, wc)),
+    };
+  }, [yk, data.matches]);
+
+  const ykTodayCount = ykReconciled?.today.length ?? 0;
+  const ykLiveCount = ykReconciled?.today.filter((m) => m.live).length ?? 0;
   const tabs: { key: Tab; label: string; count?: number }[] = [
     { key: "live", label: "بث مباشر (يلا كورة)", count: ykLiveCount || ykTodayCount },
     { key: "today", label: "مباريات اليوم", count: todayMatches.length },
