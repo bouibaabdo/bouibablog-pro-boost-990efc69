@@ -629,13 +629,22 @@ function WorldCupPage() {
     return Array.from(groups.entries()).sort(([a], [b]) => a.localeCompare(b));
   }, [data.matches]);
 
-  const now = Date.now();
-  const liveCount = data.matches.filter((m) => statusOf(m).live).length;
-  const finishedCount = data.matches.filter((m) => statusOf(m).finished).length;
-  const upcomingCount = data.matches.filter((m) => {
-    const s = statusOf(m);
-    return s.upcoming && new Date(m.timestamp).getTime() > now;
-  }).length;
+  // Compute time-dependent counts client-side only to avoid SSR hydration mismatches.
+  const [nowMs, setNowMs] = useState<number | null>(null);
+  useEffect(() => {
+    setNowMs(Date.now());
+    const t = setInterval(() => setNowMs(Date.now()), 30_000);
+    return () => clearInterval(t);
+  }, []);
+  const liveCount = nowMs == null ? 0 : data.matches.filter((m) => statusOf(m).live).length;
+  const finishedCount = nowMs == null ? 0 : data.matches.filter((m) => statusOf(m).finished).length;
+  const upcomingCount =
+    nowMs == null
+      ? 0
+      : data.matches.filter((m) => {
+          const s = statusOf(m);
+          return s.upcoming && new Date(m.timestamp).getTime() > nowMs;
+        }).length;
 
   const ykTodayCount = yk?.today.length ?? 0;
   const ykLiveCount = yk?.today.filter((m) => m.live).length ?? 0;
