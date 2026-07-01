@@ -30,8 +30,14 @@ import { Route as ToolsImageRouteImport } from './routes/tools.image'
 import { Route as ToolsIdeasRouteImport } from './routes/tools.ideas'
 import { Route as PostsIdRouteImport } from './routes/posts.$id'
 import { Route as AuthenticatedFavoritesRouteImport } from './routes/_authenticated/favorites'
+import { Route as AuthenticatedAdminRouteRouteImport } from './routes/_authenticated/admin/route'
+import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
 import { Route as ApiToolsTextRouteImport } from './routes/api/tools/text'
 import { Route as ApiToolsImageRouteImport } from './routes/api/tools/image'
+import { Route as AuthenticatedAdminWorldcupRouteImport } from './routes/_authenticated/admin/worldcup'
+import { Route as AuthenticatedAdminToolsRouteImport } from './routes/_authenticated/admin/tools'
+import { Route as AuthenticatedAdminPostsRouteImport } from './routes/_authenticated/admin/posts'
+import { Route as AuthenticatedAdminAnalyticsRouteImport } from './routes/_authenticated/admin/analytics'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 
 const WorldcupRoute = WorldcupRouteImport.update({
@@ -138,6 +144,16 @@ const AuthenticatedFavoritesRoute = AuthenticatedFavoritesRouteImport.update({
   path: '/favorites',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAdminRouteRoute = AuthenticatedAdminRouteRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedAdminRouteRoute,
+} as any)
 const ApiToolsTextRoute = ApiToolsTextRouteImport.update({
   id: '/api/tools/text',
   path: '/api/tools/text',
@@ -148,6 +164,28 @@ const ApiToolsImageRoute = ApiToolsImageRouteImport.update({
   path: '/api/tools/image',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAdminWorldcupRoute =
+  AuthenticatedAdminWorldcupRouteImport.update({
+    id: '/worldcup',
+    path: '/worldcup',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminToolsRoute = AuthenticatedAdminToolsRouteImport.update({
+  id: '/tools',
+  path: '/tools',
+  getParentRoute: () => AuthenticatedAdminRouteRoute,
+} as any)
+const AuthenticatedAdminPostsRoute = AuthenticatedAdminPostsRouteImport.update({
+  id: '/posts',
+  path: '/posts',
+  getParentRoute: () => AuthenticatedAdminRouteRoute,
+} as any)
+const AuthenticatedAdminAnalyticsRoute =
+  AuthenticatedAdminAnalyticsRouteImport.update({
+    id: '/analytics',
+    path: '/analytics',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
 const LovableEmailQueueProcessRoute =
   LovableEmailQueueProcessRouteImport.update({
     id: '/lovable/email/queue/process',
@@ -167,6 +205,7 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/tools': typeof ToolsRouteWithChildren
   '/worldcup': typeof WorldcupRoute
+  '/admin': typeof AuthenticatedAdminRouteRouteWithChildren
   '/favorites': typeof AuthenticatedFavoritesRoute
   '/posts/$id': typeof PostsIdRoute
   '/tools/ideas': typeof ToolsIdeasRoute
@@ -176,8 +215,13 @@ export interface FileRoutesByFullPath {
   '/tools/translate': typeof ToolsTranslateRoute
   '/posts/': typeof PostsIndexRoute
   '/tools/': typeof ToolsIndexRoute
+  '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
+  '/admin/posts': typeof AuthenticatedAdminPostsRoute
+  '/admin/tools': typeof AuthenticatedAdminToolsRoute
+  '/admin/worldcup': typeof AuthenticatedAdminWorldcupRoute
   '/api/tools/image': typeof ApiToolsImageRoute
   '/api/tools/text': typeof ApiToolsTextRoute
+  '/admin/': typeof AuthenticatedAdminIndexRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
 export interface FileRoutesByTo {
@@ -200,8 +244,13 @@ export interface FileRoutesByTo {
   '/tools/translate': typeof ToolsTranslateRoute
   '/posts': typeof PostsIndexRoute
   '/tools': typeof ToolsIndexRoute
+  '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
+  '/admin/posts': typeof AuthenticatedAdminPostsRoute
+  '/admin/tools': typeof AuthenticatedAdminToolsRoute
+  '/admin/worldcup': typeof AuthenticatedAdminWorldcupRoute
   '/api/tools/image': typeof ApiToolsImageRoute
   '/api/tools/text': typeof ApiToolsTextRoute
+  '/admin': typeof AuthenticatedAdminIndexRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
 export interface FileRoutesById {
@@ -218,6 +267,7 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/tools': typeof ToolsRouteWithChildren
   '/worldcup': typeof WorldcupRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRouteRouteWithChildren
   '/_authenticated/favorites': typeof AuthenticatedFavoritesRoute
   '/posts/$id': typeof PostsIdRoute
   '/tools/ideas': typeof ToolsIdeasRoute
@@ -227,8 +277,13 @@ export interface FileRoutesById {
   '/tools/translate': typeof ToolsTranslateRoute
   '/posts/': typeof PostsIndexRoute
   '/tools/': typeof ToolsIndexRoute
+  '/_authenticated/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
+  '/_authenticated/admin/posts': typeof AuthenticatedAdminPostsRoute
+  '/_authenticated/admin/tools': typeof AuthenticatedAdminToolsRoute
+  '/_authenticated/admin/worldcup': typeof AuthenticatedAdminWorldcupRoute
   '/api/tools/image': typeof ApiToolsImageRoute
   '/api/tools/text': typeof ApiToolsTextRoute
+  '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
 export interface FileRouteTypes {
@@ -245,6 +300,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/tools'
     | '/worldcup'
+    | '/admin'
     | '/favorites'
     | '/posts/$id'
     | '/tools/ideas'
@@ -254,8 +310,13 @@ export interface FileRouteTypes {
     | '/tools/translate'
     | '/posts/'
     | '/tools/'
+    | '/admin/analytics'
+    | '/admin/posts'
+    | '/admin/tools'
+    | '/admin/worldcup'
     | '/api/tools/image'
     | '/api/tools/text'
+    | '/admin/'
     | '/lovable/email/queue/process'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -278,8 +339,13 @@ export interface FileRouteTypes {
     | '/tools/translate'
     | '/posts'
     | '/tools'
+    | '/admin/analytics'
+    | '/admin/posts'
+    | '/admin/tools'
+    | '/admin/worldcup'
     | '/api/tools/image'
     | '/api/tools/text'
+    | '/admin'
     | '/lovable/email/queue/process'
   id:
     | '__root__'
@@ -295,6 +361,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/tools'
     | '/worldcup'
+    | '/_authenticated/admin'
     | '/_authenticated/favorites'
     | '/posts/$id'
     | '/tools/ideas'
@@ -304,8 +371,13 @@ export interface FileRouteTypes {
     | '/tools/translate'
     | '/posts/'
     | '/tools/'
+    | '/_authenticated/admin/analytics'
+    | '/_authenticated/admin/posts'
+    | '/_authenticated/admin/tools'
+    | '/_authenticated/admin/worldcup'
     | '/api/tools/image'
     | '/api/tools/text'
+    | '/_authenticated/admin/'
     | '/lovable/email/queue/process'
   fileRoutesById: FileRoutesById
 }
@@ -478,6 +550,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedFavoritesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin/': {
+      id: '/_authenticated/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
     '/api/tools/text': {
       id: '/api/tools/text'
       path: '/api/tools/text'
@@ -492,6 +578,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiToolsImageRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/admin/worldcup': {
+      id: '/_authenticated/admin/worldcup'
+      path: '/worldcup'
+      fullPath: '/admin/worldcup'
+      preLoaderRoute: typeof AuthenticatedAdminWorldcupRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/tools': {
+      id: '/_authenticated/admin/tools'
+      path: '/tools'
+      fullPath: '/admin/tools'
+      preLoaderRoute: typeof AuthenticatedAdminToolsRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/posts': {
+      id: '/_authenticated/admin/posts'
+      path: '/posts'
+      fullPath: '/admin/posts'
+      preLoaderRoute: typeof AuthenticatedAdminPostsRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/analytics': {
+      id: '/_authenticated/admin/analytics'
+      path: '/analytics'
+      fullPath: '/admin/analytics'
+      preLoaderRoute: typeof AuthenticatedAdminAnalyticsRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
     '/lovable/email/queue/process': {
       id: '/lovable/email/queue/process'
       path: '/lovable/email/queue/process'
@@ -502,11 +616,35 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedAdminRouteRouteChildren {
+  AuthenticatedAdminAnalyticsRoute: typeof AuthenticatedAdminAnalyticsRoute
+  AuthenticatedAdminPostsRoute: typeof AuthenticatedAdminPostsRoute
+  AuthenticatedAdminToolsRoute: typeof AuthenticatedAdminToolsRoute
+  AuthenticatedAdminWorldcupRoute: typeof AuthenticatedAdminWorldcupRoute
+  AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
+}
+
+const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren =
+  {
+    AuthenticatedAdminAnalyticsRoute: AuthenticatedAdminAnalyticsRoute,
+    AuthenticatedAdminPostsRoute: AuthenticatedAdminPostsRoute,
+    AuthenticatedAdminToolsRoute: AuthenticatedAdminToolsRoute,
+    AuthenticatedAdminWorldcupRoute: AuthenticatedAdminWorldcupRoute,
+    AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
+  }
+
+const AuthenticatedAdminRouteRouteWithChildren =
+  AuthenticatedAdminRouteRoute._addFileChildren(
+    AuthenticatedAdminRouteRouteChildren,
+  )
+
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRouteRoute: typeof AuthenticatedAdminRouteRouteWithChildren
   AuthenticatedFavoritesRoute: typeof AuthenticatedFavoritesRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRouteRoute: AuthenticatedAdminRouteRouteWithChildren,
   AuthenticatedFavoritesRoute: AuthenticatedFavoritesRoute,
 }
 
