@@ -15,6 +15,7 @@ import { useBrowserReminders } from "@/hooks/use-browser-reminders";
 import { supabase } from "@/integrations/supabase/client";
 import { StreamModal } from "@/components/stream-modal";
 import { fetchFootballMatches, findMatch, type SRCMatch } from "@/lib/sportsrc";
+import { getYallakoraMatches, type YKMatch } from "@/lib/yallakora.functions";
 
 const srcQuery = queryOptions({
   queryKey: ["sportsrc", "football"],
@@ -33,6 +34,13 @@ const standingsQuery = queryOptions({
   queryFn: () => getWorldCupStandings(),
   staleTime: 5 * 60_000,
 });
+const ykQuery = queryOptions({
+  queryKey: ["yallakora", "matches"],
+  queryFn: () => getYallakoraMatches(),
+  staleTime: 60_000,
+  refetchInterval: 120_000,
+});
+
 
 export const Route = createFileRoute("/worldcup")({
   loader: async ({ context }) => {
@@ -344,6 +352,98 @@ function MatchCard({
   );
 }
 
+function YKMatchCard({ m }: { m: YKMatch }) {
+  return (
+    <div className="rounded-2xl border border-border bg-card p-5 shadow-card hover:shadow-elegant transition-all">
+      <div className="flex items-center justify-between text-xs text-muted-foreground mb-3">
+        <span className="inline-flex items-center gap-1.5 truncate max-w-[65%]">
+          <Trophy className="h-3.5 w-3.5 text-primary" />
+          <span className="truncate">{m.league || "مباراة"}</span>
+        </span>
+        {m.live ? (
+          <span className="inline-flex items-center gap-1.5 text-red-500 font-semibold">
+            <span className="h-2 w-2 rounded-full bg-red-500 animate-pulse" /> مباشر
+          </span>
+        ) : m.finished ? (
+          <span className="font-semibold text-emerald-600">انتهت</span>
+        ) : (
+          <span className="inline-flex items-center gap-1">
+            <Clock className="h-3.5 w-3.5" /> {m.time}
+          </span>
+        )}
+      </div>
+
+      <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+        <div className="flex flex-col items-center text-center gap-2">
+          {m.homeBadge ? (
+            <img src={m.homeBadge} alt={m.home} loading="lazy" className="h-14 w-14 object-contain" />
+          ) : (
+            <div className="h-14 w-14 rounded-full bg-surface-muted" />
+          )}
+          <span className="font-semibold text-sm">{m.home}</span>
+        </div>
+        <div className="text-center min-w-[80px]">
+          {m.finished || m.live ? (
+            <div className="font-display text-3xl font-extrabold tabular-nums">
+              {m.homeScore ?? 0} <span className="text-muted-foreground">-</span> {m.awayScore ?? 0}
+            </div>
+          ) : (
+            <div className="font-display text-lg font-bold text-primary">VS</div>
+          )}
+        </div>
+        <div className="flex flex-col items-center text-center gap-2">
+          {m.awayBadge ? (
+            <img src={m.awayBadge} alt={m.away} loading="lazy" className="h-14 w-14 object-contain" />
+          ) : (
+            <div className="h-14 w-14 rounded-full bg-surface-muted" />
+          )}
+          <span className="font-semibold text-sm">{m.away}</span>
+        </div>
+      </div>
+
+      <div className="mt-4 pt-4 border-t border-border text-xs text-muted-foreground space-y-1.5">
+        {m.channel && (
+          <div className="flex items-center gap-1.5">
+            <Tv className="h-3.5 w-3.5 text-primary" />
+            <span className="font-semibold text-foreground">{m.channel}</span>
+          </div>
+        )}
+        {m.commentator && (
+          <div className="flex items-center gap-1.5">
+            <Radio className="h-3.5 w-3.5" />
+            {m.commentator}
+          </div>
+        )}
+      </div>
+
+      {!m.finished && m.matchUrl && (
+        <a
+          href={m.matchUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`mt-4 w-full inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-bold text-white transition ${
+            m.live ? "bg-red-600 hover:bg-red-700 animate-pulse" : "bg-emerald-600 hover:bg-emerald-700"
+          }`}
+        >
+          <PlayCircle className="h-4 w-4" />
+          {m.live ? "شاهد البث المباشر الآن" : "تفاصيل المباراة والبث"}
+          <ExternalLink className="h-3.5 w-3.5 opacity-80" />
+        </a>
+      )}
+      {m.finished && m.matchUrl && (
+        <a
+          href={m.matchUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-4 w-full inline-flex items-center justify-center gap-1.5 rounded-lg border border-border hover:border-primary px-4 py-2 text-xs font-semibold text-muted-foreground hover:text-primary transition"
+        >
+          ملخّص وأهداف المباراة <ExternalLink className="h-3 w-3" />
+        </a>
+      )}
+    </div>
+  );
+}
+
 function StandingsTable({ standings }: { standings: WCStanding[] }) {
   const groups = useMemo(() => {
     const map = new Map<string, WCStanding[]>();
@@ -407,13 +507,14 @@ function StandingsTable({ standings }: { standings: WCStanding[] }) {
   );
 }
 
-type Tab = "today" | "all" | "standings" | "channels";
+type Tab = "live" | "today" | "all" | "standings" | "channels";
 
 function WorldCupPage() {
   const { data } = useSuspenseQuery(wcQuery);
   const { data: standingsData } = useSuspenseQuery(standingsQuery);
+  const { data: yk } = useQuery(ykQuery);
   const cd = useCountdown(TOURNAMENT_START);
-  const [tab, setTab] = useState<Tab>("today");
+  const [tab, setTab] = useState<Tab>("live");
   useBrowserReminders();
   const [watch, setWatch] = useState<{ id: string; title: string; fallback: string } | null>(null);
   const { data: srcMatches = [] } = useQuery(srcQuery);
@@ -453,7 +554,10 @@ function WorldCupPage() {
     return s.upcoming && new Date(m.timestamp).getTime() > now;
   }).length;
 
+  const ykTodayCount = yk?.today.length ?? 0;
+  const ykLiveCount = yk?.today.filter((m) => m.live).length ?? 0;
   const tabs: { key: Tab; label: string; count?: number }[] = [
+    { key: "live", label: "بث مباشر (يلا كورة)", count: ykLiveCount || ykTodayCount },
     { key: "today", label: "مباريات اليوم", count: todayMatches.length },
     { key: "all", label: "الجدول الكامل", count: data.matches.length },
     { key: "standings", label: "ترتيب المجموعات", count: standingsData.standings.length },
@@ -538,6 +642,72 @@ function WorldCupPage() {
             </button>
           ))}
         </div>
+
+        {/* LIVE — Yallakora */}
+        {tab === "live" && (
+          <div className="space-y-10">
+            <div className="text-center mb-6">
+              <h2 className="font-display text-2xl md:text-3xl font-bold">
+                بث مباشر — مباريات اليوم مع القنوات الناقلة
+              </h2>
+              <p className="mt-2 text-sm text-muted-foreground">
+                بيانات محدّثة من <span className="font-semibold">يلا كورة</span> — أوقات بتوقيت الرياض،
+                مع القناة الرسمية الناقلة ورابط مباشر لصفحة البث.
+              </p>
+            </div>
+
+            {!yk ? (
+              <div className="text-center py-16 text-muted-foreground">جارٍ تحميل مباريات اليوم…</div>
+            ) : (
+              <>
+                {yk.today.length === 0 && yk.tomorrow.length === 0 && yk.yesterday.length === 0 && (
+                  <div className="text-center py-16 text-muted-foreground rounded-2xl border border-dashed border-border">
+                    تعذّر جلب المباريات من يلا كورة الآن. حاول مجدّدًا بعد قليل.
+                  </div>
+                )}
+
+                {yk.today.length > 0 && (
+                  <div>
+                    <h3 className="font-display font-bold text-lg text-primary mb-4">
+                      اليوم · {yk.today.length} مباراة
+                    </h3>
+                    <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                      {yk.today.map((m) => (
+                        <YKMatchCard key={m.id} m={m} />
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {yk.tomorrow.length > 0 && (
+                  <div>
+                    <h3 className="font-display font-bold text-lg text-primary mb-4">
+                      الغد · {yk.tomorrow.length} مباراة
+                    </h3>
+                    <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                      {yk.tomorrow.map((m) => (
+                        <YKMatchCard key={m.id} m={m} />
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {yk.yesterday.length > 0 && (
+                  <div>
+                    <h3 className="font-display font-bold text-lg text-muted-foreground mb-4">
+                      أمس · {yk.yesterday.length} مباراة
+                    </h3>
+                    <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                      {yk.yesterday.map((m) => (
+                        <YKMatchCard key={m.id} m={m} />
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        )}
 
         {/* TODAY */}
         {tab === "today" && (
