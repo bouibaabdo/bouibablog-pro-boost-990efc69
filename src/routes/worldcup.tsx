@@ -507,13 +507,14 @@ function StandingsTable({ standings }: { standings: WCStanding[] }) {
   );
 }
 
-type Tab = "today" | "all" | "standings" | "channels";
+type Tab = "live" | "today" | "all" | "standings" | "channels";
 
 function WorldCupPage() {
   const { data } = useSuspenseQuery(wcQuery);
   const { data: standingsData } = useSuspenseQuery(standingsQuery);
+  const { data: yk } = useQuery(ykQuery);
   const cd = useCountdown(TOURNAMENT_START);
-  const [tab, setTab] = useState<Tab>("today");
+  const [tab, setTab] = useState<Tab>("live");
   useBrowserReminders();
   const [watch, setWatch] = useState<{ id: string; title: string; fallback: string } | null>(null);
   const { data: srcMatches = [] } = useQuery(srcQuery);
