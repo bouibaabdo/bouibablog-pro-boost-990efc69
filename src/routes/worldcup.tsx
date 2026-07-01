@@ -16,6 +16,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { StreamModal } from "@/components/stream-modal";
 import { fetchFootballMatches, findMatch, type SRCMatch } from "@/lib/sportsrc";
 import { getYallakoraMatches, type YKMatch } from "@/lib/yallakora.functions";
+import { getYallasellitMatches } from "@/lib/yallasellit.functions";
 
 const srcQuery = queryOptions({
   queryKey: ["sportsrc", "football"],
@@ -37,6 +38,12 @@ const standingsQuery = queryOptions({
 const ykQuery = queryOptions({
   queryKey: ["yallakora", "matches"],
   queryFn: () => getYallakoraMatches(),
+  staleTime: 60_000,
+  refetchInterval: 120_000,
+});
+const ysQuery = queryOptions({
+  queryKey: ["yallasellit", "matches"],
+  queryFn: () => getYallasellitMatches(),
   staleTime: 60_000,
   refetchInterval: 120_000,
 });
