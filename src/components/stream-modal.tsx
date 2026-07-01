@@ -128,6 +128,11 @@ export function StreamModal({
                 title={title}
                 allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
                 allowFullScreen
+                /* Sandbox blocks popup ads, forced redirects and new tabs
+                   coming from the stream provider. We keep scripts + same-origin
+                   + forms so the actual player can still load. */
+                sandbox="allow-scripts allow-same-origin allow-forms allow-presentation"
+                referrerPolicy="no-referrer"
                 className="absolute inset-0 h-full w-full border-0"
               />
               <div className="absolute left-3 top-3 z-10 flex flex-wrap gap-2">
@@ -142,6 +147,7 @@ export function StreamModal({
               </div>
             </>
           )}
+
         </div>
 
         {/* Sources */}
