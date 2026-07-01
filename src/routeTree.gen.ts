@@ -28,6 +28,7 @@ import { Route as PostsIdRouteImport } from './routes/posts.$id'
 import { Route as AuthenticatedFavoritesRouteImport } from './routes/_authenticated/favorites'
 import { Route as ApiToolsTextRouteImport } from './routes/api/tools/text'
 import { Route as ApiToolsImageRouteImport } from './routes/api/tools/image'
+import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 
 const WorldcupRoute = WorldcupRouteImport.update({
   id: '/worldcup',
@@ -123,6 +124,12 @@ const ApiToolsImageRoute = ApiToolsImageRouteImport.update({
   path: '/api/tools/image',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LovableEmailQueueProcessRoute =
+  LovableEmailQueueProcessRouteImport.update({
+    id: '/lovable/email/queue/process',
+    path: '/lovable/email/queue/process',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -143,6 +150,7 @@ export interface FileRoutesByFullPath {
   '/tools/': typeof ToolsIndexRoute
   '/api/tools/image': typeof ApiToolsImageRoute
   '/api/tools/text': typeof ApiToolsTextRoute
+  '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -162,6 +170,7 @@ export interface FileRoutesByTo {
   '/tools': typeof ToolsIndexRoute
   '/api/tools/image': typeof ApiToolsImageRoute
   '/api/tools/text': typeof ApiToolsTextRoute
+  '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -184,6 +193,7 @@ export interface FileRoutesById {
   '/tools/': typeof ToolsIndexRoute
   '/api/tools/image': typeof ApiToolsImageRoute
   '/api/tools/text': typeof ApiToolsTextRoute
+  '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -206,6 +216,7 @@ export interface FileRouteTypes {
     | '/tools/'
     | '/api/tools/image'
     | '/api/tools/text'
+    | '/lovable/email/queue/process'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -225,6 +236,7 @@ export interface FileRouteTypes {
     | '/tools'
     | '/api/tools/image'
     | '/api/tools/text'
+    | '/lovable/email/queue/process'
   id:
     | '__root__'
     | '/'
@@ -246,6 +258,7 @@ export interface FileRouteTypes {
     | '/tools/'
     | '/api/tools/image'
     | '/api/tools/text'
+    | '/lovable/email/queue/process'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -261,6 +274,7 @@ export interface RootRouteChildren {
   PostsIndexRoute: typeof PostsIndexRoute
   ApiToolsImageRoute: typeof ApiToolsImageRoute
   ApiToolsTextRoute: typeof ApiToolsTextRoute
+  LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -398,6 +412,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiToolsImageRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/lovable/email/queue/process': {
+      id: '/lovable/email/queue/process'
+      path: '/lovable/email/queue/process'
+      fullPath: '/lovable/email/queue/process'
+      preLoaderRoute: typeof LovableEmailQueueProcessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -445,6 +466,7 @@ const rootRouteChildren: RootRouteChildren = {
   PostsIndexRoute: PostsIndexRoute,
   ApiToolsImageRoute: ApiToolsImageRoute,
   ApiToolsTextRoute: ApiToolsTextRoute,
+  LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
