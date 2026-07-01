@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery, useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
-import { Calendar, MapPin, Trophy, Radio, ExternalLink, Clock, Tv } from "lucide-react";
+import { Calendar, MapPin, Trophy, Radio, ExternalLink, Clock, Tv, PlayCircle } from "lucide-react";
 import {
   getWorldCupMatches,
   getWorldCupStandings,
@@ -13,6 +13,15 @@ import { SiteFooter } from "@/components/site-footer";
 import { FavoriteButton } from "@/components/favorite-button";
 import { useBrowserReminders } from "@/hooks/use-browser-reminders";
 import { supabase } from "@/integrations/supabase/client";
+import { StreamModal } from "@/components/stream-modal";
+import { fetchFootballMatches, findMatch, type SRCMatch } from "@/lib/sportsrc";
+
+const srcQuery = queryOptions({
+  queryKey: ["sportsrc", "football"],
+  queryFn: () => fetchFootballMatches(),
+  staleTime: 60_000,
+  refetchInterval: 120_000,
+});
 
 const wcQuery = queryOptions({
   queryKey: ["worldcup", "2026"],
