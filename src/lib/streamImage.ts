@@ -23,6 +23,7 @@ export async function streamImage(
 
   let sawCompleted = false;
   let streamError: string | undefined;
+  let lastDataUrl: string | undefined;
   const parser = createParser({
     onEvent(event) {
       let payload: Payload | undefined;
@@ -43,8 +44,10 @@ export async function streamImage(
         return;
       if (!payload || !("b64_json" in payload)) return;
       const isFinal = event.event === "image_generation.completed";
+      const dataUrl = `data:image/png;base64,${payload.b64_json}`;
+      lastDataUrl = dataUrl;
       flushSync(() => {
-        onFrame(`data:image/png;base64,${payload!.b64_json}`, isFinal);
+        onFrame(dataUrl, isFinal);
       });
       if (isFinal) sawCompleted = true;
     },
@@ -61,5 +64,13 @@ export async function streamImage(
     reader.cancel().catch(() => {});
   }
   if (streamError) throw new Error(streamError);
-  if (!sawCompleted) throw new Error("انتهى البث دون اكتمال الصورة");
+  if (!sawCompleted) {
+    if (lastDataUrl) {
+      flushSync(() => {
+        onFrame(lastDataUrl!, true);
+      });
+      return;
+    }
+    throw new Error("لم يتم توليد أي صورة — حاول تعديل الوصف قليلاً");
+  }
 }
