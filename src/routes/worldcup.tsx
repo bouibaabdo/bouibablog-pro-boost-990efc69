@@ -643,6 +643,72 @@ function WorldCupPage() {
           ))}
         </div>
 
+        {/* LIVE — Yallakora */}
+        {tab === "live" && (
+          <div className="space-y-10">
+            <div className="text-center mb-6">
+              <h2 className="font-display text-2xl md:text-3xl font-bold">
+                بث مباشر — مباريات اليوم مع القنوات الناقلة
+              </h2>
+              <p className="mt-2 text-sm text-muted-foreground">
+                بيانات محدّثة من <span className="font-semibold">يلا كورة</span> — أوقات بتوقيت الرياض،
+                مع القناة الرسمية الناقلة ورابط مباشر لصفحة البث.
+              </p>
+            </div>
+
+            {!yk ? (
+              <div className="text-center py-16 text-muted-foreground">جارٍ تحميل مباريات اليوم…</div>
+            ) : (
+              <>
+                {yk.today.length === 0 && yk.tomorrow.length === 0 && yk.yesterday.length === 0 && (
+                  <div className="text-center py-16 text-muted-foreground rounded-2xl border border-dashed border-border">
+                    تعذّر جلب المباريات من يلا كورة الآن. حاول مجدّدًا بعد قليل.
+                  </div>
+                )}
+
+                {yk.today.length > 0 && (
+                  <div>
+                    <h3 className="font-display font-bold text-lg text-primary mb-4">
+                      اليوم · {yk.today.length} مباراة
+                    </h3>
+                    <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                      {yk.today.map((m) => (
+                        <YKMatchCard key={m.id} m={m} />
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {yk.tomorrow.length > 0 && (
+                  <div>
+                    <h3 className="font-display font-bold text-lg text-primary mb-4">
+                      الغد · {yk.tomorrow.length} مباراة
+                    </h3>
+                    <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                      {yk.tomorrow.map((m) => (
+                        <YKMatchCard key={m.id} m={m} />
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {yk.yesterday.length > 0 && (
+                  <div>
+                    <h3 className="font-display font-bold text-lg text-muted-foreground mb-4">
+                      أمس · {yk.yesterday.length} مباراة
+                    </h3>
+                    <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                      {yk.yesterday.map((m) => (
+                        <YKMatchCard key={m.id} m={m} />
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        )}
+
         {/* TODAY */}
         {tab === "today" && (
           <div>
