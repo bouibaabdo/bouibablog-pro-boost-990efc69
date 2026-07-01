@@ -191,19 +191,38 @@ function formatTimeAr(iso: string) {
 }
 
 function useCountdown(target: number) {
-  const [now, setNow] = useState(() => Date.now());
+  const [now, setNow] = useState<number | null>(null);
   useEffect(() => {
+    setNow(Date.now());
     const t = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(t);
   }, []);
-  const diff = Math.max(0, target - now);
+  const diff = now == null ? 0 : Math.max(0, target - now);
   return {
     d: Math.floor(diff / 86400000),
     h: Math.floor((diff % 86400000) / 3600000),
     m: Math.floor((diff % 3600000) / 60000),
     s: Math.floor((diff % 60000) / 1000),
-    done: diff === 0,
+    done: now != null && diff === 0,
+    ready: now != null,
   };
+}
+
+// Convert Yallakora "11:00 PM" (Riyadh, UTC+3) into an ISO string for SRC fuzzy matching.
+function ykKickoffIso(day: "yesterday" | "today" | "tomorrow", time: string): string {
+  const now = new Date();
+  const base = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+  if (day === "yesterday") base.setUTCDate(base.getUTCDate() - 1);
+  if (day === "tomorrow") base.setUTCDate(base.getUTCDate() + 1);
+  const m = time.match(/(\d{1,2}):(\d{2})\s*(AM|PM|ص|م)?/i);
+  if (!m) return base.toISOString();
+  let h = Number(m[1]);
+  const min = Number(m[2]);
+  const ap = (m[3] || "").toUpperCase();
+  if ((ap === "PM" || ap === "م") && h < 12) h += 12;
+  if ((ap === "AM" || ap === "ص") && h === 12) h = 0;
+  base.setUTCHours(h - 3, min, 0, 0); // Riyadh = UTC+3
+  return base.toISOString();
 }
 
 function statusOf(m: WCMatch) {
@@ -352,90 +371,154 @@ function MatchCard({
   );
 }
 
-function YKMatchCard({ m }: { m: YKMatch }) {
+function YKMatchCard({
+  m,
+  srcMatches,
+  onWatch,
+  featured = false,
+}: {
+  m: YKMatch;
+  srcMatches: SRCMatch[];
+  onWatch: (srcId: string, title: string, fallbackSearch: string) => void;
+  featured?: boolean;
+}) {
+  const iso = useMemo(() => ykKickoffIso(m.day, m.time), [m.day, m.time]);
+  const src = useMemo(
+    () => (srcMatches.length ? findMatch(srcMatches, m.home, m.away, iso) : null),
+    [srcMatches, m.home, m.away, iso],
+  );
+  const title = `${m.home} vs ${m.away}`;
+
   return (
-    <div className="rounded-2xl border border-border bg-card p-5 shadow-card hover:shadow-elegant transition-all">
-      <div className="flex items-center justify-between text-xs text-muted-foreground mb-3">
+    <div
+      className={`group relative overflow-hidden rounded-2xl border bg-card p-5 shadow-card transition-all hover:shadow-elegant hover:-translate-y-0.5 ${
+        m.live
+          ? "border-red-500/40 ring-1 ring-red-500/20"
+          : featured
+            ? "border-primary/30"
+            : "border-border"
+      }`}
+    >
+      {m.live && (
+        <div className="pointer-events-none absolute -inset-px rounded-2xl bg-gradient-to-br from-red-500/5 via-transparent to-transparent" />
+      )}
+
+      <div className="relative flex items-center justify-between text-xs text-muted-foreground mb-3">
         <span className="inline-flex items-center gap-1.5 truncate max-w-[65%]">
           <Trophy className="h-3.5 w-3.5 text-primary" />
-          <span className="truncate">{m.league || "مباراة"}</span>
+          <span className="truncate font-medium">{m.league || "مباراة"}</span>
         </span>
         {m.live ? (
-          <span className="inline-flex items-center gap-1.5 text-red-500 font-semibold">
-            <span className="h-2 w-2 rounded-full bg-red-500 animate-pulse" /> مباشر
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-red-500/10 text-red-600 px-2 py-0.5 font-bold text-[11px]">
+            <span className="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse" /> مباشر الآن
           </span>
         ) : m.finished ? (
-          <span className="font-semibold text-emerald-600">انتهت</span>
+          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 text-emerald-600 px-2 py-0.5 font-bold text-[11px]">
+            انتهت
+          </span>
         ) : (
-          <span className="inline-flex items-center gap-1">
-            <Clock className="h-3.5 w-3.5" /> {m.time}
+          <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 text-primary px-2 py-0.5 font-semibold text-[11px]">
+            <Clock className="h-3 w-3" /> {m.time}
           </span>
         )}
       </div>
 
-      <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+      <div className="relative grid grid-cols-[1fr_auto_1fr] items-center gap-3">
         <div className="flex flex-col items-center text-center gap-2">
           {m.homeBadge ? (
-            <img src={m.homeBadge} alt={m.home} loading="lazy" className="h-14 w-14 object-contain" />
+            <img src={m.homeBadge} alt={m.home} loading="lazy" className="h-16 w-16 object-contain drop-shadow-sm" />
           ) : (
-            <div className="h-14 w-14 rounded-full bg-surface-muted" />
+            <div className="h-16 w-16 rounded-full bg-surface-muted" />
           )}
-          <span className="font-semibold text-sm">{m.home}</span>
+          <span className="font-semibold text-sm leading-tight">{m.home}</span>
         </div>
-        <div className="text-center min-w-[80px]">
+        <div className="text-center min-w-[84px]">
           {m.finished || m.live ? (
             <div className="font-display text-3xl font-extrabold tabular-nums">
-              {m.homeScore ?? 0} <span className="text-muted-foreground">-</span> {m.awayScore ?? 0}
+              <span className={m.live ? "text-red-600" : ""}>{m.homeScore ?? 0}</span>
+              <span className="mx-1 text-muted-foreground">-</span>
+              <span className={m.live ? "text-red-600" : ""}>{m.awayScore ?? 0}</span>
             </div>
           ) : (
-            <div className="font-display text-lg font-bold text-primary">VS</div>
+            <div className="inline-flex flex-col items-center">
+              <div className="font-display text-2xl font-extrabold gradient-text">VS</div>
+              <div className="mt-1 text-[10px] text-muted-foreground">بتوقيت الرياض</div>
+            </div>
           )}
         </div>
         <div className="flex flex-col items-center text-center gap-2">
           {m.awayBadge ? (
-            <img src={m.awayBadge} alt={m.away} loading="lazy" className="h-14 w-14 object-contain" />
+            <img src={m.awayBadge} alt={m.away} loading="lazy" className="h-16 w-16 object-contain drop-shadow-sm" />
           ) : (
-            <div className="h-14 w-14 rounded-full bg-surface-muted" />
+            <div className="h-16 w-16 rounded-full bg-surface-muted" />
           )}
-          <span className="font-semibold text-sm">{m.away}</span>
+          <span className="font-semibold text-sm leading-tight">{m.away}</span>
         </div>
       </div>
 
-      <div className="mt-4 pt-4 border-t border-border text-xs text-muted-foreground space-y-1.5">
-        {m.channel && (
-          <div className="flex items-center gap-1.5">
-            <Tv className="h-3.5 w-3.5 text-primary" />
-            <span className="font-semibold text-foreground">{m.channel}</span>
-          </div>
-        )}
-        {m.commentator && (
-          <div className="flex items-center gap-1.5">
-            <Radio className="h-3.5 w-3.5" />
-            {m.commentator}
-          </div>
-        )}
-      </div>
+      {(m.channel || m.commentator) && (
+        <div className="relative mt-4 pt-4 border-t border-border grid grid-cols-2 gap-2 text-xs">
+          {m.channel && (
+            <div className="flex items-center gap-1.5 rounded-lg bg-surface-muted/60 px-2.5 py-2">
+              <Tv className="h-3.5 w-3.5 text-primary shrink-0" />
+              <span className="font-semibold text-foreground truncate" title={m.channel}>{m.channel}</span>
+            </div>
+          )}
+          {m.commentator && (
+            <div className="flex items-center gap-1.5 rounded-lg bg-surface-muted/60 px-2.5 py-2">
+              <Radio className="h-3.5 w-3.5 text-primary shrink-0" />
+              <span className="text-muted-foreground truncate" title={m.commentator}>{m.commentator}</span>
+            </div>
+          )}
+        </div>
+      )}
 
-      {!m.finished && m.matchUrl && (
-        <a
-          href={m.matchUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={`mt-4 w-full inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-bold text-white transition ${
-            m.live ? "bg-red-600 hover:bg-red-700 animate-pulse" : "bg-emerald-600 hover:bg-emerald-700"
-          }`}
-        >
-          <PlayCircle className="h-4 w-4" />
-          {m.live ? "شاهد البث المباشر الآن" : "تفاصيل المباراة والبث"}
-          <ExternalLink className="h-3.5 w-3.5 opacity-80" />
-        </a>
+      {!m.finished && (
+        <div className="relative mt-4 space-y-2">
+          {src ? (
+            <button
+              onClick={() => onWatch(src.id, title, title)}
+              className={`w-full inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-bold text-white transition ${
+                m.live
+                  ? "bg-red-600 hover:bg-red-700 shadow-lg shadow-red-500/20"
+                  : "bg-gradient-to-l from-primary to-primary/80 hover:opacity-95"
+              }`}
+            >
+              <PlayCircle className="h-4 w-4" />
+              {m.live ? "شاهد البث المباشر داخل الموقع" : "افتح المشغّل داخل الموقع"}
+            </button>
+          ) : m.matchUrl ? (
+            <a
+              href={m.matchUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`w-full inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-bold text-white transition ${
+                m.live ? "bg-red-600 hover:bg-red-700 animate-pulse" : "bg-emerald-600 hover:bg-emerald-700"
+              }`}
+            >
+              <PlayCircle className="h-4 w-4" />
+              {m.live ? "شاهد البث المباشر الآن" : "تفاصيل المباراة والبث"}
+              <ExternalLink className="h-3.5 w-3.5 opacity-80" />
+            </a>
+          ) : null}
+          {src && m.matchUrl && (
+            <a
+              href={m.matchUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full inline-flex items-center justify-center gap-1.5 rounded-lg border border-border hover:border-primary px-4 py-2 text-[11px] font-semibold text-muted-foreground hover:text-primary transition"
+            >
+              تفاصيل إضافية على يلا كورة <ExternalLink className="h-3 w-3" />
+            </a>
+          )}
+        </div>
       )}
       {m.finished && m.matchUrl && (
         <a
           href={m.matchUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-4 w-full inline-flex items-center justify-center gap-1.5 rounded-lg border border-border hover:border-primary px-4 py-2 text-xs font-semibold text-muted-foreground hover:text-primary transition"
+          className="relative mt-4 w-full inline-flex items-center justify-center gap-1.5 rounded-lg border border-border hover:border-primary px-4 py-2 text-xs font-semibold text-muted-foreground hover:text-primary transition"
         >
           ملخّص وأهداف المباراة <ExternalLink className="h-3 w-3" />
         </a>
@@ -546,13 +629,22 @@ function WorldCupPage() {
     return Array.from(groups.entries()).sort(([a], [b]) => a.localeCompare(b));
   }, [data.matches]);
 
-  const now = Date.now();
-  const liveCount = data.matches.filter((m) => statusOf(m).live).length;
-  const finishedCount = data.matches.filter((m) => statusOf(m).finished).length;
-  const upcomingCount = data.matches.filter((m) => {
-    const s = statusOf(m);
-    return s.upcoming && new Date(m.timestamp).getTime() > now;
-  }).length;
+  // Compute time-dependent counts client-side only to avoid SSR hydration mismatches.
+  const [nowMs, setNowMs] = useState<number | null>(null);
+  useEffect(() => {
+    setNowMs(Date.now());
+    const t = setInterval(() => setNowMs(Date.now()), 30_000);
+    return () => clearInterval(t);
+  }, []);
+  const liveCount = nowMs == null ? 0 : data.matches.filter((m) => statusOf(m).live).length;
+  const finishedCount = nowMs == null ? 0 : data.matches.filter((m) => statusOf(m).finished).length;
+  const upcomingCount =
+    nowMs == null
+      ? 0
+      : data.matches.filter((m) => {
+          const s = statusOf(m);
+          return s.upcoming && new Date(m.timestamp).getTime() > nowMs;
+        }).length;
 
   const ykTodayCount = yk?.today.length ?? 0;
   const ykLiveCount = yk?.today.filter((m) => m.live).length ?? 0;
@@ -600,7 +692,7 @@ function WorldCupPage() {
             ))}
           </div>
 
-          {!cd.done && (
+          {cd.ready && !cd.done && (
             <div className="mt-6 inline-flex items-center gap-3 rounded-2xl border border-border bg-card px-6 py-4 shadow-card">
               {[
                 { v: cd.d, l: "يوم" },
@@ -645,14 +737,14 @@ function WorldCupPage() {
 
         {/* LIVE — Yallakora */}
         {tab === "live" && (
-          <div className="space-y-10">
-            <div className="text-center mb-6">
+          <div className="space-y-12">
+            <div className="text-center mb-2">
               <h2 className="font-display text-2xl md:text-3xl font-bold">
-                بث مباشر — مباريات اليوم مع القنوات الناقلة
+                بث مباشر — جدول كامل مع القنوات الناقلة
               </h2>
-              <p className="mt-2 text-sm text-muted-foreground">
-                بيانات محدّثة من <span className="font-semibold">يلا كورة</span> — أوقات بتوقيت الرياض،
-                مع القناة الرسمية الناقلة ورابط مباشر لصفحة البث.
+              <p className="mt-2 text-sm text-muted-foreground max-w-2xl mx-auto">
+                جدول شامل لمباريات الأمس واليوم والغد مصدره <span className="font-semibold text-foreground">يلا كورة</span>،
+                مع القناة الرسمية والمعلّق. المباريات المتاح لها بث مدمج تُشاهَد داخل الموقع بضغطة زر.
               </p>
             </div>
 
@@ -666,27 +758,66 @@ function WorldCupPage() {
                   </div>
                 )}
 
-                {yk.today.length > 0 && (
-                  <div>
-                    <h3 className="font-display font-bold text-lg text-primary mb-4">
-                      اليوم · {yk.today.length} مباراة
-                    </h3>
-                    <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                      {yk.today.map((m) => (
-                        <YKMatchCard key={m.id} m={m} />
-                      ))}
-                    </div>
-                  </div>
-                )}
+                {(() => {
+                  const liveNow = yk.today.filter((m) => m.live);
+                  const upcomingToday = yk.today.filter((m) => !m.live && !m.finished);
+                  const finishedToday = yk.today.filter((m) => m.finished);
+                  return (
+                    <>
+                      {liveNow.length > 0 && (
+                        <div className="relative">
+                          <div className="absolute -inset-4 rounded-3xl bg-gradient-to-br from-red-500/10 via-transparent to-transparent pointer-events-none" />
+                          <div className="relative flex items-center gap-3 mb-5">
+                            <span className="inline-flex items-center gap-2 rounded-full bg-red-600 text-white px-3 py-1 text-xs font-extrabold shadow-lg shadow-red-500/30">
+                              <span className="h-2 w-2 rounded-full bg-white animate-pulse" /> مباشر الآن
+                            </span>
+                            <h3 className="font-display font-extrabold text-xl">{liveNow.length} مباراة تُبثّ حالياً</h3>
+                          </div>
+                          <div className="relative grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                            {liveNow.map((m) => (
+                              <YKMatchCard key={m.id} m={m} srcMatches={srcMatches} onWatch={onWatch} featured />
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {upcomingToday.length > 0 && (
+                        <div>
+                          <h3 className="font-display font-bold text-lg text-primary mb-4 flex items-center gap-2">
+                            <Clock className="h-5 w-5" /> اليوم · {upcomingToday.length} مباراة قادمة
+                          </h3>
+                          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                            {upcomingToday.map((m) => (
+                              <YKMatchCard key={m.id} m={m} srcMatches={srcMatches} onWatch={onWatch} />
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {finishedToday.length > 0 && (
+                        <div>
+                          <h3 className="font-display font-bold text-lg text-emerald-600 mb-4">
+                            نتائج اليوم · {finishedToday.length} مباراة
+                          </h3>
+                          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                            {finishedToday.map((m) => (
+                              <YKMatchCard key={m.id} m={m} srcMatches={srcMatches} onWatch={onWatch} />
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  );
+                })()}
 
                 {yk.tomorrow.length > 0 && (
                   <div>
-                    <h3 className="font-display font-bold text-lg text-primary mb-4">
-                      الغد · {yk.tomorrow.length} مباراة
+                    <h3 className="font-display font-bold text-lg text-primary mb-4 flex items-center gap-2">
+                      <Calendar className="h-5 w-5" /> الغد · {yk.tomorrow.length} مباراة
                     </h3>
                     <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                       {yk.tomorrow.map((m) => (
-                        <YKMatchCard key={m.id} m={m} />
+                        <YKMatchCard key={m.id} m={m} srcMatches={srcMatches} onWatch={onWatch} />
                       ))}
                     </div>
                   </div>
@@ -695,11 +826,11 @@ function WorldCupPage() {
                 {yk.yesterday.length > 0 && (
                   <div>
                     <h3 className="font-display font-bold text-lg text-muted-foreground mb-4">
-                      أمس · {yk.yesterday.length} مباراة
+                      نتائج الأمس · {yk.yesterday.length} مباراة
                     </h3>
                     <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                       {yk.yesterday.map((m) => (
-                        <YKMatchCard key={m.id} m={m} />
+                        <YKMatchCard key={m.id} m={m} srcMatches={srcMatches} onWatch={onWatch} />
                       ))}
                     </div>
                   </div>
@@ -708,6 +839,7 @@ function WorldCupPage() {
             )}
           </div>
         )}
+
 
         {/* TODAY */}
         {tab === "today" && (
