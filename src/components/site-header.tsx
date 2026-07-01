@@ -6,6 +6,7 @@ const NAV = [
   { to: "/", label: "الرئيسية" },
   { to: "/posts", label: "المقالات", search: {} as { label?: string } },
   { to: "/tools", label: "أدوات AI" },
+  { to: "/worldcup", label: "كأس العالم 2026" },
   { to: "/about", label: "عن الأكاديمية" },
   { to: "/contact", label: "تواصل" },
 ] as const;
