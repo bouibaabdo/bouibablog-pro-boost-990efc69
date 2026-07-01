@@ -23,6 +23,7 @@ export async function streamImage(
 
   let sawCompleted = false;
   let streamError: string | undefined;
+  let lastDataUrl: string | undefined;
   const parser = createParser({
     onEvent(event) {
       let payload: Payload | undefined;
