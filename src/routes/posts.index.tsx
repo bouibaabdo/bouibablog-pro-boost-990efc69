@@ -25,7 +25,7 @@ const labelsQO = queryOptions({
   staleTime: 10 * 60_000,
 });
 
-export const Route = createFileRoute("/posts")({
+export const Route = createFileRoute("/posts/")({
   validateSearch: zodValidator(searchSchema),
   loaderDeps: ({ search }) => ({ label: search.label }),
   loader: async ({ context, deps }) => {
