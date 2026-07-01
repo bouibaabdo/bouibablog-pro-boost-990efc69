@@ -1,8 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery, useQuery } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
-import { Calendar, MapPin, Trophy, Radio, ExternalLink, Clock } from "lucide-react";
-import { getWorldCupMatches, type WCMatch } from "@/lib/worldcup.functions";
+import { useEffect, useMemo, useState } from "react";
+import { Calendar, MapPin, Trophy, Radio, ExternalLink, Clock, Tv } from "lucide-react";
+import {
+  getWorldCupMatches,
+  getWorldCupStandings,
+  type WCMatch,
+  type WCStanding,
+} from "@/lib/worldcup.functions";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { FavoriteButton } from "@/components/favorite-button";
@@ -14,19 +19,32 @@ const wcQuery = queryOptions({
   queryFn: () => getWorldCupMatches(),
   staleTime: 5 * 60_000,
 });
+const standingsQuery = queryOptions({
+  queryKey: ["worldcup", "standings", "2026"],
+  queryFn: () => getWorldCupStandings(),
+  staleTime: 5 * 60_000,
+});
 
 export const Route = createFileRoute("/worldcup")({
-  loader: ({ context }) => context.queryClient.ensureQueryData(wcQuery),
+  loader: async ({ context }) => {
+    await Promise.all([
+      context.queryClient.ensureQueryData(wcQuery),
+      context.queryClient.ensureQueryData(standingsQuery),
+    ]);
+  },
   head: () => ({
     meta: [
-      { title: "كأس العالم 2026 — جدول المباريات والنتائج المباشرة | Bouiba Academy" },
+      { title: "كأس العالم 2026 — الجدول الكامل، الترتيب، وقنوات البث المباشر" },
       {
         name: "description",
         content:
-          "متابعة كأس العالم 2026 مباشرة: جدول المباريات بتوقيتك، النتائج، المجموعات، دور خروج المغلوب، وروابط البث الرسمية.",
+          "متابعة شاملة لمونديال 2026: جدول كل المباريات، مباريات اليوم مع القنوات الناقلة، ترتيب المجموعات، وروابط البث الرسمي المباشر.",
       },
-      { property: "og:title", content: "كأس العالم 2026 — البث المباشر والنتائج" },
-      { property: "og:description", content: "جدول شامل لمباريات مونديال 2026 مع النتائج المباشرة وروابط البث الرسمية." },
+      { property: "og:title", content: "كأس العالم 2026 — بث مباشر وترتيب المجموعات" },
+      {
+        property: "og:description",
+        content: "جدول شامل، ترتيب المجموعات، ومباريات اليوم مع القنوات الناقلة وروابط المشاهدة المباشرة.",
+      },
       { property: "og:type", content: "website" },
     ],
     links: [{ rel: "canonical", href: "/worldcup" }],
@@ -38,11 +56,49 @@ export const Route = createFileRoute("/worldcup")({
 });
 
 const TOURNAMENT_START = new Date("2026-06-11T18:00:00Z").getTime();
+
+// Broadcasters that hold rights in MENA / world for the World Cup.
+// Direct live links per platform. Users click through and pick the match on the provider.
+const BROADCASTERS = [
+  {
+    name: "beIN Sports",
+    short: "beIN",
+    color: "bg-purple-600 hover:bg-purple-700",
+    watchUrl: "https://www.beinsports.com/en/schedule",
+    note: "الحقوق الحصرية — الشرق الأوسط وشمال أفريقيا",
+  },
+  {
+    name: "FIFA+ (مجاني)",
+    short: "FIFA+",
+    color: "bg-blue-600 hover:bg-blue-700",
+    watchUrl: "https://www.plus.fifa.com/en/home",
+    note: "بث رسمي مجاني — مناطق مختارة",
+  },
+  {
+    name: "Shahid (MBC)",
+    short: "Shahid",
+    color: "bg-amber-600 hover:bg-amber-700",
+    watchUrl: "https://shahid.mbc.net/ar/live",
+    note: "مباريات مختارة على قنوات SSC / MBC",
+  },
+  {
+    name: "SSC السعودية",
+    short: "SSC",
+    color: "bg-emerald-600 hover:bg-emerald-700",
+    watchUrl: "https://ssc.sa/",
+    note: "قنوات SSC الرياضية",
+  },
+];
+
 const OFFICIAL_STREAMS = [
-  { name: "FIFA+ (مجاني)", url: "https://www.plus.fifa.com/", note: "بث رسمي مجاني في مناطق مختارة" },
-  { name: "beIN Sports", url: "https://www.beinsports.com/", note: "الحقوق الحصرية في الشرق الأوسط وشمال أفريقيا" },
-  { name: "SSC السعودية", url: "https://shahid.mbc.net/", note: "بعض المباريات المختارة" },
-  { name: "FOX Sports", url: "https://www.foxsports.com/soccer/fifa-world-cup", note: "الولايات المتحدة" },
+  ...BROADCASTERS,
+  {
+    name: "FOX Sports (USA)",
+    short: "FOX",
+    color: "bg-slate-700 hover:bg-slate-800",
+    watchUrl: "https://www.foxsports.com/soccer/fifa-world-cup",
+    note: "الولايات المتحدة الأمريكية",
+  },
 ];
 
 function formatDateAr(iso: string) {
@@ -59,26 +115,50 @@ function formatDateAr(iso: string) {
     return iso;
   }
 }
+function formatDayAr(dateStr: string) {
+  try {
+    return new Intl.DateTimeFormat("ar-EG", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    }).format(new Date(dateStr + "T12:00:00"));
+  } catch {
+    return dateStr;
+  }
+}
+function formatTimeAr(iso: string) {
+  try {
+    return new Intl.DateTimeFormat("ar-EG", { hour: "2-digit", minute: "2-digit", hour12: true }).format(new Date(iso));
+  } catch {
+    return "";
+  }
+}
 
 function useCountdown(target: number) {
   const [now, setNow] = useState(() => Date.now());
-  useMemo(() => {
+  useEffect(() => {
     const t = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(t);
   }, []);
   const diff = Math.max(0, target - now);
-  const d = Math.floor(diff / 86400000);
-  const h = Math.floor((diff % 86400000) / 3600000);
-  const m = Math.floor((diff % 3600000) / 60000);
-  const s = Math.floor((diff % 60000) / 1000);
-  return { d, h, m, s, done: diff === 0 };
+  return {
+    d: Math.floor(diff / 86400000),
+    h: Math.floor((diff % 86400000) / 3600000),
+    m: Math.floor((diff % 3600000) / 60000),
+    s: Math.floor((diff % 60000) / 1000),
+    done: diff === 0,
+  };
 }
 
-function MatchCard({ m, favIds }: { m: WCMatch; favIds: Set<string> }) {
-  const isFinished = m.status === "FT" || (m.homeScore != null && m.awayScore != null);
-  const isLive = m.status === "LIVE" || m.status === "1H" || m.status === "2H" || m.status === "HT";
-  const isUpcoming = !isFinished && !isLive;
+function statusOf(m: WCMatch) {
+  const finished = m.status === "FT" || (m.homeScore != null && m.awayScore != null);
+  const live = ["LIVE", "1H", "2H", "HT", "ET", "P"].includes(m.status);
+  return { finished, live, upcoming: !finished && !live };
+}
 
+function MatchCard({ m, favIds, showChannels = false }: { m: WCMatch; favIds: Set<string>; showChannels?: boolean }) {
+  const s = statusOf(m);
   return (
     <div className="rounded-2xl border border-border bg-card p-5 shadow-card hover:shadow-elegant transition-all">
       <div className="flex items-center justify-between text-xs text-muted-foreground mb-4">
@@ -87,18 +167,18 @@ function MatchCard({ m, favIds }: { m: WCMatch; favIds: Set<string> }) {
           {m.round}
         </span>
         <div className="flex items-center gap-2">
-          {isLive && (
+          {s.live && (
             <span className="inline-flex items-center gap-1.5 text-red-500 font-semibold">
               <span className="h-2 w-2 rounded-full bg-red-500 animate-pulse" /> مباشر
             </span>
           )}
-          {isFinished && <span className="font-semibold text-emerald-600">انتهت</span>}
-          {isUpcoming && (
+          {s.finished && <span className="font-semibold text-emerald-600">انتهت</span>}
+          {s.upcoming && (
             <span className="inline-flex items-center gap-1">
-              <Clock className="h-3.5 w-3.5" /> قادمة
+              <Clock className="h-3.5 w-3.5" /> {formatTimeAr(m.timestamp)}
             </span>
           )}
-          {!isFinished && (
+          {!s.finished && (
             <FavoriteButton
               size="sm"
               matchId={m.id}
@@ -128,7 +208,7 @@ function MatchCard({ m, favIds }: { m: WCMatch; favIds: Set<string> }) {
         </div>
 
         <div className="text-center min-w-[80px]">
-          {isFinished || isLive ? (
+          {s.finished || s.live ? (
             <div className="font-display text-3xl font-extrabold tabular-nums">
               {m.homeScore ?? 0} <span className="text-muted-foreground">-</span> {m.awayScore ?? 0}
             </div>
@@ -160,9 +240,31 @@ function MatchCard({ m, favIds }: { m: WCMatch; favIds: Set<string> }) {
         )}
       </div>
 
-      {(isLive || isUpcoming) && (
+      {showChannels && (s.live || s.upcoming) && (
+        <div className="mt-4 pt-4 border-t border-border">
+          <div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground mb-2.5">
+            <Tv className="h-3.5 w-3.5" /> القنوات الناقلة — بث مباشر
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            {BROADCASTERS.map((b) => (
+              <a
+                key={b.short}
+                href={b.watchUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`inline-flex items-center justify-center gap-1.5 rounded-lg ${b.color} px-3 py-2 text-xs font-bold text-white transition`}
+              >
+                <Radio className="h-3.5 w-3.5" />
+                {b.short}
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {!showChannels && (s.live || s.upcoming) && (
         <a
-          href="https://www.plus.fifa.com/"
+          href="https://www.plus.fifa.com/en/home"
           target="_blank"
           rel="noopener noreferrer"
           className="mt-4 w-full inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition"
@@ -175,12 +277,76 @@ function MatchCard({ m, favIds }: { m: WCMatch; favIds: Set<string> }) {
   );
 }
 
-type Filter = "all" | "live" | "upcoming" | "finished" | "today";
+function StandingsTable({ standings }: { standings: WCStanding[] }) {
+  const groups = useMemo(() => {
+    const map = new Map<string, WCStanding[]>();
+    standings.forEach((s) => {
+      if (!map.has(s.group)) map.set(s.group, []);
+      map.get(s.group)!.push(s);
+    });
+    for (const arr of map.values()) arr.sort((a, b) => a.rank - b.rank);
+    return Array.from(map.entries()).sort(([a], [b]) => a.localeCompare(b));
+  }, [standings]);
+
+  if (standings.length === 0) {
+    return <div className="text-center py-16 text-muted-foreground">جدول الترتيب سيظهر بعد انطلاق البطولة.</div>;
+  }
+
+  return (
+    <div className="grid gap-6 md:grid-cols-2">
+      {groups.map(([group, rows]) => (
+        <div key={group} className="rounded-2xl border border-border bg-card overflow-hidden shadow-card">
+          <div className="bg-gradient-to-l from-primary/10 to-transparent px-5 py-3 border-b border-border">
+            <h3 className="font-display font-bold text-lg">{group}</h3>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-surface-muted/50 text-xs text-muted-foreground">
+                <tr>
+                  <th className="text-right px-3 py-2 font-semibold">#</th>
+                  <th className="text-right px-3 py-2 font-semibold">المنتخب</th>
+                  <th className="px-2 py-2 font-semibold" title="لعب">ل</th>
+                  <th className="px-2 py-2 font-semibold" title="فاز">ف</th>
+                  <th className="px-2 py-2 font-semibold" title="تعادل">ت</th>
+                  <th className="px-2 py-2 font-semibold" title="خسر">خ</th>
+                  <th className="px-2 py-2 font-semibold" title="فارق الأهداف">+/-</th>
+                  <th className="px-2 py-2 font-semibold text-primary">نقاط</th>
+                </tr>
+              </thead>
+              <tbody>
+                {rows.map((r) => (
+                  <tr key={r.team} className="border-t border-border hover:bg-accent/30 transition">
+                    <td className="px-3 py-2.5 font-bold text-muted-foreground">{r.rank}</td>
+                    <td className="px-3 py-2.5">
+                      <div className="flex items-center gap-2">
+                        {r.badge && <img src={r.badge} alt="" className="h-5 w-5 object-contain" loading="lazy" />}
+                        <span className="font-semibold">{r.team}</span>
+                      </div>
+                    </td>
+                    <td className="text-center tabular-nums">{r.played}</td>
+                    <td className="text-center tabular-nums text-emerald-600 font-semibold">{r.win}</td>
+                    <td className="text-center tabular-nums">{r.draw}</td>
+                    <td className="text-center tabular-nums text-red-500">{r.loss}</td>
+                    <td className="text-center tabular-nums">{r.gd > 0 ? `+${r.gd}` : r.gd}</td>
+                    <td className="text-center tabular-nums font-extrabold text-primary">{r.points}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+type Tab = "today" | "all" | "standings" | "channels";
 
 function WorldCupPage() {
   const { data } = useSuspenseQuery(wcQuery);
+  const { data: standingsData } = useSuspenseQuery(standingsQuery);
   const cd = useCountdown(TOURNAMENT_START);
-  const [filter, setFilter] = useState<Filter>("all");
+  const [tab, setTab] = useState<Tab>("today");
   useBrowserReminders();
 
   const { data: favData } = useQuery({
@@ -195,45 +361,32 @@ function WorldCupPage() {
   });
   const favIds = useMemo(() => new Set(favData?.ids ?? []), [favData]);
 
-  const now = Date.now();
   const todayStr = new Date().toISOString().slice(0, 10);
+  const todayMatches = useMemo(() => data.matches.filter((m) => m.date === todayStr), [data.matches, todayStr]);
 
-  const filtered = useMemo(() => {
-    return data.matches.filter((m) => {
-      const t = new Date(m.timestamp).getTime();
-      const finished = m.status === "FT" || (m.homeScore != null && m.awayScore != null);
-      const live = ["LIVE", "1H", "2H", "HT"].includes(m.status);
-      if (filter === "live") return live;
-      if (filter === "finished") return finished;
-      if (filter === "upcoming") return !finished && !live && t > now;
-      if (filter === "today") return m.date === todayStr;
-      return true;
-    });
-  }, [data.matches, filter, now, todayStr]);
-
-  const counts = useMemo(() => {
-    let live = 0,
-      upcoming = 0,
-      finished = 0,
-      today = 0;
+  // Group all matches by day for the full schedule tab
+  const byDay = useMemo(() => {
+    const groups = new Map<string, WCMatch[]>();
     data.matches.forEach((m) => {
-      const t = new Date(m.timestamp).getTime();
-      const f = m.status === "FT" || (m.homeScore != null && m.awayScore != null);
-      const l = ["LIVE", "1H", "2H", "HT"].includes(m.status);
-      if (l) live++;
-      else if (f) finished++;
-      else if (t > now) upcoming++;
-      if (m.date === todayStr) today++;
+      if (!groups.has(m.date)) groups.set(m.date, []);
+      groups.get(m.date)!.push(m);
     });
-    return { live, upcoming, finished, today };
-  }, [data.matches, now, todayStr]);
+    return Array.from(groups.entries()).sort(([a], [b]) => a.localeCompare(b));
+  }, [data.matches]);
 
-  const filters: { key: Filter; label: string; count?: number }[] = [
-    { key: "all", label: "الكل", count: data.matches.length },
-    { key: "live", label: "مباشر الآن", count: counts.live },
-    { key: "today", label: "اليوم", count: counts.today },
-    { key: "upcoming", label: "قادمة", count: counts.upcoming },
-    { key: "finished", label: "منتهية", count: counts.finished },
+  const now = Date.now();
+  const liveCount = data.matches.filter((m) => statusOf(m).live).length;
+  const finishedCount = data.matches.filter((m) => statusOf(m).finished).length;
+  const upcomingCount = data.matches.filter((m) => {
+    const s = statusOf(m);
+    return s.upcoming && new Date(m.timestamp).getTime() > now;
+  }).length;
+
+  const tabs: { key: Tab; label: string; count?: number }[] = [
+    { key: "today", label: "مباريات اليوم", count: todayMatches.length },
+    { key: "all", label: "الجدول الكامل", count: data.matches.length },
+    { key: "standings", label: "ترتيب المجموعات", count: standingsData.standings.length },
+    { key: "channels", label: "قنوات البث" },
   ];
 
   return (
@@ -243,7 +396,7 @@ function WorldCupPage() {
       {/* HERO */}
       <section className="relative hero-bg overflow-hidden border-b border-border">
         <div className="absolute inset-0 mesh-bg opacity-40 pointer-events-none" />
-        <div className="container-page relative py-16 md:py-20 text-center">
+        <div className="container-page relative py-14 md:py-20 text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/80 backdrop-blur px-4 py-1.5 text-xs font-medium text-muted-foreground mb-6 shadow-soft">
             <Trophy className="h-3.5 w-3.5 text-primary" />
             المونديال 2026 — أمريكا · كندا · المكسيك
@@ -251,14 +404,29 @@ function WorldCupPage() {
           <h1 className="font-display text-4xl md:text-6xl font-extrabold leading-tight">
             <span className="gradient-text">كأس العالم 2026</span>
             <br />
-            بث مباشر ونتائج فورية
+            الجدول الكامل · الترتيب · البث المباشر
           </h1>
           <p className="mt-5 mx-auto max-w-2xl text-muted-foreground">
-            تابع جميع مباريات مونديال 2026 لحظة بلحظة — جدول شامل بتوقيتك، نتائج مباشرة، وروابط البث الرسمي المجاني والمدفوع.
+            جميع مباريات المونديال بتوقيتك، ترتيب المجموعات لحظة بلحظة، ومباريات اليوم مع القنوات الناقلة وروابط المشاهدة الرسمية المباشرة.
           </p>
 
+          {/* Live stats strip */}
+          <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-3 max-w-3xl mx-auto">
+            {[
+              { l: "مباشر الآن", v: liveCount, c: "text-red-500" },
+              { l: "اليوم", v: todayMatches.length, c: "text-primary" },
+              { l: "قادمة", v: upcomingCount, c: "text-blue-600" },
+              { l: "منتهية", v: finishedCount, c: "text-emerald-600" },
+            ].map((s) => (
+              <div key={s.l} className="rounded-xl border border-border bg-card px-4 py-3 shadow-soft">
+                <div className={`font-display text-2xl font-extrabold tabular-nums ${s.c}`}>{s.v}</div>
+                <div className="text-[11px] text-muted-foreground mt-0.5">{s.l}</div>
+              </div>
+            ))}
+          </div>
+
           {!cd.done && (
-            <div className="mt-8 inline-flex items-center gap-3 rounded-2xl border border-border bg-card px-6 py-4 shadow-card">
+            <div className="mt-6 inline-flex items-center gap-3 rounded-2xl border border-border bg-card px-6 py-4 shadow-card">
               {[
                 { v: cd.d, l: "يوم" },
                 { v: cd.h, l: "ساعة" },
@@ -277,74 +445,121 @@ function WorldCupPage() {
         </div>
       </section>
 
-      {/* FILTERS */}
+      {/* TABS */}
       <section className="container-page py-8">
         <div className="flex flex-wrap gap-2 justify-center mb-8">
-          {filters.map((f) => (
+          {tabs.map((t) => (
             <button
-              key={f.key}
-              onClick={() => setFilter(f.key)}
+              key={t.key}
+              onClick={() => setTab(t.key)}
               className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
-                filter === f.key
+                tab === t.key
                   ? "bg-primary text-primary-foreground border-primary"
                   : "bg-surface border-border hover:border-primary hover:text-primary"
               }`}
             >
-              {f.label}
-              {f.count != null && (
-                <span
-                  className={`text-xs rounded-full px-2 py-0.5 ${
-                    filter === f.key ? "bg-primary-foreground/20" : "bg-accent"
-                  }`}
-                >
-                  {f.count}
+              {t.label}
+              {t.count != null && (
+                <span className={`text-xs rounded-full px-2 py-0.5 ${tab === t.key ? "bg-primary-foreground/20" : "bg-accent"}`}>
+                  {t.count}
                 </span>
               )}
             </button>
           ))}
         </div>
 
-        {filtered.length === 0 ? (
-          <div className="text-center py-16 text-muted-foreground">لا توجد مباريات في هذا التصنيف حالياً.</div>
-        ) : (
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {filtered.map((m) => (
-              <MatchCard key={m.id} m={m} favIds={favIds} />
+        {/* TODAY */}
+        {tab === "today" && (
+          <div>
+            <div className="text-center mb-6">
+              <h2 className="font-display text-2xl md:text-3xl font-bold">مباريات اليوم مع القنوات الناقلة</h2>
+              <p className="mt-2 text-sm text-muted-foreground">
+                {formatDayAr(todayStr)} — اضغط على القناة لفتح البث المباشر
+              </p>
+            </div>
+            {todayMatches.length === 0 ? (
+              <div className="text-center py-16 text-muted-foreground rounded-2xl border border-dashed border-border">
+                لا توجد مباريات مبرمجة اليوم. تفقّد الجدول الكامل للاطلاع على المباريات القادمة.
+              </div>
+            ) : (
+              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                {todayMatches.map((m) => (
+                  <MatchCard key={m.id} m={m} favIds={favIds} showChannels />
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ALL — grouped by day */}
+        {tab === "all" && (
+          <div className="space-y-10">
+            {byDay.length === 0 && (
+              <div className="text-center py-16 text-muted-foreground">لم تُنشر مباريات بعد.</div>
+            )}
+            {byDay.map(([day, matches]) => (
+              <div key={day}>
+                <div className="sticky top-16 z-10 mb-4 -mx-4 px-4 py-2 backdrop-blur bg-background/80 border-b border-border">
+                  <h3 className="font-display font-bold text-lg text-primary">{formatDayAr(day)}</h3>
+                  <p className="text-xs text-muted-foreground">{matches.length} مباراة</p>
+                </div>
+                <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                  {matches.map((m) => (
+                    <MatchCard key={m.id} m={m} favIds={favIds} />
+                  ))}
+                </div>
+              </div>
             ))}
           </div>
         )}
-      </section>
 
-      {/* OFFICIAL STREAMS */}
-      <section className="container-page py-16">
-        <div className="rounded-3xl bg-gradient-to-br from-accent/60 to-surface-muted border border-border p-8 md:p-12">
-          <div className="text-center mb-8">
-            <h2 className="font-display text-2xl md:text-3xl font-bold">قنوات البث الرسمية</h2>
-            <p className="mt-3 text-muted-foreground max-w-xl mx-auto">
-              اختر المنصة المتاحة في بلدك لمشاهدة المباريات بجودة عالية وبشكل قانوني.
-            </p>
+        {/* STANDINGS */}
+        {tab === "standings" && (
+          <div>
+            <div className="text-center mb-6">
+              <h2 className="font-display text-2xl md:text-3xl font-bold">ترتيب المجموعات</h2>
+              <p className="mt-2 text-sm text-muted-foreground">
+                يُحدَّث تلقائيًا بعد نهاية كل مباراة — النقاط، فارق الأهداف، وأداء المنتخبات.
+              </p>
+            </div>
+            <StandingsTable standings={standingsData.standings} />
           </div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {OFFICIAL_STREAMS.map((s) => (
-              <a
-                key={s.name}
-                href={s.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group rounded-2xl border border-border bg-card p-5 shadow-card hover:shadow-elegant hover:-translate-y-0.5 transition-all"
-              >
-                <div className="flex items-center justify-between mb-3">
-                  <div className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-accent text-primary">
-                    <Radio className="h-5 w-5" />
+        )}
+
+        {/* CHANNELS */}
+        {tab === "channels" && (
+          <div>
+            <div className="text-center mb-8">
+              <h2 className="font-display text-2xl md:text-3xl font-bold">قنوات البث الرسمية للمونديال</h2>
+              <p className="mt-2 text-sm text-muted-foreground max-w-2xl mx-auto">
+                اختر المنصة المتاحة في بلدك لمشاهدة المباريات بجودة عالية وبشكل قانوني — روابط مباشرة إلى صفحات البث.
+              </p>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {OFFICIAL_STREAMS.map((s) => (
+                <a
+                  key={s.name}
+                  href={s.watchUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-2xl border border-border bg-card p-6 shadow-card hover:shadow-elegant hover:-translate-y-0.5 transition-all"
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <div className={`inline-flex h-12 w-12 items-center justify-center rounded-xl text-white ${s.color}`}>
+                      <Radio className="h-5 w-5" />
+                    </div>
+                    <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-primary transition" />
                   </div>
-                  <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-primary transition" />
-                </div>
-                <div className="font-display font-bold">{s.name}</div>
-                <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">{s.note}</p>
-              </a>
-            ))}
+                  <div className="font-display font-bold text-lg">{s.name}</div>
+                  <p className="text-xs text-muted-foreground mt-2 leading-relaxed">{s.note}</p>
+                  <div className="mt-4 inline-flex items-center gap-2 text-xs font-semibold text-primary">
+                    فتح البث المباشر ←
+                  </div>
+                </a>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </section>
 
       <SiteFooter />
