@@ -555,7 +555,7 @@ function WorldCupPage() {
             ) : (
               <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 {todayMatches.map((m) => (
-                  <MatchCard key={m.id} m={m} favIds={favIds} showChannels />
+                  <MatchCard key={m.id} m={m} favIds={favIds} srcMatches={srcMatches} onWatch={onWatch} />
                 ))}
               </div>
             )}
@@ -576,7 +576,7 @@ function WorldCupPage() {
                 </div>
                 <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                   {matches.map((m) => (
-                    <MatchCard key={m.id} m={m} favIds={favIds} />
+                    <MatchCard key={m.id} m={m} favIds={favIds} srcMatches={srcMatches} onWatch={onWatch} />
                   ))}
                 </div>
               </div>
@@ -634,6 +634,14 @@ function WorldCupPage() {
       </section>
 
       <SiteFooter />
+      {watch && (
+        <StreamModal
+          matchId={watch.id}
+          title={watch.title}
+          fallbackSearch={watch.fallback}
+          onClose={() => setWatch(null)}
+        />
+      )}
     </div>
   );
 }
