@@ -18,6 +18,7 @@ export type SRCSource = {
   source: string;
   id: string;
   streamNo: number;
+  embedUrl?: string;
   hd?: boolean;
   viewers?: number;
   language?: string;
@@ -33,7 +34,7 @@ export type SRCDetail = {
 };
 
 export function embedUrl(s: SRCSource) {
-  return `https://embed.st/embed/${s.source}/${s.id}/${s.streamNo}`;
+  return s.embedUrl || `https://embed.st/embed/${s.source}/${s.id}/${s.streamNo}`;
 }
 
 /** Normalize team names for fuzzy matching. */

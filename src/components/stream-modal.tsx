@@ -126,10 +126,8 @@ export function StreamModal({
               title={title}
               allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
               allowFullScreen
-              referrerPolicy="no-referrer"
-              className="absolute inset-0 h-full w-full"
+              className="absolute inset-0 h-full w-full border-0"
             />
-
           )}
         </div>
 
@@ -171,8 +169,16 @@ export function StreamModal({
               })}
             </div>
             <p className="text-[10px] text-muted-foreground mt-3 leading-relaxed">
-              إذا لم يعمل مصدر، جرّب مصدرًا آخر. البث مقدَّم من مزوّدين خارجيين عبر SportSRC.
+              إذا لم يعمل مصدر، جرّب مصدرًا آخر أو افتح StreamHub مباشرة. البث مقدَّم من مزوّدين خارجيين عبر SportSRC.
             </p>
+            <a
+              href="https://tv.bouibacademy.me/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-3 inline-flex items-center gap-1.5 rounded-lg border border-border hover:border-primary px-3 py-1.5 text-xs font-semibold text-muted-foreground hover:text-primary transition"
+            >
+              <ExternalLink className="h-3.5 w-3.5" /> فتح StreamHub مباشرة
+            </a>
           </div>
         )}
       </div>
