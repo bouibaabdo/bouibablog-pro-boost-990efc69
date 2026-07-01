@@ -7,8 +7,11 @@ export const Route = createFileRoute("/tools/seo")({
     meta: [
       { title: "مساعد SEO عربي — أدوات AI | Bouiba Academy" },
       { name: "description", content: "احصل على عنوان، وصف Meta، كلمات مفتاحية، وهيكل عناوين محسّن." },
+      { property: "og:title", content: "مساعد SEO عربي — Bouiba Academy" },
+      { property: "og:description", content: "حزمة SEO متكاملة بالعربية: عنوان، وصف Meta، كلمات مفتاحية، وهيكل عناوين جاهز." },
+      { property: "og:url", content: "https://edu.bouibacademy.me/tools/seo" },
     ],
-    links: [{ rel: "canonical", href: "/tools/seo" }],
+    links: [{ rel: "canonical", href: "https://edu.bouibacademy.me/tools/seo" }],
   }),
   component: () => (
     <TextToolShell
