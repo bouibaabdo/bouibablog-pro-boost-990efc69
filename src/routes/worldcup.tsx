@@ -231,6 +231,78 @@ function statusOf(m: WCMatch) {
   return { finished, live, upcoming: !finished && !live };
 }
 
+// Arabic → English aliases for national teams (extend as needed).
+// Used to cross-reference Yallakora (AR) with TheSportsDB (EN) authoritative results.
+const TEAM_AR_TO_EN: Record<string, string[]> = {
+  "السعودية": ["saudi arabia"], "المغرب": ["morocco"], "مصر": ["egypt"],
+  "الجزائر": ["algeria"], "تونس": ["tunisia"], "قطر": ["qatar"],
+  "الإمارات": ["united arab emirates", "uae"], "الأردن": ["jordan"],
+  "العراق": ["iraq"], "إيران": ["iran"], "اليابان": ["japan"],
+  "كوريا الجنوبية": ["south korea", "korea republic"], "أستراليا": ["australia"],
+  "فرنسا": ["france"], "إنجلترا": ["england"], "إسبانيا": ["spain"],
+  "ألمانيا": ["germany"], "إيطاليا": ["italy"], "البرتغال": ["portugal"],
+  "هولندا": ["netherlands"], "بلجيكا": ["belgium"], "كرواتيا": ["croatia"],
+  "الدنمارك": ["denmark"], "السويد": ["sweden"], "النرويج": ["norway"],
+  "سويسرا": ["switzerland"], "بولندا": ["poland"], "صربيا": ["serbia"],
+  "النمسا": ["austria"], "أوكرانيا": ["ukraine"], "اسكتلندا": ["scotland"],
+  "ويلز": ["wales"], "البرازيل": ["brazil"], "الأرجنتين": ["argentina"],
+  "أوروغواي": ["uruguay"], "الأوروغواي": ["uruguay"], "كولومبيا": ["colombia"],
+  "الإكوادور": ["ecuador"], "باراغواي": ["paraguay"], "تشيلي": ["chile"],
+  "بيرو": ["peru"], "المكسيك": ["mexico"],
+  "الولايات المتحدة": ["united states", "usa"], "كندا": ["canada"],
+  "كوستاريكا": ["costa rica"], "بنما": ["panama"], "هندوراس": ["honduras"],
+  "السنغال": ["senegal"], "الكاميرون": ["cameroon"], "غانا": ["ghana"],
+  "نيجيريا": ["nigeria"], "كوت ديفوار": ["ivory coast", "côte d'ivoire"],
+  "ساحل العاج": ["ivory coast"],
+  "الكونغو الديمقراطية": ["dr congo", "congo dr"],
+  "جنوب أفريقيا": ["south africa"],
+  "البوسنة والهرسك": ["bosnia and herzegovina", "bosnia-herzegovina"],
+  "البوسنة الهرسك": ["bosnia and herzegovina"],
+};
+
+function normalizeEn(s: string): string {
+  return s.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+}
+function arMatchesEn(ar: string, en: string): boolean {
+  const enN = normalizeEn(en);
+  const aliases = TEAM_AR_TO_EN[ar.trim()];
+  if (!aliases) return false;
+  return aliases.some((a) => enN.includes(a) || a.includes(enN));
+}
+function findWcForYk(yk: YKMatch, wc: WCMatch[]): WCMatch | null {
+  const now = new Date();
+  const base = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  if (yk.day === "yesterday") base.setDate(base.getDate() - 1);
+  if (yk.day === "tomorrow") base.setDate(base.getDate() + 1);
+  const dateStr = base.toISOString().slice(0, 10);
+  const sameDay = wc.filter((m) => m.date === dateStr);
+  return (
+    sameDay.find(
+      (m) =>
+        (arMatchesEn(yk.home, m.home) && arMatchesEn(yk.away, m.away)) ||
+        (arMatchesEn(yk.home, m.away) && arMatchesEn(yk.away, m.home)),
+    ) || null
+  );
+}
+// Merge YK with TheSportsDB authoritative score/status when a fixture matches.
+function reconcileYk(yk: YKMatch, wc: WCMatch[]): YKMatch {
+  const auth = findWcForYk(yk, wc);
+  if (!auth) return yk;
+  const s = statusOf(auth);
+  const swapped = arMatchesEn(yk.home, auth.away);
+  const hs = swapped ? auth.awayScore : auth.homeScore;
+  const as = swapped ? auth.homeScore : auth.awayScore;
+  return {
+    ...yk,
+    homeScore: hs ?? yk.homeScore,
+    awayScore: as ?? yk.awayScore,
+    live: s.live,
+    finished: s.finished,
+    status: s.finished ? "انتهت" : s.live ? "مباشر" : yk.status,
+    league: yk.league || "كأس العالم 2026",
+  };
+}
+
 function MatchCard({
   m,
   favIds,
@@ -487,45 +559,17 @@ function YKMatchCard({
               <PlayCircle className="h-4 w-4" />
               {m.live ? "شاهد البث المباشر داخل الموقع" : "افتح المشغّل داخل الموقع"}
             </button>
-          ) : m.matchUrl ? (
-            <a
-              href={m.matchUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`w-full inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-bold text-white transition ${
-                m.live ? "bg-red-600 hover:bg-red-700 animate-pulse" : "bg-emerald-600 hover:bg-emerald-700"
-              }`}
-            >
-              <PlayCircle className="h-4 w-4" />
-              {m.live ? "شاهد البث المباشر الآن" : "تفاصيل المباراة والبث"}
-              <ExternalLink className="h-3.5 w-3.5 opacity-80" />
-            </a>
-          ) : null}
-          {src && m.matchUrl && (
-            <a
-              href={m.matchUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full inline-flex items-center justify-center gap-1.5 rounded-lg border border-border hover:border-primary px-4 py-2 text-[11px] font-semibold text-muted-foreground hover:text-primary transition"
-            >
-              تفاصيل إضافية على يلا كورة <ExternalLink className="h-3 w-3" />
-            </a>
+          ) : (
+            <div className="w-full text-center rounded-lg border border-dashed border-border px-4 py-2.5 text-xs text-muted-foreground">
+              البث المباشر داخل الموقع غير متاح لهذه المباراة
+            </div>
           )}
         </div>
-      )}
-      {m.finished && m.matchUrl && (
-        <a
-          href={m.matchUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="relative mt-4 w-full inline-flex items-center justify-center gap-1.5 rounded-lg border border-border hover:border-primary px-4 py-2 text-xs font-semibold text-muted-foreground hover:text-primary transition"
-        >
-          ملخّص وأهداف المباراة <ExternalLink className="h-3 w-3" />
-        </a>
       )}
     </div>
   );
 }
+
 
 function StandingsTable({ standings }: { standings: WCStanding[] }) {
   const groups = useMemo(() => {
@@ -646,8 +690,19 @@ function WorldCupPage() {
           return s.upcoming && new Date(m.timestamp).getTime() > nowMs;
         }).length;
 
-  const ykTodayCount = yk?.today.length ?? 0;
-  const ykLiveCount = yk?.today.filter((m) => m.live).length ?? 0;
+  // Reconcile YK with TheSportsDB authoritative scores (priority: TheSportsDB).
+  const ykReconciled = useMemo(() => {
+    if (!yk) return null;
+    const wc = data.matches;
+    return {
+      yesterday: yk.yesterday.map((m) => reconcileYk(m, wc)),
+      today: yk.today.map((m) => reconcileYk(m, wc)),
+      tomorrow: yk.tomorrow.map((m) => reconcileYk(m, wc)),
+    };
+  }, [yk, data.matches]);
+
+  const ykTodayCount = ykReconciled?.today.length ?? 0;
+  const ykLiveCount = ykReconciled?.today.filter((m) => m.live).length ?? 0;
   const tabs: { key: Tab; label: string; count?: number }[] = [
     { key: "live", label: "بث مباشر (يلا كورة)", count: ykLiveCount || ykTodayCount },
     { key: "today", label: "مباريات اليوم", count: todayMatches.length },
@@ -748,20 +803,20 @@ function WorldCupPage() {
               </p>
             </div>
 
-            {!yk ? (
+            {!ykReconciled ? (
               <div className="text-center py-16 text-muted-foreground">جارٍ تحميل مباريات اليوم…</div>
             ) : (
               <>
-                {yk.today.length === 0 && yk.tomorrow.length === 0 && yk.yesterday.length === 0 && (
+                {ykReconciled.today.length === 0 && ykReconciled.tomorrow.length === 0 && ykReconciled.yesterday.length === 0 && (
                   <div className="text-center py-16 text-muted-foreground rounded-2xl border border-dashed border-border">
                     تعذّر جلب المباريات من يلا كورة الآن. حاول مجدّدًا بعد قليل.
                   </div>
                 )}
 
                 {(() => {
-                  const liveNow = yk.today.filter((m) => m.live);
-                  const upcomingToday = yk.today.filter((m) => !m.live && !m.finished);
-                  const finishedToday = yk.today.filter((m) => m.finished);
+                  const liveNow = ykReconciled.today.filter((m) => m.live);
+                  const upcomingToday = ykReconciled.today.filter((m) => !m.live && !m.finished);
+                  const finishedToday = ykReconciled.today.filter((m) => m.finished);
                   return (
                     <>
                       {liveNow.length > 0 && (
@@ -810,26 +865,26 @@ function WorldCupPage() {
                   );
                 })()}
 
-                {yk.tomorrow.length > 0 && (
+                {ykReconciled.tomorrow.length > 0 && (
                   <div>
                     <h3 className="font-display font-bold text-lg text-primary mb-4 flex items-center gap-2">
-                      <Calendar className="h-5 w-5" /> الغد · {yk.tomorrow.length} مباراة
+                      <Calendar className="h-5 w-5" /> الغد · {ykReconciled.tomorrow.length} مباراة
                     </h3>
                     <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                      {yk.tomorrow.map((m) => (
+                      {ykReconciled.tomorrow.map((m) => (
                         <YKMatchCard key={m.id} m={m} srcMatches={srcMatches} onWatch={onWatch} />
                       ))}
                     </div>
                   </div>
                 )}
 
-                {yk.yesterday.length > 0 && (
+                {ykReconciled.yesterday.length > 0 && (
                   <div>
                     <h3 className="font-display font-bold text-lg text-muted-foreground mb-4">
-                      نتائج الأمس · {yk.yesterday.length} مباراة
+                      نتائج الأمس · {ykReconciled.yesterday.length} مباراة
                     </h3>
                     <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                      {yk.yesterday.map((m) => (
+                      {ykReconciled.yesterday.map((m) => (
                         <YKMatchCard key={m.id} m={m} srcMatches={srcMatches} onWatch={onWatch} />
                       ))}
                     </div>
