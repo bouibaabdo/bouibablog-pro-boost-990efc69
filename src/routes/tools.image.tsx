@@ -11,8 +11,11 @@ export const Route = createFileRoute("/tools/image")({
         name: "description",
         content: "أنشئ صورًا احترافية بالذكاء الاصطناعي من وصف نصي — أداة مجانية بالعربية.",
       },
+      { property: "og:title", content: "تحويل النص إلى صورة — Bouiba Academy" },
+      { property: "og:description", content: "أنشئ صورًا احترافية بالذكاء الاصطناعي من وصف نصي بالعربية أو الإنجليزية." },
+      { property: "og:url", content: "https://edu.bouibacademy.me/tools/image" },
     ],
-    links: [{ rel: "canonical", href: "/tools/image" }],
+    links: [{ rel: "canonical", href: "https://edu.bouibacademy.me/tools/image" }],
   }),
   component: ImageTool,
 });
@@ -74,11 +77,14 @@ function ImageTool() {
       </p>
 
       <form onSubmit={generate} className="space-y-4">
+        <label htmlFor="image-prompt" className="sr-only">وصف الصورة</label>
         <textarea
+          id="image-prompt"
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
           placeholder="مثال: قط برتقالي يجلس على مكتب خشبي أمام نافذة تطل على مدينة ليلية، إضاءة سينمائية"
           rows={4}
+          aria-label="وصف الصورة المطلوبة"
           className="w-full rounded-xl border border-border bg-background px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none"
           disabled={loading}
         />
