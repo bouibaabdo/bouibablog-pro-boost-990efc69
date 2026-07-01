@@ -164,9 +164,13 @@ const OFFICIAL_STREAMS = [
   },
 ];
 
-function formatDateAr(iso: string) {
+const MATCH_TIMEZONE = "Africa/Casablanca";
+const MATCH_TIMEZONE_LABEL = "بتوقيت المغرب";
+
+function formatDateAr(iso: string, timeZone = MATCH_TIMEZONE) {
   try {
     return new Intl.DateTimeFormat("ar-EG", {
+      timeZone,
       weekday: "long",
       day: "numeric",
       month: "long",
@@ -178,9 +182,10 @@ function formatDateAr(iso: string) {
     return iso;
   }
 }
-function formatDayAr(dateStr: string) {
+function formatDayAr(dateStr: string, timeZone = MATCH_TIMEZONE) {
   try {
     return new Intl.DateTimeFormat("ar-EG", {
+      timeZone,
       weekday: "long",
       day: "numeric",
       month: "long",
@@ -190,13 +195,19 @@ function formatDayAr(dateStr: string) {
     return dateStr;
   }
 }
-function formatTimeAr(iso: string) {
+function formatTimeAr(iso: string, timeZone = MATCH_TIMEZONE) {
   try {
-    return new Intl.DateTimeFormat("ar-EG", { hour: "2-digit", minute: "2-digit", hour12: true }).format(new Date(iso));
+    return new Intl.DateTimeFormat("ar-EG", {
+      timeZone,
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    }).format(new Date(iso));
   } catch {
     return "";
   }
 }
+
 
 function useCountdown(target: number) {
   const [now, setNow] = useState<number | null>(null);
@@ -483,6 +494,7 @@ function YKMatchCard({
   featured?: boolean;
 }) {
   const iso = useMemo(() => ykKickoffIso(m.day, m.time), [m.day, m.time]);
+  const moroccoTime = useMemo(() => formatTimeAr(iso), [iso]);
   const src = useMemo(
     () => (srcMatches.length ? findMatch(srcMatches, m.home, m.away, iso) : null),
     [srcMatches, m.home, m.away, iso],
@@ -523,7 +535,7 @@ function YKMatchCard({
           </span>
         ) : (
           <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 text-primary px-2 py-0.5 font-semibold text-[11px]">
-            <Clock className="h-3 w-3" /> {m.time}
+            <Clock className="h-3 w-3" /> {moroccoTime}
           </span>
         )}
       </div>
@@ -547,7 +559,7 @@ function YKMatchCard({
           ) : (
             <div className="inline-flex flex-col items-center">
               <div className="font-display text-2xl font-extrabold gradient-text">VS</div>
-              <div dir="rtl" className="mt-1 text-[10px] text-muted-foreground">بتوقيت الرياض</div>
+              <div dir="rtl" className="mt-1 text-[10px] text-muted-foreground">{MATCH_TIMEZONE_LABEL}</div>
             </div>
           )}
         </div>
@@ -794,7 +806,7 @@ function WorldCupPage() {
             الجدول الكامل · الترتيب · البث المباشر
           </h1>
           <p className="mt-5 mx-auto max-w-2xl text-muted-foreground">
-            جميع مباريات المونديال بتوقيتك، ترتيب المجموعات لحظة بلحظة، ومباريات اليوم مع القنوات الناقلة وروابط المشاهدة الرسمية المباشرة.
+            جميع مباريات المونديال بتوقيت المغرب، ترتيب المجموعات لحظة بلحظة، ومباريات اليوم مع القنوات الناقلة وروابط المشاهدة الرسمية المباشرة.
           </p>
 
           {/* Live stats strip */}
@@ -837,7 +849,7 @@ function WorldCupPage() {
         <div className="relative mx-auto max-w-3xl mb-8">
           <div className="absolute -top-3 right-4 z-10">
             <span className="inline-block rounded-t-lg border border-b-0 border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground shadow-soft">
-              بتوقيت القاهرة
+              {MATCH_TIMEZONE_LABEL}
             </span>
           </div>
 
