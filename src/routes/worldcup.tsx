@@ -444,7 +444,7 @@ function YKMatchCard({ m }: { m: YKMatch }) {
   );
 }
 
-
+function StandingsTable({ standings }: { standings: WCStanding[] }) {
   const groups = useMemo(() => {
     const map = new Map<string, WCStanding[]>();
     standings.forEach((s) => {
