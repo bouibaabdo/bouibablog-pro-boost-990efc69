@@ -1059,6 +1059,8 @@ function WorldCupPage() {
           matchId={watch.id}
           title={watch.title}
           fallbackSearch={watch.fallback}
+          directUrl={watch.directUrl}
+          directLabel={watch.directLabel}
           onClose={() => setWatch(null)}
         />
       )}
