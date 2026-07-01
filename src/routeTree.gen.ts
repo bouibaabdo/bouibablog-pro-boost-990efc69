@@ -15,6 +15,8 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PostsIndexRouteImport } from './routes/posts.index'
 import { Route as PostsIdRouteImport } from './routes/posts.$id'
+import { Route as ApiToolsTextRouteImport } from './routes/api/tools/text'
+import { Route as ApiToolsImageRouteImport } from './routes/api/tools/image'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -46,6 +48,16 @@ const PostsIdRoute = PostsIdRouteImport.update({
   path: '/posts/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiToolsTextRoute = ApiToolsTextRouteImport.update({
+  id: '/api/tools/text',
+  path: '/api/tools/text',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiToolsImageRoute = ApiToolsImageRouteImport.update({
+  id: '/api/tools/image',
+  path: '/api/tools/image',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -54,6 +66,8 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/posts/$id': typeof PostsIdRoute
   '/posts/': typeof PostsIndexRoute
+  '/api/tools/image': typeof ApiToolsImageRoute
+  '/api/tools/text': typeof ApiToolsTextRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -62,6 +76,8 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/posts/$id': typeof PostsIdRoute
   '/posts': typeof PostsIndexRoute
+  '/api/tools/image': typeof ApiToolsImageRoute
+  '/api/tools/text': typeof ApiToolsTextRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -71,6 +87,8 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/posts/$id': typeof PostsIdRoute
   '/posts/': typeof PostsIndexRoute
+  '/api/tools/image': typeof ApiToolsImageRoute
+  '/api/tools/text': typeof ApiToolsTextRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -81,8 +99,18 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/posts/$id'
     | '/posts/'
+    | '/api/tools/image'
+    | '/api/tools/text'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/contact' | '/sitemap.xml' | '/posts/$id' | '/posts'
+  to:
+    | '/'
+    | '/about'
+    | '/contact'
+    | '/sitemap.xml'
+    | '/posts/$id'
+    | '/posts'
+    | '/api/tools/image'
+    | '/api/tools/text'
   id:
     | '__root__'
     | '/'
@@ -91,6 +119,8 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/posts/$id'
     | '/posts/'
+    | '/api/tools/image'
+    | '/api/tools/text'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -100,6 +130,8 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   PostsIdRoute: typeof PostsIdRoute
   PostsIndexRoute: typeof PostsIndexRoute
+  ApiToolsImageRoute: typeof ApiToolsImageRoute
+  ApiToolsTextRoute: typeof ApiToolsTextRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -146,6 +178,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PostsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/tools/text': {
+      id: '/api/tools/text'
+      path: '/api/tools/text'
+      fullPath: '/api/tools/text'
+      preLoaderRoute: typeof ApiToolsTextRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/tools/image': {
+      id: '/api/tools/image'
+      path: '/api/tools/image'
+      fullPath: '/api/tools/image'
+      preLoaderRoute: typeof ApiToolsImageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -156,6 +202,8 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   PostsIdRoute: PostsIdRoute,
   PostsIndexRoute: PostsIndexRoute,
+  ApiToolsImageRoute: ApiToolsImageRoute,
+  ApiToolsTextRoute: ApiToolsTextRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
