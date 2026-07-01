@@ -309,7 +309,7 @@ function WorldCupPage() {
         ) : (
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {filtered.map((m) => (
-              <MatchCard key={m.id} m={m} />
+              <MatchCard key={m.id} m={m} favIds={favIds} />
             ))}
           </div>
         )}
