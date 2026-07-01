@@ -1,5 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ImageIcon, FileText, Lightbulb, Languages, Search, Sparkles } from "lucide-react";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/tools/")({
   component: ToolsIndex,
@@ -44,6 +46,21 @@ const TOOLS = [
 ] as const;
 
 function ToolsIndex() {
+  const [enabledKeys, setEnabledKeys] = useState<Set<string> | null>(null);
+  useEffect(() => {
+    supabase
+      .from("admin_ai_tools")
+      .select("tool_key,enabled")
+      .then(({ data }) => {
+        if (!data) return setEnabledKeys(null);
+        setEnabledKeys(new Set(data.filter((t: any) => t.enabled).map((t: any) => t.tool_key)));
+      });
+  }, []);
+  const visibleTools = TOOLS.filter((t) => {
+    if (!enabledKeys) return true;
+    const key = t.to.replace("/tools/", "");
+    return enabledKeys.has(key);
+  });
   return (
     <>
       <section className="hero-bg border-b border-border">
@@ -63,7 +80,7 @@ function ToolsIndex() {
 
       <section className="container-page py-14 md:py-20">
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {TOOLS.map((t) => (
+          {visibleTools.map((t) => (
             <Link
               key={t.to}
               to={t.to}

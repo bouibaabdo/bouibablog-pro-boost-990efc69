@@ -14,6 +14,90 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_ai_tools: {
+        Row: {
+          enabled: boolean
+          sort_order: number
+          title: string
+          tool_key: string
+          updated_at: string
+        }
+        Insert: {
+          enabled?: boolean
+          sort_order?: number
+          title: string
+          tool_key: string
+          updated_at?: string
+        }
+        Update: {
+          enabled?: boolean
+          sort_order?: number
+          title?: string
+          tool_key?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      admin_pinned_matches: {
+        Row: {
+          created_at: string
+          label: string | null
+          match_id: string
+          priority: number
+        }
+        Insert: {
+          created_at?: string
+          label?: string | null
+          match_id: string
+          priority?: number
+        }
+        Update: {
+          created_at?: string
+          label?: string | null
+          match_id?: string
+          priority?: number
+        }
+        Relationships: []
+      }
+      admin_site_settings: {
+        Row: {
+          key: string
+          updated_at: string
+          value: Json
+        }
+        Insert: {
+          key: string
+          updated_at?: string
+          value?: Json
+        }
+        Update: {
+          key?: string
+          updated_at?: string
+          value?: Json
+        }
+        Relationships: []
+      }
+      admin_stream_overrides: {
+        Row: {
+          label: string | null
+          match_id: string
+          stream_urls: Json
+          updated_at: string
+        }
+        Insert: {
+          label?: string | null
+          match_id: string
+          stream_urls?: Json
+          updated_at?: string
+        }
+        Update: {
+          label?: string | null
+          match_id?: string
+          stream_urls?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
       email_send_log: {
         Row: {
           created_at: string
@@ -167,6 +251,27 @@ export type Database = {
         }
         Relationships: []
       }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -180,6 +285,13 @@ export type Database = {
       enqueue_email: {
         Args: { payload: Json; queue_name: string }
         Returns: number
+      }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
       }
       move_to_dlq: {
         Args: {
@@ -200,7 +312,7 @@ export type Database = {
       }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -327,6 +439,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+    },
   },
 } as const
