@@ -231,6 +231,78 @@ function statusOf(m: WCMatch) {
   return { finished, live, upcoming: !finished && !live };
 }
 
+// Arabic → English aliases for national teams (extend as needed).
+// Used to cross-reference Yallakora (AR) with TheSportsDB (EN) authoritative results.
+const TEAM_AR_TO_EN: Record<string, string[]> = {
+  "السعودية": ["saudi arabia"], "المغرب": ["morocco"], "مصر": ["egypt"],
+  "الجزائر": ["algeria"], "تونس": ["tunisia"], "قطر": ["qatar"],
+  "الإمارات": ["united arab emirates", "uae"], "الأردن": ["jordan"],
+  "العراق": ["iraq"], "إيران": ["iran"], "اليابان": ["japan"],
+  "كوريا الجنوبية": ["south korea", "korea republic"], "أستراليا": ["australia"],
+  "فرنسا": ["france"], "إنجلترا": ["england"], "إسبانيا": ["spain"],
+  "ألمانيا": ["germany"], "إيطاليا": ["italy"], "البرتغال": ["portugal"],
+  "هولندا": ["netherlands"], "بلجيكا": ["belgium"], "كرواتيا": ["croatia"],
+  "الدنمارك": ["denmark"], "السويد": ["sweden"], "النرويج": ["norway"],
+  "سويسرا": ["switzerland"], "بولندا": ["poland"], "صربيا": ["serbia"],
+  "النمسا": ["austria"], "أوكرانيا": ["ukraine"], "اسكتلندا": ["scotland"],
+  "ويلز": ["wales"], "البرازيل": ["brazil"], "الأرجنتين": ["argentina"],
+  "أوروغواي": ["uruguay"], "الأوروغواي": ["uruguay"], "كولومبيا": ["colombia"],
+  "الإكوادور": ["ecuador"], "باراغواي": ["paraguay"], "تشيلي": ["chile"],
+  "بيرو": ["peru"], "المكسيك": ["mexico"],
+  "الولايات المتحدة": ["united states", "usa"], "كندا": ["canada"],
+  "كوستاريكا": ["costa rica"], "بنما": ["panama"], "هندوراس": ["honduras"],
+  "السنغال": ["senegal"], "الكاميرون": ["cameroon"], "غانا": ["ghana"],
+  "نيجيريا": ["nigeria"], "كوت ديفوار": ["ivory coast", "côte d'ivoire"],
+  "ساحل العاج": ["ivory coast"],
+  "الكونغو الديمقراطية": ["dr congo", "congo dr"],
+  "جنوب أفريقيا": ["south africa"],
+  "البوسنة والهرسك": ["bosnia and herzegovina", "bosnia-herzegovina"],
+  "البوسنة الهرسك": ["bosnia and herzegovina"],
+};
+
+function normalizeEn(s: string): string {
+  return s.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+}
+function arMatchesEn(ar: string, en: string): boolean {
+  const enN = normalizeEn(en);
+  const aliases = TEAM_AR_TO_EN[ar.trim()];
+  if (!aliases) return false;
+  return aliases.some((a) => enN.includes(a) || a.includes(enN));
+}
+function findWcForYk(yk: YKMatch, wc: WCMatch[]): WCMatch | null {
+  const now = new Date();
+  const base = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  if (yk.day === "yesterday") base.setDate(base.getDate() - 1);
+  if (yk.day === "tomorrow") base.setDate(base.getDate() + 1);
+  const dateStr = base.toISOString().slice(0, 10);
+  const sameDay = wc.filter((m) => m.date === dateStr);
+  return (
+    sameDay.find(
+      (m) =>
+        (arMatchesEn(yk.home, m.home) && arMatchesEn(yk.away, m.away)) ||
+        (arMatchesEn(yk.home, m.away) && arMatchesEn(yk.away, m.home)),
+    ) || null
+  );
+}
+// Merge YK with TheSportsDB authoritative score/status when a fixture matches.
+function reconcileYk(yk: YKMatch, wc: WCMatch[]): YKMatch {
+  const auth = findWcForYk(yk, wc);
+  if (!auth) return yk;
+  const s = statusOf(auth);
+  const swapped = arMatchesEn(yk.home, auth.away);
+  const hs = swapped ? auth.awayScore : auth.homeScore;
+  const as = swapped ? auth.homeScore : auth.awayScore;
+  return {
+    ...yk,
+    homeScore: hs ?? yk.homeScore,
+    awayScore: as ?? yk.awayScore,
+    live: s.live,
+    finished: s.finished,
+    status: s.finished ? "انتهت" : s.live ? "مباشر" : yk.status,
+    league: yk.league || "كأس العالم 2026",
+  };
+}
+
 function MatchCard({
   m,
   favIds,
