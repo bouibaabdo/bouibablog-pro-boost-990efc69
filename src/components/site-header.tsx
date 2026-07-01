@@ -1,6 +1,7 @@
-import { Link } from "@tanstack/react-router";
-import { useState } from "react";
-import { Menu, X, Sparkles } from "lucide-react";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { useState, useEffect } from "react";
+import { Menu, X, Sparkles, Star, LogIn } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const NAV = [
   { to: "/", label: "الرئيسية" },
@@ -13,6 +14,14 @@ const NAV = [
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
+  const [authed, setAuthed] = useState<boolean | null>(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => setAuthed(!!data.session));
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => setAuthed(!!s));
+    return () => sub.subscription.unsubscribe();
+  }, []);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/80 backdrop-blur-md">
@@ -40,6 +49,23 @@ export function SiteHeader() {
         </nav>
 
         <div className="hidden md:flex items-center gap-2">
+          {authed ? (
+            <Link
+              to="/favorites"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-2 text-sm font-semibold hover:bg-accent"
+            >
+              <Star className="h-4 w-4 text-amber-500 fill-amber-500" />
+              المفضلة
+            </Link>
+          ) : (
+            <button
+              onClick={() => navigate({ to: "/auth" })}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-2 text-sm font-semibold hover:bg-accent"
+            >
+              <LogIn className="h-4 w-4" />
+              دخول
+            </button>
+          )}
           <Link
             to="/posts"
             className="inline-flex items-center rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-soft transition-all hover:opacity-90 hover:shadow-elegant"
@@ -71,6 +97,15 @@ export function SiteHeader() {
                 {item.label}
               </Link>
             ))}
+            {authed ? (
+              <Link to="/favorites" onClick={() => setOpen(false)} className="px-3 py-2 rounded-md text-sm font-medium text-amber-600">
+                ⭐ المفضلة
+              </Link>
+            ) : (
+              <Link to="/auth" onClick={() => setOpen(false)} className="px-3 py-2 rounded-md text-sm font-medium text-primary">
+                تسجيل الدخول
+              </Link>
+            )}
           </nav>
         </div>
       )}
