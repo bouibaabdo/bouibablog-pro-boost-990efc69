@@ -71,17 +71,23 @@ export function StreamModal({
   matchId,
   title,
   fallbackSearch,
+  directUrl,
+  directLabel,
   onClose,
 }: {
   matchId: string;
   title: string;
   fallbackSearch: string;
+  /** When provided, skip SportSRC lookup and use this URL as the single source. */
+  directUrl?: string;
+  /** Label shown for the direct source (default "يلا سلّيت"). */
+  directLabel?: string;
   onClose: () => void;
 }) {
   const [detail, setDetail] = useState<SRCDetail | null>(null);
   const [ranked, setRanked] = useState<SRCSource[]>([]);
   const [activeIdx, setActiveIdx] = useState(0);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!directUrl);
   const [err, setErr] = useState<string | null>(null);
   const [autoFallback, setAutoFallback] = useState(true);
   const [iframeLoading, setIframeLoading] = useState(true);
@@ -90,10 +96,29 @@ export function StreamModal({
   const iframeKey = useRef(0);
 
   const active = ranked[activeIdx] || null;
-  const activeUrl = useMemo(() => (active ? embedUrl(active) : ""), [active]);
+  const activeUrl = useMemo(
+    () => (active ? (active.embedUrl || embedUrl(active) || "") : ""),
+    [active],
+  );
 
-  // Load match sources
+  // Load match sources (or short-circuit to the direct URL provided by Yallasellit).
   useEffect(() => {
+    if (directUrl) {
+      const synthetic = {
+        id: "yalla-direct",
+        streamNo: 1,
+        source: directLabel || "يلا سلّيت",
+        embedUrl: directUrl,
+        hd: true,
+        language: "ar",
+        viewers: 0,
+      } as unknown as SRCSource;
+      setRanked([synthetic]);
+      setActiveIdx(0);
+      setLoading(false);
+      setErr(null);
+      return;
+    }
     let alive = true;
     (async () => {
       try {
@@ -117,7 +142,7 @@ export function StreamModal({
     return () => {
       alive = false;
     };
-  }, [matchId]);
+  }, [matchId, directUrl, directLabel]);
 
   // Auto-fallback watchdog: if the iframe never loads, jump to the next source.
   useEffect(() => {
