@@ -2,9 +2,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 import { getPosts } from "@/lib/blogger.functions";
 
-// TODO: replace with your project URL once a project name or custom domain is set.
-const BASE_URL = "";
-
 interface SitemapEntry {
   path: string;
   lastmod?: string;
@@ -15,7 +12,8 @@ interface SitemapEntry {
 export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {
-      GET: async () => {
+      GET: async ({ request }) => {
+        const baseUrl = new URL(request.url).origin;
         const result = await getPosts({ data: { max: 500 } });
 
         const entries: SitemapEntry[] = [
@@ -37,7 +35,7 @@ export const Route = createFileRoute("/sitemap.xml")({
         const urls = entries.map((e) =>
           [
             `  <url>`,
-            `    <loc>${BASE_URL}${e.path}</loc>`,
+            `    <loc>${baseUrl}${e.path}</loc>`,
             e.lastmod ? `    <lastmod>${e.lastmod}</lastmod>` : null,
             e.changefreq ? `    <changefreq>${e.changefreq}</changefreq>` : null,
             e.priority ? `    <priority>${e.priority}</priority>` : null,
@@ -64,3 +62,4 @@ export const Route = createFileRoute("/sitemap.xml")({
     },
   },
 });
+
