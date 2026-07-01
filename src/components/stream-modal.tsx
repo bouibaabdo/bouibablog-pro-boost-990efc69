@@ -1,11 +1,71 @@
-import { useEffect, useState } from "react";
-import { X, Radio, Loader2, ExternalLink, Tv, Maximize2 } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { X, Radio, Loader2, ExternalLink, Tv, Maximize2, SkipForward, ShieldCheck } from "lucide-react";
 import {
   embedUrl,
   fetchMatchDetail,
   type SRCDetail,
   type SRCSource,
 } from "@/lib/sportsrc";
+
+/**
+ * Per-host reputation. Higher = cleaner / more reliable.
+ * Based on community knowledge of common sports embed providers.
+ * Unknown hosts get a neutral 0 score.
+ */
+const HOST_SCORE: Record<string, number> = {
+  // cleaner / fewer popups
+  "streamed.su": 6,
+  "streamed": 6,
+  "topembed": 5,
+  "top-embed": 5,
+  "sportzonline": 4,
+  "1stream": 4,
+  "cricfree": 3,
+  "embedsports": 3,
+  "embedme": 2,
+  "embed.st": 1,
+  // notoriously ad-heavy / popup-happy
+  "sportsurge": -3,
+  "popcaster": -4,
+  "buffstreams": -2,
+  "vipbox": -3,
+  "vipleague": -3,
+};
+
+function hostScore(s: SRCSource): number {
+  const url = embedUrl(s) || "";
+  try {
+    const host = new URL(url).hostname.replace(/^www\./, "");
+    const parts = host.split(".");
+    for (const key of Object.keys(HOST_SCORE)) {
+      if (host.includes(key) || parts.some((p) => p === key)) return HOST_SCORE[key];
+    }
+  } catch {
+    /* ignore */
+  }
+  // fallback: match by source label
+  const label = (s.source || "").toLowerCase();
+  for (const key of Object.keys(HOST_SCORE)) {
+    if (label.includes(key)) return HOST_SCORE[key];
+  }
+  return 0;
+}
+
+/** Rank sources: reputation → HD → viewers → original order. */
+function rankSources(sources: SRCSource[]): SRCSource[] {
+  return [...sources]
+    .map((s, i) => ({ s, i, score: hostScore(s) }))
+    .sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      if ((b.s.hd ? 1 : 0) !== (a.s.hd ? 1 : 0)) return (b.s.hd ? 1 : 0) - (a.s.hd ? 1 : 0);
+      if ((b.s.viewers ?? 0) !== (a.s.viewers ?? 0)) return (b.s.viewers ?? 0) - (a.s.viewers ?? 0);
+      return a.i - b.i;
+    })
+    .map((x) => x.s);
+}
+
+/** How long to wait for the iframe to fire "load" before auto-switching (ms). */
+const LOAD_TIMEOUT_MS = 9000;
 
 export function StreamModal({
   matchId,
@@ -19,11 +79,20 @@ export function StreamModal({
   onClose: () => void;
 }) {
   const [detail, setDetail] = useState<SRCDetail | null>(null);
-  const [active, setActive] = useState<SRCSource | null>(null);
+  const [ranked, setRanked] = useState<SRCSource[]>([]);
+  const [activeIdx, setActiveIdx] = useState(0);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
-  const activeUrl = active ? embedUrl(active) : "";
+  const [autoFallback, setAutoFallback] = useState(true);
+  const [iframeLoading, setIframeLoading] = useState(true);
+  const [triedAll, setTriedAll] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const iframeKey = useRef(0);
 
+  const active = ranked[activeIdx] || null;
+  const activeUrl = useMemo(() => (active ? embedUrl(active) : ""), [active]);
+
+  // Load match sources
   useEffect(() => {
     let alive = true;
     (async () => {
@@ -36,7 +105,8 @@ export function StreamModal({
           return;
         }
         setDetail(d);
-        setActive(d.sources.find((s) => s.hd) || d.sources[0]);
+        setRanked(rankSources(d.sources));
+        setActiveIdx(0);
       } catch (e) {
         if (!alive) return;
         setErr(e instanceof Error ? e.message : "تعذر تحميل البث.");
@@ -49,6 +119,26 @@ export function StreamModal({
     };
   }, [matchId]);
 
+  // Auto-fallback watchdog: if the iframe never loads, jump to the next source.
+  useEffect(() => {
+    if (!active) return;
+    setIframeLoading(true);
+    if (timerRef.current) clearTimeout(timerRef.current);
+    if (!autoFallback) return;
+    timerRef.current = setTimeout(() => {
+      // still loading after timeout → treat as bad source and skip
+      if (activeIdx + 1 < ranked.length) {
+        setActiveIdx((i) => i + 1);
+      } else {
+        setTriedAll(true);
+      }
+    }, LOAD_TIMEOUT_MS);
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, [active, activeIdx, ranked.length, autoFallback]);
+
+  // Escape + body scroll lock
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
     document.addEventListener("keydown", onKey);
@@ -58,6 +148,21 @@ export function StreamModal({
       document.body.style.overflow = "";
     };
   }, [onClose]);
+
+  function nextSource() {
+    if (activeIdx + 1 < ranked.length) {
+      setActiveIdx((i) => i + 1);
+      iframeKey.current += 1;
+    } else {
+      setTriedAll(true);
+    }
+  }
+
+  function pickSource(idx: number) {
+    setActiveIdx(idx);
+    setTriedAll(false);
+    iframeKey.current += 1;
+  }
 
   return (
     <div
@@ -76,16 +181,29 @@ export function StreamModal({
             </div>
             <div className="min-w-0">
               <div className="font-display font-bold truncate">{title}</div>
-              <div className="text-[11px] text-muted-foreground">البث المباشر — SportSRC</div>
+              <div className="text-[11px] text-muted-foreground">
+                البث المباشر — {active ? `المصدر ${activeIdx + 1} من ${ranked.length}` : "SportSRC"}
+              </div>
             </div>
           </div>
-          <button
-            onClick={onClose}
-            aria-label="إغلاق"
-            className="h-9 w-9 rounded-lg border border-border hover:bg-accent transition inline-flex items-center justify-center"
-          >
-            <X className="h-4 w-4" />
-          </button>
+          <div className="flex items-center gap-2">
+            <label className="hidden sm:inline-flex items-center gap-1.5 text-[11px] text-muted-foreground cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={autoFallback}
+                onChange={(e) => setAutoFallback(e.target.checked)}
+                className="accent-primary"
+              />
+              تبديل تلقائي
+            </label>
+            <button
+              onClick={onClose}
+              aria-label="إغلاق"
+              className="h-9 w-9 rounded-lg border border-border hover:bg-accent transition inline-flex items-center justify-center"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
         </div>
 
         {/* Player */}
@@ -123,19 +241,44 @@ export function StreamModal({
           {!loading && !err && active && (
             <>
               <iframe
-                key={`${active.source}-${active.id}-${active.streamNo}`}
+                key={`${iframeKey.current}-${active.source}-${active.id}-${active.streamNo}`}
                 src={activeUrl}
                 title={title}
                 allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
                 allowFullScreen
-                /* Sandbox blocks popup ads, forced redirects and new tabs
-                   coming from the stream provider. We keep scripts + same-origin
-                   + forms so the actual player can still load. */
+                /* Sandbox blocks popup ads and forced redirects from the provider. */
                 sandbox="allow-scripts allow-same-origin allow-forms allow-presentation"
                 referrerPolicy="no-referrer"
+                onLoad={() => {
+                  setIframeLoading(false);
+                  if (timerRef.current) clearTimeout(timerRef.current);
+                }}
+                onError={() => {
+                  if (autoFallback) nextSource();
+                }}
                 className="absolute inset-0 h-full w-full border-0"
               />
+              {iframeLoading && (
+                <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black/60 text-white/80">
+                  <Loader2 className="h-6 w-6 animate-spin" />
+                  <span className="text-xs">
+                    جارٍ تجربة المصدر {activeIdx + 1}… {autoFallback ? "سيتم التبديل تلقائيًا إذا لم يعمل" : ""}
+                  </span>
+                </div>
+              )}
+              {triedAll && (
+                <div className="pointer-events-none absolute bottom-3 right-3 rounded-lg bg-red-600/90 text-white px-3 py-1.5 text-[11px] font-semibold">
+                  جُرِّبت كل المصادر — اختر مصدرًا يدويًا
+                </div>
+              )}
               <div className="absolute left-3 top-3 z-10 flex flex-wrap gap-2">
+                <button
+                  onClick={nextSource}
+                  disabled={activeIdx + 1 >= ranked.length}
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-white/90 hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed text-slate-950 px-3 py-1.5 text-xs font-bold shadow-soft transition"
+                >
+                  <SkipForward className="h-3.5 w-3.5" /> المصدر التالي
+                </button>
                 <a
                   href={activeUrl}
                   target="_blank"
@@ -147,37 +290,50 @@ export function StreamModal({
               </div>
             </>
           )}
-
         </div>
 
         {/* Sources */}
-        {detail && detail.sources.length > 0 && (
+        {detail && ranked.length > 0 && (
           <div className="p-4 border-t border-border">
-            <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground mb-2.5">
-              <Radio className="h-3.5 w-3.5" /> مصادر البث ({detail.sources.length})
+            <div className="flex items-center justify-between gap-2 text-xs font-semibold text-muted-foreground mb-2.5">
+              <div className="inline-flex items-center gap-2">
+                <Radio className="h-3.5 w-3.5" /> مصادر البث ({ranked.length})
+              </div>
+              <div className="inline-flex items-center gap-1.5 text-emerald-600">
+                <ShieldCheck className="h-3.5 w-3.5" />
+                <span className="text-[11px]">مرتّبة حسب الجودة وقلّة الإعلانات</span>
+              </div>
             </div>
             <div className="flex flex-wrap gap-2">
-              {detail.sources.map((s, i) => {
-                const isActive =
-                  active &&
-                  active.source === s.source &&
-                  active.id === s.id &&
-                  active.streamNo === s.streamNo;
+              {ranked.map((s, i) => {
+                const isActive = i === activeIdx;
+                const score = hostScore(s);
+                const clean = score >= 3;
                 return (
                   <div key={`${s.source}-${s.id}-${s.streamNo}-${i}`} className="inline-flex overflow-hidden rounded-lg border border-border bg-surface">
                     <button
-                      onClick={() => setActive(s)}
+                      onClick={() => pickSource(i)}
                       className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold transition ${
                         isActive
                           ? "bg-primary text-primary-foreground"
                           : "hover:text-primary hover:bg-accent"
                       }`}
                     >
+                      <span className="opacity-70">#{i + 1}</span>
                       <span className="uppercase">{s.source}</span>
-                      <span className="opacity-70">#{s.streamNo}</span>
                       {s.hd && (
                         <span className="rounded bg-emerald-500/15 text-emerald-600 px-1.5 py-0.5 text-[10px] font-bold">
                           HD
+                        </span>
+                      )}
+                      {clean && !isActive && (
+                        <span className="rounded bg-emerald-500/15 text-emerald-600 px-1.5 py-0.5 text-[10px] font-bold">
+                          نظيف
+                        </span>
+                      )}
+                      {score < 0 && (
+                        <span className="rounded bg-amber-500/15 text-amber-600 px-1.5 py-0.5 text-[10px] font-bold">
+                          إعلانات
                         </span>
                       )}
                       {s.language && (
@@ -185,7 +341,7 @@ export function StreamModal({
                       )}
                     </button>
                     <a
-                      href={embedUrl(s)}
+                      href={embedUrl(s) || "#"}
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label="فتح المصدر مباشرة"
@@ -199,9 +355,8 @@ export function StreamModal({
               })}
             </div>
             <p className="text-[10px] text-muted-foreground mt-3 leading-relaxed">
-              تم تفعيل حماية داخل المشغّل تمنع الإعلانات المنبثقة وإعادة التوجيه القسري. إذا لم يشتغل مصدر معيّن بسبب هذه الحماية، اضغط "فتح بدون إطار" أو جرّب مصدرًا آخر. للحصول على تجربة نظيفة تمامًا، ننصح بتفعيل مانع إعلانات في المتصفح مثل uBlock Origin.
+              التطبيق ينتقل تلقائيًا إلى المصدر التالي إذا لم يعمل الحالي خلال {LOAD_TIMEOUT_MS / 1000} ثوانٍ. يمكنك إيقاف التبديل التلقائي من رأس النافذة، أو الضغط على "المصدر التالي" يدويًا. للحصول على تجربة بدون أي إعلانات داخل الفيديو، فعّل مانع إعلانات مثل uBlock Origin.
             </p>
-
             <a
               href="https://tv.bouibacademy.me/"
               target="_blank"
