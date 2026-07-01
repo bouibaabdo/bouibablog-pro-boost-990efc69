@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { X, Radio, Loader2, ExternalLink, Tv } from "lucide-react";
+import { X, Radio, Loader2, ExternalLink, Tv, Maximize2 } from "lucide-react";
 import {
   embedUrl,
   fetchMatchDetail,
@@ -22,6 +22,7 @@ export function StreamModal({
   const [active, setActive] = useState<SRCSource | null>(null);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
+  const activeUrl = active ? embedUrl(active) : "";
 
   useEffect(() => {
     let alive = true;
@@ -120,14 +121,26 @@ export function StreamModal({
             </div>
           )}
           {!loading && !err && active && (
-            <iframe
-              key={`${active.source}-${active.id}-${active.streamNo}`}
-              src={embedUrl(active)}
-              title={title}
-              allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
-              allowFullScreen
-              className="absolute inset-0 h-full w-full border-0"
-            />
+            <>
+              <iframe
+                key={`${active.source}-${active.id}-${active.streamNo}`}
+                src={activeUrl}
+                title={title}
+                allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+                allowFullScreen
+                className="absolute inset-0 h-full w-full border-0"
+              />
+              <div className="absolute left-3 top-3 z-10 flex flex-wrap gap-2">
+                <a
+                  href={activeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-white/90 hover:bg-white text-slate-950 px-3 py-1.5 text-xs font-bold shadow-soft transition"
+                >
+                  <Maximize2 className="h-3.5 w-3.5" /> فتح بدون إطار
+                </a>
+              </div>
+            </>
           )}
         </div>
 
@@ -145,31 +158,43 @@ export function StreamModal({
                   active.id === s.id &&
                   active.streamNo === s.streamNo;
                 return (
-                  <button
-                    key={`${s.source}-${s.id}-${s.streamNo}-${i}`}
-                    onClick={() => setActive(s)}
-                    className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold border transition ${
-                      isActive
-                        ? "bg-primary text-primary-foreground border-primary"
-                        : "bg-surface border-border hover:border-primary hover:text-primary"
-                    }`}
-                  >
-                    <span className="uppercase">{s.source}</span>
-                    <span className="opacity-70">#{s.streamNo}</span>
-                    {s.hd && (
-                      <span className="rounded bg-emerald-500/15 text-emerald-600 px-1.5 py-0.5 text-[10px] font-bold">
-                        HD
-                      </span>
-                    )}
-                    {s.language && (
-                      <span className="opacity-70 uppercase text-[10px]">{s.language}</span>
-                    )}
-                  </button>
-                );
+                  return (
+                    <div key={`${s.source}-${s.id}-${s.streamNo}-${i}`} className="inline-flex overflow-hidden rounded-lg border border-border bg-surface">
+                      <button
+                        onClick={() => setActive(s)}
+                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold transition ${
+                          isActive
+                            ? "bg-primary text-primary-foreground"
+                            : "hover:text-primary hover:bg-accent"
+                        }`}
+                      >
+                        <span className="uppercase">{s.source}</span>
+                        <span className="opacity-70">#{s.streamNo}</span>
+                        {s.hd && (
+                          <span className="rounded bg-emerald-500/15 text-emerald-600 px-1.5 py-0.5 text-[10px] font-bold">
+                            HD
+                          </span>
+                        )}
+                        {s.language && (
+                          <span className="opacity-70 uppercase text-[10px]">{s.language}</span>
+                        )}
+                      </button>
+                      <a
+                        href={embedUrl(s)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="فتح المصدر مباشرة"
+                        title="فتح المصدر مباشرة بدون iframe"
+                        className="inline-flex items-center justify-center border-r border-border px-2 text-muted-foreground hover:text-primary hover:bg-accent transition"
+                      >
+                        <ExternalLink className="h-3.5 w-3.5" />
+                      </a>
+                    </div>
+                  );
               })}
             </div>
             <p className="text-[10px] text-muted-foreground mt-3 leading-relaxed">
-              إذا لم يعمل مصدر، جرّب مصدرًا آخر أو افتح StreamHub مباشرة. البث مقدَّم من مزوّدين خارجيين عبر SportSRC.
+              إذا ظهرت رسالة sandbox داخل المشغّل، اضغط “فتح بدون إطار” أو أيقونة الفتح بجانب المصدر. بعض المزوّدين يمنعون التشغيل داخل iframe.
             </p>
             <a
               href="https://tv.bouibacademy.me/"
