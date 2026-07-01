@@ -1,44 +1,31 @@
-## الهدف
-تمكين الزائر من تسجيل الدخول، حفظ مباريات مفضلة، واستلام تذكيرات قبل المباراة بـ24 ساعة وساعة عبر البريد + إشعار متصفح.
+المشكلة الفعلية ليست فقط في `sandbox`: رسالة “Remove sandbox attributes” قد تظهر أيضًا إذا كان المشغل يُفتح داخل iframe متداخل أو من رابط غير مباشر/قديم، أو إذا كان `embed.st` يرفض التضمين من نطاق مختلف.
 
-## المتطلبات المسبقة
-- Lovable Cloud (تم تفعيلها).
-- إعداد نطاق البريد (يفتح للمستخدم زر Set up email domain). سأبني كل شيء الآن، والبريد يبدأ العمل فور اعتماد النطاق.
+الخطة:
 
-## قاعدة البيانات
-جدول `match_favorites`:
-- `id`, `user_id → auth.users`, `match_id text`, `match_data jsonb` (فرق، ملعب، مجموعة)
-- `kickoff_at timestamptz`
-- `notify_email bool default true`, `notify_browser bool default true`
-- `sent_24h bool`, `sent_1h bool`
-- RLS: كل مستخدم يرى/يحرر مفضلاته فقط.
+1. **عزل مصدر الخلل**
+   - فحص الرابط النهائي الذي يخرج من SportSRC لكل مصدر بث.
+   - التأكد هل الرابط هو `embedUrl` جاهز من API أم رابط مركّب يدويًا.
+   - اختبار هل الرسالة تظهر من iframe داخل موقعنا فقط أم حتى عند فتح الرابط مباشرة.
 
-## المصادقة
-- Email/Password + Google (الافتراضي في Lovable Cloud).
-- صفحة `/auth` بتصميم الموقع.
+2. **تغيير طريقة التشغيل داخل الموقع**
+   - تحديث `stream-modal` ليعرض خيارين واضحين عند وجود مصدر:
+     - تشغيل داخل الموقع إن كان الرابط يقبل التضمين.
+     - فتح المشغل في نافذة/تبويب جديد مباشرة إذا رفض iframe.
+   - إضافة زر “فتح البث بدون إطار” بجانب كل مصدر، وليس كزر عام فقط لـ StreamHub.
 
-## واجهة المستخدم
-- زر ⭐ في كل بطاقة مباراة (`worldcup`). إذا كان الزائر غير مسجّل → توجيه لطيف إلى `/auth`.
-- تبويبة جديدة `/favorites` تعرض المباريات المفضلة مع تحكم في تفعيل/تعطيل البريد والإشعارات.
-- زر "تفعيل إشعارات المتصفح" يستدعي `Notification.requestPermission()`.
+3. **تحسين روابط SportSRC**
+   - تعديل `sportsrc.ts` ليقبل أكثر من شكل محتمل للروابط القادمة من API، مثل `embedUrl`, `url`, `iframe`, أو `src` إن كانت موجودة.
+   - عدم الاعتماد فقط على الرابط المركّب `https://embed.st/embed/...` إذا وفر API رابطًا مباشرًا أفضل.
 
-## إشعارات المتصفح
-- عند فتح الموقع: hook يفحص كل دقيقة مفضلات المستخدم، وإذا اقتربت مباراة من (24س ± 5د) أو (1س ± 5د) وسمح المتصفح، يعرض `new Notification(...)`.
-- لا service worker (يتطلب VAPID/Web Push، خارج النطاق المجاني البسيط). يعمل عندما يكون الموقع مفتوحًا في تبويب.
+4. **Fallback عملي بدل صفحة خطأ**
+   - إذا اكتشفنا رسالة sandbox أو فشل التحميل، يظهر داخل المشغل حل مباشر:
+     - “افتح المصدر مباشرة” للرابط نفسه.
+     - “افتح المباراة في StreamHub” كرابط احتياطي.
+   - هذا يمنع بقاء المستخدم داخل شاشة خطأ مغلقة.
 
-## البريد
-- `email_domain--setup_email_infra` ثم `scaffold_transactional_email`.
-- قالب `match-reminder.tsx` (شعارات المنتخبات، اسم المباراة، الوقت، الملعب، القنوات).
-- server route `POST /api/public/hooks/match-reminders`: يجلب المفضلات ضمن نافذة (24س-15د إلى 24س+15د) و(1س-15د إلى 1س+15د)، يستدعي `/lovable/email/transactional/send` داخليًا، يعلّم `sent_24h`/`sent_1h`.
-- pg_cron كل 15 دقيقة يستدعي المسار.
+5. **التحقق بعد التنفيذ**
+   - فتح صفحة `/worldcup` محليًا.
+   - فتح مشغل مباراة متاحة.
+   - التأكد أن iframe لا يحتوي sandbox، وأن أزرار الفتح المباشر تعمل وتستخدم الرابط الصحيح لكل مصدر.
 
-## الملفات المتوقعة
-- `supabase/migrations/*` — جدول favorites + RLS.
-- `src/routes/auth.tsx` — تسجيل/دخول.
-- `src/routes/_authenticated/favorites.tsx` — قائمة المفضلة + إعدادات.
-- `src/components/favorite-button.tsx` — زر النجمة.
-- `src/hooks/use-browser-reminders.ts` — تشغيل إشعارات المتصفح.
-- `src/lib/favorites.functions.ts` — server fns (add/remove/list/updatePrefs).
-- `src/lib/email-templates/match-reminder.tsx` — قالب البريد.
-- `src/routes/api/public/hooks/match-reminders.ts` — نقطة cron.
-- تحديث `src/components/site-header.tsx` + `src/routes/worldcup.tsx`.
+ملاحظة مهمة: إذا كان مزوّد البث نفسه يمنع التضمين داخل مواقع أخرى، فلن يمكن إجباره تقنيًا من داخل الكود، والحل الصحيح سيكون فتح المصدر مباشرة في تبويب جديد أو إعادة توجيه المستخدم إلى StreamHub.
