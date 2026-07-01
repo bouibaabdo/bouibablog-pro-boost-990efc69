@@ -559,45 +559,17 @@ function YKMatchCard({
               <PlayCircle className="h-4 w-4" />
               {m.live ? "شاهد البث المباشر داخل الموقع" : "افتح المشغّل داخل الموقع"}
             </button>
-          ) : m.matchUrl ? (
-            <a
-              href={m.matchUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`w-full inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-bold text-white transition ${
-                m.live ? "bg-red-600 hover:bg-red-700 animate-pulse" : "bg-emerald-600 hover:bg-emerald-700"
-              }`}
-            >
-              <PlayCircle className="h-4 w-4" />
-              {m.live ? "شاهد البث المباشر الآن" : "تفاصيل المباراة والبث"}
-              <ExternalLink className="h-3.5 w-3.5 opacity-80" />
-            </a>
-          ) : null}
-          {src && m.matchUrl && (
-            <a
-              href={m.matchUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full inline-flex items-center justify-center gap-1.5 rounded-lg border border-border hover:border-primary px-4 py-2 text-[11px] font-semibold text-muted-foreground hover:text-primary transition"
-            >
-              تفاصيل إضافية على يلا كورة <ExternalLink className="h-3 w-3" />
-            </a>
+          ) : (
+            <div className="w-full text-center rounded-lg border border-dashed border-border px-4 py-2.5 text-xs text-muted-foreground">
+              البث المباشر داخل الموقع غير متاح لهذه المباراة
+            </div>
           )}
         </div>
-      )}
-      {m.finished && m.matchUrl && (
-        <a
-          href={m.matchUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="relative mt-4 w-full inline-flex items-center justify-center gap-1.5 rounded-lg border border-border hover:border-primary px-4 py-2 text-xs font-semibold text-muted-foreground hover:text-primary transition"
-        >
-          ملخّص وأهداف المباراة <ExternalLink className="h-3 w-3" />
-        </a>
       )}
     </div>
   );
 }
+
 
 function StandingsTable({ standings }: { standings: WCStanding[] }) {
   const groups = useMemo(() => {
