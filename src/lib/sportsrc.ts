@@ -19,6 +19,12 @@ export type SRCSource = {
   id: string;
   streamNo: number;
   embedUrl?: string;
+  url?: string;
+  iframe?: string;
+  src?: string;
+  href?: string;
+  streamUrl?: string;
+  embed?: string;
   hd?: boolean;
   viewers?: number;
   language?: string;
@@ -33,8 +39,33 @@ export type SRCDetail = {
   sources: SRCSource[];
 };
 
+function extractIframeSrc(value: string) {
+  const match = value.match(/<iframe[^>]+src=["']([^"']+)["']/i);
+  return match?.[1] || value;
+}
+
+function safeHttpUrl(value: unknown) {
+  if (typeof value !== "string" || !value.trim()) return null;
+  const raw = extractIframeSrc(value.trim());
+  try {
+    const url = new URL(raw);
+    return url.protocol === "https:" || url.protocol === "http:" ? url.toString() : null;
+  } catch {
+    return null;
+  }
+}
+
 export function embedUrl(s: SRCSource) {
-  return s.embedUrl || `https://embed.st/embed/${s.source}/${s.id}/${s.streamNo}`;
+  return (
+    safeHttpUrl(s.embedUrl) ||
+    safeHttpUrl(s.url) ||
+    safeHttpUrl(s.iframe) ||
+    safeHttpUrl(s.src) ||
+    safeHttpUrl(s.href) ||
+    safeHttpUrl(s.streamUrl) ||
+    safeHttpUrl(s.embed) ||
+    `https://embed.st/embed/${encodeURIComponent(s.source)}/${encodeURIComponent(s.id)}/${encodeURIComponent(String(s.streamNo))}`
+  );
 }
 
 /** Normalize team names for fuzzy matching. */
