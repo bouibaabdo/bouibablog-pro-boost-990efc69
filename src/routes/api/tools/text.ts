@@ -33,6 +33,23 @@ export const Route = createFileRoute("/api/tools/text")({
         if (!input || typeof input !== "string" || input.trim().length < 3) {
           return new Response("input is required", { status: 400 });
         }
+        if (input.length > 10000) {
+          return Response.json({ error: "النص طويل جدًا (الحد الأقصى 10000 حرف)." }, { status: 413 });
+        }
+        // Enforce admin enable/disable toggle server-side
+        try {
+          const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+          const { data: tool } = await supabaseAdmin
+            .from("admin_ai_tools")
+            .select("enabled")
+            .eq("tool_key", action)
+            .maybeSingle();
+          if (tool && tool.enabled === false) {
+            return Response.json({ error: "هذه الأداة معطّلة حاليًا." }, { status: 403 });
+          }
+        } catch {
+          // fail open on lookup errors to avoid breaking the tool
+        }
         const key = process.env.LOVABLE_API_KEY;
         if (!key) return new Response("Missing LOVABLE_API_KEY", { status: 500 });
 
