@@ -17,6 +17,29 @@ export const Route = createFileRoute("/api/tools/image")({
             headers: { "Content-Type": "application/json" },
           });
         }
+        if (prompt.length > 1000) {
+          return new Response(JSON.stringify({ error: "الوصف طويل جدًا (الحد الأقصى 1000 حرف)." }), {
+            status: 413,
+            headers: { "Content-Type": "application/json" },
+          });
+        }
+        // Enforce admin enable/disable toggle server-side
+        try {
+          const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+          const { data: tool } = await supabaseAdmin
+            .from("admin_ai_tools")
+            .select("enabled")
+            .eq("tool_key", "image")
+            .maybeSingle();
+          if (tool && tool.enabled === false) {
+            return new Response(JSON.stringify({ error: "هذه الأداة معطّلة حاليًا." }), {
+              status: 403,
+              headers: { "Content-Type": "application/json" },
+            });
+          }
+        } catch {
+          // fail open on lookup errors
+        }
         const key = process.env.GEMINI_API_KEY;
         if (!key) {
           return new Response(
