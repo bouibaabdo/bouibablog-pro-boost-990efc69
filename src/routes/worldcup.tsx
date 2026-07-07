@@ -928,10 +928,12 @@ function WorldCupPage() {
             ) : (
               <>
                 {ykReconciled.today.length === 0 && ykReconciled.tomorrow.length === 0 && ykReconciled.yesterday.length === 0 && (
-                  <div className="text-center py-16 text-muted-foreground rounded-2xl border border-dashed border-border">
-                    تعذّر جلب المباريات من يلا كورة الآن. حاول مجدّدًا بعد قليل.
+                  <div className="text-center py-16 text-muted-foreground rounded-2xl border border-dashed border-border space-y-2">
+                    <p>لا توجد مباريات مُدرجة على <span className="font-semibold text-foreground">يلا كورة</span> لهذه الفترة.</p>
+                    <p className="text-xs">يمكنك تصفح المباريات من التبويبات الأخرى (البث المباشر / كأس العالم) أو المحاولة لاحقًا.</p>
                   </div>
                 )}
+
 
                 {(() => {
                   const liveNow = ykReconciled.today.filter((m) => m.live);
