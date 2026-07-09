@@ -115,10 +115,14 @@ export function StreamModal({
     [active],
   );
 
-  // Load match sources (or short-circuit to the direct URL provided by Yallasellit).
+  // Load match sources. If Yallasellit provides a direct URL, keep it first but
+  // still append SportSRC sources so the user can switch away from a bad embed.
   useEffect(() => {
-    if (directUrl) {
-      const synthetic = {
+    let alive = true;
+    (async () => {
+      const sources: SRCSource[] = [];
+      if (directUrl) {
+        sources.push({
         id: "yalla-direct",
         streamNo: 1,
         source: directLabel || "يلا سلّيت",
@@ -126,29 +130,32 @@ export function StreamModal({
         hd: true,
         language: "ar",
         viewers: 0,
-      } as unknown as SRCSource;
-      setRanked([synthetic]);
-      setActiveIdx(0);
-      setLoading(false);
-      setErr(null);
-      return;
-    }
-    let alive = true;
-    (async () => {
+        } as unknown as SRCSource);
+      }
       try {
-        const d = await fetchMatchDetail(matchId);
+        const shouldFetchFallback = !matchId.startsWith("ys-");
+        const d = shouldFetchFallback ? await fetchMatchDetail(matchId) : null;
         if (!alive) return;
-        if (!d || !d.sources?.length) {
+        if (d?.sources?.length) {
+          setDetail(d);
+          sources.push(...rankSources(d.sources));
+        }
+        if (!sources.length) {
           setErr("لم يتم العثور على مصادر بث لهذه المباراة بعد. جرّب قبل انطلاق المباراة بقليل.");
           setLoading(false);
           return;
         }
-        setDetail(d);
-        setRanked(rankSources(d.sources));
+        setRanked(sources);
         setActiveIdx(0);
       } catch (e) {
         if (!alive) return;
-        setErr(e instanceof Error ? e.message : "تعذر تحميل البث.");
+        if (sources.length) {
+          setRanked(sources);
+          setActiveIdx(0);
+          setErr(null);
+        } else {
+          setErr(e instanceof Error ? e.message : "تعذر تحميل البث.");
+        }
       } finally {
         if (alive) setLoading(false);
       }
@@ -332,7 +339,7 @@ export function StreamModal({
         </div>
 
         {/* Sources */}
-        {detail && ranked.length > 0 && (
+        {ranked.length > 0 && (
           <div className="p-4 border-t border-border">
             <div className="flex items-center justify-between gap-2 text-xs font-semibold text-muted-foreground mb-2.5">
               <div className="inline-flex items-center gap-2">
@@ -380,7 +387,7 @@ export function StreamModal({
                       )}
                     </button>
                     <a
-                      href={embedUrl(s) || "#"}
+                      href={preparePlayerUrl(s.embedUrl || embedUrl(s) || "#")}
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label="فتح المصدر مباشرة"
