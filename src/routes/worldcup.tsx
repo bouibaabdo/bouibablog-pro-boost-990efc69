@@ -339,7 +339,7 @@ function MatchCard({
   m: WCMatch;
   favIds: Set<string>;
   srcMatches: SRCMatch[];
-  onWatch: (srcId: string, title: string, fallbackSearch: string, directUrl?: string) => void;
+  onWatch: (srcId: string, title: string, fallbackSearch: string, directUrl?: string, directUrls?: string[]) => void;
   ysStreamMap?: Map<string, string[]>;
 }) {
   const s = statusOf(m);
