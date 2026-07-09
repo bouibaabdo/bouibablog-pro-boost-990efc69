@@ -431,7 +431,17 @@ function MatchCard({
 
       {(s.live || s.upcoming) && (
         <div className="mt-4 pt-4 border-t border-border space-y-2">
-          {src ? (
+          {ysUrl ? (
+            <button
+              onClick={() => onWatch(`ys-${m.id}`, `${m.home} vs ${m.away}`, searchQ, ysUrl)}
+              className={`w-full inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-bold text-white transition ${
+                s.live ? "bg-red-600 hover:bg-red-700 animate-pulse" : "bg-primary hover:opacity-90"
+              }`}
+            >
+              <PlayCircle className="h-4 w-4" />
+              {s.live ? "شاهد البث المباشر الآن" : "شاهد البث داخل الموقع"}
+            </button>
+          ) : src ? (
             <button
               onClick={() => onWatch(src.id, `${m.home} vs ${m.away}`, searchQ)}
               className={`w-full inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-bold text-white transition ${
@@ -442,16 +452,6 @@ function MatchCard({
             >
               <PlayCircle className="h-4 w-4" />
               {s.live ? "شاهد البث المباشر الآن" : "شاهد البث المباشر"}
-            </button>
-          ) : ysUrl ? (
-            <button
-              onClick={() => onWatch(`ys-${m.id}`, `${m.home} vs ${m.away}`, searchQ, ysUrl)}
-              className={`w-full inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-bold text-white transition ${
-                s.live ? "bg-red-600 hover:bg-red-700 animate-pulse" : "bg-primary hover:opacity-90"
-              }`}
-            >
-              <PlayCircle className="h-4 w-4" />
-              شاهد البث داخل الموقع (يلا سلّيت)
             </button>
           ) : (
             <a
@@ -593,7 +593,19 @@ function YKMatchCard({
 
       {!m.finished && (
         <div className="relative mt-4 space-y-2">
-          {src ? (
+          {ysUrl ? (
+            <button
+              onClick={() => onWatch(`ys-${m.id}`, title, title, ysUrl)}
+              className={`w-full inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-bold text-white transition ${
+                m.live
+                  ? "bg-red-600 hover:bg-red-700 shadow-lg shadow-red-500/20"
+                  : "bg-gradient-to-l from-primary to-primary/80 hover:opacity-95"
+              }`}
+            >
+              <PlayCircle className="h-4 w-4" />
+              {m.live ? "شاهد البث المباشر الآن" : "شاهد البث داخل الموقع"}
+            </button>
+          ) : src ? (
             <button
               onClick={() => onWatch(src.id, title, title)}
               className={`w-full inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-bold text-white transition ${
@@ -604,18 +616,6 @@ function YKMatchCard({
             >
               <PlayCircle className="h-4 w-4" />
               {m.live ? "شاهد البث المباشر داخل الموقع" : "افتح المشغّل داخل الموقع"}
-            </button>
-          ) : ysUrl ? (
-            <button
-              onClick={() => onWatch(`ys-${m.id}`, title, title, ysUrl)}
-              className={`w-full inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-bold text-white transition ${
-                m.live
-                  ? "bg-red-600 hover:bg-red-700 shadow-lg shadow-red-500/20"
-                  : "bg-gradient-to-l from-primary to-primary/80 hover:opacity-95"
-              }`}
-            >
-              <PlayCircle className="h-4 w-4" />
-              شاهد البث داخل الموقع (يلا سلّيت)
             </button>
           ) : (
             <div className="w-full text-center rounded-lg border border-dashed border-border px-4 py-2.5 text-xs text-muted-foreground">
@@ -709,20 +709,59 @@ function WorldCupPage() {
   const onWatch = (id: string, title: string, fallback: string, directUrl?: string) =>
     setWatch({ id, title, fallback, directUrl, directLabel: directUrl ? "يلا سلّيت" : undefined });
 
-  // Build a fast lookup from Yallasellit for direct stream URLs, keyed by normalized team pairs.
-  const ysStreamMap = useMemo(() => {
-    const m = new Map<string, string>();
-    const norm = (s: string) => s.replace(/\s+/g, "").toLowerCase();
+  // Build a fast lookup from Yallasellit for direct stream URLs. We match by
+  // team names with aggressive Arabic normalization (strip diacritics, common
+  // prefixes like "منتخب" / "نادي" / "ال", punctuation, spaces) and accept a
+  // match when either team name from Yallakora is a substring of the
+  // Yallasellit name (or vice-versa) for BOTH sides, in either order.
+  const ysStreamList = useMemo(() => {
+    const all: { home: string; away: string; url: string }[] = [];
     const push = (home: string, away: string, url?: string) => {
       if (!url) return;
-      m.set(`${norm(home)}|${norm(away)}`, url);
-      m.set(`${norm(away)}|${norm(home)}`, url);
+      all.push({ home, away, url });
     };
     ys?.today.forEach((x) => push(x.home, x.away, x.streamUrl));
     ys?.tomorrow.forEach((x) => push(x.home, x.away, x.streamUrl));
     ys?.yesterday.forEach((x) => push(x.home, x.away, x.streamUrl));
-    return m;
+    return all;
   }, [ys]);
+
+  const ysStreamMap = useMemo(() => {
+    const norm = (s: string) =>
+      s
+        .replace(/[\u064B-\u065F\u0670]/g, "")
+        .replace(/[إأآٱ]/g, "ا")
+        .replace(/ى/g, "ي")
+        .replace(/ة/g, "ه")
+        .replace(/(منتخب|نادي|فريق|المنتخب)/g, "")
+        .replace(/^ال/, "")
+        .replace(/[^\p{L}\p{N}]/gu, "")
+        .toLowerCase();
+    const matches = (a: string, b: string) => {
+      const na = norm(a);
+      const nb = norm(b);
+      if (!na || !nb) return false;
+      return na === nb || na.includes(nb) || nb.includes(na);
+    };
+    const find = (home: string, away: string): string | undefined => {
+      for (const s of ysStreamList) {
+        if (
+          (matches(s.home, home) && matches(s.away, away)) ||
+          (matches(s.home, away) && matches(s.away, home))
+        ) {
+          return s.url;
+        }
+      }
+      return undefined;
+    };
+    // Keep the Map-like `.get("home|away")` API used by child components.
+    return {
+      get(key: string) {
+        const [h, a] = key.split("|");
+        return find(h ?? "", a ?? "");
+      },
+    } as unknown as Map<string, string>;
+  }, [ysStreamList]);
 
   const { data: favData } = useQuery({
     queryKey: ["favorites", "ids"],
