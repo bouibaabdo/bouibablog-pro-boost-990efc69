@@ -102,6 +102,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           inLanguage: "ar",
         }),
       },
+      {
+        async: true,
+        src: "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6404561979968062",
+        crossOrigin: "anonymous",
+      },
     ],
   }),
   shellComponent: RootShell,

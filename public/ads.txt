@@ -1,3 +1,1 @@
-# Google AdSense — استبدل ca-pub-XXXXXXXXXXXXXXXX بمعرف الناشر الحقيقي بعد قبول الحساب
-# مثال: google.com, pub-1234567890123456, DIRECT, f08c47fec0942fa0
-google.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0
+google.com, pub-6404561979968062, DIRECT, f08c47fec0942fa0
