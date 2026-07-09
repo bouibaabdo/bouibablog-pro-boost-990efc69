@@ -726,7 +726,12 @@ function WorldCupPage() {
   const ysStreamList = useMemo(() => {
     const all: { home: string; away: string; urls: string[] }[] = [];
     const push = (match: YSMatch) => {
-      const urls = Array.from(new Set([match.playerUrl, match.streamUrl, match.pageUrl].filter(Boolean) as string[]));
+      const urls = Array.from(new Set([
+        match.playerUrl,
+        match.streamUrl,
+        ...(match.channelUrls ?? []),
+        match.pageUrl,
+      ].filter(Boolean) as string[]));
       if (!urls.length) return;
       all.push({ home: match.home, away: match.away, urls });
     };
