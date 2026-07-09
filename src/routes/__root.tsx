@@ -108,7 +108,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         crossOrigin: "anonymous",
       },
     ],
-    meta_extra: [],
   }),
   shellComponent: RootShell,
   component: RootComponent,
