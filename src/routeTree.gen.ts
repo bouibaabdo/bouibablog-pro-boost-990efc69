@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WorldcupRouteImport } from './routes/worldcup'
 import { Route as ToolsRouteImport } from './routes/tools'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SitemapWorldcupDotxmlRouteImport } from './routes/sitemap-worldcup[.]xml'
 import { Route as SitemapToolsDotxmlRouteImport } from './routes/sitemap-tools[.]xml'
@@ -49,6 +50,11 @@ const WorldcupRoute = WorldcupRouteImport.update({
 const ToolsRoute = ToolsRouteImport.update({
   id: '/tools',
   path: '/tools',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -210,6 +216,7 @@ export interface FileRoutesByFullPath {
   '/sitemap-tools.xml': typeof SitemapToolsDotxmlRoute
   '/sitemap-worldcup.xml': typeof SitemapWorldcupDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/terms': typeof TermsRoute
   '/tools': typeof ToolsRouteWithChildren
   '/worldcup': typeof WorldcupRoute
   '/admin': typeof AuthenticatedAdminRouteRouteWithChildren
@@ -242,6 +249,7 @@ export interface FileRoutesByTo {
   '/sitemap-tools.xml': typeof SitemapToolsDotxmlRoute
   '/sitemap-worldcup.xml': typeof SitemapWorldcupDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/terms': typeof TermsRoute
   '/worldcup': typeof WorldcupRoute
   '/favorites': typeof AuthenticatedFavoritesRoute
   '/posts/$id': typeof PostsIdRoute
@@ -274,6 +282,7 @@ export interface FileRoutesById {
   '/sitemap-tools.xml': typeof SitemapToolsDotxmlRoute
   '/sitemap-worldcup.xml': typeof SitemapWorldcupDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/terms': typeof TermsRoute
   '/tools': typeof ToolsRouteWithChildren
   '/worldcup': typeof WorldcupRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteRouteWithChildren
@@ -308,6 +317,7 @@ export interface FileRouteTypes {
     | '/sitemap-tools.xml'
     | '/sitemap-worldcup.xml'
     | '/sitemap.xml'
+    | '/terms'
     | '/tools'
     | '/worldcup'
     | '/admin'
@@ -340,6 +350,7 @@ export interface FileRouteTypes {
     | '/sitemap-tools.xml'
     | '/sitemap-worldcup.xml'
     | '/sitemap.xml'
+    | '/terms'
     | '/worldcup'
     | '/favorites'
     | '/posts/$id'
@@ -371,6 +382,7 @@ export interface FileRouteTypes {
     | '/sitemap-tools.xml'
     | '/sitemap-worldcup.xml'
     | '/sitemap.xml'
+    | '/terms'
     | '/tools'
     | '/worldcup'
     | '/_authenticated/admin'
@@ -405,6 +417,7 @@ export interface RootRouteChildren {
   SitemapToolsDotxmlRoute: typeof SitemapToolsDotxmlRoute
   SitemapWorldcupDotxmlRoute: typeof SitemapWorldcupDotxmlRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  TermsRoute: typeof TermsRoute
   ToolsRoute: typeof ToolsRouteWithChildren
   WorldcupRoute: typeof WorldcupRoute
   PostsIdRoute: typeof PostsIdRoute
@@ -428,6 +441,13 @@ declare module '@tanstack/react-router' {
       path: '/tools'
       fullPath: '/tools'
       preLoaderRoute: typeof ToolsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sitemap.xml': {
@@ -703,6 +723,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapToolsDotxmlRoute: SitemapToolsDotxmlRoute,
   SitemapWorldcupDotxmlRoute: SitemapWorldcupDotxmlRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  TermsRoute: TermsRoute,
   ToolsRoute: ToolsRouteWithChildren,
   WorldcupRoute: WorldcupRoute,
   PostsIdRoute: PostsIdRoute,
