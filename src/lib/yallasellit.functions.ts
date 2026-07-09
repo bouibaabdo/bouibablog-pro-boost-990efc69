@@ -12,9 +12,10 @@ export interface YSMatch {
   status: string;
   live: boolean;
   finished: boolean;
-  streamUrl?: string; // original match page URL used as the reliable embedded source
-  playerUrl?: string; // direct player/embed URL when available
+  streamUrl?: string; // primary embed URL (best-guess channel player)
+  playerUrl?: string; // direct player/embed URL discovered from match page
   pageUrl?: string; // original match page URL as a fallback
+  channelUrls?: string[]; // extra candidate channel URLs across providers
   channel?: string;
   day: "yesterday" | "today" | "tomorrow";
 }
@@ -53,13 +54,55 @@ function extractPlayerUrl(html: string, baseUrl: string): string | undefined {
   return cleanUrl(sourceMatch?.[1], baseUrl);
 }
 
-function channelPlayerUrl(channel: string): string | undefined {
+/**
+ * Return a list of candidate embed URLs for a given TV channel across
+ * multiple known providers. The stream modal will auto-cycle through them
+ * so a single dead provider doesn't leave the user with a black screen.
+ */
+function channelPlayerUrls(channel: string): string[] {
   const normalized = channel
     .replace(/[٠-٩]/g, (d) => String("٠١٢٣٤٥٦٧٨٩".indexOf(d)))
     .toLowerCase();
+  const urls: string[] = [];
   const max = normalized.match(/(?:bein\s*)?(?:sports\s*)?max\s*(?:hd\s*)?(\d+)/i);
-  if (max?.[1]) return `https://topx.poiy.online/albaplayer/max${max[1]}/`;
-  return undefined;
+  if (max?.[1]) {
+    const n = max[1];
+    urls.push(
+      `https://topx.poiy.online/albaplayer/max${n}/`,
+      `https://embedsports.top/embed/alpha/beinmax${n}/1`,
+      `https://embedsports.me/embed/alpha/beinmax${n}/1`,
+      `https://embedsports.top/embed/bravo/beinmax${n}/1`,
+      `https://weblivehdplay.ru/?player=desktop&live=beinmax${n}`,
+    );
+    return urls;
+  }
+  const xtra = normalized.match(/(?:bein\s*)?xtra\s*(\d+)/i);
+  if (xtra?.[1]) {
+    const n = xtra[1];
+    urls.push(
+      `https://topx.poiy.online/albaplayer/xtra${n}/`,
+      `https://embedsports.top/embed/alpha/beinxtra${n}/1`,
+    );
+    return urls;
+  }
+  const bein = normalized.match(/bein\s*(?:sports?\s*)?(?:hd\s*)?(\d+)/i);
+  if (bein?.[1]) {
+    const n = bein[1];
+    urls.push(
+      `https://topx.poiy.online/albaplayer/bein${n}/`,
+      `https://embedsports.top/embed/alpha/beinsports${n}/1`,
+    );
+    return urls;
+  }
+  const ssc = normalized.match(/ssc\s*(?:hd\s*)?(\d+)/i);
+  if (ssc?.[1]) {
+    const n = ssc[1];
+    urls.push(
+      `https://topx.poiy.online/albaplayer/ssc${n}/`,
+      `https://embedsports.top/embed/alpha/ssc${n}/1`,
+    );
+  }
+  return urls;
 }
 
 async function resolvePlayerUrl(pageUrl: string): Promise<string | undefined> {
@@ -98,10 +141,11 @@ function parseCard(html: string, day: YSMatch["day"]): YSMatch | null {
   // Keep the match page as a fallback, then enrich it with the real iframe URL
   // in `scrape()` so the app embeds the player instead of an ad-heavy page.
   const pageUrl = cleanUrl(href);
-  const streamUrl = (channel ? channelPlayerUrl(channel) : undefined) || pageUrl;
+  const channelUrls = channel ? channelPlayerUrls(channel) : [];
+  const streamUrl = channelUrls[0] || pageUrl;
 
   const id = `${home}-${away}-${day}`.replace(/\s+/g, "-");
-  return { id, home, away, time, status, live, finished, streamUrl, pageUrl, channel, day };
+  return { id, home, away, time, status, live, finished, streamUrl, pageUrl, channelUrls, channel, day };
 }
 
 
