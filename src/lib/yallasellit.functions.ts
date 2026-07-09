@@ -15,6 +15,7 @@ export interface YSMatch {
   streamUrl?: string; // original match page URL used as the reliable embedded source
   playerUrl?: string; // direct player/embed URL when available
   pageUrl?: string; // original match page URL as a fallback
+  channel?: string;
   day: "yesterday" | "today" | "tomorrow";
 }
 
@@ -52,6 +53,15 @@ function extractPlayerUrl(html: string, baseUrl: string): string | undefined {
   return cleanUrl(sourceMatch?.[1], baseUrl);
 }
 
+function channelPlayerUrl(channel: string): string | undefined {
+  const normalized = channel
+    .replace(/[٠-٩]/g, (d) => String("٠١٢٣٤٥٦٧٨٩".indexOf(d)))
+    .toLowerCase();
+  const max = normalized.match(/(?:bein\s*)?(?:sports\s*)?max\s*(?:hd\s*)?(\d+)/i);
+  if (max?.[1]) return `https://topx.poiy.online/albaplayer/max${max[1]}/`;
+  return undefined;
+}
+
 async function resolvePlayerUrl(pageUrl: string): Promise<string | undefined> {
   const res = await fetch(pageUrl, {
     headers: {
@@ -78,6 +88,7 @@ function parseCard(html: string, day: YSMatch["day"]): YSMatch | null {
   if (!home || !away) return null;
   const time = root.querySelector(".MT_Time")?.text.trim() || "";
   const status = root.querySelector(".MT_Stat")?.text.trim() || "";
+  const channel = root.querySelector(".MT_Info li:first-child span")?.text.trim() || undefined;
   const finished = status.includes("انتهت");
   const live =
     !finished &&
@@ -87,9 +98,10 @@ function parseCard(html: string, day: YSMatch["day"]): YSMatch | null {
   // Keep the match page as a fallback, then enrich it with the real iframe URL
   // in `scrape()` so the app embeds the player instead of an ad-heavy page.
   const pageUrl = cleanUrl(href);
+  const streamUrl = (channel ? channelPlayerUrl(channel) : undefined) || pageUrl;
 
   const id = `${home}-${away}-${day}`.replace(/\s+/g, "-");
-  return { id, home, away, time, status, live, finished, streamUrl: pageUrl, pageUrl, day };
+  return { id, home, away, time, status, live, finished, streamUrl, pageUrl, channel, day };
 }
 
 
