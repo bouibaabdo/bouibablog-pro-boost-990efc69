@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { parse } from "node-html-parser";
 
 const BASE = "https://yallasellit.com";
-const INTERNAL_HOST = "yallasellit.com";
+
 
 export interface YSMatch {
   id: string;
