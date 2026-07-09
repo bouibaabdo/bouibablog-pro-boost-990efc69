@@ -34,13 +34,12 @@ export function SiteFooter() {
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li><Link to="/about" className="hover:text-foreground">من نحن</Link></li>
               <li><Link to="/contact" className="hover:text-foreground">تواصل معنا</Link></li>
-              <li>
-                <a href="https://www.bouibacademy.me" target="_blank" rel="noopener" className="hover:text-foreground">
-                  المدونة الأصلية
-                </a>
-              </li>
+              <li><Link to="/privacy" className="hover:text-foreground">سياسة الخصوصية</Link></li>
+              <li><Link to="/terms" className="hover:text-foreground">شروط الاستخدام</Link></li>
+              <li><Link to="/disclaimer" className="hover:text-foreground">إخلاء المسؤولية</Link></li>
             </ul>
           </div>
+
         </div>
 
         <div className="mt-10 pt-6 border-t border-border flex flex-col md:flex-row items-center justify-between gap-4">
