@@ -440,7 +440,7 @@ function MatchCard({
         <div className="mt-4 pt-4 border-t border-border space-y-2">
           {ysUrl ? (
             <button
-              onClick={() => onWatch(`ys-${m.id}`, `${m.home} vs ${m.away}`, searchQ, ysUrl)}
+              onClick={() => onWatch(src?.id || `ys-${m.id}`, `${m.home} vs ${m.away}`, searchQ, ysUrl)}
               className={`w-full inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-bold text-white transition ${
                 s.live ? "bg-red-600 hover:bg-red-700 animate-pulse" : "bg-primary hover:opacity-90"
               }`}
@@ -602,7 +602,7 @@ function YKMatchCard({
         <div className="relative mt-4 space-y-2">
           {ysUrl ? (
             <button
-              onClick={() => onWatch(`ys-${m.id}`, title, title, ysUrl)}
+              onClick={() => onWatch(src?.id || `ys-${m.id}`, title, title, ysUrl)}
               className={`w-full inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-bold text-white transition ${
                 m.live
                   ? "bg-red-600 hover:bg-red-700 shadow-lg shadow-red-500/20"
