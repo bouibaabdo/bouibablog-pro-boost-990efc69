@@ -40,12 +40,14 @@ function parseCard(html: string, day: YSMatch["day"]): YSMatch | null {
     (status.includes("جارية") || status.includes("مباشر") || /^\d+\s*'/.test(status));
   const href = root.querySelector("a[href]")?.getAttribute("href") || "";
 
-  // Keep only truly external stream URLs (skip internal /matches/... pages).
+  // Keep any absolute URL (internal match page or external embed) so the player
+  // always has something to iframe. Internal /matches/... pages carry the
+  // yallasellit multi-server player and Yallakora-style channel selection.
   let streamUrl: string | undefined;
   if (href) {
     try {
-      const u = new URL(href);
-      if (!u.hostname.includes(INTERNAL_HOST)) streamUrl = href;
+      const u = new URL(href, BASE);
+      streamUrl = u.toString();
     } catch {
       /* ignore */
     }
@@ -54,6 +56,7 @@ function parseCard(html: string, day: YSMatch["day"]): YSMatch | null {
   const id = `${home}-${away}-${day}`.replace(/\s+/g, "-");
   return { id, home, away, time, status, live, finished, streamUrl, day };
 }
+
 
 async function scrape(day: YSMatch["day"]): Promise<YSMatch[]> {
   const res = await fetch(PAGES[day], {
