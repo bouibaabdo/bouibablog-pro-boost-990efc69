@@ -12,9 +12,10 @@ export interface YSMatch {
   status: string;
   live: boolean;
   finished: boolean;
-  streamUrl?: string; // original match page URL used as the reliable embedded source
-  playerUrl?: string; // direct player/embed URL when available
+  streamUrl?: string; // primary embed URL (best-guess channel player)
+  playerUrl?: string; // direct player/embed URL discovered from match page
   pageUrl?: string; // original match page URL as a fallback
+  channelUrls?: string[]; // extra candidate channel URLs across providers
   channel?: string;
   day: "yesterday" | "today" | "tomorrow";
 }
