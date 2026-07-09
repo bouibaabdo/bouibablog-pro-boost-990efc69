@@ -127,6 +127,12 @@ async function scrape(day: YSMatch["day"]): Promise<YSMatch[]> {
     cards.map(async (card) => {
       if (!card.pageUrl) return card;
       const playerUrl = await resolvePlayerUrl(card.pageUrl).catch(() => undefined);
+      // If we already mapped the listed TV channel to a direct Alba player,
+      // keep it as the primary player. The match page often exposes a generic
+      // Twitch iframe that is unreliable when embedded on our domain.
+      if (card.streamUrl && card.streamUrl !== card.pageUrl) {
+        return { ...card, playerUrl: card.streamUrl };
+      }
       return playerUrl ? { ...card, playerUrl } : card;
     }),
   );
