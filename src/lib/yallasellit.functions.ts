@@ -141,10 +141,11 @@ function parseCard(html: string, day: YSMatch["day"]): YSMatch | null {
   // Keep the match page as a fallback, then enrich it with the real iframe URL
   // in `scrape()` so the app embeds the player instead of an ad-heavy page.
   const pageUrl = cleanUrl(href);
-  const streamUrl = (channel ? channelPlayerUrl(channel) : undefined) || pageUrl;
+  const channelUrls = channel ? channelPlayerUrls(channel) : [];
+  const streamUrl = channelUrls[0] || pageUrl;
 
   const id = `${home}-${away}-${day}`.replace(/\s+/g, "-");
-  return { id, home, away, time, status, live, finished, streamUrl, pageUrl, channel, day };
+  return { id, home, away, time, status, live, finished, streamUrl, pageUrl, channelUrls, channel, day };
 }
 
 
