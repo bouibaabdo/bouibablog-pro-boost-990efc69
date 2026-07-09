@@ -86,6 +86,7 @@ export function StreamModal({
   title,
   fallbackSearch,
   directUrl,
+  directUrls,
   directLabel,
   onClose,
 }: {
@@ -94,6 +95,8 @@ export function StreamModal({
   fallbackSearch: string;
   /** When provided, skip SportSRC lookup and use this URL as the single source. */
   directUrl?: string;
+  /** Extra direct fallbacks from the same provider. */
+  directUrls?: string[];
   /** Label shown for the direct source (default "يلا سلّيت"). */
   directLabel?: string;
   onClose: () => void;
@@ -101,7 +104,7 @@ export function StreamModal({
   const [detail, setDetail] = useState<SRCDetail | null>(null);
   const [ranked, setRanked] = useState<SRCSource[]>([]);
   const [activeIdx, setActiveIdx] = useState(0);
-  const [loading, setLoading] = useState(!directUrl);
+  const [loading, setLoading] = useState(!directUrl && !directUrls?.length);
   const [err, setErr] = useState<string | null>(null);
   const [autoFallback, setAutoFallback] = useState(true);
   const [iframeLoading, setIframeLoading] = useState(true);
@@ -121,17 +124,18 @@ export function StreamModal({
     let alive = true;
     (async () => {
       const sources: SRCSource[] = [];
-      if (directUrl) {
+      const providerUrls = Array.from(new Set([directUrl, ...(directUrls ?? [])].filter(Boolean) as string[]));
+      providerUrls.forEach((url, i) => {
         sources.push({
-        id: "yalla-direct",
-        streamNo: 1,
-        source: directLabel || "يلا سلّيت",
-        embedUrl: directUrl,
-        hd: true,
-        language: "ar",
-        viewers: 0,
+          id: `yalla-direct-${i + 1}`,
+          streamNo: i + 1,
+          source: i === 0 ? directLabel || "يلا سلّيت" : `بديل يلا سلّيت ${i + 1}`,
+          embedUrl: url,
+          hd: true,
+          language: "ar",
+          viewers: 0,
         } as unknown as SRCSource);
-      }
+      });
       try {
         const shouldFetchFallback = !matchId.startsWith("ys-");
         const d = shouldFetchFallback ? await fetchMatchDetail(matchId) : null;
@@ -163,7 +167,7 @@ export function StreamModal({
     return () => {
       alive = false;
     };
-  }, [matchId, directUrl, directLabel]);
+  }, [matchId, directUrl, directUrls, directLabel]);
 
   // Auto-fallback watchdog: if the iframe never loads, jump to the next source.
   useEffect(() => {
