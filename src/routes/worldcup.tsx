@@ -431,7 +431,17 @@ function MatchCard({
 
       {(s.live || s.upcoming) && (
         <div className="mt-4 pt-4 border-t border-border space-y-2">
-          {src ? (
+          {ysUrl ? (
+            <button
+              onClick={() => onWatch(`ys-${m.id}`, `${m.home} vs ${m.away}`, searchQ, ysUrl)}
+              className={`w-full inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-bold text-white transition ${
+                s.live ? "bg-red-600 hover:bg-red-700 animate-pulse" : "bg-primary hover:opacity-90"
+              }`}
+            >
+              <PlayCircle className="h-4 w-4" />
+              {s.live ? "شاهد البث المباشر الآن" : "شاهد البث داخل الموقع"}
+            </button>
+          ) : src ? (
             <button
               onClick={() => onWatch(src.id, `${m.home} vs ${m.away}`, searchQ)}
               className={`w-full inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-bold text-white transition ${
@@ -442,16 +452,6 @@ function MatchCard({
             >
               <PlayCircle className="h-4 w-4" />
               {s.live ? "شاهد البث المباشر الآن" : "شاهد البث المباشر"}
-            </button>
-          ) : ysUrl ? (
-            <button
-              onClick={() => onWatch(`ys-${m.id}`, `${m.home} vs ${m.away}`, searchQ, ysUrl)}
-              className={`w-full inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-bold text-white transition ${
-                s.live ? "bg-red-600 hover:bg-red-700 animate-pulse" : "bg-primary hover:opacity-90"
-              }`}
-            >
-              <PlayCircle className="h-4 w-4" />
-              شاهد البث داخل الموقع (يلا سلّيت)
             </button>
           ) : (
             <a
