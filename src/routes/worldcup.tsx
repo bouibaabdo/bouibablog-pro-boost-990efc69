@@ -709,20 +709,59 @@ function WorldCupPage() {
   const onWatch = (id: string, title: string, fallback: string, directUrl?: string) =>
     setWatch({ id, title, fallback, directUrl, directLabel: directUrl ? "يلا سلّيت" : undefined });
 
-  // Build a fast lookup from Yallasellit for direct stream URLs, keyed by normalized team pairs.
-  const ysStreamMap = useMemo(() => {
-    const m = new Map<string, string>();
-    const norm = (s: string) => s.replace(/\s+/g, "").toLowerCase();
+  // Build a fast lookup from Yallasellit for direct stream URLs. We match by
+  // team names with aggressive Arabic normalization (strip diacritics, common
+  // prefixes like "منتخب" / "نادي" / "ال", punctuation, spaces) and accept a
+  // match when either team name from Yallakora is a substring of the
+  // Yallasellit name (or vice-versa) for BOTH sides, in either order.
+  const ysStreamList = useMemo(() => {
+    const all: { home: string; away: string; url: string }[] = [];
     const push = (home: string, away: string, url?: string) => {
       if (!url) return;
-      m.set(`${norm(home)}|${norm(away)}`, url);
-      m.set(`${norm(away)}|${norm(home)}`, url);
+      all.push({ home, away, url });
     };
     ys?.today.forEach((x) => push(x.home, x.away, x.streamUrl));
     ys?.tomorrow.forEach((x) => push(x.home, x.away, x.streamUrl));
     ys?.yesterday.forEach((x) => push(x.home, x.away, x.streamUrl));
-    return m;
+    return all;
   }, [ys]);
+
+  const ysStreamMap = useMemo(() => {
+    const norm = (s: string) =>
+      s
+        .replace(/[\u064B-\u065F\u0670]/g, "")
+        .replace(/[إأآٱ]/g, "ا")
+        .replace(/ى/g, "ي")
+        .replace(/ة/g, "ه")
+        .replace(/(منتخب|نادي|فريق|المنتخب)/g, "")
+        .replace(/^ال/, "")
+        .replace(/[^\p{L}\p{N}]/gu, "")
+        .toLowerCase();
+    const matches = (a: string, b: string) => {
+      const na = norm(a);
+      const nb = norm(b);
+      if (!na || !nb) return false;
+      return na === nb || na.includes(nb) || nb.includes(na);
+    };
+    const find = (home: string, away: string): string | undefined => {
+      for (const s of ysStreamList) {
+        if (
+          (matches(s.home, home) && matches(s.away, away)) ||
+          (matches(s.home, away) && matches(s.away, home))
+        ) {
+          return s.url;
+        }
+      }
+      return undefined;
+    };
+    // Keep the Map-like `.get("home|away")` API used by child components.
+    return {
+      get(key: string) {
+        const [h, a] = key.split("|");
+        return find(h ?? "", a ?? "");
+      },
+    } as unknown as Map<string, string>;
+  }, [ysStreamList]);
 
   const { data: favData } = useQuery({
     queryKey: ["favorites", "ids"],
