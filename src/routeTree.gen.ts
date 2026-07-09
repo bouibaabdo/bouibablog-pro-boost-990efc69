@@ -11,11 +11,14 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WorldcupRouteImport } from './routes/worldcup'
 import { Route as ToolsRouteImport } from './routes/tools'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SitemapWorldcupDotxmlRouteImport } from './routes/sitemap-worldcup[.]xml'
 import { Route as SitemapToolsDotxmlRouteImport } from './routes/sitemap-tools[.]xml'
 import { Route as SitemapPostsDotxmlRouteImport } from './routes/sitemap-posts[.]xml'
 import { Route as SitemapPagesDotxmlRouteImport } from './routes/sitemap-pages[.]xml'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as DisclaimerRouteImport } from './routes/disclaimer'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AboutRouteImport } from './routes/about'
@@ -50,6 +53,11 @@ const ToolsRoute = ToolsRouteImport.update({
   path: '/tools',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
@@ -73,6 +81,16 @@ const SitemapPostsDotxmlRoute = SitemapPostsDotxmlRouteImport.update({
 const SitemapPagesDotxmlRoute = SitemapPagesDotxmlRouteImport.update({
   id: '/sitemap-pages.xml',
   path: '/sitemap-pages.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DisclaimerRoute = DisclaimerRouteImport.update({
+  id: '/disclaimer',
+  path: '/disclaimer',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -198,11 +216,14 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
+  '/disclaimer': typeof DisclaimerRoute
+  '/privacy': typeof PrivacyRoute
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
   '/sitemap-posts.xml': typeof SitemapPostsDotxmlRoute
   '/sitemap-tools.xml': typeof SitemapToolsDotxmlRoute
   '/sitemap-worldcup.xml': typeof SitemapWorldcupDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/terms': typeof TermsRoute
   '/tools': typeof ToolsRouteWithChildren
   '/worldcup': typeof WorldcupRoute
   '/admin': typeof AuthenticatedAdminRouteRouteWithChildren
@@ -229,11 +250,14 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
+  '/disclaimer': typeof DisclaimerRoute
+  '/privacy': typeof PrivacyRoute
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
   '/sitemap-posts.xml': typeof SitemapPostsDotxmlRoute
   '/sitemap-tools.xml': typeof SitemapToolsDotxmlRoute
   '/sitemap-worldcup.xml': typeof SitemapWorldcupDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/terms': typeof TermsRoute
   '/worldcup': typeof WorldcupRoute
   '/favorites': typeof AuthenticatedFavoritesRoute
   '/posts/$id': typeof PostsIdRoute
@@ -260,11 +284,14 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
+  '/disclaimer': typeof DisclaimerRoute
+  '/privacy': typeof PrivacyRoute
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
   '/sitemap-posts.xml': typeof SitemapPostsDotxmlRoute
   '/sitemap-tools.xml': typeof SitemapToolsDotxmlRoute
   '/sitemap-worldcup.xml': typeof SitemapWorldcupDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/terms': typeof TermsRoute
   '/tools': typeof ToolsRouteWithChildren
   '/worldcup': typeof WorldcupRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteRouteWithChildren
@@ -293,11 +320,14 @@ export interface FileRouteTypes {
     | '/about'
     | '/auth'
     | '/contact'
+    | '/disclaimer'
+    | '/privacy'
     | '/sitemap-pages.xml'
     | '/sitemap-posts.xml'
     | '/sitemap-tools.xml'
     | '/sitemap-worldcup.xml'
     | '/sitemap.xml'
+    | '/terms'
     | '/tools'
     | '/worldcup'
     | '/admin'
@@ -324,11 +354,14 @@ export interface FileRouteTypes {
     | '/about'
     | '/auth'
     | '/contact'
+    | '/disclaimer'
+    | '/privacy'
     | '/sitemap-pages.xml'
     | '/sitemap-posts.xml'
     | '/sitemap-tools.xml'
     | '/sitemap-worldcup.xml'
     | '/sitemap.xml'
+    | '/terms'
     | '/worldcup'
     | '/favorites'
     | '/posts/$id'
@@ -354,11 +387,14 @@ export interface FileRouteTypes {
     | '/about'
     | '/auth'
     | '/contact'
+    | '/disclaimer'
+    | '/privacy'
     | '/sitemap-pages.xml'
     | '/sitemap-posts.xml'
     | '/sitemap-tools.xml'
     | '/sitemap-worldcup.xml'
     | '/sitemap.xml'
+    | '/terms'
     | '/tools'
     | '/worldcup'
     | '/_authenticated/admin'
@@ -387,11 +423,14 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   AuthRoute: typeof AuthRoute
   ContactRoute: typeof ContactRoute
+  DisclaimerRoute: typeof DisclaimerRoute
+  PrivacyRoute: typeof PrivacyRoute
   SitemapPagesDotxmlRoute: typeof SitemapPagesDotxmlRoute
   SitemapPostsDotxmlRoute: typeof SitemapPostsDotxmlRoute
   SitemapToolsDotxmlRoute: typeof SitemapToolsDotxmlRoute
   SitemapWorldcupDotxmlRoute: typeof SitemapWorldcupDotxmlRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  TermsRoute: typeof TermsRoute
   ToolsRoute: typeof ToolsRouteWithChildren
   WorldcupRoute: typeof WorldcupRoute
   PostsIdRoute: typeof PostsIdRoute
@@ -415,6 +454,13 @@ declare module '@tanstack/react-router' {
       path: '/tools'
       fullPath: '/tools'
       preLoaderRoute: typeof ToolsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sitemap.xml': {
@@ -450,6 +496,20 @@ declare module '@tanstack/react-router' {
       path: '/sitemap-pages.xml'
       fullPath: '/sitemap-pages.xml'
       preLoaderRoute: typeof SitemapPagesDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/disclaimer': {
+      id: '/disclaimer'
+      path: '/disclaimer'
+      fullPath: '/disclaimer'
+      preLoaderRoute: typeof DisclaimerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -677,11 +737,14 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   AuthRoute: AuthRoute,
   ContactRoute: ContactRoute,
+  DisclaimerRoute: DisclaimerRoute,
+  PrivacyRoute: PrivacyRoute,
   SitemapPagesDotxmlRoute: SitemapPagesDotxmlRoute,
   SitemapPostsDotxmlRoute: SitemapPostsDotxmlRoute,
   SitemapToolsDotxmlRoute: SitemapToolsDotxmlRoute,
   SitemapWorldcupDotxmlRoute: SitemapWorldcupDotxmlRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  TermsRoute: TermsRoute,
   ToolsRoute: ToolsRouteWithChildren,
   WorldcupRoute: WorldcupRoute,
   PostsIdRoute: PostsIdRoute,
