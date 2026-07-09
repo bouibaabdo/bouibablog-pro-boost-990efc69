@@ -322,9 +322,9 @@ function reconcileYk(yk: YKMatch, wc: WCMatch[]): YKMatch {
     ...yk,
     homeScore: hs ?? yk.homeScore,
     awayScore: as ?? yk.awayScore,
-    live: s.live,
-    finished: s.finished,
-    status: s.finished ? "انتهت" : s.live ? "مباشر" : yk.status,
+    live: yk.live || s.live,
+    finished: yk.live ? false : s.finished,
+    status: yk.live ? (yk.status || "مباشر") : s.finished ? "انتهت" : s.live ? "مباشر" : yk.status,
     league: yk.league || "كأس العالم 2026",
   };
 }
