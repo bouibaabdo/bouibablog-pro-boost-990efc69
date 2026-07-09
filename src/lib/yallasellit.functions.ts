@@ -12,7 +12,8 @@ export interface YSMatch {
   status: string;
   live: boolean;
   finished: boolean;
-  streamUrl?: string; // direct player/embed URL when available
+  streamUrl?: string; // original match page URL used as the reliable embedded source
+  playerUrl?: string; // direct player/embed URL when available
   pageUrl?: string; // original match page URL as a fallback
   day: "yesterday" | "today" | "tomorrow";
 }
@@ -114,7 +115,7 @@ async function scrape(day: YSMatch["day"]): Promise<YSMatch[]> {
     cards.map(async (card) => {
       if (!card.pageUrl) return card;
       const playerUrl = await resolvePlayerUrl(card.pageUrl).catch(() => undefined);
-      return playerUrl ? { ...card, streamUrl: playerUrl } : card;
+      return playerUrl ? { ...card, playerUrl } : card;
     }),
   );
 }
