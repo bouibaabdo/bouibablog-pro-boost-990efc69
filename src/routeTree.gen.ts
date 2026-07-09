@@ -18,6 +18,7 @@ import { Route as SitemapToolsDotxmlRouteImport } from './routes/sitemap-tools[.
 import { Route as SitemapPostsDotxmlRouteImport } from './routes/sitemap-posts[.]xml'
 import { Route as SitemapPagesDotxmlRouteImport } from './routes/sitemap-pages[.]xml'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as DisclaimerRouteImport } from './routes/disclaimer'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AboutRouteImport } from './routes/about'
@@ -85,6 +86,11 @@ const SitemapPagesDotxmlRoute = SitemapPagesDotxmlRouteImport.update({
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DisclaimerRoute = DisclaimerRouteImport.update({
+  id: '/disclaimer',
+  path: '/disclaimer',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -210,6 +216,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
+  '/disclaimer': typeof DisclaimerRoute
   '/privacy': typeof PrivacyRoute
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
   '/sitemap-posts.xml': typeof SitemapPostsDotxmlRoute
@@ -243,6 +250,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
+  '/disclaimer': typeof DisclaimerRoute
   '/privacy': typeof PrivacyRoute
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
   '/sitemap-posts.xml': typeof SitemapPostsDotxmlRoute
@@ -276,6 +284,7 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
+  '/disclaimer': typeof DisclaimerRoute
   '/privacy': typeof PrivacyRoute
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
   '/sitemap-posts.xml': typeof SitemapPostsDotxmlRoute
@@ -311,6 +320,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/auth'
     | '/contact'
+    | '/disclaimer'
     | '/privacy'
     | '/sitemap-pages.xml'
     | '/sitemap-posts.xml'
@@ -344,6 +354,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/auth'
     | '/contact'
+    | '/disclaimer'
     | '/privacy'
     | '/sitemap-pages.xml'
     | '/sitemap-posts.xml'
@@ -376,6 +387,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/auth'
     | '/contact'
+    | '/disclaimer'
     | '/privacy'
     | '/sitemap-pages.xml'
     | '/sitemap-posts.xml'
@@ -411,6 +423,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   AuthRoute: typeof AuthRoute
   ContactRoute: typeof ContactRoute
+  DisclaimerRoute: typeof DisclaimerRoute
   PrivacyRoute: typeof PrivacyRoute
   SitemapPagesDotxmlRoute: typeof SitemapPagesDotxmlRoute
   SitemapPostsDotxmlRoute: typeof SitemapPostsDotxmlRoute
@@ -490,6 +503,13 @@ declare module '@tanstack/react-router' {
       path: '/privacy'
       fullPath: '/privacy'
       preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/disclaimer': {
+      id: '/disclaimer'
+      path: '/disclaimer'
+      fullPath: '/disclaimer'
+      preLoaderRoute: typeof DisclaimerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -717,6 +737,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   AuthRoute: AuthRoute,
   ContactRoute: ContactRoute,
+  DisclaimerRoute: DisclaimerRoute,
   PrivacyRoute: PrivacyRoute,
   SitemapPagesDotxmlRoute: SitemapPagesDotxmlRoute,
   SitemapPostsDotxmlRoute: SitemapPostsDotxmlRoute,
