@@ -64,6 +64,20 @@ function rankSources(sources: SRCSource[]): SRCSource[] {
     .map((x) => x.s);
 }
 
+function preparePlayerUrl(rawUrl: string): string {
+  if (!rawUrl) return rawUrl;
+  try {
+    const url = new URL(rawUrl.replace(/&amp;|&#038;/g, "&"));
+    if (url.hostname === "player.twitch.tv" && typeof window !== "undefined") {
+      url.searchParams.delete("parent");
+      url.searchParams.append("parent", window.location.hostname);
+    }
+    return url.toString();
+  } catch {
+    return rawUrl;
+  }
+}
+
 /** How long to wait for the iframe to fire "load" before auto-switching (ms). */
 const LOAD_TIMEOUT_MS = 9000;
 
@@ -72,6 +86,7 @@ export function StreamModal({
   title,
   fallbackSearch,
   directUrl,
+  directUrls,
   directLabel,
   onClose,
 }: {
@@ -80,6 +95,8 @@ export function StreamModal({
   fallbackSearch: string;
   /** When provided, skip SportSRC lookup and use this URL as the single source. */
   directUrl?: string;
+  /** Extra direct fallbacks from the same provider. */
+  directUrls?: string[];
   /** Label shown for the direct source (default "يلا سلّيت"). */
   directLabel?: string;
   onClose: () => void;
@@ -87,7 +104,7 @@ export function StreamModal({
   const [detail, setDetail] = useState<SRCDetail | null>(null);
   const [ranked, setRanked] = useState<SRCSource[]>([]);
   const [activeIdx, setActiveIdx] = useState(0);
-  const [loading, setLoading] = useState(!directUrl);
+  const [loading, setLoading] = useState(!directUrl && !directUrls?.length);
   const [err, setErr] = useState<string | null>(null);
   const [autoFallback, setAutoFallback] = useState(true);
   const [iframeLoading, setIframeLoading] = useState(true);
@@ -97,44 +114,52 @@ export function StreamModal({
 
   const active = ranked[activeIdx] || null;
   const activeUrl = useMemo(
-    () => (active ? (active.embedUrl || embedUrl(active) || "") : ""),
+    () => (active ? preparePlayerUrl(active.embedUrl || embedUrl(active) || "") : ""),
     [active],
   );
 
-  // Load match sources (or short-circuit to the direct URL provided by Yallasellit).
+  // Load match sources. If Yallasellit provides a direct URL, keep it first but
+  // still append SportSRC sources so the user can switch away from a bad embed.
   useEffect(() => {
-    if (directUrl) {
-      const synthetic = {
-        id: "yalla-direct",
-        streamNo: 1,
-        source: directLabel || "يلا سلّيت",
-        embedUrl: directUrl,
-        hd: true,
-        language: "ar",
-        viewers: 0,
-      } as unknown as SRCSource;
-      setRanked([synthetic]);
-      setActiveIdx(0);
-      setLoading(false);
-      setErr(null);
-      return;
-    }
     let alive = true;
     (async () => {
+      const sources: SRCSource[] = [];
+      const providerUrls = Array.from(new Set([directUrl, ...(directUrls ?? [])].filter(Boolean) as string[]));
+      providerUrls.forEach((url, i) => {
+        sources.push({
+          id: `yalla-direct-${i + 1}`,
+          streamNo: i + 1,
+          source: i === 0 ? directLabel || "يلا سلّيت" : `بديل يلا سلّيت ${i + 1}`,
+          embedUrl: url,
+          hd: true,
+          language: "ar",
+          viewers: 0,
+        } as unknown as SRCSource);
+      });
       try {
-        const d = await fetchMatchDetail(matchId);
+        const shouldFetchFallback = !matchId.startsWith("ys-");
+        const d = shouldFetchFallback ? await fetchMatchDetail(matchId) : null;
         if (!alive) return;
-        if (!d || !d.sources?.length) {
+        if (d?.sources?.length) {
+          setDetail(d);
+          sources.push(...rankSources(d.sources));
+        }
+        if (!sources.length) {
           setErr("لم يتم العثور على مصادر بث لهذه المباراة بعد. جرّب قبل انطلاق المباراة بقليل.");
           setLoading(false);
           return;
         }
-        setDetail(d);
-        setRanked(rankSources(d.sources));
+        setRanked(sources);
         setActiveIdx(0);
       } catch (e) {
         if (!alive) return;
-        setErr(e instanceof Error ? e.message : "تعذر تحميل البث.");
+        if (sources.length) {
+          setRanked(sources);
+          setActiveIdx(0);
+          setErr(null);
+        } else {
+          setErr(e instanceof Error ? e.message : "تعذر تحميل البث.");
+        }
       } finally {
         if (alive) setLoading(false);
       }
@@ -142,7 +167,7 @@ export function StreamModal({
     return () => {
       alive = false;
     };
-  }, [matchId, directUrl, directLabel]);
+  }, [matchId, directUrl, directUrls, directLabel]);
 
   // Auto-fallback watchdog: if the iframe never loads, jump to the next source.
   useEffect(() => {
@@ -318,7 +343,7 @@ export function StreamModal({
         </div>
 
         {/* Sources */}
-        {detail && ranked.length > 0 && (
+        {ranked.length > 0 && (
           <div className="p-4 border-t border-border">
             <div className="flex items-center justify-between gap-2 text-xs font-semibold text-muted-foreground mb-2.5">
               <div className="inline-flex items-center gap-2">
@@ -366,7 +391,7 @@ export function StreamModal({
                       )}
                     </button>
                     <a
-                      href={embedUrl(s) || "#"}
+                      href={preparePlayerUrl(s.embedUrl || embedUrl(s) || "#")}
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label="فتح المصدر مباشرة"

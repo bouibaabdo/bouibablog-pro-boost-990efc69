@@ -16,7 +16,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { StreamModal } from "@/components/stream-modal";
 import { fetchFootballMatches, findMatch, type SRCMatch } from "@/lib/sportsrc";
 import { getYallakoraMatches, type YKMatch } from "@/lib/yallakora.functions";
-import { getYallasellitMatches } from "@/lib/yallasellit.functions";
+import { getYallasellitMatches, type YSMatch } from "@/lib/yallasellit.functions";
 
 const srcQuery = queryOptions({
   queryKey: ["sportsrc", "football"],
@@ -245,8 +245,15 @@ function ykKickoffIso(day: "yesterday" | "today" | "tomorrow", time: string): st
 }
 
 function statusOf(m: WCMatch) {
-  const finished = m.status === "FT" || (m.homeScore != null && m.awayScore != null);
-  const live = ["LIVE", "1H", "2H", "HT", "ET", "P"].includes(m.status);
+  const raw = (m.status || "").trim();
+  const status = raw.toUpperCase();
+  const finished =
+    ["FT", "AET", "PEN"].includes(status) ||
+    /انتهت|انتهى|finished|full\s*time/i.test(raw);
+  const live =
+    !finished &&
+    (["LIVE", "1H", "2H", "HT", "ET", "P", "INT"].includes(status) ||
+      /مباشر|جاري|جارية|الشوط|استراحة|live/i.test(raw));
   return { finished, live, upcoming: !finished && !live };
 }
 
@@ -315,9 +322,9 @@ function reconcileYk(yk: YKMatch, wc: WCMatch[]): YKMatch {
     ...yk,
     homeScore: hs ?? yk.homeScore,
     awayScore: as ?? yk.awayScore,
-    live: s.live,
-    finished: s.finished,
-    status: s.finished ? "انتهت" : s.live ? "مباشر" : yk.status,
+    live: yk.live || s.live,
+    finished: yk.live ? false : s.finished,
+    status: yk.live ? (yk.status || "مباشر") : s.finished ? "انتهت" : s.live ? "مباشر" : yk.status,
     league: yk.league || "كأس العالم 2026",
   };
 }
@@ -332,8 +339,8 @@ function MatchCard({
   m: WCMatch;
   favIds: Set<string>;
   srcMatches: SRCMatch[];
-  onWatch: (srcId: string, title: string, fallbackSearch: string, directUrl?: string) => void;
-  ysStreamMap?: Map<string, string>;
+  onWatch: (srcId: string, title: string, fallbackSearch: string, directUrl?: string, directUrls?: string[]) => void;
+  ysStreamMap?: Map<string, string[]>;
 }) {
   const s = statusOf(m);
   const src = useMemo(
@@ -341,11 +348,12 @@ function MatchCard({
     [srcMatches, m.home, m.away, m.timestamp],
   );
   const searchQ = `${m.home} vs ${m.away}`;
-  const ysUrl = useMemo(() => {
+  const ysUrls = useMemo(() => {
     if (!ysStreamMap) return undefined;
     const k = `${m.home.replace(/\s+/g, "").toLowerCase()}|${m.away.replace(/\s+/g, "").toLowerCase()}`;
     return ysStreamMap.get(k);
   }, [ysStreamMap, m.home, m.away]);
+  const ysUrl = ysUrls?.[0];
 
   return (
     <div className="rounded-2xl border border-border bg-card p-5 shadow-card hover:shadow-elegant transition-all">
@@ -433,7 +441,7 @@ function MatchCard({
         <div className="mt-4 pt-4 border-t border-border space-y-2">
           {ysUrl ? (
             <button
-              onClick={() => onWatch(`ys-${m.id}`, `${m.home} vs ${m.away}`, searchQ, ysUrl)}
+              onClick={() => onWatch(src?.id || `ys-${m.id}`, `${m.home} vs ${m.away}`, searchQ, ysUrl, ysUrls)}
               className={`w-full inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-bold text-white transition ${
                 s.live ? "bg-red-600 hover:bg-red-700 animate-pulse" : "bg-primary hover:opacity-90"
               }`}
@@ -489,8 +497,8 @@ function YKMatchCard({
 }: {
   m: YKMatch;
   srcMatches: SRCMatch[];
-  onWatch: (srcId: string, title: string, fallbackSearch: string, directUrl?: string) => void;
-  ysStreamMap?: Map<string, string>;
+  onWatch: (srcId: string, title: string, fallbackSearch: string, directUrl?: string, directUrls?: string[]) => void;
+  ysStreamMap?: Map<string, string[]>;
   featured?: boolean;
 }) {
   const iso = useMemo(() => ykKickoffIso(m.day, m.time), [m.day, m.time]);
@@ -499,11 +507,12 @@ function YKMatchCard({
     () => (srcMatches.length ? findMatch(srcMatches, m.home, m.away, iso) : null),
     [srcMatches, m.home, m.away, iso],
   );
-  const ysUrl = useMemo(() => {
+  const ysUrls = useMemo(() => {
     if (!ysStreamMap) return undefined;
     const k = `${m.home.replace(/\s+/g, "").toLowerCase()}|${m.away.replace(/\s+/g, "").toLowerCase()}`;
     return ysStreamMap.get(k);
   }, [ysStreamMap, m.home, m.away]);
+  const ysUrl = ysUrls?.[0];
   const title = `${m.home} vs ${m.away}`;
 
   return (
@@ -595,7 +604,7 @@ function YKMatchCard({
         <div className="relative mt-4 space-y-2">
           {ysUrl ? (
             <button
-              onClick={() => onWatch(`ys-${m.id}`, title, title, ysUrl)}
+              onClick={() => onWatch(src?.id || `ys-${m.id}`, title, title, ysUrl, ysUrls)}
               className={`w-full inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-bold text-white transition ${
                 m.live
                   ? "bg-red-600 hover:bg-red-700 shadow-lg shadow-red-500/20"
@@ -703,11 +712,11 @@ function WorldCupPage() {
   const [tab, setTab] = useState<Tab>("live");
   useBrowserReminders();
   const [watch, setWatch] = useState<
-    { id: string; title: string; fallback: string; directUrl?: string; directLabel?: string } | null
+    { id: string; title: string; fallback: string; directUrl?: string; directUrls?: string[]; directLabel?: string } | null
   >(null);
   const { data: srcMatches = [] } = useQuery(srcQuery);
-  const onWatch = (id: string, title: string, fallback: string, directUrl?: string) =>
-    setWatch({ id, title, fallback, directUrl, directLabel: directUrl ? "يلا سلّيت" : undefined });
+  const onWatch = (id: string, title: string, fallback: string, directUrl?: string, directUrls?: string[]) =>
+    setWatch({ id, title, fallback, directUrl, directUrls, directLabel: directUrl ? "يلا سلّيت" : undefined });
 
   // Build a fast lookup from Yallasellit for direct stream URLs. We match by
   // team names with aggressive Arabic normalization (strip diacritics, common
@@ -715,14 +724,15 @@ function WorldCupPage() {
   // match when either team name from Yallakora is a substring of the
   // Yallasellit name (or vice-versa) for BOTH sides, in either order.
   const ysStreamList = useMemo(() => {
-    const all: { home: string; away: string; url: string }[] = [];
-    const push = (home: string, away: string, url?: string) => {
-      if (!url) return;
-      all.push({ home, away, url });
+    const all: { home: string; away: string; urls: string[] }[] = [];
+    const push = (match: YSMatch) => {
+      const urls = Array.from(new Set([match.playerUrl, match.streamUrl, match.pageUrl].filter(Boolean) as string[]));
+      if (!urls.length) return;
+      all.push({ home: match.home, away: match.away, urls });
     };
-    ys?.today.forEach((x) => push(x.home, x.away, x.streamUrl));
-    ys?.tomorrow.forEach((x) => push(x.home, x.away, x.streamUrl));
-    ys?.yesterday.forEach((x) => push(x.home, x.away, x.streamUrl));
+    ys?.today.forEach(push);
+    ys?.tomorrow.forEach(push);
+    ys?.yesterday.forEach(push);
     return all;
   }, [ys]);
 
@@ -743,13 +753,13 @@ function WorldCupPage() {
       if (!na || !nb) return false;
       return na === nb || na.includes(nb) || nb.includes(na);
     };
-    const find = (home: string, away: string): string | undefined => {
+    const find = (home: string, away: string): string[] | undefined => {
       for (const s of ysStreamList) {
         if (
           (matches(s.home, home) && matches(s.away, away)) ||
           (matches(s.home, away) && matches(s.away, home))
         ) {
-          return s.url;
+          return s.urls;
         }
       }
       return undefined;
@@ -760,7 +770,7 @@ function WorldCupPage() {
         const [h, a] = key.split("|");
         return find(h ?? "", a ?? "");
       },
-    } as unknown as Map<string, string>;
+    } as unknown as Map<string, string[]>;
   }, [ysStreamList]);
 
   const { data: favData } = useQuery({
@@ -1159,6 +1169,7 @@ function WorldCupPage() {
           title={watch.title}
           fallbackSearch={watch.fallback}
           directUrl={watch.directUrl}
+          directUrls={watch.directUrls}
           directLabel={watch.directLabel}
           onClose={() => setWatch(null)}
         />
