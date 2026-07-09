@@ -593,7 +593,19 @@ function YKMatchCard({
 
       {!m.finished && (
         <div className="relative mt-4 space-y-2">
-          {src ? (
+          {ysUrl ? (
+            <button
+              onClick={() => onWatch(`ys-${m.id}`, title, title, ysUrl)}
+              className={`w-full inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-bold text-white transition ${
+                m.live
+                  ? "bg-red-600 hover:bg-red-700 shadow-lg shadow-red-500/20"
+                  : "bg-gradient-to-l from-primary to-primary/80 hover:opacity-95"
+              }`}
+            >
+              <PlayCircle className="h-4 w-4" />
+              {m.live ? "شاهد البث المباشر الآن" : "شاهد البث داخل الموقع"}
+            </button>
+          ) : src ? (
             <button
               onClick={() => onWatch(src.id, title, title)}
               className={`w-full inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-bold text-white transition ${
@@ -604,18 +616,6 @@ function YKMatchCard({
             >
               <PlayCircle className="h-4 w-4" />
               {m.live ? "شاهد البث المباشر داخل الموقع" : "افتح المشغّل داخل الموقع"}
-            </button>
-          ) : ysUrl ? (
-            <button
-              onClick={() => onWatch(`ys-${m.id}`, title, title, ysUrl)}
-              className={`w-full inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-bold text-white transition ${
-                m.live
-                  ? "bg-red-600 hover:bg-red-700 shadow-lg shadow-red-500/20"
-                  : "bg-gradient-to-l from-primary to-primary/80 hover:opacity-95"
-              }`}
-            >
-              <PlayCircle className="h-4 w-4" />
-              شاهد البث داخل الموقع (يلا سلّيت)
             </button>
           ) : (
             <div className="w-full text-center rounded-lg border border-dashed border-border px-4 py-2.5 text-xs text-muted-foreground">
