@@ -245,8 +245,15 @@ function ykKickoffIso(day: "yesterday" | "today" | "tomorrow", time: string): st
 }
 
 function statusOf(m: WCMatch) {
-  const finished = m.status === "FT" || (m.homeScore != null && m.awayScore != null);
-  const live = ["LIVE", "1H", "2H", "HT", "ET", "P"].includes(m.status);
+  const raw = (m.status || "").trim();
+  const status = raw.toUpperCase();
+  const finished =
+    ["FT", "AET", "PEN"].includes(status) ||
+    /انتهت|انتهى|finished|full\s*time/i.test(raw);
+  const live =
+    !finished &&
+    (["LIVE", "1H", "2H", "HT", "ET", "P", "INT"].includes(status) ||
+      /مباشر|جاري|جارية|الشوط|استراحة|live/i.test(raw));
   return { finished, live, upcoming: !finished && !live };
 }
 

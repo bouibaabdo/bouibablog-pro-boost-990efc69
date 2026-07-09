@@ -64,6 +64,20 @@ function rankSources(sources: SRCSource[]): SRCSource[] {
     .map((x) => x.s);
 }
 
+function preparePlayerUrl(rawUrl: string): string {
+  if (!rawUrl) return rawUrl;
+  try {
+    const url = new URL(rawUrl.replace(/&amp;|&#038;/g, "&"));
+    if (url.hostname === "player.twitch.tv" && typeof window !== "undefined") {
+      url.searchParams.delete("parent");
+      url.searchParams.append("parent", window.location.hostname);
+    }
+    return url.toString();
+  } catch {
+    return rawUrl;
+  }
+}
+
 /** How long to wait for the iframe to fire "load" before auto-switching (ms). */
 const LOAD_TIMEOUT_MS = 9000;
 
@@ -97,7 +111,7 @@ export function StreamModal({
 
   const active = ranked[activeIdx] || null;
   const activeUrl = useMemo(
-    () => (active ? (active.embedUrl || embedUrl(active) || "") : ""),
+    () => (active ? preparePlayerUrl(active.embedUrl || embedUrl(active) || "") : ""),
     [active],
   );
 
