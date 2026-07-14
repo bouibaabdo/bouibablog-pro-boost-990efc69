@@ -1,30 +1,55 @@
-## المشاكل والحلول
+# خطة إصلاح "Render-blocking CSS" في Bouiba Academy
 
-### 1. حظر الرندر (940ms) — CSS + Google Fonts
-- **السبب:** `<link rel="stylesheet">` للـ CSS وGoogle Fonts يحجبان الرندر.
-- **الحل في `src/routes/__root.tsx`:**
-  - إضافة `<link rel="preload" as="style" onload="this.rel='stylesheet'">` لخط Google (تحميل غير حاجب) مع `<noscript>` fallback.
-  - تقليل أوزان الخطوط المطلوبة (حذف Cairo 800 إن لم يُستخدم) لتصغير طلب CSS.
-  - إبقاء `preconnect` كما هو.
+## المشكلة
+`/assets/styles-*.css` (≈18KB، 160ms) لا يزال حاجباً للرندر رغم `preload`، لأن `<link rel="stylesheet">` يبقى موجوداً في `<head>` ويوقف الرسم حتى يُحمَّل ويُطبَّق. الحل الجذري: **Critical CSS داخل `<head>` + تحميل غير حاجب للباقي**.
 
-### 2. صور Blogger كبيرة (275KB زائدة)
-- **السبب:** صور المقالات تُجلب من `blogger.googleusercontent.com` و `manuscdn.com` بأبعاد `1024x639` بينما تُعرض بـ `648x432`، وبدون WebP.
-- **الحل في `src/components/post-card.tsx` و `src/lib/blogger.functions.ts`:**
-  - تحويل روابط Blogger من `/s1600/` أو بدون مقاس إلى `/w800-h500-c-rw/` (يفرض WebP + قص + مقاس مناسب — ميزة مجانية من googleusercontent).
-  - إضافة `width` و `height` و `sizes` و `srcset` للصور لتحسين CLS + LCP.
-  - إضافة `loading="eager"` + `fetchPriority="high"` لأول صورة فقط.
+## الخطوات
 
-### 3. الكاش (31KB) — تنبيه رمادي فقط
-- AdSense (14 يوم ثابت من Google) و blogger.googleusercontent.com و `~flock.js`: **خارج تحكمنا**، تنبيه لا يؤثر على النقاط.
-- سأترك ملاحظة فقط دون تغيير كود.
+### 1) استخراج Critical CSS
+- تشغيل الموقع محلياً عبر Playwright على الصفحة الرئيسية بمقاس موبايل + ديسكتوب.
+- استخدام `critters` أو `penthouse` لاستخراج الـ CSS الفعلي المستعمل فوق الطي (الهيدر، الشعار، بطاقة الـ hero، أول بطاقة مقال، الأزرار، خطوط RTL، متغيرات `:root`).
+- الحجم المتوقع: 3–5KB.
+
+### 2) حقن Critical CSS داخل `<head>` (SSR)
+في `src/routes/__root.tsx`:
+- إنشاء ملف `src/critical.css` (يدوي في البداية، ثم automated لاحقاً).
+- استيراده كنص خام عبر `?raw` (يدعمه Vite).
+- حقنه كـ `<style>` عبر `head().scripts` غير عملي؛ الأصح إضافة عنصر مخصص في `RootShell` قبل `<HeadContent />` باستعمال `dangerouslySetInnerHTML`.
+
+### 3) تحويل main CSS إلى تحميل غير حاجب
+استبدال:
+```tsx
+{ rel: "preload", as: "style", href: appCss },
+{ rel: "stylesheet", href: appCss },
+```
+بـ:
+```tsx
+{ rel: "preload", as: "style", href: appCss, onLoad: "this.rel='stylesheet'" },
+```
++ `<noscript><link rel="stylesheet" href={appCss} /></noscript>` في `RootShell`.
+
+بما أن TanStack `head().links` لا يدعم `onLoad` مباشرة بشكل موثوق، سنستخدم نفس تقنية الخطوط الحالية:
+```tsx
+{ rel: "stylesheet", href: appCss, media: "print", "data-css-swap": "true" }
+```
++ توسيع السكربت السطري الموجود ليشمل: 
+```js
+document.querySelectorAll('link[data-css-swap],link[data-font-swap]').forEach(l=>l.media='all');
+```
+
+### 4) التحقق
+- Playwright + Lighthouse على `/` قبل وبعد.
+- التأكد من غياب FOUC (فلاش المحتوى غير المنسق) بفضل الـ critical inline.
+- التأكد من اختفاء تحذير "Eliminate render-blocking resources" أو انخفاضه تحت 100ms.
 
 ## الملفات المعدَّلة
-- `src/routes/__root.tsx` — تحميل الخط بشكل غير حاجب.
-- `src/lib/blogger.functions.ts` — دالة `optimizeBloggerImage(url, w, h)` لإعادة كتابة رابط الصورة.
-- `src/components/post-card.tsx` — استخدام الدالة + `width`/`height`/`sizes`/`srcset`.
-- (اختياري) `src/routes/index.tsx` — تمرير `priority` لأول بطاقة لتحسين LCP.
+- `src/critical.css` (جديد) — CSS فوق الطي فقط.
+- `src/routes/__root.tsx` — حقن critical inline + تحويل main CSS إلى `media="print"` swap + توسيع سكربت الـ swap.
 
 ## النتيجة المتوقعة
-- LCP أسرع بـ 400–800ms.
-- توفير ~275KB على صور المقالات.
-- اختفاء تحذير "حظر الرندر" أو انخفاضه إلى <100ms.
+- LCP أسرع بـ 200–400ms إضافية.
+- First Paint شبه فوري (critical CSS جاهز مع HTML).
+- بدون FOUC ولا كسر للتصميم.
+
+## ملاحظة
+لو لم يعطِ الحل اليدوي critical.css نتيجة كافية، يمكن لاحقاً دمج plugin مثل `vite-plugin-critical` في `vite.config.ts` لإنشائه تلقائياً عند البناء.
