@@ -1,75 +1,44 @@
-سيتم تطبيق كل التغييرات على مشروعك المنشور على **www.bouibacademy.me** (الدومين المخصص المرتبط بهذا المشروع نفسه) — لن يتغير أي شيء في Blogger.
+# توجيه www.bouibacademy.me إلى الموقع الجديد
+
+## سبب المشكلة
+الصورة التي أرسلتها تعرض **قالب Blogger الأصلي** لأن الدومين `www.bouibacademy.me` لا يزال مربوطًا في إعدادات Blogger عبر سجلات DNS قديمة. أما الموقع الاحترافي الذي بنيناه فمنشور حاليًا على `edu.bouibacademy.me` فقط.
+
+الحل هو **تحرير الدومين من Blogger وربطه بـ Lovable**، بحيث يعرض `www.bouibacademy.me` و`bouibacademy.me` نفس التصميم الجديد.
 
 ---
 
-## 1) الصفحة الرئيسية الجديدة `/`
+## الخطوات
 
-الترتيب المعتمد:
+### 1) داخل لوحة Blogger (أنت تنفذها)
+- افتح Blogger → **Settings → Publishing**.
+- احذف الدومين المخصص `www.bouibacademy.me` (سيعود المدونة للعمل على `academybouiba.blogspot.com` — وهذا هو المصدر الذي يجلب منه الموقع الجديد المقالات، فلن يتأثر شيء).
 
+### 2) داخل مزوّد الدومين (حيث اشتريت bouibacademy.me)
+احذف سجلات Blogger القديمة (CNAME يشير إلى `ghs.google.com` وسجلات A الأربعة الخاصة بـ Google) وأضِف بدلها:
+
+```text
+النوع  الاسم     القيمة
+A      @         185.158.133.1
+A      www       185.158.133.1
+TXT    _lovable  (القيمة التي ستظهر لك في Lovable)
 ```
-Hero (مضغوط)
-  ↓
-مباريات كأس العالم اليوم (أمس / اليوم / غدًا مع زر بث)
-  ↓
-أدوات AI (5 بطاقات)
-  ↓
-اختبار AI (بطاقة CTA بارزة)
-  ↓
-أحدث المقالات
-  ↓
-التصنيفات
-```
 
-**تصميم الجوال أولاً:**
-- Hero مضغوط بدون stats كبيرة في الجوال
-- المباريات: تمرير أفقي snap-scroll في الجوال، شبكة في الديسكتوب
-- الأدوات: عمود واحد → عمودان → 3
-- بطاقة الاختبار أكبر وأوضح
-- Bottom quick-nav ثابتة في الجوال فقط (مباريات / أدوات / اختبار / مقالات)
+### 3) داخل Lovable (أنا أرشدك)
+- **Project Settings → Domains → Connect Domain**.
+- أضِف `bouibacademy.me` ثم أضِف `www.bouibacademy.me` كمدخل منفصل.
+- اختر أحدهما كـ **Primary** (يُنصح `www.bouibacademy.me`) والآخر سيعيد التوجيه إليه.
+- اترك النظام يتحقّق من DNS ويُصدر شهادة SSL (قد يستغرق حتى 72 ساعة، عادةً أقل من ساعة).
 
-**تعديل:** `src/routes/index.tsx` + loader إضافية لجلب مباريات اليوم.
+### 4) بعد التفعيل
+- `www.bouibacademy.me` و`bouibacademy.me` سيعرضان الموقع الاحترافي الجديد.
+- `edu.bouibacademy.me` يبقى يعمل كما هو (أو يمكن حذفه لاحقًا).
+- المقالات ستستمر بالظهور لأنها تُجلب من `academybouiba.blogspot.com` في الخلفية.
 
 ---
 
-## 2) مصدر البث من yalladown.net
+## ملاحظات مهمة
+- **لن يتم أي تغيير في الكود** — المشكلة كلها في إعدادات DNS.
+- المقالات الموجودة في Blogger لن تُحذف؛ ستظل مصدر البيانات.
+- بعد الانتهاء، سنُعيد إرسال Sitemap الجديد إلى Google Search Console من الدومين الرئيسي.
 
-**ملف جديد:** `src/lib/yalladown.functions.ts`
-- `scrapeYalladown()` — يجلب الصفحة الرئيسية ويلتقط قائمة المباريات وروابط صفحاتها
-- `extractStreamUrls(url)` — يجلب صفحة المباراة ويستخرج جميع روابط `iframe` embed
-- كاش 60 ثانية
-
-**الدمج:**
-- في `src/routes/worldcup.tsx`: بناء `sources` يضع yalladown **أولًا**، ثم yallasellit، ثم SportSRC
-- الاحتفاظ بالـ auto-fallback الحالي (5 ثوانٍ)
-- ربط مباريات yalladown بمعرّفات المباريات عبر منطق التطبيع الحالي لأسماء الفرق العربية
-
----
-
-## 3) شريط مباراة اليوم داخل كل مقال
-
-**مكوّن جديد:** `src/components/match-strip.tsx`
-- يظهر في نهاية كل مقال (`src/routes/posts.$id.tsx`) قبل الفوتر
-- يعرض المباراة المباشرة/القادمة اليوم فقط — يختفي عند عدم وجودها
-- علم الفريقين + النتيجة + الوقت + زر "شاهد البث" يفتح `StreamModal`
-- **Sticky bottom bar** في الجوال عند وجود مباراة `LIVE`
-- بطاقة inline عادية في الديسكتوب
-
----
-
-## 4) ملخص الملفات
-
-**ستُعدَّل:**
-- `src/routes/index.tsx` — تصميم كامل جديد
-- `src/routes/posts.$id.tsx` — إضافة `<MatchStrip />`
-- `src/routes/worldcup.tsx` — دمج yalladown في مصادر البث
-- `src/components/stream-modal.tsx` — دعم ترتيب yalladown أولًا
-
-**ستُنشأ:**
-- `src/lib/yalladown.functions.ts`
-- `src/components/match-strip.tsx`
-- `src/components/home-matches-rail.tsx` (تمرير المباريات في الجوال)
-- `src/components/mobile-quick-nav.tsx` (شريط سفلي للجوال)
-
-**بدون تغيير:** لوحة التحكم، ربط Blogger، Supabase، AdSense.
-
-بعد التطبيق ستحتاج للضغط على **Publish → Update** لينعكس التصميم الجديد على `www.bouibacademy.me`.
+هل تريد أن أبدأ بتوجيهك خطوة بخطوة عبر إعدادات مزوّد الدومين لديك؟ أخبرني عند من اشتريت `bouibacademy.me` (Namecheap / GoDaddy / OVH / ...).
