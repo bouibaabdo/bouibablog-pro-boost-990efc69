@@ -1,31 +1,30 @@
-## المشكلة
-`styles-2s3p21Eu.css` بحجم 19.3 KiB يحجب أول عرض للصفحة لمدة ~470ms. سبب التضخم الأساسي: استيراد 6 ملفات `@fontsource` (Cairo × 4 أوزان + Tajawal × 2) داخل `src/styles.css` — كل ملف يضيف `@font-face` مع مسار woff2، فيتحول CSS إلى مورد ثقيل يوقف الرسم.
+## المشاكل والحلول
 
-## الحل الجذري
+### 1. حظر الرندر (940ms) — CSS + Google Fonts
+- **السبب:** `<link rel="stylesheet">` للـ CSS وGoogle Fonts يحجبان الرندر.
+- **الحل في `src/routes/__root.tsx`:**
+  - إضافة `<link rel="preload" as="style" onload="this.rel='stylesheet'">` لخط Google (تحميل غير حاجب) مع `<noscript>` fallback.
+  - تقليل أوزان الخطوط المطلوبة (حذف Cairo 800 إن لم يُستخدم) لتصغير طلب CSS.
+  - إبقاء `preconnect` كما هو.
 
-### 1) نقل الخطوط من CSS إلى `<link>` في `<head>` (يقلص CSS ~60%)
-- حذف كل أسطر `@import "@fontsource/..."` من أعلى `src/styles.css`.
-- في `src/routes/__root.tsx` داخل `head().links`:
-  - `preconnect` إلى `fonts.googleapis.com` و`fonts.gstatic.com` (crossorigin).
-  - `<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800&family=Tajawal:wght@400;500&display=swap">`.
-- إزالة تبعية `@fontsource/*` من `package.json` (تقليل حجم الباندل).
+### 2. صور Blogger كبيرة (275KB زائدة)
+- **السبب:** صور المقالات تُجلب من `blogger.googleusercontent.com` و `manuscdn.com` بأبعاد `1024x639` بينما تُعرض بـ `648x432`، وبدون WebP.
+- **الحل في `src/components/post-card.tsx` و `src/lib/blogger.functions.ts`:**
+  - تحويل روابط Blogger من `/s1600/` أو بدون مقاس إلى `/w800-h500-c-rw/` (يفرض WebP + قص + مقاس مناسب — ميزة مجانية من googleusercontent).
+  - إضافة `width` و `height` و `sizes` و `srcset` للصور لتحسين CLS + LCP.
+  - إضافة `loading="eager"` + `fetchPriority="high"` لأول صورة فقط.
 
-### 2) Preload للـ CSS الرئيسي لتقليل الحجب
-في `head().links` بـ `__root.tsx` نضيف قبل الـ `stylesheet` الحالي:
-```
-{ rel: "preload", as: "style", href: appCss }
-```
-(يبقى الـ `stylesheet` نفسه، لكن preload يبدأ التحميل مبكرًا فيقلّ زمن الحجب).
+### 3. الكاش (31KB) — تنبيه رمادي فقط
+- AdSense (14 يوم ثابت من Google) و blogger.googleusercontent.com و `~flock.js`: **خارج تحكمنا**، تنبيه لا يؤثر على النقاط.
+- سأترك ملاحظة فقط دون تغيير كود.
 
-### 3) تقليم أوزان الخطوط
-الاحتفاظ فقط بالأوزان المستعملة فعليًا (Cairo 700/800 للعناوين، Tajawal 400/500 للنص). كانت 6 أوزان → تصبح 5.
+## الملفات المعدَّلة
+- `src/routes/__root.tsx` — تحميل الخط بشكل غير حاجب.
+- `src/lib/blogger.functions.ts` — دالة `optimizeBloggerImage(url, w, h)` لإعادة كتابة رابط الصورة.
+- `src/components/post-card.tsx` — استخدام الدالة + `width`/`height`/`sizes`/`srcset`.
+- (اختياري) `src/routes/index.tsx` — تمرير `priority` لأول بطاقة لتحسين LCP.
 
 ## النتيجة المتوقعة
-- CSS ≈ 7-9 KiB بدل 19.3 KiB.
-- الخطوط تُحمَّل بالتوازي مع `display=swap` (لا تحجب النص).
-- تحسّن LCP/FCP بحوالي 400-800ms.
-
-## الملفات المتأثرة
-- `src/styles.css` — حذف 6 أسطر `@import`.
-- `src/routes/__root.tsx` — إضافة preconnect + Google Fonts link + preload CSS.
-- `package.json` — إزالة `@fontsource/cairo` و`@fontsource/tajawal`.
+- LCP أسرع بـ 400–800ms.
+- توفير ~275KB على صور المقالات.
+- اختفاء تحذير "حظر الرندر" أو انخفاضه إلى <100ms.
