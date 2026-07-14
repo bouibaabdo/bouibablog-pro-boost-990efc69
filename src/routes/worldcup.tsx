@@ -16,7 +16,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { StreamModal } from "@/components/stream-modal";
 import { fetchFootballMatches, findMatch, type SRCMatch } from "@/lib/sportsrc";
 import { getYallakoraMatches, type YKMatch } from "@/lib/yallakora.functions";
-import { getYallasellitMatches, type YSMatch } from "@/lib/yallasellit.functions";
+import { getYallasellitMatches } from "@/lib/yallasellit.functions";
 import { getYalladownMatches } from "@/lib/yalladown.functions";
 import { buildStreamLookup } from "@/lib/match-streams";
 
