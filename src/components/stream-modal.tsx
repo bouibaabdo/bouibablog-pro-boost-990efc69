@@ -85,6 +85,9 @@ function preparePlayerUrl(rawUrl: string): string {
 /** How long to wait for the iframe to fire "load" before auto-switching (ms). */
 const LOAD_TIMEOUT_MS = 5000;
 
+/** How long to wait for the iframe to fire "load" before auto-switching (ms). */
+const LOAD_TIMEOUT_MS = 6000;
+
 export function StreamModal({
   matchId,
   title,
@@ -92,6 +95,8 @@ export function StreamModal({
   directUrl,
   directUrls,
   directLabel,
+  home,
+  away,
   onClose,
 }: {
   matchId: string;
@@ -103,18 +108,22 @@ export function StreamModal({
   directUrls?: string[];
   /** Label shown for the direct source (default "يلا سلّيت"). */
   directLabel?: string;
+  /** Team names — enable streamed.pk auto-discovery when provided. */
+  home?: string;
+  away?: string;
   onClose: () => void;
 }) {
   const [detail, setDetail] = useState<SRCDetail | null>(null);
   const [ranked, setRanked] = useState<SRCSource[]>([]);
   const [activeIdx, setActiveIdx] = useState(0);
-  const [loading, setLoading] = useState(!directUrl && !directUrls?.length);
+  const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
   const [autoFallback, setAutoFallback] = useState(true);
   const [iframeLoading, setIframeLoading] = useState(true);
   const [triedAll, setTriedAll] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const iframeKey = useRef(0);
+  const fetchStreams = useServerFn(getLiveStreamsFor);
 
   const active = ranked[activeIdx] || null;
   const activeUrl = useMemo(
