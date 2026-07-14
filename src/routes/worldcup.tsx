@@ -726,9 +726,14 @@ function WorldCupPage() {
   const [watch, setWatch] = useState<
     { id: string; title: string; fallback: string; directUrl?: string; directUrls?: string[]; directLabel?: string } | null
   >(null);
+  void watch;
   const { data: srcMatches = [] } = useQuery(srcQuery);
-  const onWatch = (id: string, title: string, fallback: string, directUrl?: string, directUrls?: string[]) =>
-    setWatch({ id, title, fallback, directUrl, directUrls, directLabel: directUrl ? "يلا داون" : undefined });
+  const onWatch = (_id: string, _title: string, _fallback: string, _directUrl?: string, _directUrls?: string[]) => {
+    if (typeof window !== "undefined") {
+      window.open("https://tv.bouibacademy.me/#sports", "_blank", "noopener,noreferrer");
+    }
+  };
+  void setWatch;
 
   // Merge Yalladown (primary) + Yallasellit (fallback) stream URLs, keyed by
   // team names with aggressive Arabic normalization. Exposed via a Map-like
