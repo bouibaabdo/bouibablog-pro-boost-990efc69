@@ -13,7 +13,8 @@ import { SiteFooter } from "@/components/site-footer";
 import { FavoriteButton } from "@/components/favorite-button";
 import { useBrowserReminders } from "@/hooks/use-browser-reminders";
 import { supabase } from "@/integrations/supabase/client";
-import { StreamModal } from "@/components/stream-modal";
+// StreamModal removed — StreamHub (tv.bouibacademy.me) blocks iframe embedding,
+// so we open it in a new tab instead.
 import { fetchFootballMatches, findMatch, type SRCMatch } from "@/lib/sportsrc";
 import { getYallakoraMatches, type YKMatch } from "@/lib/yallakora.functions";
 import { getYallasellitMatches } from "@/lib/yallasellit.functions";
