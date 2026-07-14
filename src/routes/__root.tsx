@@ -92,10 +92,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       { rel: "preload", as: "style", href: appCss },
       { rel: "stylesheet", href: appCss },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Cairo:wght@700;800&family=Tajawal:wght@400;500&display=swap" },
+      { rel: "preload", as: "style", href: "https://fonts.googleapis.com/css2?family=Cairo:wght@700&family=Tajawal:wght@400;500&display=swap" },
+      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Cairo:wght@700&family=Tajawal:wght@400;500&display=swap", media: "print", "data-font-swap": "true" } as unknown as { rel: string; href: string },
       { rel: "icon", href: "/favicon.png", type: "image/png" },
     ],
     scripts: [
+      {
+        children: "document.querySelectorAll('link[data-font-swap]').forEach(function(l){l.media='all'});",
+      },
       {
         type: "application/ld+json",
         children: JSON.stringify({
