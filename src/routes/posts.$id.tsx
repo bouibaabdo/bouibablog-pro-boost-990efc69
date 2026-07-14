@@ -36,7 +36,7 @@ export const Route = createFileRoute("/posts/$id")({
     const shortTitle = rawTitle.length > maxTitle ? rawTitle.slice(0, maxTitle - 1).trimEnd() + "…" : rawTitle;
     const title = `${shortTitle}${SUFFIX}`;
     const desc = post ? post.excerpt.slice(0, 160) : "مقال من أكاديمية بويبة للذكاء الاصطناعي.";
-    const canonical = `https://edu.bouibacademy.me/posts/${params.id}`;
+    const canonical = `https://www.bouibacademy.me/posts/${params.id}`;
     const meta: Array<Record<string, string>> = [
       { title },
       { name: "description", content: desc },

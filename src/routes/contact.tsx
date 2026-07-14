@@ -10,9 +10,9 @@ export const Route = createFileRoute("/contact")({
       { name: "description", content: "تواصل مع فريق Bouiba Academy — لأسئلتك، اقتراحاتك، أو فرص التعاون في محتوى الذكاء الاصطناعي العربي." },
       { property: "og:title", content: "تواصل معنا — Bouiba Academy" },
       { property: "og:description", content: "راسل فريق Bouiba Academy لأي سؤال، اقتراح، أو تعاون في محتوى الذكاء الاصطناعي." },
-      { property: "og:url", content: "https://edu.bouibacademy.me/contact" },
+      { property: "og:url", content: "https://www.bouibacademy.me/contact" },
     ],
-    links: [{ rel: "canonical", href: "https://edu.bouibacademy.me/contact" }],
+    links: [{ rel: "canonical", href: "https://www.bouibacademy.me/contact" }],
   }),
   component: ContactPage,
 });

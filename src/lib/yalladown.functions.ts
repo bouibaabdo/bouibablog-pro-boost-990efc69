@@ -102,7 +102,7 @@ async function resolvePageIframes(pageUrl: string): Promise<string[]> {
     const res = await fetch(pageUrl, {
       headers: {
         "User-Agent":
-          "Mozilla/5.0 (compatible; BouibAcademyBot/1.0; +https://edu.bouibacademy.me)",
+          "Mozilla/5.0 (compatible; BouibAcademyBot/1.0; +https://www.bouibacademy.me)",
         Accept: "text/html,application/xhtml+xml",
         "Accept-Language": "ar,en;q=0.8",
       },
@@ -167,7 +167,7 @@ async function scrape(day: YDMatch["day"]): Promise<YDMatch[]> {
   const res = await fetch(PAGES[day], {
     headers: {
       "User-Agent":
-        "Mozilla/5.0 (compatible; BouibAcademyBot/1.0; +https://edu.bouibacademy.me)",
+        "Mozilla/5.0 (compatible; BouibAcademyBot/1.0; +https://www.bouibacademy.me)",
       Accept: "text/html",
     },
     signal: AbortSignal.timeout(15000),

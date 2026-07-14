@@ -28,9 +28,9 @@ export const Route = createFileRoute("/")({
   },
   head: () => ({
     meta: [
-      { property: "og:url", content: "https://edu.bouibacademy.me/" },
+      { property: "og:url", content: "https://www.bouibacademy.me/" },
     ],
-    links: [{ rel: "canonical", href: "https://edu.bouibacademy.me/" }],
+    links: [{ rel: "canonical", href: "https://www.bouibacademy.me/" }],
   }),
   component: HomePage,
   errorComponent: ({ error }) => (
