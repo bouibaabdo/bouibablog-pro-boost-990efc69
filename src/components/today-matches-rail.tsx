@@ -199,8 +199,6 @@ export function TodayMatchesRail({
           directUrl={watch.urls[0]}
           directUrls={watch.urls.slice(1)}
           directLabel="يلا داون"
-          home={watch.home}
-          away={watch.away}
           onClose={() => setWatch(null)}
         />
       )}
