@@ -36,7 +36,10 @@ export function SiteHeader() {
             className="h-11 w-auto"
             width={44}
             height={44}
+            fetchPriority="high"
+            decoding="async"
           />
+
         </Link>
 
         <nav className="hidden md:flex items-center gap-1">
