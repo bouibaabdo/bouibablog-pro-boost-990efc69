@@ -24,6 +24,7 @@ import {
   CheckCircle2,
   X,
   Send,
+  RefreshCw,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -35,6 +36,49 @@ const MAX_UPLOAD_BYTES = 500 * 1024 * 1024; // 500 MB
 
 type UploadStage = "idle" | "uploading" | "uploaded" | "publishing" | "done";
 
+async function captureThumb(file: File, atSec: number): Promise<Blob | null> {
+  return new Promise((resolve) => {
+    const url = URL.createObjectURL(file);
+    const v = document.createElement("video");
+    v.preload = "metadata";
+    v.muted = true;
+    v.playsInline = true;
+    v.src = url;
+    const cleanup = () => URL.revokeObjectURL(url);
+    v.onloadedmetadata = () => {
+      const target = Math.min(Math.max(0.1, atSec), Math.max(0.1, v.duration - 0.1));
+      v.currentTime = target;
+    };
+    v.onseeked = () => {
+      try {
+        const w = 640;
+        const h = Math.round((v.videoHeight / v.videoWidth) * w) || 360;
+        const canvas = document.createElement("canvas");
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return resolve(null), cleanup();
+        ctx.drawImage(v, 0, 0, w, h);
+        canvas.toBlob(
+          (b) => {
+            cleanup();
+            resolve(b);
+          },
+          "image/jpeg",
+          0.82,
+        );
+      } catch {
+        cleanup();
+        resolve(null);
+      }
+    };
+    v.onerror = () => {
+      cleanup();
+      resolve(null);
+    };
+  });
+}
+
 function AdminLessons() {
   const [items, setItems] = useState<any[] | null>(null);
 
@@ -42,7 +86,6 @@ function AdminLessons() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
-  const [thumbnailUrl, setThumbnailUrl] = useState("");
 
   // Upload state
   const [file, setFile] = useState<File | null>(null);
@@ -51,7 +94,12 @@ function AdminLessons() {
   const [stage, setStage] = useState<UploadStage>("idle");
   const [progress, setProgress] = useState(0);
   const [uploadedPath, setUploadedPath] = useState<string | null>(null);
+  const [thumbPath, setThumbPath] = useState<string | null>(null);
+  const [thumbPreview, setThumbPreview] = useState<string | null>(null);
+  const [thumbBlob, setThumbBlob] = useState<Blob | null>(null);
+  const [thumbAt, setThumbAt] = useState(1);
   const [duration, setDuration] = useState<number | null>(null);
+  const [regenerating, setRegenerating] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
 
   async function refresh() {
@@ -72,6 +120,52 @@ function AdminLessons() {
     return () => URL.revokeObjectURL(url);
   }, [file]);
 
+  // Auto-generate thumbnail + read duration when a file is picked
+  useEffect(() => {
+    if (!file) return;
+    (async () => {
+      // duration
+      try {
+        const dur = await new Promise<number>((resolve, reject) => {
+          const v = document.createElement("video");
+          v.preload = "metadata";
+          v.onloadedmetadata = () => resolve(Math.round(v.duration));
+          v.onerror = () => reject();
+          v.src = URL.createObjectURL(file);
+        });
+        setDuration(dur);
+        const at = Math.min(2, Math.max(0.5, dur / 20));
+        setThumbAt(at);
+        const b = await captureThumb(file, at);
+        if (b) {
+          setThumbBlob(b);
+          setThumbPreview((prev) => {
+            if (prev) URL.revokeObjectURL(prev);
+            return URL.createObjectURL(b);
+          });
+        }
+      } catch {}
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [file]);
+
+  async function regenerateThumb(atSec: number) {
+    if (!file) return;
+    setRegenerating(true);
+    try {
+      const b = await captureThumb(file, atSec);
+      if (b) {
+        setThumbBlob(b);
+        setThumbPreview((prev) => {
+          if (prev) URL.revokeObjectURL(prev);
+          return URL.createObjectURL(b);
+        });
+      }
+    } finally {
+      setRegenerating(false);
+    }
+  }
+
   const acceptFile = useCallback((f: File | null | undefined) => {
     if (!f) return;
     if (!f.type.startsWith("video/")) {
@@ -88,6 +182,12 @@ function AdminLessons() {
     setStage("idle");
     setProgress(0);
     setUploadedPath(null);
+    setThumbPath(null);
+    setThumbBlob(null);
+    setThumbPreview((prev) => {
+      if (prev) URL.revokeObjectURL(prev);
+      return null;
+    });
     setDuration(null);
   }, []);
 
@@ -103,6 +203,12 @@ function AdminLessons() {
     setStage("idle");
     setProgress(0);
     setUploadedPath(null);
+    setThumbPath(null);
+    setThumbBlob(null);
+    setThumbPreview((prev) => {
+      if (prev) URL.revokeObjectURL(prev);
+      return null;
+    });
     setDuration(null);
     if (fileInput.current) fileInput.current.value = "";
   }
@@ -112,14 +218,15 @@ function AdminLessons() {
     setStage("uploading");
     setProgress(0);
 
-    // Fake smooth progress (Supabase JS v2 doesn't expose progress events reliably)
     const timer = setInterval(() => {
       setProgress((p) => (p < 90 ? p + Math.max(1, Math.round((95 - p) / 15)) : p));
     }, 400);
 
     try {
       const ext = file.name.split(".").pop() || "mp4";
-      const path = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+      const base = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+      const path = `${base}.${ext}`;
+
       const { error } = await supabase.storage
         .from("lessons")
         .upload(path, file, {
@@ -128,20 +235,18 @@ function AdminLessons() {
         });
       if (error) throw error;
 
-      // Read duration
-      let dur: number | null = null;
-      try {
-        dur = await new Promise<number>((resolve, reject) => {
-          const v = document.createElement("video");
-          v.preload = "metadata";
-          v.onloadedmetadata = () => resolve(Math.round(v.duration));
-          v.onerror = () => reject();
-          v.src = URL.createObjectURL(file);
-        });
-      } catch {}
+      // Upload thumbnail in parallel step
+      let tPath: string | null = null;
+      if (thumbBlob) {
+        tPath = `thumbs/${base}.jpg`;
+        const { error: tErr } = await supabase.storage
+          .from("lessons")
+          .upload(tPath, thumbBlob, { contentType: "image/jpeg", upsert: true });
+        if (tErr) tPath = null;
+      }
 
       setUploadedPath(path);
-      setDuration(dur);
+      setThumbPath(tPath);
       setProgress(100);
       setStage("uploaded");
       toast.success("تم رفع الفيديو. أكمل التفاصيل ثم اضغط نشر.");
@@ -165,7 +270,8 @@ function AdminLessons() {
           description: description.trim() || null,
           category: category.trim() || null,
           video_path: uploadedPath,
-          thumbnail_url: thumbnailUrl.trim() || null,
+          thumbnail_path: thumbPath,
+          thumbnail_url: null,
           duration_seconds: duration,
           sort_order: 0,
           published: true,
@@ -176,7 +282,6 @@ function AdminLessons() {
       setTitle("");
       setDescription("");
       setCategory("");
-      setThumbnailUrl("");
       resetAll();
       await refresh();
     } catch (e: any) {
@@ -197,7 +302,9 @@ function AdminLessons() {
   async function onDelete(l: any) {
     if (!confirm(`حذف "${l.title}" نهائيًا؟`)) return;
     try {
-      await deleteLesson({ data: { id: l.id, video_path: l.video_path } });
+      await deleteLesson({
+        data: { id: l.id, video_path: l.video_path, thumbnail_path: l.thumbnail_path },
+      });
       toast.success("تم الحذف");
       await refresh();
     } catch {
@@ -309,6 +416,53 @@ function AdminLessons() {
             )}
           </div>
 
+          {/* Thumbnail preview + regenerate */}
+          {file && thumbPreview && (
+            <div className="rounded-lg border p-3 flex flex-col sm:flex-row gap-3 items-start">
+              <img
+                src={thumbPreview}
+                alt="thumbnail"
+                className="w-40 h-24 object-cover rounded bg-muted shrink-0"
+              />
+              <div className="flex-1 space-y-2 w-full">
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs">صورة مصغّرة مُولَّدة تلقائيًا</Label>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    disabled={regenerating || !duration}
+                    onClick={() => regenerateThumb(thumbAt)}
+                  >
+                    {regenerating ? (
+                      <Loader2 className="h-3 w-3 animate-spin" />
+                    ) : (
+                      <RefreshCw className="h-3 w-3" />
+                    )}
+                    <span className="mr-1">إعادة الالتقاط</span>
+                  </Button>
+                </div>
+                {duration ? (
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="range"
+                      min={0}
+                      max={duration}
+                      step={0.5}
+                      value={thumbAt}
+                      onChange={(e) => setThumbAt(parseFloat(e.target.value))}
+                      onMouseUp={(e) => regenerateThumb(parseFloat((e.target as HTMLInputElement).value))}
+                      onTouchEnd={(e) => regenerateThumb(parseFloat((e.target as HTMLInputElement).value))}
+                      className="flex-1"
+                    />
+                    <span className="text-xs text-muted-foreground w-14 text-end" dir="ltr">
+                      {thumbAt.toFixed(1)}s
+                    </span>
+                  </div>
+                ) : null}
+              </div>
+            </div>
+          )}
+
           {file && stage === "idle" && (
             <Button onClick={onUpload} className="gap-2 w-full sm:w-auto">
               <Upload className="h-4 w-4" />
@@ -347,23 +501,13 @@ function AdminLessons() {
                 placeholder="وصف مختصر عن محتوى الدرس"
               />
             </div>
-            <div className="grid sm:grid-cols-2 gap-4">
-              <div className="grid gap-2">
-                <Label>التصنيف</Label>
-                <Input
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                  placeholder="مثال: ChatGPT، Midjourney..."
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label>رابط الصورة المصغّرة (اختياري)</Label>
-                <Input
-                  value={thumbnailUrl}
-                  onChange={(e) => setThumbnailUrl(e.target.value)}
-                  placeholder="https://..."
-                />
-              </div>
+            <div className="grid gap-2">
+              <Label>التصنيف</Label>
+              <Input
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                placeholder="مثال: ChatGPT، Midjourney..."
+              />
             </div>
 
             <div className="flex flex-col sm:flex-row gap-2">
