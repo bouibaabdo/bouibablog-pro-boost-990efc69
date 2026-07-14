@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { X, Radio, Loader2, ExternalLink, Tv, Maximize2, SkipForward, ShieldCheck } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
 import {
   embedUrl,
   fetchMatchDetail,
   type SRCDetail,
   type SRCSource,
 } from "@/lib/sportsrc";
+import { getLiveStreamsFor } from "@/lib/live-streams.functions";
 
 /**
  * Per-host reputation. Higher = cleaner / more reliable.
@@ -14,16 +16,18 @@ import {
  */
 const HOST_SCORE: Record<string, number> = {
   // cleaner / fewer popups
-  "streamed.su": 6,
-  "streamed": 6,
+  "streamed.pk": 8,
+  "streamed.su": 7,
+  "streamed": 7,
+  "embed.st": 6,
   "topembed": 5,
   "top-embed": 5,
   "sportzonline": 4,
   "1stream": 4,
+  "dlhd": 3,
   "cricfree": 3,
   "embedsports": 3,
   "embedme": 2,
-  "embed.st": 1,
   // notoriously ad-heavy / popup-happy
   "sportsurge": -3,
   "popcaster": -4,
