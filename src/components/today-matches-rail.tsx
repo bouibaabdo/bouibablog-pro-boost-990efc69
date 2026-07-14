@@ -116,8 +116,7 @@ export function TodayMatchesRail({
         style={{ scrollbarWidth: "thin" }}
       >
         {matches.map((m) => {
-          const hasStream =
-            (m.streamUrls?.length ?? 0) > 0 || !!lookup.find(m.home, m.away);
+          const hasStream = !!m.pageUrl || (m.streamUrls?.length ?? 0) > 0;
           return (
             <article
               key={m.id}
