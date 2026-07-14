@@ -96,7 +96,16 @@ function AdminLessons() {
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
 
+  // Edit dialog
+  const [editing, setEditing] = useState<any | null>(null);
+  const [editTitle, setEditTitle] = useState("");
+  const [editDescription, setEditDescription] = useState("");
+  const [editCategory, setEditCategory] = useState("");
+  const [editPublished, setEditPublished] = useState(true);
+  const [savingEdit, setSavingEdit] = useState(false);
+
   // Upload state
+
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [dragOver, setDragOver] = useState(false);
