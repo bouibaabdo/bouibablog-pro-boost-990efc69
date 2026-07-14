@@ -136,35 +136,42 @@ export function StreamModal({
     return m ? [m[1], m[2]] : ["", ""];
   }, [home, away, title]);
 
-  // Load match sources. Order of precedence:
-  //   1) streamed.pk auto-discovered sources (freshest, most stable)
-  //   2) Yalladown / Yallasellit direct URLs (channel-based)
-  //   3) SportSRC fallback
+  // Load match sources.
+  //   - If a directUrl (yalladown / n.hdshoo.online) is provided we use ONLY
+  //     those URLs. Every other discovery source (streamed.pk / SportSRC) was
+  //     returning broken or ad-heavy embeds, so we skip them entirely.
+  //   - Otherwise we fall back to streamed.pk + SportSRC auto-discovery.
   useEffect(() => {
     let alive = true;
     (async () => {
-      const sources: SRCSource[] = [];
+      const providerUrls = Array.from(
+        new Set([directUrl, ...(directUrls ?? [])].filter(Boolean) as string[]),
+      );
 
-      // 1) streamed.pk — parallel with everything else.
+      if (providerUrls.length) {
+        const directSources: SRCSource[] = providerUrls.map((url, i) => ({
+          id: `yalla-direct-${i + 1}`,
+          streamNo: i + 1,
+          source: i === 0 ? directLabel || "يلا داون" : `بديل ${i + 1}`,
+          embedUrl: url,
+          hd: true,
+          language: "ar",
+          viewers: 0,
+        } as unknown as SRCSource));
+        if (!alive) return;
+        setRanked(directSources);
+        setActiveIdx(0);
+        setErr(null);
+        setLoading(false);
+        return;
+      }
+
+      const sources: SRCSource[] = [];
       const streamedPromise = derivedHome && derivedAway
         ? fetchStreams({ data: { home: derivedHome, away: derivedAway } })
             .then((r) => r?.sources ?? [])
             .catch(() => [])
         : Promise.resolve([]);
-
-      // 2) direct URLs from Yalladown/Yallasellit.
-      const providerUrls = Array.from(new Set([directUrl, ...(directUrls ?? [])].filter(Boolean) as string[]));
-      const directSources: SRCSource[] = providerUrls.map((url, i) => ({
-        id: `yalla-direct-${i + 1}`,
-        streamNo: i + 1,
-        source: i === 0 ? directLabel || "يلا داون" : `بديل ${i + 1}`,
-        embedUrl: url,
-        hd: true,
-        language: "ar",
-        viewers: 0,
-      } as unknown as SRCSource));
-
-      // 3) SportSRC in parallel.
       const sportsrcPromise = matchId && !matchId.startsWith("ys-") && !matchId.startsWith("yd-")
         ? fetchMatchDetail(matchId).catch(() => null)
         : Promise.resolve(null);
@@ -184,8 +191,6 @@ export function StreamModal({
         } as unknown as SRCSource);
       });
 
-      sources.push(...directSources);
-
       if (sportsrc?.sources?.length) {
         setDetail(sportsrc);
         sources.push(...rankSources(sportsrc.sources));
@@ -194,7 +199,6 @@ export function StreamModal({
       if (!sources.length) {
         setErr("لم يتم العثور على مصادر بث لهذه المباراة بعد. جرّب قبل انطلاق المباراة بقليل.");
       } else {
-        // Re-rank the whole combined list by host score.
         setRanked(rankSources(sources));
         setActiveIdx(0);
         setErr(null);
