@@ -48,9 +48,9 @@ export function TodayMatchesRail({
 
   if (yd.isLoading && !matches.length) {
     return (
-      <div className="container-page py-8">
-        <div className="h-40 rounded-2xl border border-border bg-surface-muted animate-pulse" />
-      </div>
+      <section className={variant === "home" ? "container-page py-8 md:py-12" : "container-page py-6"}>
+        <div className="h-[220px] rounded-2xl border border-border bg-surface-muted animate-pulse" />
+      </section>
     );
   }
   if (!matches.length) return null;
@@ -117,7 +117,7 @@ export function TodayMatchesRail({
               <div dir="ltr" className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
                 <div className="flex flex-col items-center gap-1 text-center min-w-0">
                   {m.homeBadge ? (
-                    <img src={m.homeBadge} alt={m.home} loading="lazy" className="h-10 w-10 object-contain" />
+                    <img src={m.homeBadge} alt={m.home} width={40} height={40} loading="lazy" decoding="async" className="h-10 w-10 object-contain" />
                   ) : (
                     <div className="h-10 w-10 rounded-full bg-surface-muted" />
                   )}
@@ -128,7 +128,7 @@ export function TodayMatchesRail({
                 </div>
                 <div className="flex flex-col items-center gap-1 text-center min-w-0">
                   {m.awayBadge ? (
-                    <img src={m.awayBadge} alt={m.away} loading="lazy" className="h-10 w-10 object-contain" />
+                    <img src={m.awayBadge} alt={m.away} width={40} height={40} loading="lazy" decoding="async" className="h-10 w-10 object-contain" />
                   ) : (
                     <div className="h-10 w-10 rounded-full bg-surface-muted" />
                   )}

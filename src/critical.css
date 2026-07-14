@@ -1,9 +1,12 @@
 /* Critical above-the-fold CSS — inlined in <head> to avoid render-blocking */
+/* Fallback fonts matched to Tajawal/Cairo metrics to prevent CLS on swap */
+@font-face{font-family:"Tajawal-fallback";src:local("Segoe UI"),local("Tahoma"),local("Arial");size-adjust:96%;ascent-override:92%;descent-override:24%;line-gap-override:0%}
+@font-face{font-family:"Cairo-fallback";src:local("Segoe UI"),local("Tahoma"),local("Arial");size-adjust:102%;ascent-override:98%;descent-override:32%;line-gap-override:0%}
 :root{--background:oklch(0.99 0.003 250);--foreground:oklch(0.18 0.03 260);--surface:oklch(1 0 0);--primary:oklch(0.58 0.19 258);--primary-foreground:oklch(0.99 0.003 250);--primary-glow:oklch(0.72 0.16 240);--muted-foreground:oklch(0.5 0.02 258);--border:oklch(0.92 0.008 250);--accent:oklch(0.94 0.03 245);--radius:0.75rem}
 *,::before,::after{box-sizing:border-box;border:0 solid var(--border)}
-html{-webkit-text-size-adjust:100%;line-height:1.5;font-family:"Tajawal","Cairo",ui-sans-serif,system-ui,sans-serif}
-body{margin:0;background:var(--background);color:var(--foreground);-webkit-font-smoothing:antialiased;font-family:"Tajawal","Cairo",ui-sans-serif,system-ui,sans-serif}
-h1,h2,h3,h4,h5,h6{font-family:"Cairo","Tajawal",ui-sans-serif,system-ui,sans-serif;letter-spacing:-.01em;margin:0}
+html{-webkit-text-size-adjust:100%;line-height:1.5;font-family:"Tajawal","Tajawal-fallback",ui-sans-serif,system-ui,sans-serif}
+body{margin:0;background:var(--background);color:var(--foreground);-webkit-font-smoothing:antialiased;font-family:"Tajawal","Tajawal-fallback",ui-sans-serif,system-ui,sans-serif}
+h1,h2,h3,h4,h5,h6{font-family:"Cairo","Cairo-fallback",ui-sans-serif,system-ui,sans-serif;letter-spacing:-.01em;margin:0}
 a{color:inherit;text-decoration:inherit}
 img,svg{display:block;max-width:100%;height:auto}
 button{font:inherit;background:none;border:0;cursor:pointer;color:inherit}
