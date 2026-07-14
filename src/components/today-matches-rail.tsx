@@ -190,12 +190,14 @@ export function TodayMatchesRail({
 
       {watch && (
         <StreamModal
-          matchId={`yd-${watch.urls[0]}`}
+          matchId={`yd-${watch.home}-${watch.away}`}
           title={watch.title}
           fallbackSearch={watch.title}
           directUrl={watch.urls[0]}
           directUrls={watch.urls.slice(1)}
           directLabel="يلا داون"
+          home={watch.home}
+          away={watch.away}
           onClose={() => setWatch(null)}
         />
       )}
