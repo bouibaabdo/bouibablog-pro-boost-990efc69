@@ -619,9 +619,13 @@ function AdminLessons() {
                         {l.published ? "منشور" : "مخفي"}
                       </span>
                     </div>
-                    <Button size="icon" variant="ghost" onClick={() => onDelete(l)}>
+                    <Button size="icon" variant="ghost" onClick={() => openEdit(l)} title="تعديل">
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                    <Button size="icon" variant="ghost" onClick={() => onDelete(l)} title="حذف">
                       <Trash2 className="h-4 w-4 text-destructive" />
                     </Button>
+
                   </div>
                 </div>
               ))}
