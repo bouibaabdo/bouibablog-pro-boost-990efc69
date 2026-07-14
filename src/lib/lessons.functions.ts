@@ -4,28 +4,35 @@ import { z } from "zod";
 
 const SIGN_EXPIRY = 60 * 60 * 24; // 24h
 
-async function signUrls<T extends { video_path: string }>(
-  supabase: any,
+async function signRows<T extends { video_path: string; thumbnail_path?: string | null; thumbnail_url?: string | null }>(
   rows: T[],
-): Promise<Array<T & { video_url: string | null }>> {
+): Promise<Array<T & { video_url: string | null; thumbnail_url: string | null }>> {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   return Promise.all(
     rows.map(async (r) => {
-      const { data } = await supabase.storage
-        .from("lessons")
-        .createSignedUrl(r.video_path, SIGN_EXPIRY);
-      return { ...r, video_url: data?.signedUrl ?? null };
+      const [videoRes, thumbRes] = await Promise.all([
+        supabaseAdmin.storage.from("lessons").createSignedUrl(r.video_path, SIGN_EXPIRY),
+        r.thumbnail_path
+          ? supabaseAdmin.storage.from("lessons").createSignedUrl(r.thumbnail_path, SIGN_EXPIRY)
+          : Promise.resolve({ data: null }),
+      ]);
+      return {
+        ...r,
+        video_url: videoRes.data?.signedUrl ?? null,
+        thumbnail_url:
+          (thumbRes as any).data?.signedUrl ?? (r.thumbnail_url as string | null) ?? null,
+      };
     }),
   );
 }
 
-// Public list
-export const listLessons = createServerFn({ method: "GET" }).handler(async () => {
-  const { createClient } = await import("@supabase/supabase-js");
+function publicClient() {
+  const { createClient } = require("@supabase/supabase-js") as typeof import("@supabase/supabase-js");
   const key = process.env.SUPABASE_PUBLISHABLE_KEY!;
-  const supabase = createClient(process.env.SUPABASE_URL!, key, {
+  return createClient(process.env.SUPABASE_URL!, key, {
     auth: { persistSession: false },
     global: {
-      fetch: (input, init) => {
+      fetch: (input: any, init: any) => {
         const h = new Headers(init?.headers);
         if (key.startsWith("sb_") && h.get("Authorization") === `Bearer ${key}`) {
           h.delete("Authorization");
@@ -35,14 +42,19 @@ export const listLessons = createServerFn({ method: "GET" }).handler(async () =>
       },
     },
   });
+}
+
+// Public list
+export const listLessons = createServerFn({ method: "GET" }).handler(async () => {
+  const supabase = publicClient();
   const { data, error } = await supabase
     .from("lessons")
-    .select("id, title, description, category, video_path, thumbnail_url, duration_seconds, created_at")
+    .select("id, title, description, category, video_path, thumbnail_path, thumbnail_url, duration_seconds, created_at")
     .eq("published", true)
     .order("sort_order", { ascending: true })
     .order("created_at", { ascending: false });
   if (error) throw error;
-  return signUrls(supabase, data ?? []);
+  return signRows((data ?? []) as any[]);
 });
 
 async function assertAdmin(context: { supabase: any; userId: string }) {
@@ -64,7 +76,7 @@ export const adminListLessons = createServerFn({ method: "GET" })
       .order("sort_order", { ascending: true })
       .order("created_at", { ascending: false });
     if (error) throw error;
-    return signUrls(context.supabase, data ?? []);
+    return signRows((data ?? []) as any[]);
   });
 
 export const createLesson = createServerFn({ method: "POST" })
@@ -76,6 +88,7 @@ export const createLesson = createServerFn({ method: "POST" })
         description: z.string().max(2000).optional().nullable(),
         category: z.string().max(80).optional().nullable(),
         video_path: z.string().min(1),
+        thumbnail_path: z.string().optional().nullable(),
         thumbnail_url: z.string().url().optional().nullable(),
         duration_seconds: z.number().int().nonnegative().optional().nullable(),
         sort_order: z.number().int().default(0),
@@ -100,6 +113,7 @@ export const updateLesson = createServerFn({ method: "POST" })
         description: z.string().max(2000).optional().nullable(),
         category: z.string().max(80).optional().nullable(),
         thumbnail_url: z.string().url().optional().nullable(),
+        thumbnail_path: z.string().optional().nullable(),
         duration_seconds: z.number().int().nonnegative().optional().nullable(),
         sort_order: z.number().int().optional(),
         published: z.boolean().optional(),
@@ -116,10 +130,20 @@ export const updateLesson = createServerFn({ method: "POST" })
 
 export const deleteLesson = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d) => z.object({ id: z.string().uuid(), video_path: z.string() }).parse(d))
+  .inputValidator((d) =>
+    z
+      .object({
+        id: z.string().uuid(),
+        video_path: z.string(),
+        thumbnail_path: z.string().optional().nullable(),
+      })
+      .parse(d),
+  )
   .handler(async ({ data, context }) => {
     await assertAdmin(context);
-    await context.supabase.storage.from("lessons").remove([data.video_path]);
+    const paths = [data.video_path];
+    if (data.thumbnail_path) paths.push(data.thumbnail_path);
+    await context.supabase.storage.from("lessons").remove(paths);
     const { error } = await context.supabase.from("lessons").delete().eq("id", data.id);
     if (error) throw error;
     return { ok: true };
