@@ -1,55 +1,46 @@
-# خطة إصلاح "Render-blocking CSS" في Bouiba Academy
+## المشكل
+CLS = 0.645 (سيء جداً). التشخيص من التقارير السابقة يشير إلى مصدرين أساسيين:
 
-## المشكلة
-`/assets/styles-*.css` (≈18KB، 160ms) لا يزال حاجباً للرندر رغم `preload`، لأن `<link rel="stylesheet">` يبقى موجوداً في `<head>` ويوقف الرسم حتى يُحمَّل ويُطبَّق. الحل الجذري: **Critical CSS داخل `<head>` + تحميل غير حاجب للباقي**.
+1. **رايل المباريات** (`TodayMatchesRail`) على الصفحة الرئيسية — يظهر بعد fetch من Yalladown (~1-3 ثواني) ويدفع كل ما تحته للأسفل رغم skeleton الحالي.
+2. **الخطوط (Cairo/Tajawal)** — رغم إضافة `Cairo-fallback`/`Tajawal-fallback` بـ `size-adjust`، القيم تخمينية وقد لا تطابق ميتريكس الخطوط الفعلية، فيبقى shift على العناوين الكبيرة (h1, h2).
+3. **إعلانات AdSense** (`adsbygoogle.js`) — تحقن iframes بدون مقاس محجوز في أي مكان يظهر فيه الإعلان.
+4. **الصور من طرف ثالث** (yalladown badges 40×40) — width/height مضاف لكن الحاوية نفسها قد تتغير.
 
 ## الخطوات
 
-### 1) استخراج Critical CSS
-- تشغيل الموقع محلياً عبر Playwright على الصفحة الرئيسية بمقاس موبايل + ديسكتوب.
-- استخدام `critters` أو `penthouse` لاستخراج الـ CSS الفعلي المستعمل فوق الطي (الهيدر، الشعار، بطاقة الـ hero، أول بطاقة مقال، الأزرار، خطوط RTL، متغيرات `:root`).
-- الحجم المتوقع: 3–5KB.
+### 1. حجز مساحة ثابتة للـ TodayMatchesRail بدل الاعتماد على skeleton conditional
+- إزالة `if (yd.isLoading) return skeleton` وجعل الرايل يحتفظ بارتفاعه دائماً عبر `min-h-[280px]` على `<section>`.
+- Skeleton يظهر داخل نفس الحاوية بنفس الأبعاد.
+- عند `!matches.length` يبقى العنصر مخفياً بـ CSS (`visibility: hidden`) بدلاً من `return null` **فقط** إذا الـ query نجح وأرجع فارغاً — لتجنب shift عند تأخر fetch.
+- بديل أبسط: إخفاء الرايل كلياً حتى `yd.isFetched`، وحجز placeholder بارتفاع 280px قبل ذلك.
 
-### 2) حقن Critical CSS داخل `<head>` (SSR)
-في `src/routes/__root.tsx`:
-- إنشاء ملف `src/critical.css` (يدوي في البداية، ثم automated لاحقاً).
-- استيراده كنص خام عبر `?raw` (يدعمه Vite).
-- حقنه كـ `<style>` عبر `head().scripts` غير عملي؛ الأصح إضافة عنصر مخصص في `RootShell` قبل `<HeadContent />` باستعمال `dangerouslySetInnerHTML`.
+### 2. ضبط ميتريكس الـ fallback fonts بدقة
+- استخدام قيم مقاسة من [fontsource metrics](https://github.com/fontsource/font-fallbacks) أو أداة Automatic Font Matching:
+  - Tajawal (Arabic): `size-adjust: 100%`, `ascent-override: 100%`, `descent-override: 47%`, `line-gap-override: 0%`
+  - Cairo: `size-adjust: 108%`, `ascent-override: 97%`, `descent-override: 35%`
+- التحقق البصري باستعمال Playwright: قياس ارتفاع h1 قبل/بعد swap.
 
-### 3) تحويل main CSS إلى تحميل غير حاجب
-استبدال:
-```tsx
-{ rel: "preload", as: "style", href: appCss },
-{ rel: "stylesheet", href: appCss },
-```
-بـ:
-```tsx
-{ rel: "preload", as: "style", href: appCss, onLoad: "this.rel='stylesheet'" },
-```
-+ `<noscript><link rel="stylesheet" href={appCss} /></noscript>` في `RootShell`.
+### 3. حجز مساحة إعلانات AdSense
+- إذا كانت هناك `<ins class="adsbygoogle">` في الصفحة، إعطاؤها `min-height` صريح (250px مثلاً).
+- إذا الإعلانات auto (`data-ad-format="auto"`) تحقن iframes ديناميكياً في نهاية `<body>` — التحقق من عدم وجود `ins` غير محجوز.
 
-بما أن TanStack `head().links` لا يدعم `onLoad` مباشرة بشكل موثوق، سنستخدم نفس تقنية الخطوط الحالية:
-```tsx
-{ rel: "stylesheet", href: appCss, media: "print", "data-css-swap": "true" }
-```
-+ توسيع السكربت السطري الموجود ليشمل: 
-```js
-document.querySelectorAll('link[data-css-swap],link[data-font-swap]').forEach(l=>l.media='all');
-```
+### 4. حجز مساحة `PostCard` featured
+- الصورة عندها width/height لكن الحاوية `aspect-[16/9]` قد تنكسر أثناء تحميل الخطوط — التحقق.
 
-### 4) التحقق
-- Playwright + Lighthouse على `/` قبل وبعد.
-- التأكد من غياب FOUC (فلاش المحتوى غير المنسق) بفضل الـ critical inline.
-- التأكد من اختفاء تحذير "Eliminate render-blocking resources" أو انخفاضه تحت 100ms.
+### 5. Categories section (labels)
+- `{labels.length > 0 && ...}` — إذا `labels` تصل بعد hydration، السيكشن يظهر فجأة. لكن `useSuspenseQuery` مع loader `ensureQueryData` يعني البيانات جاهزة قبل render — آمن.
+
+### 6. Stats section
+- نفس الشيء: مدفوع من `data.total` — آمن مع suspense.
 
 ## الملفات المعدَّلة
-- `src/critical.css` (جديد) — CSS فوق الطي فقط.
-- `src/routes/__root.tsx` — حقن critical inline + تحويل main CSS إلى `media="print"` swap + توسيع سكربت الـ swap.
+- `src/components/today-matches-rail.tsx` — دائماً يحجز `min-h-[280px]`، skeleton داخلي.
+- `src/critical.css` — تحديث override values لـ Cairo/Tajawal بقيم مقاسة.
+- التحقق من `src/routes/__root.tsx` — إذا كانت هناك `<ins>` AdSense في layout، إضافة min-height.
 
-## النتيجة المتوقعة
-- LCP أسرع بـ 200–400ms إضافية.
-- First Paint شبه فوري (critical CSS جاهز مع HTML).
-- بدون FOUC ولا كسر للتصميم.
+## التحقق
+- Playwright + Lighthouse CLS قبل/بعد.
+- الهدف: CLS < 0.1.
 
 ## ملاحظة
-لو لم يعطِ الحل اليدوي critical.css نتيجة كافية، يمكن لاحقاً دمج plugin مثل `vite-plugin-critical` في `vite.config.ts` لإنشائه تلقائياً عند البناء.
+لن نلمس منطق الأعمال (fetching، routing، admin) — فقط تصميم وحجز مساحة.

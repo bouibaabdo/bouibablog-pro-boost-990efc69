@@ -46,14 +46,17 @@ export function TodayMatchesRail({
     return out;
   }, [yd.data, max]);
 
-  if (yd.isLoading && !matches.length) {
+  // Always reserve the rail height to avoid CLS when matches arrive later.
+  // Hide the empty state visually but keep the space until the query resolves.
+  const hasContent = matches.length > 0;
+  if (!yd.isFetched && !hasContent) {
     return (
       <section className={variant === "home" ? "container-page py-8 md:py-12" : "container-page py-6"}>
-        <div className="h-[220px] rounded-2xl border border-border bg-surface-muted animate-pulse" />
+        <div className="min-h-[280px] rounded-2xl border border-border bg-surface-muted animate-pulse" />
       </section>
     );
   }
-  if (!matches.length) return null;
+  if (yd.isFetched && !hasContent) return null;
 
   const heading =
     variant === "home" ? "مباريات اليوم — بث مباشر" : "مباريات اليوم";
@@ -87,7 +90,7 @@ export function TodayMatchesRail({
       </div>
 
       <div
-        className="-mx-4 px-4 flex gap-3 overflow-x-auto snap-x snap-mandatory pb-3 scrollbar-thin"
+        className="-mx-4 px-4 flex gap-3 overflow-x-auto snap-x snap-mandatory pb-3 scrollbar-thin min-h-[220px]"
         style={{ scrollbarWidth: "thin" }}
       >
         {matches.map((m) => (
