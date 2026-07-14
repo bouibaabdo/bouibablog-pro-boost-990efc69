@@ -34,7 +34,7 @@ export function buildUrlset(baseUrl: string, entries: SitemapEntry[]): string {
   ].join("\n");
 }
 
-export const SITEMAP_BASE_URL = "https://edu.bouibacademy.me";
+export const SITEMAP_BASE_URL = "https://www.bouibacademy.me";
 
 export function xmlResponse(xml: string, maxAge = 3600): Response {
   return new Response(xml, {

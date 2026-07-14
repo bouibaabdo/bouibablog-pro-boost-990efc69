@@ -13,9 +13,9 @@ export const Route = createFileRoute("/tools/image")({
       },
       { property: "og:title", content: "تحويل النص إلى صورة — Bouiba Academy" },
       { property: "og:description", content: "أنشئ صورًا احترافية بالذكاء الاصطناعي من وصف نصي بالعربية أو الإنجليزية." },
-      { property: "og:url", content: "https://edu.bouibacademy.me/tools/image" },
+      { property: "og:url", content: "https://www.bouibacademy.me/tools/image" },
     ],
-    links: [{ rel: "canonical", href: "https://edu.bouibacademy.me/tools/image" }],
+    links: [{ rel: "canonical", href: "https://www.bouibacademy.me/tools/image" }],
   }),
   component: ImageTool,
 });

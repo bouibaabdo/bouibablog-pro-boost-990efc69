@@ -40,9 +40,9 @@ export const Route = createFileRoute("/posts/")({
       { name: "description", content: "تصفح جميع مقالات ودروس أكاديمية بويبة في الذكاء الاصطناعي." },
       { property: "og:title", content: "المقالات — Bouiba Academy" },
       { property: "og:description", content: "مكتبة كاملة من الدروس والمقالات العربية حول أدوات وتطبيقات الذكاء الاصطناعي." },
-      { property: "og:url", content: "https://edu.bouibacademy.me/posts" },
+      { property: "og:url", content: "https://www.bouibacademy.me/posts" },
     ],
-    links: [{ rel: "canonical", href: "https://edu.bouibacademy.me/posts" }],
+    links: [{ rel: "canonical", href: "https://www.bouibacademy.me/posts" }],
   }),
   component: PostsPage,
   errorComponent: ({ error }) => (

@@ -110,7 +110,7 @@ async function scrape(day: YKMatch["day"]): Promise<YKMatch[]> {
   const res = await fetch(urlFor(day), {
     headers: {
       "User-Agent":
-        "Mozilla/5.0 (compatible; BouibAcademyBot/1.0; +https://edu.bouibacademy.me)",
+        "Mozilla/5.0 (compatible; BouibAcademyBot/1.0; +https://www.bouibacademy.me)",
       Accept: "text/html,application/xhtml+xml",
       "Accept-Language": "ar,en;q=0.8",
     },

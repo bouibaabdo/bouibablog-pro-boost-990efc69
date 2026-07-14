@@ -9,9 +9,9 @@ export const Route = createFileRoute("/privacy")({
       { name: "description", content: "سياسة الخصوصية الخاصة بموقع Bouiba Academy: البيانات التي نجمعها، ملفات تعريف الارتباط، وإعلانات Google AdSense." },
       { property: "og:title", content: "سياسة الخصوصية — Bouiba Academy" },
       { property: "og:description", content: "كيف نجمع ونستخدم البيانات، ملفات الكوكيز، وإعلانات الطرف الثالث في Bouiba Academy." },
-      { property: "og:url", content: "https://edu.bouibacademy.me/privacy" },
+      { property: "og:url", content: "https://www.bouibacademy.me/privacy" },
     ],
-    links: [{ rel: "canonical", href: "https://edu.bouibacademy.me/privacy" }],
+    links: [{ rel: "canonical", href: "https://www.bouibacademy.me/privacy" }],
   }),
   component: PrivacyPage,
 });
@@ -28,7 +28,7 @@ function PrivacyPage() {
           <section>
             <h2 className="font-display text-2xl font-bold mb-3">مقدمة</h2>
             <p>
-              نحن في <strong>Bouiba Academy</strong> (edu.bouibacademy.me) نحترم خصوصية زوّارنا ونلتزم بحماية بياناتهم الشخصية.
+              نحن في <strong>Bouiba Academy</strong> (www.bouibacademy.me) نحترم خصوصية زوّارنا ونلتزم بحماية بياناتهم الشخصية.
               توضّح هذه السياسة نوع المعلومات التي نجمعها وكيفية استخدامها.
             </p>
           </section>

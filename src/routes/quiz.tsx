@@ -18,10 +18,10 @@ export const Route = createFileRoute("/quiz")({
         property: "og:description",
         content: "أجب على 6 أسئلة سريعة واكتشف أداة AI الأنسب لك — مجاني بالكامل من Bouiba Academy.",
       },
-      { property: "og:url", content: "https://edu.bouibacademy.me/quiz" },
+      { property: "og:url", content: "https://www.bouibacademy.me/quiz" },
       { property: "og:type", content: "website" },
     ],
-    links: [{ rel: "canonical", href: "https://edu.bouibacademy.me/quiz" }],
+    links: [{ rel: "canonical", href: "https://www.bouibacademy.me/quiz" }],
   }),
   component: QuizPage,
 });
@@ -223,7 +223,7 @@ function QuizPage() {
   const share = async () => {
     if (!result) return;
     const text = `اكتشفت أن أداة الذكاء الاصطناعي الأنسب لي هي ${result.name} ${result.emoji} — جرّب الاختبار من Bouiba Academy:`;
-    const url = "https://edu.bouibacademy.me/quiz";
+    const url = "https://www.bouibacademy.me/quiz";
     if (typeof navigator !== "undefined" && (navigator as any).share) {
       try { await (navigator as any).share({ title: "اختبار أدوات AI", text, url }); return; } catch {}
     }

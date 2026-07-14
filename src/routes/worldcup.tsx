@@ -54,9 +54,9 @@ export const Route = createFileRoute("/worldcup")({
         content: "جدول شامل، ترتيب المجموعات، ومباريات اليوم مع القنوات الناقلة وروابط المشاهدة المباشرة.",
       },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://edu.bouibacademy.me/worldcup" },
+      { property: "og:url", content: "https://www.bouibacademy.me/worldcup" },
     ],
-    links: [{ rel: "canonical", href: "https://edu.bouibacademy.me/worldcup" }],
+    links: [{ rel: "canonical", href: "https://www.bouibacademy.me/worldcup" }],
   }),
   component: WorldCupPage,
   errorComponent: ({ error }) => (

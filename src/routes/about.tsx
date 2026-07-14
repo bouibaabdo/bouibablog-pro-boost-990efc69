@@ -10,9 +10,9 @@ export const Route = createFileRoute("/about")({
       { name: "description", content: "تعرّف على Bouiba Academy — منصة عربية متخصصة في محتوى الذكاء الاصطناعي." },
       { property: "og:title", content: "عن الأكاديمية — Bouiba Academy" },
       { property: "og:description", content: "منصة عربية مستقلة لتعليم الذكاء الاصطناعي: دروس عملية، مراجعات نزيهة، وأخبار موثوقة بلغة واضحة." },
-      { property: "og:url", content: "https://edu.bouibacademy.me/about" },
+      { property: "og:url", content: "https://www.bouibacademy.me/about" },
     ],
-    links: [{ rel: "canonical", href: "https://edu.bouibacademy.me/about" }],
+    links: [{ rel: "canonical", href: "https://www.bouibacademy.me/about" }],
     scripts: [
       {
         type: "application/ld+json",
@@ -20,7 +20,7 @@ export const Route = createFileRoute("/about")({
           "@context": "https://schema.org",
           "@type": "Organization",
           name: "Bouiba Academy",
-          url: "https://edu.bouibacademy.me",
+          url: "https://www.bouibacademy.me",
           description: "منصة عربية متخصصة في تعليم ومحتوى الذكاء الاصطناعي.",
           sameAs: ["https://www.bouibacademy.me"],
         }),

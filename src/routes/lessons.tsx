@@ -23,9 +23,9 @@ export const Route = createFileRoute("/lessons")({
       },
       { property: "og:title", content: "دروس فيديو — Bouiba Academy" },
       { property: "og:description", content: "دروس فيديو عربية حول الذكاء الاصطناعي." },
-      { property: "og:url", content: "https://edu.bouibacademy.me/lessons" },
+      { property: "og:url", content: "https://www.bouibacademy.me/lessons" },
     ],
-    links: [{ rel: "canonical", href: "https://edu.bouibacademy.me/lessons" }],
+    links: [{ rel: "canonical", href: "https://www.bouibacademy.me/lessons" }],
   }),
   component: LessonsPage,
 });

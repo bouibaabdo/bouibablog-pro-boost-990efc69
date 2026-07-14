@@ -9,9 +9,9 @@ export const Route = createFileRoute("/terms")({
       { name: "description", content: "شروط استخدام موقع Bouiba Academy، حقوق الملكية الفكرية، والمسؤوليات القانونية." },
       { property: "og:title", content: "شروط الاستخدام — Bouiba Academy" },
       { property: "og:description", content: "الشروط والأحكام التي تحكم استخدام موقع Bouiba Academy وخدماته." },
-      { property: "og:url", content: "https://edu.bouibacademy.me/terms" },
+      { property: "og:url", content: "https://www.bouibacademy.me/terms" },
     ],
-    links: [{ rel: "canonical", href: "https://edu.bouibacademy.me/terms" }],
+    links: [{ rel: "canonical", href: "https://www.bouibacademy.me/terms" }],
   }),
   component: TermsPage,
 });
