@@ -190,17 +190,6 @@ export function TodayMatchesRail({
         })}
       </div>
 
-      {watch && (
-        <StreamModal
-          matchId={`yd-${watch.home}-${watch.away}`}
-          title={watch.title}
-          fallbackSearch={watch.title}
-          directUrl={watch.urls[0]}
-          directUrls={watch.urls.slice(1)}
-          directLabel="يلا داون"
-          onClose={() => setWatch(null)}
-        />
-      )}
     </section>
   );
 }
