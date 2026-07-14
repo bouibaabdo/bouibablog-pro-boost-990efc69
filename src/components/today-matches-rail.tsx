@@ -5,7 +5,7 @@ import { PlayCircle, Tv, ArrowLeft, Radio, Clock } from "lucide-react";
 import { getYalladownMatches, type YDMatch } from "@/lib/yalladown.functions";
 import { getYallasellitMatches } from "@/lib/yallasellit.functions";
 import { buildStreamLookup, normalizeArName } from "@/lib/match-streams";
-import { StreamModal } from "@/components/stream-modal";
+// StreamModal removed — tv.bouibacademy.me refuses iframe embedding; we open it in a new tab.
 
 /**
  * Horizontal, snap-scrolling rail of today's live/upcoming matches for the
