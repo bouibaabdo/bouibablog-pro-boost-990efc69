@@ -83,9 +83,6 @@ function preparePlayerUrl(rawUrl: string): string {
 }
 
 /** How long to wait for the iframe to fire "load" before auto-switching (ms). */
-const LOAD_TIMEOUT_MS = 5000;
-
-/** How long to wait for the iframe to fire "load" before auto-switching (ms). */
 const LOAD_TIMEOUT_MS = 6000;
 
 export function StreamModal({
