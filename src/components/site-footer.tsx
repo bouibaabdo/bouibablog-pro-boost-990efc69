@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Facebook, Twitter, Instagram, Youtube } from "lucide-react";
-import bouibaLogo from "@/assets/bouiba-logo.png.asset.json";
+import bouibaLogo from "@/assets/bouiba-logo.webp.asset.json";
 
 export function SiteFooter() {
   return (
