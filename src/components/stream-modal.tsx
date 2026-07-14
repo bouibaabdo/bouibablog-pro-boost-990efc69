@@ -146,8 +146,8 @@ export function StreamModal({
       const sources: SRCSource[] = [];
 
       // 1) streamed.pk — parallel with everything else.
-      const streamedPromise = home && away
-        ? fetchStreams({ data: { home, away } })
+      const streamedPromise = derivedHome && derivedAway
+        ? fetchStreams({ data: { home: derivedHome, away: derivedAway } })
             .then((r) => r?.sources ?? [])
             .catch(() => [])
         : Promise.resolve([]);
