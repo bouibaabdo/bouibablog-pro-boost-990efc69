@@ -57,14 +57,15 @@ export function TodayMatchesRail({
   }, [yd.data, max]);
 
   const [watch, setWatch] = useState<
-    { title: string; urls: string[] } | null
+    { title: string; urls: string[]; home: string; away: string } | null
   >(null);
 
   const openWatch = (m: YDMatch) => {
     const fromLookup = lookup.find(m.home, m.away) ?? [];
     const combined = Array.from(new Set([...(m.streamUrls ?? []), ...fromLookup]));
-    if (!combined.length) return;
-    setWatch({ title: `${m.home} vs ${m.away}`, urls: combined });
+    // Even without any pre-known URL, opening the modal will still try
+    // streamed.pk discovery from the team names.
+    setWatch({ title: `${m.home} vs ${m.away}`, urls: combined, home: m.home, away: m.away });
   };
 
   if (yd.isLoading && !matches.length) {
