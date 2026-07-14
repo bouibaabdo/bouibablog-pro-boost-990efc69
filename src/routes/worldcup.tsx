@@ -1134,17 +1134,6 @@ function WorldCupPage() {
 
       </main>
       <SiteFooter />
-      {watch && (
-        <StreamModal
-          matchId={watch.id}
-          title={watch.title}
-          fallbackSearch={watch.fallback}
-          directUrl={watch.directUrl}
-          directUrls={watch.directUrls}
-          directLabel={watch.directLabel}
-          onClose={() => setWatch(null)}
-        />
-      )}
     </div>
   );
 }
