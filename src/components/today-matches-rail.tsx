@@ -90,7 +90,7 @@ export function TodayMatchesRail({
       </div>
 
       <div
-        className="-mx-4 px-4 flex gap-3 overflow-x-auto snap-x snap-mandatory pb-3 scrollbar-thin"
+        className="-mx-4 px-4 flex gap-3 overflow-x-auto snap-x snap-mandatory pb-3 scrollbar-thin min-h-[220px]"
         style={{ scrollbarWidth: "thin" }}
       >
         {matches.map((m) => (
