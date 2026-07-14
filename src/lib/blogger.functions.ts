@@ -92,16 +92,24 @@ async function fetchFeed(params: Record<string, string>): Promise<{ posts: Blogg
   url.searchParams.set("alt", "json");
   Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
 
-  const res = await fetch(url.toString(), {
-    headers: { Accept: "application/json" },
-  });
-  if (!res.ok) throw new Error(`Blogger feed failed: ${res.status}`);
-  const json = (await res.json()) as {
+  let res: Response;
+  try {
+    res = await fetch(url.toString(), { headers: { Accept: "application/json" } });
+  } catch (e) {
+    console.error("Blogger fetch error:", e);
+    return { posts: [], total: 0 };
+  }
+  if (!res.ok) {
+    console.error(`Blogger feed failed: ${res.status}`);
+    return { posts: [], total: 0 };
+  }
+  const json = (await res.json().catch(() => null)) as {
     feed: {
       entry?: RawEntry[];
       openSearch$totalResults?: { $t: string };
     };
-  };
+  } | null;
+  if (!json?.feed) return { posts: [], total: 0 };
   const entries = json.feed.entry ?? [];
   return {
     posts: entries.map(transformEntry),
