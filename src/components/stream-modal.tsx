@@ -204,7 +204,7 @@ export function StreamModal({
     return () => {
       alive = false;
     };
-  }, [matchId, directUrl, directUrls, directLabel, home, away, fetchStreams]);
+  }, [matchId, directUrl, directUrls, directLabel, derivedHome, derivedAway, fetchStreams]);
 
   // Auto-fallback watchdog: if the iframe never loads, jump to the next source.
   useEffect(() => {
