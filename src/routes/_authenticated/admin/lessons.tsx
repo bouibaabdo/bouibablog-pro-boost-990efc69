@@ -182,6 +182,9 @@ function AdminLessons() {
                 {file.name} — {(file.size / (1024 * 1024)).toFixed(1)} MB
               </p>
             )}
+            <p className="text-xs text-muted-foreground">
+              الحد الأقصى: 500MB. للفيديوهات الأطول يُنصح بضغطها إلى 720p قبل الرفع.
+            </p>
           </div>
           <Button onClick={onUpload} disabled={uploading} className="gap-2">
             {uploading ? (
