@@ -4,6 +4,7 @@ import { Calendar, Clock, ArrowRight, ExternalLink, Tag } from "lucide-react";
 import { getPost } from "@/lib/blogger.functions";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { TodayMatchesRail } from "@/components/today-matches-rail";
 
 function makeQuery(id: string) {
   return queryOptions({
@@ -154,6 +155,8 @@ function PostPage() {
           </div>
         </div>
       </article>
+
+      <TodayMatchesRail variant="article" max={8} />
 
       <SiteFooter />
     </div>
