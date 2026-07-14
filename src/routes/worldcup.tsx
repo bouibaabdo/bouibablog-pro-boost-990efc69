@@ -719,6 +719,7 @@ function WorldCupPage() {
   const { data: standingsData } = useSuspenseQuery(standingsQuery);
   const { data: yk } = useQuery(ykQuery);
   const { data: ys } = useQuery(ysQuery);
+  const { data: yd } = useQuery(ydQuery);
   const cd = useCountdown(TOURNAMENT_START);
   const [tab, setTab] = useState<Tab>("live");
   useBrowserReminders();
@@ -727,67 +728,16 @@ function WorldCupPage() {
   >(null);
   const { data: srcMatches = [] } = useQuery(srcQuery);
   const onWatch = (id: string, title: string, fallback: string, directUrl?: string, directUrls?: string[]) =>
-    setWatch({ id, title, fallback, directUrl, directUrls, directLabel: directUrl ? "يلا سلّيت" : undefined });
+    setWatch({ id, title, fallback, directUrl, directUrls, directLabel: directUrl ? "يلا داون" : undefined });
 
-  // Build a fast lookup from Yallasellit for direct stream URLs. We match by
-  // team names with aggressive Arabic normalization (strip diacritics, common
-  // prefixes like "منتخب" / "نادي" / "ال", punctuation, spaces) and accept a
-  // match when either team name from Yallakora is a substring of the
-  // Yallasellit name (or vice-versa) for BOTH sides, in either order.
-  const ysStreamList = useMemo(() => {
-    const all: { home: string; away: string; urls: string[] }[] = [];
-    const push = (match: YSMatch) => {
-      const urls = Array.from(new Set([
-        match.playerUrl,
-        match.streamUrl,
-        ...(match.channelUrls ?? []),
-        match.pageUrl,
-      ].filter(Boolean) as string[]));
-      if (!urls.length) return;
-      all.push({ home: match.home, away: match.away, urls });
-    };
-    ys?.today.forEach(push);
-    ys?.tomorrow.forEach(push);
-    ys?.yesterday.forEach(push);
-    return all;
-  }, [ys]);
+  // Merge Yalladown (primary) + Yallasellit (fallback) stream URLs, keyed by
+  // team names with aggressive Arabic normalization. Exposed via a Map-like
+  // `.get("home|away")` API consumed by the match card components.
+  const ysStreamMap = useMemo(
+    () => buildStreamLookup(yd, ys) as unknown as Map<string, string[]>,
+    [yd, ys],
+  );
 
-  const ysStreamMap = useMemo(() => {
-    const norm = (s: string) =>
-      s
-        .replace(/[\u064B-\u065F\u0670]/g, "")
-        .replace(/[إأآٱ]/g, "ا")
-        .replace(/ى/g, "ي")
-        .replace(/ة/g, "ه")
-        .replace(/(منتخب|نادي|فريق|المنتخب)/g, "")
-        .replace(/^ال/, "")
-        .replace(/[^\p{L}\p{N}]/gu, "")
-        .toLowerCase();
-    const matches = (a: string, b: string) => {
-      const na = norm(a);
-      const nb = norm(b);
-      if (!na || !nb) return false;
-      return na === nb || na.includes(nb) || nb.includes(na);
-    };
-    const find = (home: string, away: string): string[] | undefined => {
-      for (const s of ysStreamList) {
-        if (
-          (matches(s.home, home) && matches(s.away, away)) ||
-          (matches(s.home, away) && matches(s.away, home))
-        ) {
-          return s.urls;
-        }
-      }
-      return undefined;
-    };
-    // Keep the Map-like `.get("home|away")` API used by child components.
-    return {
-      get(key: string) {
-        const [h, a] = key.split("|");
-        return find(h ?? "", a ?? "");
-      },
-    } as unknown as Map<string, string[]>;
-  }, [ysStreamList]);
 
   const { data: favData } = useQuery({
     queryKey: ["favorites", "ids"],
