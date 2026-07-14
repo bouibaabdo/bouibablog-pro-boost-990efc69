@@ -72,7 +72,7 @@ function LessonsPage() {
             <div className="mb-8 rounded-2xl overflow-hidden border border-border bg-card shadow-elegant">
               <video
                 key={current.id}
-                src={current.video_url}
+                src={current.video_url ?? undefined}
                 poster={current.thumbnail_url ?? undefined}
                 controls
                 autoPlay
