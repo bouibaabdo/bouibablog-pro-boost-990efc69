@@ -633,6 +633,47 @@ function AdminLessons() {
           )}
         </CardContent>
       </Card>
+
+      <Dialog open={!!editing} onOpenChange={(o) => !o && setEditing(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>تعديل معلومات الدرس</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="grid gap-2">
+              <Label>العنوان *</Label>
+              <Input value={editTitle} onChange={(e) => setEditTitle(e.target.value)} />
+            </div>
+            <div className="grid gap-2">
+              <Label>الوصف</Label>
+              <Textarea
+                value={editDescription}
+                onChange={(e) => setEditDescription(e.target.value)}
+                rows={3}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label>التصنيف</Label>
+              <Input value={editCategory} onChange={(e) => setEditCategory(e.target.value)} />
+            </div>
+            <div className="flex items-center gap-2">
+              <Switch checked={editPublished} onCheckedChange={setEditPublished} />
+              <span className="text-sm text-muted-foreground">
+                {editPublished ? "منشور" : "مخفي"}
+              </span>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setEditing(null)} disabled={savingEdit}>
+              إلغاء
+            </Button>
+            <Button onClick={onSaveEdit} disabled={savingEdit || !editTitle.trim()}>
+              {savingEdit ? <Loader2 className="h-4 w-4 animate-spin" /> : "حفظ"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
+
 }
