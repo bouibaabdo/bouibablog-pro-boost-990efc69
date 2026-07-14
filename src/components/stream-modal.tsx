@@ -128,56 +128,75 @@ export function StreamModal({
     [active],
   );
 
-  // Load match sources. If Yallasellit provides a direct URL, keep it first but
-  // still append SportSRC sources so the user can switch away from a bad embed.
+  // Load match sources. Order of precedence:
+  //   1) streamed.pk auto-discovered sources (freshest, most stable)
+  //   2) Yalladown / Yallasellit direct URLs (channel-based)
+  //   3) SportSRC fallback
   useEffect(() => {
     let alive = true;
     (async () => {
       const sources: SRCSource[] = [];
+
+      // 1) streamed.pk — parallel with everything else.
+      const streamedPromise = home && away
+        ? fetchStreams({ data: { home, away } })
+            .then((r) => r?.sources ?? [])
+            .catch(() => [])
+        : Promise.resolve([]);
+
+      // 2) direct URLs from Yalladown/Yallasellit.
       const providerUrls = Array.from(new Set([directUrl, ...(directUrls ?? [])].filter(Boolean) as string[]));
-      providerUrls.forEach((url, i) => {
+      const directSources: SRCSource[] = providerUrls.map((url, i) => ({
+        id: `yalla-direct-${i + 1}`,
+        streamNo: i + 1,
+        source: i === 0 ? directLabel || "يلا داون" : `بديل ${i + 1}`,
+        embedUrl: url,
+        hd: true,
+        language: "ar",
+        viewers: 0,
+      } as unknown as SRCSource));
+
+      // 3) SportSRC in parallel.
+      const sportsrcPromise = matchId && !matchId.startsWith("ys-") && !matchId.startsWith("yd-")
+        ? fetchMatchDetail(matchId).catch(() => null)
+        : Promise.resolve(null);
+
+      const [streamed, sportsrc] = await Promise.all([streamedPromise, sportsrcPromise]);
+      if (!alive) return;
+
+      streamed.forEach((s, i) => {
         sources.push({
-          id: `yalla-direct-${i + 1}`,
+          id: `streamed-${i + 1}`,
           streamNo: i + 1,
-          source: i === 0 ? directLabel || "يلا سلّيت" : `بديل يلا سلّيت ${i + 1}`,
-          embedUrl: url,
-          hd: true,
-          language: "ar",
-          viewers: 0,
+          source: s.source,
+          embedUrl: s.embedUrl,
+          hd: s.hd,
+          language: s.language ?? "en",
+          viewers: s.viewers ?? 0,
         } as unknown as SRCSource);
       });
-      try {
-        const shouldFetchFallback = !matchId.startsWith("ys-");
-        const d = shouldFetchFallback ? await fetchMatchDetail(matchId) : null;
-        if (!alive) return;
-        if (d?.sources?.length) {
-          setDetail(d);
-          sources.push(...rankSources(d.sources));
-        }
-        if (!sources.length) {
-          setErr("لم يتم العثور على مصادر بث لهذه المباراة بعد. جرّب قبل انطلاق المباراة بقليل.");
-          setLoading(false);
-          return;
-        }
-        setRanked(sources);
-        setActiveIdx(0);
-      } catch (e) {
-        if (!alive) return;
-        if (sources.length) {
-          setRanked(sources);
-          setActiveIdx(0);
-          setErr(null);
-        } else {
-          setErr(e instanceof Error ? e.message : "تعذر تحميل البث.");
-        }
-      } finally {
-        if (alive) setLoading(false);
+
+      sources.push(...directSources);
+
+      if (sportsrc?.sources?.length) {
+        setDetail(sportsrc);
+        sources.push(...rankSources(sportsrc.sources));
       }
+
+      if (!sources.length) {
+        setErr("لم يتم العثور على مصادر بث لهذه المباراة بعد. جرّب قبل انطلاق المباراة بقليل.");
+      } else {
+        // Re-rank the whole combined list by host score.
+        setRanked(rankSources(sources));
+        setActiveIdx(0);
+        setErr(null);
+      }
+      setLoading(false);
     })();
     return () => {
       alive = false;
     };
-  }, [matchId, directUrl, directUrls, directLabel]);
+  }, [matchId, directUrl, directUrls, directLabel, home, away, fetchStreams]);
 
   // Auto-fallback watchdog: if the iframe never loads, jump to the next source.
   useEffect(() => {
