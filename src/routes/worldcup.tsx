@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery, useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
-import { Calendar, MapPin, Trophy, Radio, ExternalLink, Clock, Tv, PlayCircle } from "lucide-react";
+import { Calendar, MapPin, Trophy, Radio, ExternalLink, Clock, Tv } from "lucide-react";
 import {
   getWorldCupMatches,
   getWorldCupStandings,
@@ -13,20 +13,9 @@ import { SiteFooter } from "@/components/site-footer";
 import { FavoriteButton } from "@/components/favorite-button";
 import { useBrowserReminders } from "@/hooks/use-browser-reminders";
 import { supabase } from "@/integrations/supabase/client";
-// StreamModal removed — StreamHub (tv.bouibacademy.me) blocks iframe embedding,
-// so we open it in a new tab instead.
-import { fetchFootballMatches, findMatch, type SRCMatch } from "@/lib/sportsrc";
 import { getYallakoraMatches, type YKMatch } from "@/lib/yallakora.functions";
-import { getYallasellitMatches } from "@/lib/yallasellit.functions";
-import { getYalladownMatches } from "@/lib/yalladown.functions";
-import { buildStreamLookup } from "@/lib/match-streams";
 
-const srcQuery = queryOptions({
-  queryKey: ["sportsrc", "football"],
-  queryFn: () => fetchFootballMatches(),
-  staleTime: 60_000,
-  refetchInterval: 120_000,
-});
+const STREAM_URL = "https://tv.bouibacademy.me/#sports";
 
 const wcQuery = queryOptions({
   queryKey: ["worldcup", "2026"],
@@ -44,23 +33,6 @@ const ykQuery = queryOptions({
   staleTime: 60_000,
   refetchInterval: 120_000,
 });
-const ysQuery = queryOptions({
-  queryKey: ["yallasellit", "matches"],
-  queryFn: () => getYallasellitMatches(),
-  staleTime: 60_000,
-  refetchInterval: 120_000,
-});
-
-const ydQuery = queryOptions({
-  queryKey: ["yalladown", "matches"],
-  queryFn: () => getYalladownMatches(),
-  staleTime: 60_000,
-  refetchInterval: 120_000,
-});
-
-
-
-
 export const Route = createFileRoute("/worldcup")({
   loader: async ({ context }) => {
     await Promise.all([
@@ -344,28 +316,12 @@ function reconcileYk(yk: YKMatch, wc: WCMatch[]): YKMatch {
 function MatchCard({
   m,
   favIds,
-  srcMatches,
-  onWatch,
-  ysStreamMap,
 }: {
   m: WCMatch;
   favIds: Set<string>;
-  srcMatches: SRCMatch[];
-  onWatch: (srcId: string, title: string, fallbackSearch: string, directUrl?: string, directUrls?: string[]) => void;
-  ysStreamMap?: Map<string, string[]>;
 }) {
   const s = statusOf(m);
-  const src = useMemo(
-    () => (srcMatches.length ? findMatch(srcMatches, m.home, m.away, m.timestamp) : null),
-    [srcMatches, m.home, m.away, m.timestamp],
-  );
   const searchQ = `${m.home} vs ${m.away}`;
-  const ysUrls = useMemo(() => {
-    if (!ysStreamMap) return undefined;
-    const k = `${m.home.replace(/\s+/g, "").toLowerCase()}|${m.away.replace(/\s+/g, "").toLowerCase()}`;
-    return ysStreamMap.get(k);
-  }, [ysStreamMap, m.home, m.away]);
-  const ysUrl = ysUrls?.[0];
 
   return (
     <div className="rounded-2xl border border-border bg-card p-5 shadow-card hover:shadow-elegant transition-all">
@@ -451,39 +407,19 @@ function MatchCard({
 
       {(s.live || s.upcoming) && (
         <div className="mt-4 pt-4 border-t border-border space-y-2">
-          {ysUrl ? (
-            <button
-              onClick={() => onWatch(src?.id || `ys-${m.id}`, `${m.home} vs ${m.away}`, searchQ, ysUrl, ysUrls)}
-              className={`w-full inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-bold text-white transition ${
-                s.live ? "bg-red-600 hover:bg-red-700 animate-pulse" : "bg-primary hover:opacity-90"
-              }`}
-            >
-              <PlayCircle className="h-4 w-4" />
-              {s.live ? "شاهد البث المباشر الآن" : "شاهد البث داخل الموقع"}
-            </button>
-          ) : src ? (
-            <button
-              onClick={() => onWatch(src.id, `${m.home} vs ${m.away}`, searchQ)}
-              className={`w-full inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-bold text-white transition ${
-                s.live
-                  ? "bg-red-600 hover:bg-red-700 animate-pulse"
-                  : "bg-emerald-600 hover:bg-emerald-700"
-              }`}
-            >
-              <PlayCircle className="h-4 w-4" />
-              {s.live ? "شاهد البث المباشر الآن" : "شاهد البث المباشر"}
-            </button>
-          ) : (
-            <a
-              href="https://tv.bouibacademy.me/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-primary hover:opacity-90 px-4 py-2.5 text-sm font-bold text-primary-foreground transition"
-            >
-              <Tv className="h-4 w-4" />
-              افتح البث على StreamHub
-            </a>
-          )}
+          <a
+            href={STREAM_URL}
+            target="_blank"
+            rel="noopener"
+            className={`w-full inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-bold transition ${
+              s.live
+                ? "bg-red-600 hover:bg-red-700 text-white animate-pulse"
+                : "bg-primary hover:opacity-90 text-primary-foreground"
+            }`}
+          >
+            <ExternalLink className="h-4 w-4" />
+            {s.live ? "افتح البث المباشر الآن" : "افتح البث المباشر"}
+          </a>
           <a
             href={`https://www.livesoccertv.com/search/?q=${encodeURIComponent(searchQ)}`}
             target="_blank"
@@ -502,30 +438,13 @@ function MatchCard({
 
 function YKMatchCard({
   m,
-  srcMatches,
-  onWatch,
-  ysStreamMap,
   featured = false,
 }: {
   m: YKMatch;
-  srcMatches: SRCMatch[];
-  onWatch: (srcId: string, title: string, fallbackSearch: string, directUrl?: string, directUrls?: string[]) => void;
-  ysStreamMap?: Map<string, string[]>;
   featured?: boolean;
 }) {
   const iso = useMemo(() => ykKickoffIso(m.day, m.time), [m.day, m.time]);
   const moroccoTime = useMemo(() => formatTimeAr(iso), [iso]);
-  const src = useMemo(
-    () => (srcMatches.length ? findMatch(srcMatches, m.home, m.away, iso) : null),
-    [srcMatches, m.home, m.away, iso],
-  );
-  const ysUrls = useMemo(() => {
-    if (!ysStreamMap) return undefined;
-    const k = `${m.home.replace(/\s+/g, "").toLowerCase()}|${m.away.replace(/\s+/g, "").toLowerCase()}`;
-    return ysStreamMap.get(k);
-  }, [ysStreamMap, m.home, m.away]);
-  const ysUrl = ysUrls?.[0];
-  const title = `${m.home} vs ${m.away}`;
 
   return (
     <div
@@ -614,35 +533,22 @@ function YKMatchCard({
 
       {!m.finished && (
         <div className="relative mt-4 space-y-2">
-          {ysUrl ? (
-            <button
-              onClick={() => onWatch(src?.id || `ys-${m.id}`, title, title, ysUrl, ysUrls)}
-              className={`w-full inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-bold text-white transition ${
-                m.live
-                  ? "bg-red-600 hover:bg-red-700 shadow-lg shadow-red-500/20"
-                  : "bg-gradient-to-l from-primary to-primary/80 hover:opacity-95"
-              }`}
-            >
-              <PlayCircle className="h-4 w-4" />
-              {m.live ? "شاهد البث المباشر الآن" : "شاهد البث داخل الموقع"}
-            </button>
-          ) : src ? (
-            <button
-              onClick={() => onWatch(src.id, title, title)}
-              className={`w-full inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-bold text-white transition ${
-                m.live
-                  ? "bg-red-600 hover:bg-red-700 shadow-lg shadow-red-500/20"
-                  : "bg-gradient-to-l from-primary to-primary/80 hover:opacity-95"
-              }`}
-            >
-              <PlayCircle className="h-4 w-4" />
-              {m.live ? "شاهد البث المباشر داخل الموقع" : "افتح المشغّل داخل الموقع"}
-            </button>
-          ) : (
-            <div className="w-full text-center rounded-lg border border-dashed border-border px-4 py-2.5 text-xs text-muted-foreground">
-              البث المباشر داخل الموقع غير متاح لهذه المباراة
-            </div>
-          )}
+          <a
+            href={STREAM_URL}
+            target="_blank"
+            rel="noopener"
+            className={`w-full inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-bold transition ${
+              m.live
+                ? "bg-red-600 hover:bg-red-700 text-white shadow-lg shadow-red-500/20"
+                : "bg-primary hover:opacity-95 text-primary-foreground"
+            }`}
+          >
+            <ExternalLink className="h-4 w-4" />
+            {m.live ? "افتح البث المباشر الآن" : "افتح البث المباشر"}
+          </a>
+          <p className="text-center text-[11px] text-muted-foreground">
+            يفتح البث في صفحة مستقلة لتجنب مشاكل التضمين.
+          </p>
         </div>
       )}
     </div>
@@ -719,31 +625,9 @@ function WorldCupPage() {
   const { data } = useSuspenseQuery(wcQuery);
   const { data: standingsData } = useSuspenseQuery(standingsQuery);
   const { data: yk } = useQuery(ykQuery);
-  const { data: ys } = useQuery(ysQuery);
-  const { data: yd } = useQuery(ydQuery);
   const cd = useCountdown(TOURNAMENT_START);
   const [tab, setTab] = useState<Tab>("live");
   useBrowserReminders();
-  const [watch, setWatch] = useState<
-    { id: string; title: string; fallback: string; directUrl?: string; directUrls?: string[]; directLabel?: string } | null
-  >(null);
-  void watch;
-  const { data: srcMatches = [] } = useQuery(srcQuery);
-  const onWatch = (_id: string, _title: string, _fallback: string, _directUrl?: string, _directUrls?: string[]) => {
-    if (typeof window !== "undefined") {
-      window.open("https://tv.bouibacademy.me/#sports", "_blank", "noopener,noreferrer");
-    }
-  };
-  void setWatch;
-
-  // Merge Yalladown (primary) + Yallasellit (fallback) stream URLs, keyed by
-  // team names with aggressive Arabic normalization. Exposed via a Map-like
-  // `.get("home|away")` API consumed by the match card components.
-  const ysStreamMap = useMemo(
-    () => buildStreamLookup(yd, ys) as unknown as Map<string, string[]>,
-    [yd, ys],
-  );
-
 
   const { data: favData } = useQuery({
     queryKey: ["favorites", "ids"],
@@ -940,7 +824,7 @@ function WorldCupPage() {
               </h2>
               <p className="mt-2 text-sm text-muted-foreground max-w-2xl mx-auto">
                 جدول شامل لمباريات الأمس واليوم والغد مصدره <span className="font-semibold text-foreground">يلا كورة</span>،
-                مع القناة الرسمية والمعلّق. المباريات المتاح لها بث مدمج تُشاهَد داخل الموقع بضغطة زر.
+                مع القناة الرسمية والمعلّق. زر المشاهدة يفتح صفحة البث المباشر المستقلة بدون تضمين داخل المدونة.
               </p>
             </div>
 
@@ -973,7 +857,7 @@ function WorldCupPage() {
                           </div>
                           <div className="relative grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                             {liveNow.map((m) => (
-                              <YKMatchCard key={m.id} m={m} srcMatches={srcMatches} onWatch={onWatch} ysStreamMap={ysStreamMap} featured />
+                              <YKMatchCard key={m.id} m={m} featured />
                             ))}
                           </div>
                         </div>
@@ -986,7 +870,7 @@ function WorldCupPage() {
                           </h3>
                           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                             {upcomingToday.map((m) => (
-                              <YKMatchCard key={m.id} m={m} srcMatches={srcMatches} onWatch={onWatch} ysStreamMap={ysStreamMap} />
+                              <YKMatchCard key={m.id} m={m} />
                             ))}
                           </div>
                         </div>
@@ -999,7 +883,7 @@ function WorldCupPage() {
                           </h3>
                           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                             {finishedToday.map((m) => (
-                              <YKMatchCard key={m.id} m={m} srcMatches={srcMatches} onWatch={onWatch} ysStreamMap={ysStreamMap} />
+                              <YKMatchCard key={m.id} m={m} />
                             ))}
                           </div>
                         </div>
@@ -1015,7 +899,7 @@ function WorldCupPage() {
                     </h3>
                     <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                       {ykReconciled.tomorrow.map((m) => (
-                        <YKMatchCard key={m.id} m={m} srcMatches={srcMatches} onWatch={onWatch} ysStreamMap={ysStreamMap} />
+                        <YKMatchCard key={m.id} m={m} />
                       ))}
                     </div>
                   </div>
@@ -1028,7 +912,7 @@ function WorldCupPage() {
                     </h3>
                     <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                       {ykReconciled.yesterday.map((m) => (
-                        <YKMatchCard key={m.id} m={m} srcMatches={srcMatches} onWatch={onWatch} ysStreamMap={ysStreamMap} />
+                        <YKMatchCard key={m.id} m={m} />
                       ))}
                     </div>
                   </div>
@@ -1055,7 +939,7 @@ function WorldCupPage() {
             ) : (
               <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 {todayMatches.map((m) => (
-                  <MatchCard key={m.id} m={m} favIds={favIds} srcMatches={srcMatches} onWatch={onWatch} ysStreamMap={ysStreamMap} />
+                  <MatchCard key={m.id} m={m} favIds={favIds} />
                 ))}
               </div>
             )}
@@ -1076,7 +960,7 @@ function WorldCupPage() {
                 </div>
                 <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                   {matches.map((m) => (
-                    <MatchCard key={m.id} m={m} favIds={favIds} srcMatches={srcMatches} onWatch={onWatch} ysStreamMap={ysStreamMap} />
+                    <MatchCard key={m.id} m={m} favIds={favIds} />
                   ))}
                 </div>
               </div>

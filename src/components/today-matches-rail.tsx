@@ -1,17 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { Link } from "@tanstack/react-router";
-import { PlayCircle, Tv, ArrowLeft, Radio, Clock } from "lucide-react";
+import { ExternalLink, Tv, ArrowLeft, Clock } from "lucide-react";
 import { getYalladownMatches, type YDMatch } from "@/lib/yalladown.functions";
-import { getYallasellitMatches } from "@/lib/yallasellit.functions";
-import { buildStreamLookup, normalizeArName } from "@/lib/match-streams";
-// StreamModal removed — tv.bouibacademy.me refuses iframe embedding; we open it in a new tab.
+import { normalizeArName } from "@/lib/match-streams";
+
+const STREAM_URL = "https://tv.bouibacademy.me/#sports";
 
 /**
  * Horizontal, snap-scrolling rail of today's live/upcoming matches for the
- * home page and article footers. Yalladown is the primary stream source;
- * Yallasellit acts as a fallback so the "watch" button appears whenever any
- * provider has an embed.
+ * home page and article footers. Match metadata comes from Yalladown, while the
+ * watch action always opens the dedicated StreamHub page directly.
  */
 export function TodayMatchesRail({
   variant = "home",
@@ -26,15 +25,6 @@ export function TodayMatchesRail({
     staleTime: 60_000,
     refetchInterval: 120_000,
   });
-  const ys = useQuery({
-    queryKey: ["yallasellit", "matches"],
-    queryFn: () => getYallasellitMatches(),
-    staleTime: 60_000,
-    refetchInterval: 120_000,
-  });
-
-  const lookup = useMemo(() => buildStreamLookup(yd.data, ys.data), [yd.data, ys.data]);
-
   const matches: YDMatch[] = useMemo(() => {
     const src: YDMatch[] = [
       ...(yd.data?.today ?? []),
@@ -55,21 +45,6 @@ export function TodayMatchesRail({
     out.sort((a, b) => Number(b.live) - Number(a.live));
     return out;
   }, [yd.data, max]);
-
-  // Kept for legacy state — currently unused since we open StreamHub in a new
-  // tab (tv.bouibacademy.me refuses iframe embedding via X-Frame-Options).
-  const [watch, setWatch] = useState<
-    { title: string; urls: string[]; home: string; away: string } | null
-  >(null);
-  void watch;
-  void setWatch;
-  void lookup;
-
-  const openWatch = (_m: YDMatch) => {
-    if (typeof window !== "undefined") {
-      window.open("https://tv.bouibacademy.me/#sports", "_blank", "noopener,noreferrer");
-    }
-  };
 
   if (yd.isLoading && !matches.length) {
     return (
@@ -115,9 +90,7 @@ export function TodayMatchesRail({
         className="-mx-4 px-4 flex gap-3 overflow-x-auto snap-x snap-mandatory pb-3 scrollbar-thin"
         style={{ scrollbarWidth: "thin" }}
       >
-        {matches.map((m) => {
-          const hasStream = !!m.pageUrl || (m.streamUrls?.length ?? 0) > 0;
-          return (
+        {matches.map((m) => (
             <article
               key={m.id}
               className={`snap-start shrink-0 w-[280px] md:w-[300px] rounded-2xl border bg-card p-4 shadow-card transition ${
@@ -162,32 +135,21 @@ export function TodayMatchesRail({
                   <span dir="rtl" className="text-xs font-semibold leading-tight line-clamp-2">{m.away}</span>
                 </div>
               </div>
-              <button
-                type="button"
-                onClick={() => openWatch(m)}
-                disabled={!hasStream}
-                className={`mt-3 w-full inline-flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-xs font-bold text-white transition ${
-                  !hasStream
-                    ? "bg-muted text-muted-foreground cursor-not-allowed"
-                    : m.live
-                      ? "bg-red-600 hover:bg-red-700"
-                      : "bg-gradient-to-l from-primary to-primary/80 hover:opacity-95"
+              <a
+                href={STREAM_URL}
+                target="_blank"
+                rel="noopener"
+                className={`mt-3 w-full inline-flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-xs font-bold transition ${
+                  m.live
+                    ? "bg-red-600 hover:bg-red-700 text-white"
+                    : "bg-primary hover:opacity-95 text-primary-foreground"
                 }`}
               >
-                {hasStream ? (
-                  <>
-                    <PlayCircle className="h-3.5 w-3.5" />
-                    {m.live ? "شاهد الآن" : "شاهد البث"}
-                  </>
-                ) : (
-                  <>
-                    <Radio className="h-3.5 w-3.5" /> غير متوفر
-                  </>
-                )}
-              </button>
+                <ExternalLink className="h-3.5 w-3.5" />
+                {m.live ? "افتح البث الآن" : "افتح البث المباشر"}
+              </a>
             </article>
-          );
-        })}
+        ))}
       </div>
 
     </section>
