@@ -330,6 +330,39 @@ function AdminLessons() {
     }
   }
 
+  function openEdit(l: any) {
+    setEditing(l);
+    setEditTitle(l.title ?? "");
+    setEditDescription(l.description ?? "");
+    setEditCategory(l.category ?? "");
+    setEditPublished(!!l.published);
+  }
+
+  async function onSaveEdit() {
+    if (!editing) return;
+    if (!editTitle.trim()) return toast.error("العنوان مطلوب");
+    setSavingEdit(true);
+    try {
+      await updateLesson({
+        data: {
+          id: editing.id,
+          title: editTitle.trim(),
+          description: editDescription.trim() || null,
+          category: editCategory.trim() || null,
+          published: editPublished,
+        },
+      });
+      toast.success("تم حفظ التعديلات");
+      setEditing(null);
+      await refresh();
+    } catch (e: any) {
+      toast.error(e?.message ?? "فشل الحفظ");
+    } finally {
+      setSavingEdit(false);
+    }
+  }
+
+
   const uploading = stage === "uploading";
   const publishing = stage === "publishing";
   const readyToPublish = stage === "uploaded" || stage === "publishing";
