@@ -2,7 +2,7 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { Menu, X, Star, LogIn } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import bouibaLogo from "@/assets/bouiba-logo.png.asset.json";
+import bouibaLogo from "@/assets/bouiba-logo.webp.asset.json";
 
 const NAV = [
   { to: "/", label: "الرئيسية" },
