@@ -25,8 +25,17 @@ import {
   X,
   Send,
   RefreshCw,
+  Pencil,
 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
+
 
 export const Route = createFileRoute("/_authenticated/admin/lessons")({
   component: AdminLessons,
@@ -87,7 +96,16 @@ function AdminLessons() {
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
 
+  // Edit dialog
+  const [editing, setEditing] = useState<any | null>(null);
+  const [editTitle, setEditTitle] = useState("");
+  const [editDescription, setEditDescription] = useState("");
+  const [editCategory, setEditCategory] = useState("");
+  const [editPublished, setEditPublished] = useState(true);
+  const [savingEdit, setSavingEdit] = useState(false);
+
   // Upload state
+
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [dragOver, setDragOver] = useState(false);
@@ -311,6 +329,39 @@ function AdminLessons() {
       toast.error("فشل الحذف");
     }
   }
+
+  function openEdit(l: any) {
+    setEditing(l);
+    setEditTitle(l.title ?? "");
+    setEditDescription(l.description ?? "");
+    setEditCategory(l.category ?? "");
+    setEditPublished(!!l.published);
+  }
+
+  async function onSaveEdit() {
+    if (!editing) return;
+    if (!editTitle.trim()) return toast.error("العنوان مطلوب");
+    setSavingEdit(true);
+    try {
+      await updateLesson({
+        data: {
+          id: editing.id,
+          title: editTitle.trim(),
+          description: editDescription.trim() || null,
+          category: editCategory.trim() || null,
+          published: editPublished,
+        },
+      });
+      toast.success("تم حفظ التعديلات");
+      setEditing(null);
+      await refresh();
+    } catch (e: any) {
+      toast.error(e?.message ?? "فشل الحفظ");
+    } finally {
+      setSavingEdit(false);
+    }
+  }
+
 
   const uploading = stage === "uploading";
   const publishing = stage === "publishing";
@@ -568,9 +619,13 @@ function AdminLessons() {
                         {l.published ? "منشور" : "مخفي"}
                       </span>
                     </div>
-                    <Button size="icon" variant="ghost" onClick={() => onDelete(l)}>
+                    <Button size="icon" variant="ghost" onClick={() => openEdit(l)} title="تعديل">
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                    <Button size="icon" variant="ghost" onClick={() => onDelete(l)} title="حذف">
                       <Trash2 className="h-4 w-4 text-destructive" />
                     </Button>
+
                   </div>
                 </div>
               ))}
@@ -578,6 +633,47 @@ function AdminLessons() {
           )}
         </CardContent>
       </Card>
+
+      <Dialog open={!!editing} onOpenChange={(o) => !o && setEditing(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>تعديل معلومات الدرس</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="grid gap-2">
+              <Label>العنوان *</Label>
+              <Input value={editTitle} onChange={(e) => setEditTitle(e.target.value)} />
+            </div>
+            <div className="grid gap-2">
+              <Label>الوصف</Label>
+              <Textarea
+                value={editDescription}
+                onChange={(e) => setEditDescription(e.target.value)}
+                rows={3}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label>التصنيف</Label>
+              <Input value={editCategory} onChange={(e) => setEditCategory(e.target.value)} />
+            </div>
+            <div className="flex items-center gap-2">
+              <Switch checked={editPublished} onCheckedChange={setEditPublished} />
+              <span className="text-sm text-muted-foreground">
+                {editPublished ? "منشور" : "مخفي"}
+              </span>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setEditing(null)} disabled={savingEdit}>
+              إلغاء
+            </Button>
+            <Button onClick={onSaveEdit} disabled={savingEdit || !editTitle.trim()}>
+              {savingEdit ? <Loader2 className="h-4 w-4 animate-spin" /> : "حفظ"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
+
 }
