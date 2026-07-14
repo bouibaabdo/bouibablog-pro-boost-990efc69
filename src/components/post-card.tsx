@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Clock, ArrowLeft } from "lucide-react";
-import type { BloggerPost } from "@/lib/blogger.functions";
+import { optimizeBloggerImage, type BloggerPost } from "@/lib/blogger.functions";
 
 function formatDate(iso: string) {
   try {
@@ -14,7 +14,11 @@ function formatDate(iso: string) {
   }
 }
 
-export function PostCard({ post, featured = false }: { post: BloggerPost; featured?: boolean }) {
+export function PostCard({ post, featured = false, priority = false }: { post: BloggerPost; featured?: boolean; priority?: boolean }) {
+  const w = featured ? 1200 : 800;
+  const h = featured ? 675 : 500;
+  const src = optimizeBloggerImage(post.thumbnail, w, h);
+  const src2x = optimizeBloggerImage(post.thumbnail, w * 2, h * 2);
   return (
     <article
       className={`group relative overflow-hidden rounded-2xl border border-border bg-card shadow-card transition-all hover:shadow-elegant hover:-translate-y-0.5 ${
@@ -29,9 +33,15 @@ export function PostCard({ post, featured = false }: { post: BloggerPost; featur
         {post.thumbnail && (
           <div className={`overflow-hidden bg-surface-muted ${featured ? "aspect-[16/9]" : "aspect-[16/10]"}`}>
             <img
-              src={post.thumbnail}
+              src={src}
+              srcSet={src && src2x ? `${src} 1x, ${src2x} 2x` : undefined}
+              width={w}
+              height={h}
               alt={post.title}
-              loading="lazy"
+              loading={priority ? "eager" : "lazy"}
+              fetchPriority={priority ? "high" : "auto"}
+              decoding="async"
+              sizes={featured ? "(min-width: 768px) 800px, 100vw" : "(min-width: 768px) 400px, 100vw"}
               className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
             />
           </div>

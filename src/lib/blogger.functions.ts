@@ -55,6 +55,31 @@ function extractThumbnail(html: string, media?: { url: string }): string | undef
   return m?.[1];
 }
 
+/**
+ * Optimize a Blogger/googleusercontent image URL to serve WebP at a specific size.
+ * Falls back to the original URL for non-Google hosts.
+ */
+export function optimizeBloggerImage(url: string | undefined, w: number, h: number): string | undefined {
+  if (!url) return url;
+  try {
+    const u = new URL(url);
+    if (!/googleusercontent\.com$|blogspot\.com$|blogger\.com$/.test(u.hostname)) return url;
+    const spec = `w${w}-h${h}-c-rw`;
+    if (/\/s\d+(-c)?\//.test(u.pathname)) {
+      u.pathname = u.pathname.replace(/\/s\d+(-c)?\//, `/${spec}/`);
+      return u.toString();
+    }
+    if (/\/w\d+-h\d+[^/]*\//.test(u.pathname)) {
+      u.pathname = u.pathname.replace(/\/w\d+-h\d+[^/]*\//, `/${spec}/`);
+      return u.toString();
+    }
+    const clean = url.split("=")[0];
+    return `${clean}=${spec}`;
+  } catch {
+    return url;
+  }
+}
+
 function stripHtml(html: string): string {
   return html
     .replace(/<script[\s\S]*?<\/script>/gi, "")
