@@ -48,9 +48,9 @@ export function TodayMatchesRail({
 
   if (yd.isLoading && !matches.length) {
     return (
-      <div className="container-page py-8">
-        <div className="h-40 rounded-2xl border border-border bg-surface-muted animate-pulse" />
-      </div>
+      <section className={variant === "home" ? "container-page py-8 md:py-12" : "container-page py-6"}>
+        <div className="h-[220px] rounded-2xl border border-border bg-surface-muted animate-pulse" />
+      </section>
     );
   }
   if (!matches.length) return null;
