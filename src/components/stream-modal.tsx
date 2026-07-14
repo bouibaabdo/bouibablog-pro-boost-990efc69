@@ -128,6 +128,14 @@ export function StreamModal({
     [active],
   );
 
+  // Derive team names from title as fallback so streamed.pk discovery still works
+  // for callers (e.g. the worldcup page) that haven't been updated to pass them.
+  const [derivedHome, derivedAway] = useMemo(() => {
+    if (home && away) return [home, away];
+    const m = title.match(/^\s*(.+?)\s+(?:vs\.?|ضد|×)\s+(.+?)\s*$/i);
+    return m ? [m[1], m[2]] : ["", ""];
+  }, [home, away, title]);
+
   // Load match sources. Order of precedence:
   //   1) streamed.pk auto-discovered sources (freshest, most stable)
   //   2) Yalladown / Yallasellit direct URLs (channel-based)
