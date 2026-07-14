@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { Sparkles, Facebook, Twitter, Instagram, Youtube } from "lucide-react";
+import { Facebook, Twitter, Instagram, Youtube } from "lucide-react";
+import bouibaLogo from "@/assets/bouiba-logo.png.asset.json";
 
 export function SiteFooter() {
   return (
@@ -7,11 +8,8 @@ export function SiteFooter() {
       <div className="container-page py-14">
         <div className="grid gap-10 md:grid-cols-4">
           <div className="md:col-span-2">
-            <Link to="/" className="flex items-center gap-2 font-bold text-lg mb-3">
-              <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-                <Sparkles className="h-5 w-5" />
-              </span>
-              <span className="font-display">Bouiba Academy</span>
+            <Link to="/" className="inline-flex items-center gap-2 mb-3" aria-label="Bouiba Academy">
+              <img src={bouibaLogo.url} alt="Bouiba Academy" className="h-12 w-auto" width={48} height={48} />
             </Link>
             <p className="text-sm text-muted-foreground max-w-md leading-relaxed">
               أكاديميتك العربية للذكاء الاصطناعي — دروس عملية، أحدث الأخبار، وأدوات مجانية

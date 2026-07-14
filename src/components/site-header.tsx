@@ -1,7 +1,8 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
-import { Menu, X, Sparkles, Star, LogIn } from "lucide-react";
+import { Menu, X, Star, LogIn } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import bouibaLogo from "@/assets/bouiba-logo.png.asset.json";
 
 const NAV = [
   { to: "/", label: "الرئيسية" },
@@ -26,11 +27,14 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/80 backdrop-blur-md">
       <div className="container-page flex h-16 items-center justify-between gap-4">
-        <Link to="/" className="flex items-center gap-2 font-bold text-lg">
-          <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-soft">
-            <Sparkles className="h-5 w-5" />
-          </span>
-          <span className="font-display">Bouiba Academy</span>
+        <Link to="/" className="flex items-center gap-2 font-bold text-lg" aria-label="Bouiba Academy">
+          <img
+            src={bouibaLogo.url}
+            alt="Bouiba Academy"
+            className="h-11 w-auto"
+            width={44}
+            height={44}
+          />
         </Link>
 
         <nav className="hidden md:flex items-center gap-1">
