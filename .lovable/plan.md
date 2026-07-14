@@ -1,44 +1,43 @@
-# توجيه www.bouibacademy.me إلى الموقع الجديد
+## المشكلة
+روابط البث الحالية (yalladown + yallasellit + قنوات Alba/embedsports المضمّنة يدويًا) أصبحت غير مستقرة: كثير منها يعيد صفحات إعلانات أو 404، وقائمة المزوّدات المكتوبة يدويًا في `yalladown.functions.ts` و`yallasellit.functions.ts` قديمة.
 
-## سبب المشكلة
-الصورة التي أرسلتها تعرض **قالب Blogger الأصلي** لأن الدومين `www.bouibacademy.me` لا يزال مربوطًا في إعدادات Blogger عبر سجلات DNS قديمة. أما الموقع الاحترافي الذي بنيناه فمنشور حاليًا على `edu.bouibacademy.me` فقط.
+## الحل: التحوّل إلى مصادر مجمّعة حيّة + توسيع قائمة المزوّدات
 
-الحل هو **تحرير الدومين من Blogger وربطه بـ Lovable**، بحيث يعرض `www.bouibacademy.me` و`bouibacademy.me` نفس التصميم الجديد.
+### 1) مصادر بث جديدة تُجلب ديناميكيًا
+أضف ثلاثة مزوّدات مجمِّعة معروفة بالاستقرار وتحديث الروابط يوميًا:
 
----
+- **`streamed.pk`** (API عام مجاني `https://streamed.pk/api/matches/football` + `/api/stream/{source}/{id}`) — يعيد قائمة مباريات مع مصادر متعددة (alpha/bravo/charlie/delta/echo/foxtrot) وروابط `embedUrl` جاهزة.
+- **`sportsurge` / `crackstreams` mirror** عبر `https://embedsports.top/embed/{source}/{slug}/{n}` — نستخدمه كـ fallback مبني على اسم المباراة.
+- **`daddylive` HD** عبر `https://dlhd.dad/embed/stream-{id}.php` — قائمة القنوات تُجلب من `https://daddylive.mp/24-7-channels.php` وتُخزَّن مؤقتًا 30 دقيقة.
 
-## الخطوات
+### 2) طبقة موحّدة `src/lib/live-streams.functions.ts`
+ملف جديد يجمع كل المزوّدات في دالة واحدة `getLiveStreamsFor(home, away, kickoffIso)` تُعيد `string[]` مرتّبة حسب الجودة:
+1. `streamed.pk` (الأولوية القصوى — الأكثر استقرارًا)
+2. `daddylive` مطابقة بالقناة (beIN / SSC)
+3. `yalladown` (الحالي)
+4. `embedsports.top` بأشكال متعددة
+5. `yallasellit` (آخر ملاذ)
 
-### 1) داخل لوحة Blogger (أنت تنفذها)
-- افتح Blogger → **Settings → Publishing**.
-- احذف الدومين المخصص `www.bouibacademy.me` (سيعود المدونة للعمل على `academybouiba.blogspot.com` — وهذا هو المصدر الذي يجلب منه الموقع الجديد المقالات، فلن يتأثر شيء).
+### 3) تحديث `stream-modal.tsx`
+- زيادة `HOST_SCORE` ليشمل `streamed.pk`, `dlhd.dad`, `embedme.top`.
+- تقليل مهلة الفشل التلقائي من الحالية إلى **6 ثوانٍ** حتى يتنقّل بين المصادر أسرع.
+- زر "المصدر التالي" يدويًا يعمل حتى قبل انتهاء المهلة.
+- عند فشل كل المصادر: عرض رسالة عربية واضحة + رابط مباشر لصفحة `streamed.pk/watch/{id}` كبديل خارجي.
 
-### 2) داخل مزوّد الدومين (حيث اشتريت bouibacademy.me)
-احذف سجلات Blogger القديمة (CNAME يشير إلى `ghs.google.com` وسجلات A الأربعة الخاصة بـ Google) وأضِف بدلها:
+### 4) تحديث `match-streams.ts`
+دمج مخرجات `getLiveStreamsFor` قبل مصادر yalladown/yallasellit في `buildStreamLookup`، مع إبقاء التطابق الغامض بالأسماء العربية.
 
-```text
-النوع  الاسم     القيمة
-A      @         185.158.133.1
-A      www       185.158.133.1
-TXT    _lovable  (القيمة التي ستظهر لك في Lovable)
-```
+### 5) Cache خفيف
+`unstable_cache` لمدة 60 ثانية على `streamed.pk` و30 دقيقة على قائمة قنوات daddylive حتى لا نُثقل مزوّداتهم.
 
-### 3) داخل Lovable (أنا أرشدك)
-- **Project Settings → Domains → Connect Domain**.
-- أضِف `bouibacademy.me` ثم أضِف `www.bouibacademy.me` كمدخل منفصل.
-- اختر أحدهما كـ **Primary** (يُنصح `www.bouibacademy.me`) والآخر سيعيد التوجيه إليه.
-- اترك النظام يتحقّق من DNS ويُصدر شهادة SSL (قد يستغرق حتى 72 ساعة، عادةً أقل من ساعة).
+## الملفات المتأثرة
+- **جديد**: `src/lib/live-streams.functions.ts`
+- **تعديل**: `src/lib/match-streams.ts`, `src/components/stream-modal.tsx`, `src/lib/yalladown.functions.ts` (توسيع قائمة providers فقط)
+- **بدون تغيير**: قاعدة البيانات، الواجهة، الـ SEO، لوحة التحكم.
 
-### 4) بعد التفعيل
-- `www.bouibacademy.me` و`bouibacademy.me` سيعرضان الموقع الاحترافي الجديد.
-- `edu.bouibacademy.me` يبقى يعمل كما هو (أو يمكن حذفه لاحقًا).
-- المقالات ستستمر بالظهور لأنها تُجلب من `academybouiba.blogspot.com` في الخلفية.
+## النتيجة المتوقّعة
+- زيادة كبيرة في نسبة نجاح تشغيل البث من أول محاولة.
+- تنقّل تلقائي أسرع بين المصادر عند الفشل.
+- لا تغيير في تجربة المستخدم على الصفحة الرئيسية أو صفحة كأس العالم.
 
----
-
-## ملاحظات مهمة
-- **لن يتم أي تغيير في الكود** — المشكلة كلها في إعدادات DNS.
-- المقالات الموجودة في Blogger لن تُحذف؛ ستظل مصدر البيانات.
-- بعد الانتهاء، سنُعيد إرسال Sitemap الجديد إلى Google Search Console من الدومين الرئيسي.
-
-هل تريد أن أبدأ بتوجيهك خطوة بخطوة عبر إعدادات مزوّد الدومين لديك؟ أخبرني عند من اشتريت `bouibacademy.me` (Namecheap / GoDaddy / OVH / ...).
+هل تريد أن أضيف أيضًا مزوّد **`sportzonline.si`** (يتطلب parsing HTML خفيف) كمصدر رابع، أم يكفي الثلاثة أعلاه؟
