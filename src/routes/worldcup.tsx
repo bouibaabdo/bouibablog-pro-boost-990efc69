@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery, useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
-import { Calendar, MapPin, Trophy, Radio, ExternalLink, Clock, Tv, PlayCircle } from "lucide-react";
+import { Calendar, MapPin, Trophy, Radio, ExternalLink, Clock, Tv } from "lucide-react";
 import {
   getWorldCupMatches,
   getWorldCupStandings,
