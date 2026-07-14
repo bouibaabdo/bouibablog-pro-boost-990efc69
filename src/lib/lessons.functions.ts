@@ -4,35 +4,32 @@ import { z } from "zod";
 
 const SIGN_EXPIRY = 60 * 60 * 24; // 24h
 
-async function signRows<T extends { video_path: string; thumbnail_path?: string | null; thumbnail_url?: string | null }>(
-  rows: T[],
-): Promise<Array<T & { video_url: string | null; thumbnail_url: string | null }>> {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+async function signRows(admin: any, rows: any[]) {
   return Promise.all(
     rows.map(async (r) => {
       const [videoRes, thumbRes] = await Promise.all([
-        supabaseAdmin.storage.from("lessons").createSignedUrl(r.video_path, SIGN_EXPIRY),
+        admin.storage.from("lessons").createSignedUrl(r.video_path, SIGN_EXPIRY),
         r.thumbnail_path
-          ? supabaseAdmin.storage.from("lessons").createSignedUrl(r.thumbnail_path, SIGN_EXPIRY)
+          ? admin.storage.from("lessons").createSignedUrl(r.thumbnail_path, SIGN_EXPIRY)
           : Promise.resolve({ data: null }),
       ]);
       return {
         ...r,
         video_url: videoRes.data?.signedUrl ?? null,
-        thumbnail_url:
-          (thumbRes as any).data?.signedUrl ?? (r.thumbnail_url as string | null) ?? null,
+        thumbnail_url: thumbRes?.data?.signedUrl ?? r.thumbnail_url ?? null,
       };
     }),
   );
 }
 
-function publicClient() {
-  const { createClient } = require("@supabase/supabase-js") as typeof import("@supabase/supabase-js");
+// Public list
+export const listLessons = createServerFn({ method: "GET" }).handler(async () => {
+  const { createClient } = await import("@supabase/supabase-js");
   const key = process.env.SUPABASE_PUBLISHABLE_KEY!;
-  return createClient(process.env.SUPABASE_URL!, key, {
+  const supabase = createClient(process.env.SUPABASE_URL!, key, {
     auth: { persistSession: false },
     global: {
-      fetch: (input: any, init: any) => {
+      fetch: (input, init) => {
         const h = new Headers(init?.headers);
         if (key.startsWith("sb_") && h.get("Authorization") === `Bearer ${key}`) {
           h.delete("Authorization");
@@ -42,11 +39,6 @@ function publicClient() {
       },
     },
   });
-}
-
-// Public list
-export const listLessons = createServerFn({ method: "GET" }).handler(async () => {
-  const supabase = publicClient();
   const { data, error } = await supabase
     .from("lessons")
     .select("id, title, description, category, video_path, thumbnail_path, thumbnail_url, duration_seconds, created_at")
@@ -54,7 +46,8 @@ export const listLessons = createServerFn({ method: "GET" }).handler(async () =>
     .order("sort_order", { ascending: true })
     .order("created_at", { ascending: false });
   if (error) throw error;
-  return signRows((data ?? []) as any[]);
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  return signRows(supabaseAdmin, data ?? []);
 });
 
 async function assertAdmin(context: { supabase: any; userId: string }) {
@@ -76,7 +69,8 @@ export const adminListLessons = createServerFn({ method: "GET" })
       .order("sort_order", { ascending: true })
       .order("created_at", { ascending: false });
     if (error) throw error;
-    return signRows((data ?? []) as any[]);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    return signRows(supabaseAdmin, data ?? []);
   });
 
 export const createLesson = createServerFn({ method: "POST" })
