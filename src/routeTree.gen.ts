@@ -19,6 +19,7 @@ import { Route as SitemapPostsDotxmlRouteImport } from './routes/sitemap-posts[.
 import { Route as SitemapPagesDotxmlRouteImport } from './routes/sitemap-pages[.]xml'
 import { Route as QuizRouteImport } from './routes/quiz'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as LessonsRouteImport } from './routes/lessons'
 import { Route as DisclaimerRouteImport } from './routes/disclaimer'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -41,6 +42,7 @@ import { Route as ApiToolsImageRouteImport } from './routes/api/tools/image'
 import { Route as AuthenticatedAdminWorldcupRouteImport } from './routes/_authenticated/admin/worldcup'
 import { Route as AuthenticatedAdminToolsRouteImport } from './routes/_authenticated/admin/tools'
 import { Route as AuthenticatedAdminPostsRouteImport } from './routes/_authenticated/admin/posts'
+import { Route as AuthenticatedAdminLessonsRouteImport } from './routes/_authenticated/admin/lessons'
 import { Route as AuthenticatedAdminAnalyticsRouteImport } from './routes/_authenticated/admin/analytics'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 
@@ -92,6 +94,11 @@ const QuizRoute = QuizRouteImport.update({
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LessonsRoute = LessonsRouteImport.update({
+  id: '/lessons',
+  path: '/lessons',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DisclaimerRoute = DisclaimerRouteImport.update({
@@ -204,6 +211,12 @@ const AuthenticatedAdminPostsRoute = AuthenticatedAdminPostsRouteImport.update({
   path: '/posts',
   getParentRoute: () => AuthenticatedAdminRouteRoute,
 } as any)
+const AuthenticatedAdminLessonsRoute =
+  AuthenticatedAdminLessonsRouteImport.update({
+    id: '/lessons',
+    path: '/lessons',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
 const AuthenticatedAdminAnalyticsRoute =
   AuthenticatedAdminAnalyticsRouteImport.update({
     id: '/analytics',
@@ -223,6 +236,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/disclaimer': typeof DisclaimerRoute
+  '/lessons': typeof LessonsRoute
   '/privacy': typeof PrivacyRoute
   '/quiz': typeof QuizRoute
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
@@ -244,6 +258,7 @@ export interface FileRoutesByFullPath {
   '/posts/': typeof PostsIndexRoute
   '/tools/': typeof ToolsIndexRoute
   '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
+  '/admin/lessons': typeof AuthenticatedAdminLessonsRoute
   '/admin/posts': typeof AuthenticatedAdminPostsRoute
   '/admin/tools': typeof AuthenticatedAdminToolsRoute
   '/admin/worldcup': typeof AuthenticatedAdminWorldcupRoute
@@ -258,6 +273,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/disclaimer': typeof DisclaimerRoute
+  '/lessons': typeof LessonsRoute
   '/privacy': typeof PrivacyRoute
   '/quiz': typeof QuizRoute
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
@@ -277,6 +293,7 @@ export interface FileRoutesByTo {
   '/posts': typeof PostsIndexRoute
   '/tools': typeof ToolsIndexRoute
   '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
+  '/admin/lessons': typeof AuthenticatedAdminLessonsRoute
   '/admin/posts': typeof AuthenticatedAdminPostsRoute
   '/admin/tools': typeof AuthenticatedAdminToolsRoute
   '/admin/worldcup': typeof AuthenticatedAdminWorldcupRoute
@@ -293,6 +310,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/disclaimer': typeof DisclaimerRoute
+  '/lessons': typeof LessonsRoute
   '/privacy': typeof PrivacyRoute
   '/quiz': typeof QuizRoute
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
@@ -314,6 +332,7 @@ export interface FileRoutesById {
   '/posts/': typeof PostsIndexRoute
   '/tools/': typeof ToolsIndexRoute
   '/_authenticated/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
+  '/_authenticated/admin/lessons': typeof AuthenticatedAdminLessonsRoute
   '/_authenticated/admin/posts': typeof AuthenticatedAdminPostsRoute
   '/_authenticated/admin/tools': typeof AuthenticatedAdminToolsRoute
   '/_authenticated/admin/worldcup': typeof AuthenticatedAdminWorldcupRoute
@@ -330,6 +349,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contact'
     | '/disclaimer'
+    | '/lessons'
     | '/privacy'
     | '/quiz'
     | '/sitemap-pages.xml'
@@ -351,6 +371,7 @@ export interface FileRouteTypes {
     | '/posts/'
     | '/tools/'
     | '/admin/analytics'
+    | '/admin/lessons'
     | '/admin/posts'
     | '/admin/tools'
     | '/admin/worldcup'
@@ -365,6 +386,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contact'
     | '/disclaimer'
+    | '/lessons'
     | '/privacy'
     | '/quiz'
     | '/sitemap-pages.xml'
@@ -384,6 +406,7 @@ export interface FileRouteTypes {
     | '/posts'
     | '/tools'
     | '/admin/analytics'
+    | '/admin/lessons'
     | '/admin/posts'
     | '/admin/tools'
     | '/admin/worldcup'
@@ -399,6 +422,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contact'
     | '/disclaimer'
+    | '/lessons'
     | '/privacy'
     | '/quiz'
     | '/sitemap-pages.xml'
@@ -420,6 +444,7 @@ export interface FileRouteTypes {
     | '/posts/'
     | '/tools/'
     | '/_authenticated/admin/analytics'
+    | '/_authenticated/admin/lessons'
     | '/_authenticated/admin/posts'
     | '/_authenticated/admin/tools'
     | '/_authenticated/admin/worldcup'
@@ -436,6 +461,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   ContactRoute: typeof ContactRoute
   DisclaimerRoute: typeof DisclaimerRoute
+  LessonsRoute: typeof LessonsRoute
   PrivacyRoute: typeof PrivacyRoute
   QuizRoute: typeof QuizRoute
   SitemapPagesDotxmlRoute: typeof SitemapPagesDotxmlRoute
@@ -523,6 +549,13 @@ declare module '@tanstack/react-router' {
       path: '/privacy'
       fullPath: '/privacy'
       preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lessons': {
+      id: '/lessons'
+      path: '/lessons'
+      fullPath: '/lessons'
+      preLoaderRoute: typeof LessonsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/disclaimer': {
@@ -679,6 +712,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminPostsRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
+    '/_authenticated/admin/lessons': {
+      id: '/_authenticated/admin/lessons'
+      path: '/lessons'
+      fullPath: '/admin/lessons'
+      preLoaderRoute: typeof AuthenticatedAdminLessonsRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
     '/_authenticated/admin/analytics': {
       id: '/_authenticated/admin/analytics'
       path: '/analytics'
@@ -698,6 +738,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedAdminRouteRouteChildren {
   AuthenticatedAdminAnalyticsRoute: typeof AuthenticatedAdminAnalyticsRoute
+  AuthenticatedAdminLessonsRoute: typeof AuthenticatedAdminLessonsRoute
   AuthenticatedAdminPostsRoute: typeof AuthenticatedAdminPostsRoute
   AuthenticatedAdminToolsRoute: typeof AuthenticatedAdminToolsRoute
   AuthenticatedAdminWorldcupRoute: typeof AuthenticatedAdminWorldcupRoute
@@ -707,6 +748,7 @@ interface AuthenticatedAdminRouteRouteChildren {
 const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren =
   {
     AuthenticatedAdminAnalyticsRoute: AuthenticatedAdminAnalyticsRoute,
+    AuthenticatedAdminLessonsRoute: AuthenticatedAdminLessonsRoute,
     AuthenticatedAdminPostsRoute: AuthenticatedAdminPostsRoute,
     AuthenticatedAdminToolsRoute: AuthenticatedAdminToolsRoute,
     AuthenticatedAdminWorldcupRoute: AuthenticatedAdminWorldcupRoute,
@@ -758,6 +800,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   ContactRoute: ContactRoute,
   DisclaimerRoute: DisclaimerRoute,
+  LessonsRoute: LessonsRoute,
   PrivacyRoute: PrivacyRoute,
   QuizRoute: QuizRoute,
   SitemapPagesDotxmlRoute: SitemapPagesDotxmlRoute,

@@ -4,10 +4,10 @@ import { z } from "zod";
 
 const SIGN_EXPIRY = 60 * 60 * 24; // 24h
 
-async function signUrls(
+async function signUrls<T extends { video_path: string }>(
   supabase: any,
-  rows: Array<{ video_path: string; [k: string]: any }>,
-) {
+  rows: T[],
+): Promise<Array<T & { video_url: string | null }>> {
   return Promise.all(
     rows.map(async (r) => {
       const { data } = await supabase.storage
