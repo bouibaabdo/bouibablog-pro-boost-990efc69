@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { ArrowLeft, Sparkles, Trophy, Wand2, MessageSquare, Image as ImageIcon, Languages, FileText, Newspaper } from "lucide-react";
+import { ArrowLeft, Sparkles, Trophy, Wand2, Lightbulb, Image as ImageIcon, Languages, FileText, Newspaper, Search } from "lucide-react";
 import { getPosts, getLabels } from "@/lib/blogger.functions";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
@@ -40,9 +40,9 @@ export const Route = createFileRoute("/")({
 
 const TOOL_CARDS = [
   { href: "/tools/image", title: "توليد الصور", desc: "صور احترافية من نص عربي", icon: ImageIcon, color: "from-pink-500 to-fuchsia-500" },
-  { href: "/tools/chat", title: "المساعد الذكي", desc: "دردشة بالعربية بذكاء متقدم", icon: MessageSquare, color: "from-blue-500 to-cyan-500" },
-  { href: "/tools/translate", title: "المترجم الذكي", desc: "ترجمة دقيقة سياقية", icon: Languages, color: "from-emerald-500 to-teal-500" },
   { href: "/tools/summarize", title: "تلخيص النصوص", desc: "من مقال طويل إلى نقاط", icon: FileText, color: "from-amber-500 to-orange-500" },
+  { href: "/tools/translate", title: "المترجم الذكي", desc: "ترجمة دقيقة سياقية", icon: Languages, color: "from-emerald-500 to-teal-500" },
+  { href: "/tools/ideas", title: "مولّد الأفكار", desc: "أفكار محتوى ومشاريع", icon: Lightbulb, color: "from-blue-500 to-cyan-500" },
 ] as const;
 
 function HomePage() {
