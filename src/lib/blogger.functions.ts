@@ -56,25 +56,37 @@ function extractThumbnail(html: string, media?: { url: string }): string | undef
 }
 
 /**
- * Optimize a Blogger/googleusercontent image URL to serve WebP at a specific size.
- * Falls back to the original URL for non-Google hosts.
+ * Optimize any remote image URL to serve WebP at a target size.
+ * - googleusercontent/blogger: native `=wXXX-hYYY-c-rw` transform (no proxy).
+ * - other remote hosts (manuscdn, picsum, pollinations, yalladown, ...):
+ *   proxied through images.weserv.nl (free CDN, returns WebP at requested size).
+ * - data URIs or same-origin (`/…`): returned unchanged.
+ * For Google URLs that already carry a `=...` suffix, the suffix is replaced
+ * (not appended twice) so the transform is always honored.
  */
 export function optimizeBloggerImage(url: string | undefined, w: number, h: number): string | undefined {
   if (!url) return url;
+  if (url.startsWith("data:") || url.startsWith("/")) return url;
   try {
     const u = new URL(url);
-    if (!/googleusercontent\.com$|blogspot\.com$|blogger\.com$/.test(u.hostname)) return url;
-    const spec = `w${w}-h${h}-c-rw`;
-    if (/\/s\d+(-c)?\//.test(u.pathname)) {
-      u.pathname = u.pathname.replace(/\/s\d+(-c)?\//, `/${spec}/`);
-      return u.toString();
+    if (/googleusercontent\.com$|blogspot\.com$|blogger\.com$/.test(u.hostname)) {
+      const spec = `w${w}-h${h}-c-rw`;
+      if (/\/s\d+(-c)?\//.test(u.pathname)) {
+        u.pathname = u.pathname.replace(/\/s\d+(-c)?\//, `/${spec}/`);
+        return u.toString();
+      }
+      if (/\/w\d+-h\d+[^/]*\//.test(u.pathname)) {
+        u.pathname = u.pathname.replace(/\/w\d+-h\d+[^/]*\//, `/${spec}/`);
+        return u.toString();
+      }
+      const base = u.origin + u.pathname; // strip any `=...` suffix or query
+      return `${base}=${spec}`;
     }
-    if (/\/w\d+-h\d+[^/]*\//.test(u.pathname)) {
-      u.pathname = u.pathname.replace(/\/w\d+-h\d+[^/]*\//, `/${spec}/`);
-      return u.toString();
+    if (u.protocol === "https:" || u.protocol === "http:") {
+      const src = `${u.hostname}${u.pathname}${u.search}`;
+      return `https://images.weserv.nl/?url=${encodeURIComponent(src)}&w=${w}&h=${h}&fit=cover&output=webp&q=78`;
     }
-    const clean = url.split("=")[0];
-    return `${clean}=${spec}`;
+    return url;
   } catch {
     return url;
   }
