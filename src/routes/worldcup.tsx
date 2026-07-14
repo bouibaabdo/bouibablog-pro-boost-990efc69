@@ -17,6 +17,8 @@ import { StreamModal } from "@/components/stream-modal";
 import { fetchFootballMatches, findMatch, type SRCMatch } from "@/lib/sportsrc";
 import { getYallakoraMatches, type YKMatch } from "@/lib/yallakora.functions";
 import { getYallasellitMatches, type YSMatch } from "@/lib/yallasellit.functions";
+import { getYalladownMatches } from "@/lib/yalladown.functions";
+import { buildStreamLookup } from "@/lib/match-streams";
 
 const srcQuery = queryOptions({
   queryKey: ["sportsrc", "football"],
@@ -47,6 +49,15 @@ const ysQuery = queryOptions({
   staleTime: 60_000,
   refetchInterval: 120_000,
 });
+
+const ydQuery = queryOptions({
+  queryKey: ["yalladown", "matches"],
+  queryFn: () => getYalladownMatches(),
+  staleTime: 60_000,
+  refetchInterval: 120_000,
+});
+
+
 
 
 export const Route = createFileRoute("/worldcup")({
