@@ -61,11 +61,14 @@ export function TodayMatchesRail({
   >(null);
 
   const openWatch = (m: YDMatch) => {
+    // Prefer the yalladown match page (n.hdshoo.online/…) as the primary
+    // source — it embeds a working player and hides the ad-heavy embeds.
+    // Keep at most one lightweight fallback to avoid noisy cycling.
     const fromLookup = lookup.find(m.home, m.away) ?? [];
-    const combined = Array.from(new Set([...(m.streamUrls ?? []), ...fromLookup]));
-    // Even without any pre-known URL, opening the modal will still try
-    // streamed.pk discovery from the team names.
-    setWatch({ title: `${m.home} vs ${m.away}`, urls: combined, home: m.home, away: m.away });
+    const primary = m.pageUrl;
+    const fallback = (m.streamUrls?.[0] ?? fromLookup[0]) as string | undefined;
+    const urls = Array.from(new Set([primary, fallback].filter(Boolean) as string[]));
+    setWatch({ title: `${m.home} vs ${m.away}`, urls, home: m.home, away: m.away });
   };
 
   if (yd.isLoading && !matches.length) {
@@ -113,8 +116,7 @@ export function TodayMatchesRail({
         style={{ scrollbarWidth: "thin" }}
       >
         {matches.map((m) => {
-          const hasStream =
-            (m.streamUrls?.length ?? 0) > 0 || !!lookup.find(m.home, m.away);
+          const hasStream = !!m.pageUrl || (m.streamUrls?.length ?? 0) > 0;
           return (
             <article
               key={m.id}
@@ -196,8 +198,6 @@ export function TodayMatchesRail({
           directUrl={watch.urls[0]}
           directUrls={watch.urls.slice(1)}
           directLabel="يلا داون"
-          home={watch.home}
-          away={watch.away}
           onClose={() => setWatch(null)}
         />
       )}
