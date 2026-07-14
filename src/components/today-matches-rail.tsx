@@ -5,7 +5,7 @@ import { PlayCircle, Tv, ArrowLeft, Radio, Clock } from "lucide-react";
 import { getYalladownMatches, type YDMatch } from "@/lib/yalladown.functions";
 import { getYallasellitMatches } from "@/lib/yallasellit.functions";
 import { buildStreamLookup, normalizeArName } from "@/lib/match-streams";
-import { StreamModal } from "@/components/stream-modal";
+// StreamModal removed — tv.bouibacademy.me refuses iframe embedding; we open it in a new tab.
 
 /**
  * Horizontal, snap-scrolling rail of today's live/upcoming matches for the
@@ -56,17 +56,19 @@ export function TodayMatchesRail({
     return out;
   }, [yd.data, max]);
 
+  // Kept for legacy state — currently unused since we open StreamHub in a new
+  // tab (tv.bouibacademy.me refuses iframe embedding via X-Frame-Options).
   const [watch, setWatch] = useState<
     { title: string; urls: string[]; home: string; away: string } | null
   >(null);
+  void watch;
+  void setWatch;
+  void lookup;
 
-  const openWatch = (m: YDMatch) => {
-    // Use ONLY the yalladown match page (n.hdshoo.online/…) — every other
-    // embed source was broken or ad-heavy, so we deliberately don't add
-    // any fallbacks here.
-    const primary = m.pageUrl ?? lookup.find(m.home, m.away)?.[0];
-    const urls = primary ? [primary] : [];
-    setWatch({ title: `${m.home} vs ${m.away}`, urls, home: m.home, away: m.away });
+  const openWatch = (_m: YDMatch) => {
+    if (typeof window !== "undefined") {
+      window.open("https://tv.bouibacademy.me/#sports", "_blank", "noopener,noreferrer");
+    }
   };
 
   if (yd.isLoading && !matches.length) {
@@ -188,17 +190,6 @@ export function TodayMatchesRail({
         })}
       </div>
 
-      {watch && (
-        <StreamModal
-          matchId={`yd-${watch.home}-${watch.away}`}
-          title={watch.title}
-          fallbackSearch={watch.title}
-          directUrl={watch.urls[0]}
-          directUrls={watch.urls.slice(1)}
-          directLabel="يلا داون"
-          onClose={() => setWatch(null)}
-        />
-      )}
     </section>
   );
 }

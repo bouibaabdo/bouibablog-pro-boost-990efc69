@@ -13,7 +13,8 @@ import { SiteFooter } from "@/components/site-footer";
 import { FavoriteButton } from "@/components/favorite-button";
 import { useBrowserReminders } from "@/hooks/use-browser-reminders";
 import { supabase } from "@/integrations/supabase/client";
-import { StreamModal } from "@/components/stream-modal";
+// StreamModal removed — StreamHub (tv.bouibacademy.me) blocks iframe embedding,
+// so we open it in a new tab instead.
 import { fetchFootballMatches, findMatch, type SRCMatch } from "@/lib/sportsrc";
 import { getYallakoraMatches, type YKMatch } from "@/lib/yallakora.functions";
 import { getYallasellitMatches } from "@/lib/yallasellit.functions";
@@ -726,9 +727,14 @@ function WorldCupPage() {
   const [watch, setWatch] = useState<
     { id: string; title: string; fallback: string; directUrl?: string; directUrls?: string[]; directLabel?: string } | null
   >(null);
+  void watch;
   const { data: srcMatches = [] } = useQuery(srcQuery);
-  const onWatch = (id: string, title: string, fallback: string, directUrl?: string, directUrls?: string[]) =>
-    setWatch({ id, title, fallback, directUrl, directUrls, directLabel: directUrl ? "يلا داون" : undefined });
+  const onWatch = (_id: string, _title: string, _fallback: string, _directUrl?: string, _directUrls?: string[]) => {
+    if (typeof window !== "undefined") {
+      window.open("https://tv.bouibacademy.me/#sports", "_blank", "noopener,noreferrer");
+    }
+  };
+  void setWatch;
 
   // Merge Yalladown (primary) + Yallasellit (fallback) stream URLs, keyed by
   // team names with aggressive Arabic normalization. Exposed via a Map-like
@@ -1129,17 +1135,6 @@ function WorldCupPage() {
 
       </main>
       <SiteFooter />
-      {watch && (
-        <StreamModal
-          matchId={watch.id}
-          title={watch.title}
-          fallbackSearch={watch.fallback}
-          directUrl={watch.directUrl}
-          directUrls={watch.directUrls}
-          directLabel={watch.directLabel}
-          onClose={() => setWatch(null)}
-        />
-      )}
     </div>
   );
 }
