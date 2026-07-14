@@ -32,8 +32,8 @@ export interface StreamEntry {
   source: "yalladown" | "yallasellit";
 }
 
-interface YSData { today?: YSMatch[]; tomorrow?: YSMatch[]; yesterday?: YSMatch[] } | undefined;
-interface YDData { today?: YDMatch[]; tomorrow?: YDMatch[]; yesterday?: YDMatch[] } | undefined;
+type YSData = { today?: YSMatch[]; tomorrow?: YSMatch[]; yesterday?: YSMatch[] } | undefined;
+type YDData = { today?: YDMatch[]; tomorrow?: YDMatch[]; yesterday?: YDMatch[] } | undefined;
 
 /**
  * Merge Yalladown (primary) and Yallasellit (secondary) match lists into a
