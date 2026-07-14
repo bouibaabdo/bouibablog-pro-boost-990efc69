@@ -61,13 +61,11 @@ export function TodayMatchesRail({
   >(null);
 
   const openWatch = (m: YDMatch) => {
-    // Prefer the yalladown match page (n.hdshoo.online/…) as the primary
-    // source — it embeds a working player and hides the ad-heavy embeds.
-    // Keep at most one lightweight fallback to avoid noisy cycling.
-    const fromLookup = lookup.find(m.home, m.away) ?? [];
-    const primary = m.pageUrl;
-    const fallback = (m.streamUrls?.[0] ?? fromLookup[0]) as string | undefined;
-    const urls = Array.from(new Set([primary, fallback].filter(Boolean) as string[]));
+    // Use ONLY the yalladown match page (n.hdshoo.online/…) — every other
+    // embed source was broken or ad-heavy, so we deliberately don't add
+    // any fallbacks here.
+    const primary = m.pageUrl ?? lookup.find(m.home, m.away)?.[0];
+    const urls = primary ? [primary] : [];
     setWatch({ title: `${m.home} vs ${m.away}`, urls, home: m.home, away: m.away });
   };
 
