@@ -17,6 +17,7 @@ import { Route as SitemapWorldcupDotxmlRouteImport } from './routes/sitemap-worl
 import { Route as SitemapToolsDotxmlRouteImport } from './routes/sitemap-tools[.]xml'
 import { Route as SitemapPostsDotxmlRouteImport } from './routes/sitemap-posts[.]xml'
 import { Route as SitemapPagesDotxmlRouteImport } from './routes/sitemap-pages[.]xml'
+import { Route as QuizRouteImport } from './routes/quiz'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as DisclaimerRouteImport } from './routes/disclaimer'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -81,6 +82,11 @@ const SitemapPostsDotxmlRoute = SitemapPostsDotxmlRouteImport.update({
 const SitemapPagesDotxmlRoute = SitemapPagesDotxmlRouteImport.update({
   id: '/sitemap-pages.xml',
   path: '/sitemap-pages.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const QuizRoute = QuizRouteImport.update({
+  id: '/quiz',
+  path: '/quiz',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyRoute = PrivacyRouteImport.update({
@@ -218,6 +224,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/disclaimer': typeof DisclaimerRoute
   '/privacy': typeof PrivacyRoute
+  '/quiz': typeof QuizRoute
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
   '/sitemap-posts.xml': typeof SitemapPostsDotxmlRoute
   '/sitemap-tools.xml': typeof SitemapToolsDotxmlRoute
@@ -252,6 +259,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/disclaimer': typeof DisclaimerRoute
   '/privacy': typeof PrivacyRoute
+  '/quiz': typeof QuizRoute
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
   '/sitemap-posts.xml': typeof SitemapPostsDotxmlRoute
   '/sitemap-tools.xml': typeof SitemapToolsDotxmlRoute
@@ -286,6 +294,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/disclaimer': typeof DisclaimerRoute
   '/privacy': typeof PrivacyRoute
+  '/quiz': typeof QuizRoute
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
   '/sitemap-posts.xml': typeof SitemapPostsDotxmlRoute
   '/sitemap-tools.xml': typeof SitemapToolsDotxmlRoute
@@ -322,6 +331,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/disclaimer'
     | '/privacy'
+    | '/quiz'
     | '/sitemap-pages.xml'
     | '/sitemap-posts.xml'
     | '/sitemap-tools.xml'
@@ -356,6 +366,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/disclaimer'
     | '/privacy'
+    | '/quiz'
     | '/sitemap-pages.xml'
     | '/sitemap-posts.xml'
     | '/sitemap-tools.xml'
@@ -389,6 +400,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/disclaimer'
     | '/privacy'
+    | '/quiz'
     | '/sitemap-pages.xml'
     | '/sitemap-posts.xml'
     | '/sitemap-tools.xml'
@@ -425,6 +437,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   DisclaimerRoute: typeof DisclaimerRoute
   PrivacyRoute: typeof PrivacyRoute
+  QuizRoute: typeof QuizRoute
   SitemapPagesDotxmlRoute: typeof SitemapPagesDotxmlRoute
   SitemapPostsDotxmlRoute: typeof SitemapPostsDotxmlRoute
   SitemapToolsDotxmlRoute: typeof SitemapToolsDotxmlRoute
@@ -496,6 +509,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap-pages.xml'
       fullPath: '/sitemap-pages.xml'
       preLoaderRoute: typeof SitemapPagesDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/quiz': {
+      id: '/quiz'
+      path: '/quiz'
+      fullPath: '/quiz'
+      preLoaderRoute: typeof QuizRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy': {
@@ -739,6 +759,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   DisclaimerRoute: DisclaimerRoute,
   PrivacyRoute: PrivacyRoute,
+  QuizRoute: QuizRoute,
   SitemapPagesDotxmlRoute: SitemapPagesDotxmlRoute,
   SitemapPostsDotxmlRoute: SitemapPostsDotxmlRoute,
   SitemapToolsDotxmlRoute: SitemapToolsDotxmlRoute,
@@ -756,13 +777,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
