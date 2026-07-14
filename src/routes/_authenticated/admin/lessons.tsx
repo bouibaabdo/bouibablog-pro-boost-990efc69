@@ -39,9 +39,16 @@ function AdminLessons() {
     refresh();
   }, []);
 
+  const MAX_UPLOAD_BYTES = 500 * 1024 * 1024; // 500 MB
+
   async function onUpload() {
     if (!file) return toast.error("اختر ملف فيديو");
     if (!title.trim()) return toast.error("أضف عنوانًا");
+    if (file.size > MAX_UPLOAD_BYTES) {
+      return toast.error(
+        `حجم الملف ${(file.size / (1024 * 1024)).toFixed(1)}MB يتجاوز الحد الأقصى 500MB. يُنصح بضغط الفيديو إلى 720p.`
+      );
+    }
     setUploading(true);
     setProgress(0);
     try {
@@ -175,6 +182,9 @@ function AdminLessons() {
                 {file.name} — {(file.size / (1024 * 1024)).toFixed(1)} MB
               </p>
             )}
+            <p className="text-xs text-muted-foreground">
+              الحد الأقصى: 500MB. للفيديوهات الأطول يُنصح بضغطها إلى 720p قبل الرفع.
+            </p>
           </div>
           <Button onClick={onUpload} disabled={uploading} className="gap-2">
             {uploading ? (
