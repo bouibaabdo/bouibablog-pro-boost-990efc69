@@ -1,30 +1,52 @@
-## المشكل
-CLS = 0.721 المجموع. المصادر (من صورة PageSpeed):
-1. **قسم أدوات AI** ينزاح 0.405 + 0.315 = 0.720 — لأن `TodayMatchesRail` قبله يغير ارتفاعه بين skeleton (280px) والحالة الفعلية (heading + rail ≈ 340px+)، وأحياناً `return null` بعد fetch يحذف كل المساحة.
-2. **رايل المباريات** نفسه ينزاح 0.277 — عناصر الهيدر داخله تتحرك.
-3. **الخطوط** (Cairo/Tajawal woff2) — `display=swap` كايدير shift حتى مع fallback metrics.
+## الهدف
+تحويل عناصر التنقل في `SiteHeader` إلى قوائم منسدلة (Dropdown) تفاعلية لتحسين الاحترافية والتصفح، مع إعادة تسمية "دروس فيديو" إلى **دورات**.
 
-## الخطوات
+## التغييرات
 
-### 1. `src/components/today-matches-rail.tsx` — حجز ارتفاع ثابت وموحّد
-- إزالة الفرع `if (!yd.isFetched && !hasContent) return skeleton section`. عوضاً منه: **دائماً** نرندري نفس الـ `<section>` بنفس الأبعاد الخارجية (heading + rail container)، والـ skeleton يحل محل بطاقات المباريات داخل نفس الحاوية.
-- إزالة `if (yd.isFetched && !hasContent) return null`. عوضاً: نخلي الـ `<section>` بارتفاع 0 عبر `hidden` **فقط بعد** ما تكون البيانات جات فارغة (ديمة نادر، والـ shift يبقى بسيط). أو الأفضل: نخلي رسالة "لا مباريات اليوم" داخل نفس الحاوية باش الارتفاع يبقى ثابت.
-- الحاوية الخارجية `<section>` تاخد `min-h-[340px] md:min-h-[360px]` — يشمل heading + rail — باش أي محتوى تحتها ما ينزاحش.
-- الـ heading يرندري دائماً حتى قبل الـ fetch (بدل ما يظهر مع البيانات).
+### 1. إعادة التسمية
+- `دروس فيديو` → **دورات** في كل مكان (Header, Footer, breadcrumbs) — الرابط `/lessons` يبقى كما هو.
 
-### 2. `src/critical.css` — تحسين خطوط
-- تغيير استراتيجية الخط: بدل `display=swap` كايسبب shift عند وصول الخط، نستعمل `display=optional` في رابط Google Fonts (يعني: إذا الخط ما وصلش في 100ms، يبقى fallback نهائياً — بلا shift أبداً).
-- Fallback metrics موجودة كافية.
+### 2. قائمة منسدلة: المقالات
+- عند المرور بالماوس (desktop) أو النقر (mobile) على "المقالات" تظهر قائمة تحتوي:
+  - "جميع المقالات" (رابط لـ `/posts`)
+  - أهم التصنيفات (أول 8 labels) — تُجلب ديناميكياً عبر `getLabels()` من `blogger.functions.ts` مع تخزين مؤقت.
+  - رابط "عرض الكل ←" في الأسفل.
 
-### 3. `src/routes/__root.tsx` — تحديث URL الخطوط
-- تبديل `&display=swap` بـ `&display=optional` في preload + stylesheet + noscript.
+### 3. قائمة منسدلة: دورات (Lessons)
+- تحتوي:
+  - "كل الدورات" (`/lessons`)
+  - قائمة التصنيفات المتوفرة (categories المميزة من `listLessons()`).
 
-## الملفات المعدَّلة
-- `src/components/today-matches-rail.tsx`
-- `src/routes/__root.tsx`
+### 4. قائمة منسدلة: أدوات AI
+- عناصر ثابتة:
+  - نظرة عامة (`/tools`)
+  - نص → صورة (`/tools/image`)
+  - تلخيص (`/tools/summarize`)
+  - ترجمة (`/tools/translate`)
+  - توليد أفكار (`/tools/ideas`)
+  - مساعد SEO (`/tools/seo`)
 
-## التحقق
-- بعد deploy: PageSpeed جديد. الهدف CLS < 0.1.
+### 5. التنفيذ التقني
+- إنشاء مكون جديد `src/components/nav-dropdown.tsx`:
+  - يستعمل Radix UI (`@radix-ui/react-navigation-menu` المتوفر بالفعل عبر shadcn، أو `DropdownMenu`).
+  - تصميم: بطاقة مع `shadow-elegant` وحدود `border-border`، تحرك برفق (fade+slide).
+  - يدعم RTL كاملاً.
+- تعديل `src/components/site-header.tsx`:
+  - استبدال العناصر الثلاثة (`المقالات`, `دورات`, `أدوات AI`) بمكون `NavDropdown`.
+  - على الجوال: توسيع/طي داخل القائمة (accordion-style) بدون تعقيد.
+- إضافة hooks خفيفة لجلب categories في الـ header:
+  - `useQuery` مع staleTime كبير (10 دقائق) لتفادي التحميل المتكرر.
 
-## ملاحظة
-لن نمس المنطق (fetching, routing, admin) — فقط layout reservation + font strategy.
+### 6. الحفاظ على الأداء
+- عدم تحميل بيانات القوائم إلا عند فتح Dropdown (`onOpenChange`).
+- إعادة استخدام cache الموجود لـ `labels` و `lessons`.
+
+## الملفات المتأثرة
+- `src/components/site-header.tsx` (تعديل رئيسي)
+- `src/components/nav-dropdown.tsx` (جديد)
+- `src/components/site-footer.tsx` (إعادة التسمية فقط)
+- روابط داخلية أخرى إن وُجدت (بحث سريع عن "دروس فيديو")
+
+## خارج النطاق
+- لا تغييرات على صفحات `/posts`, `/lessons`, `/tools` نفسها.
+- لا تغييرات على منطق الجلب أو قاعدة البيانات.
