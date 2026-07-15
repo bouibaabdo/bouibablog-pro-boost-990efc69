@@ -93,8 +93,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       { rel: "preload", as: "style", href: appCss },
       { rel: "stylesheet", href: appCss, media: "print", "data-css-swap": "true" } as unknown as { rel: string; href: string },
-      { rel: "preload", as: "style", href: "https://fonts.googleapis.com/css2?family=Cairo:wght@700&family=Tajawal:wght@400;500&display=swap" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Cairo:wght@700&family=Tajawal:wght@400;500&display=swap", media: "print", "data-font-swap": "true" } as unknown as { rel: string; href: string },
+      { rel: "preload", as: "style", href: "https://fonts.googleapis.com/css2?family=Cairo:wght@700&family=Tajawal:wght@400;500&display=optional" },
+      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Cairo:wght@700&family=Tajawal:wght@400;500&display=optional", media: "print", "data-font-swap": "true" } as unknown as { rel: string; href: string },
       { rel: "icon", href: "/favicon.png", type: "image/png" },
     ],
     scripts: [
@@ -132,7 +132,7 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
         <noscript>
           <link rel="stylesheet" href={appCss} />
-          <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@700&family=Tajawal:wght@400;500&display=swap" />
+          <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@700&family=Tajawal:wght@400;500&display=optional" />
         </noscript>
       </head>
       <body>

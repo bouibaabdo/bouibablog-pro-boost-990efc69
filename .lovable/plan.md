@@ -1,46 +1,30 @@
 ## المشكل
-CLS = 0.645 (سيء جداً). التشخيص من التقارير السابقة يشير إلى مصدرين أساسيين:
-
-1. **رايل المباريات** (`TodayMatchesRail`) على الصفحة الرئيسية — يظهر بعد fetch من Yalladown (~1-3 ثواني) ويدفع كل ما تحته للأسفل رغم skeleton الحالي.
-2. **الخطوط (Cairo/Tajawal)** — رغم إضافة `Cairo-fallback`/`Tajawal-fallback` بـ `size-adjust`، القيم تخمينية وقد لا تطابق ميتريكس الخطوط الفعلية، فيبقى shift على العناوين الكبيرة (h1, h2).
-3. **إعلانات AdSense** (`adsbygoogle.js`) — تحقن iframes بدون مقاس محجوز في أي مكان يظهر فيه الإعلان.
-4. **الصور من طرف ثالث** (yalladown badges 40×40) — width/height مضاف لكن الحاوية نفسها قد تتغير.
+CLS = 0.721 المجموع. المصادر (من صورة PageSpeed):
+1. **قسم أدوات AI** ينزاح 0.405 + 0.315 = 0.720 — لأن `TodayMatchesRail` قبله يغير ارتفاعه بين skeleton (280px) والحالة الفعلية (heading + rail ≈ 340px+)، وأحياناً `return null` بعد fetch يحذف كل المساحة.
+2. **رايل المباريات** نفسه ينزاح 0.277 — عناصر الهيدر داخله تتحرك.
+3. **الخطوط** (Cairo/Tajawal woff2) — `display=swap` كايدير shift حتى مع fallback metrics.
 
 ## الخطوات
 
-### 1. حجز مساحة ثابتة للـ TodayMatchesRail بدل الاعتماد على skeleton conditional
-- إزالة `if (yd.isLoading) return skeleton` وجعل الرايل يحتفظ بارتفاعه دائماً عبر `min-h-[280px]` على `<section>`.
-- Skeleton يظهر داخل نفس الحاوية بنفس الأبعاد.
-- عند `!matches.length` يبقى العنصر مخفياً بـ CSS (`visibility: hidden`) بدلاً من `return null` **فقط** إذا الـ query نجح وأرجع فارغاً — لتجنب shift عند تأخر fetch.
-- بديل أبسط: إخفاء الرايل كلياً حتى `yd.isFetched`، وحجز placeholder بارتفاع 280px قبل ذلك.
+### 1. `src/components/today-matches-rail.tsx` — حجز ارتفاع ثابت وموحّد
+- إزالة الفرع `if (!yd.isFetched && !hasContent) return skeleton section`. عوضاً منه: **دائماً** نرندري نفس الـ `<section>` بنفس الأبعاد الخارجية (heading + rail container)، والـ skeleton يحل محل بطاقات المباريات داخل نفس الحاوية.
+- إزالة `if (yd.isFetched && !hasContent) return null`. عوضاً: نخلي الـ `<section>` بارتفاع 0 عبر `hidden` **فقط بعد** ما تكون البيانات جات فارغة (ديمة نادر، والـ shift يبقى بسيط). أو الأفضل: نخلي رسالة "لا مباريات اليوم" داخل نفس الحاوية باش الارتفاع يبقى ثابت.
+- الحاوية الخارجية `<section>` تاخد `min-h-[340px] md:min-h-[360px]` — يشمل heading + rail — باش أي محتوى تحتها ما ينزاحش.
+- الـ heading يرندري دائماً حتى قبل الـ fetch (بدل ما يظهر مع البيانات).
 
-### 2. ضبط ميتريكس الـ fallback fonts بدقة
-- استخدام قيم مقاسة من [fontsource metrics](https://github.com/fontsource/font-fallbacks) أو أداة Automatic Font Matching:
-  - Tajawal (Arabic): `size-adjust: 100%`, `ascent-override: 100%`, `descent-override: 47%`, `line-gap-override: 0%`
-  - Cairo: `size-adjust: 108%`, `ascent-override: 97%`, `descent-override: 35%`
-- التحقق البصري باستعمال Playwright: قياس ارتفاع h1 قبل/بعد swap.
+### 2. `src/critical.css` — تحسين خطوط
+- تغيير استراتيجية الخط: بدل `display=swap` كايسبب shift عند وصول الخط، نستعمل `display=optional` في رابط Google Fonts (يعني: إذا الخط ما وصلش في 100ms، يبقى fallback نهائياً — بلا shift أبداً).
+- Fallback metrics موجودة كافية.
 
-### 3. حجز مساحة إعلانات AdSense
-- إذا كانت هناك `<ins class="adsbygoogle">` في الصفحة، إعطاؤها `min-height` صريح (250px مثلاً).
-- إذا الإعلانات auto (`data-ad-format="auto"`) تحقن iframes ديناميكياً في نهاية `<body>` — التحقق من عدم وجود `ins` غير محجوز.
-
-### 4. حجز مساحة `PostCard` featured
-- الصورة عندها width/height لكن الحاوية `aspect-[16/9]` قد تنكسر أثناء تحميل الخطوط — التحقق.
-
-### 5. Categories section (labels)
-- `{labels.length > 0 && ...}` — إذا `labels` تصل بعد hydration، السيكشن يظهر فجأة. لكن `useSuspenseQuery` مع loader `ensureQueryData` يعني البيانات جاهزة قبل render — آمن.
-
-### 6. Stats section
-- نفس الشيء: مدفوع من `data.total` — آمن مع suspense.
+### 3. `src/routes/__root.tsx` — تحديث URL الخطوط
+- تبديل `&display=swap` بـ `&display=optional` في preload + stylesheet + noscript.
 
 ## الملفات المعدَّلة
-- `src/components/today-matches-rail.tsx` — دائماً يحجز `min-h-[280px]`، skeleton داخلي.
-- `src/critical.css` — تحديث override values لـ Cairo/Tajawal بقيم مقاسة.
-- التحقق من `src/routes/__root.tsx` — إذا كانت هناك `<ins>` AdSense في layout، إضافة min-height.
+- `src/components/today-matches-rail.tsx`
+- `src/routes/__root.tsx`
 
 ## التحقق
-- Playwright + Lighthouse CLS قبل/بعد.
-- الهدف: CLS < 0.1.
+- بعد deploy: PageSpeed جديد. الهدف CLS < 0.1.
 
 ## ملاحظة
-لن نلمس منطق الأعمال (fetching، routing، admin) — فقط تصميم وحجز مساحة.
+لن نمس المنطق (fetching, routing, admin) — فقط layout reservation + font strategy.
