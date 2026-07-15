@@ -16,13 +16,13 @@ export const Route = createFileRoute("/lessons")({
   loader: ({ context }) => context.queryClient.ensureQueryData(lessonsQO),
   head: () => ({
     meta: [
-      { title: "دروس فيديو — Bouiba Academy" },
+      { title: "دورات — Bouiba Academy" },
       {
         name: "description",
-        content: "مكتبة دروس فيديو حول الذكاء الاصطناعي وأدواته باللغة العربية.",
+        content: "مكتبة دورات فيديو حول الذكاء الاصطناعي وأدواته باللغة العربية.",
       },
-      { property: "og:title", content: "دروس فيديو — Bouiba Academy" },
-      { property: "og:description", content: "دروس فيديو عربية حول الذكاء الاصطناعي." },
+      { property: "og:title", content: "دورات — Bouiba Academy" },
+      { property: "og:description", content: "دورات عربية حول الذكاء الاصطناعي." },
       { property: "og:url", content: "https://www.bouibacademy.me/lessons" },
     ],
     links: [{ rel: "canonical", href: "https://www.bouibacademy.me/lessons" }],
@@ -59,10 +59,10 @@ function LessonsPage() {
           <div className="container-page py-12 md:py-16 text-center">
             <p className="text-sm font-semibold text-primary mb-2">تعلم بالفيديو</p>
             <h1 className="font-display text-3xl md:text-5xl font-extrabold">
-              دروس فيديو
+              دورات
             </h1>
             <p className="mt-3 text-muted-foreground max-w-xl mx-auto">
-              مكتبة دروس فيديو حول الذكاء الاصطناعي وأدواته باللغة العربية.
+              مكتبة دورات فيديو حول الذكاء الاصطناعي وأدواته باللغة العربية.
             </p>
           </div>
         </section>
