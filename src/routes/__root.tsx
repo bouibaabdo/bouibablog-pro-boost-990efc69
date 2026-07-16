@@ -123,7 +123,6 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
         <noscript>
           <link rel="stylesheet" href={appCss} />
-          <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@700&family=Tajawal:wght@400;500&display=optional" />
         </noscript>
       </head>
       <body>
