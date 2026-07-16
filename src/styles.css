@@ -191,37 +191,37 @@
   font-weight: 500;
   color: var(--color-muted-foreground);
   transition: color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
-}
 
-@utility nav-link::after {
-  content: "";
-  position: absolute;
-  inset-inline: 0.75rem;
-  bottom: 0.25rem;
-  height: 2px;
-  border-radius: 9999px;
-  background: var(--gradient-primary);
-  transform: scaleX(0);
-  transform-origin: right;
-  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-}
+  &::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0.75rem;
+    bottom: 0.25rem;
+    height: 2px;
+    border-radius: 9999px;
+    background: var(--gradient-primary);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
 
-@utility nav-link:hover {
-  color: var(--color-foreground);
-  background-color: color-mix(in oklab, var(--color-accent) 55%, transparent);
-}
+  &:hover {
+    color: var(--color-foreground);
+    background-color: color-mix(in oklab, var(--color-accent) 55%, transparent);
+  }
 
-@utility nav-link:hover::after {
-  transform: scaleX(1);
+  &:hover::after {
+    transform: scaleX(1);
+  }
 }
 
 @utility nav-link-active {
   color: var(--color-foreground);
   background-color: color-mix(in oklab, var(--color-accent) 70%, transparent);
-}
 
-@utility nav-link-active::after {
-  transform: scaleX(1);
+  &::after {
+    transform: scaleX(1);
+  }
 }
 
 @utility btn-premium {
