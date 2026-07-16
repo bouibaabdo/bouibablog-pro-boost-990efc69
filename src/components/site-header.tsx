@@ -146,7 +146,7 @@ export function SiteHeader() {
             </button>
           )}
           <Link
-            to="/posts"
+            to="/tools/roadmap"
             className="inline-flex items-center rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-soft transition-all hover:opacity-90 hover:shadow-elegant"
           >
             ابدأ التعلم
