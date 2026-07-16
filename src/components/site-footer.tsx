@@ -8,8 +8,11 @@ export function SiteFooter() {
       <div className="container-page py-14">
         <div className="grid gap-10 md:grid-cols-4">
           <div className="md:col-span-2">
-            <Link to="/" className="inline-flex items-center gap-2 mb-3" aria-label="Bouiba Academy">
-              <img src={bouibaLogo.url} alt="Bouiba Academy" className="h-12 w-auto" width={48} height={48} />
+            <Link to="/" className="group inline-flex items-center gap-3 mb-3" aria-label="Bouiba Academy">
+              <div className="logo-mark h-12 w-12">
+                <img src={bouibaLogo.url} alt="Bouiba Academy" className="h-9 w-auto drop-shadow-sm" width={36} height={36} />
+              </div>
+              <span className="hidden sm:block gradient-text font-display text-xl tracking-tight">Bouiba Academy</span>
             </Link>
             <p className="text-sm text-muted-foreground max-w-md leading-relaxed">
               أكاديميتك العربية للذكاء الاصطناعي — دروس عملية، أحدث الأخبار، وأدوات مجانية
