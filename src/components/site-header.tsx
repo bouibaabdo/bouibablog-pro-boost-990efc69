@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { getLabels } from "@/lib/blogger.functions";
 import { listLessons } from "@/lib/lessons.functions";
 import { NavDropdown, type NavDropdownItem } from "@/components/nav-dropdown";
-import bouibaLogo from "@/assets/bouiba-logo-new.png.asset.json";
+import bouibaLogo from "@/assets/bouiba-logo-v2.png.asset.json";
 
 const TOOL_ITEMS: NavDropdownItem[] = [
   { label: "نص إلى صورة", to: "/tools/image", description: "توليد صور بالذكاء الاصطناعي", icon: "image" },
