@@ -76,6 +76,7 @@ export function TodayMatchesRail({
 
   return (
     <section
+      ref={sectionRef}
       className={
         variant === "home"
           ? "container-page py-8 md:py-12 min-h-[360px] md:min-h-[380px]"
