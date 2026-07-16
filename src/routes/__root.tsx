@@ -89,17 +89,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:description", content: SITE_DESC },
     ],
     links: [
-      { rel: "preconnect", href: "https://fonts.googleapis.com" },
-      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       { rel: "preload", as: "style", href: appCss },
       { rel: "stylesheet", href: appCss, media: "print", "data-css-swap": "true" } as unknown as { rel: string; href: string },
-      { rel: "preload", as: "style", href: "https://fonts.googleapis.com/css2?family=Cairo:wght@700&family=Tajawal:wght@400;500&display=optional" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Cairo:wght@700&family=Tajawal:wght@400;500&display=optional", media: "print", "data-font-swap": "true" } as unknown as { rel: string; href: string },
       { rel: "icon", href: "/favicon.png", type: "image/png" },
     ],
     scripts: [
       {
-        children: "document.querySelectorAll('link[data-css-swap],link[data-font-swap]').forEach(function(l){l.media='all'});",
+        children: "document.querySelectorAll('link[data-css-swap]').forEach(function(l){l.media='all'});(function(){var loaded=false;function load(){if(loaded)return;loaded=true;var s=document.createElement('script');s.async=true;s.crossOrigin='anonymous';s.src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6404561979968062';document.head.appendChild(s);}var evts=['scroll','click','touchstart','keydown','mousemove'];evts.forEach(function(e){window.addEventListener(e,load,{once:true,passive:true})});setTimeout(load,4000);})();",
       },
       {
         type: "application/ld+json",
@@ -110,11 +106,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           description: SITE_DESC,
           inLanguage: "ar",
         }),
-      },
-      {
-        async: true,
-        src: "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6404561979968062",
-        crossOrigin: "anonymous",
       },
     ],
   }),
