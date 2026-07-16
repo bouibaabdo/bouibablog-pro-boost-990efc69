@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { ArrowLeft, Sparkles, Trophy, Wand2, Lightbulb, Image as ImageIcon, Languages, FileText, Newspaper, Search } from "lucide-react";
-import { getPosts, getLabels } from "@/lib/blogger.functions";
+import { getPosts, getLabels, optimizeBloggerImage } from "@/lib/blogger.functions";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { PostCard } from "@/components/post-card";
