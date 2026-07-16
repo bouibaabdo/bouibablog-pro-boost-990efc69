@@ -76,7 +76,7 @@ export function NavDropdown({ label, to, items, footer, onLoad }: Props) {
       {open && (
         <div
           role="menu"
-          className="absolute top-full right-1/2 mt-2 min-w-fit max-w-[260px] rounded-2xl glass-panel shadow-elegant p-2 z-50 animate-in fade-in-0 zoom-in-95 duration-200 origin-top"
+          className="absolute top-full right-0 mt-2 min-w-[220px] max-w-[280px] rounded-2xl glass-panel shadow-elegant p-2 z-50 animate-in fade-in-0 zoom-in-95 duration-200 origin-top-end"
         >
           {to && (
             <Link
