@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { getLabels } from "@/lib/blogger.functions";
 import { listLessons } from "@/lib/lessons.functions";
 import { NavDropdown, type NavDropdownItem } from "@/components/nav-dropdown";
-import bouibaLogo from "@/assets/bouiba-logo.webp.asset.json";
+import bouibaLogo from "@/assets/bouiba-logo-v2.png.asset.json";
 
 const TOOL_ITEMS: NavDropdownItem[] = [
   { label: "نص إلى صورة", to: "/tools/image", description: "توليد صور بالذكاء الاصطناعي", icon: "image" },
@@ -83,13 +83,13 @@ export function SiteHeader() {
     >
       <div className="container-page flex h-16 items-center justify-between gap-4">
         <Link to="/" className="group flex items-center gap-3 font-bold text-lg" aria-label="Bouiba Academy">
-          <div className="relative flex h-10 w-10 items-center justify-center rounded-full ring-2 ring-primary/20 bg-surface shadow-soft transition-all duration-300 group-hover:shadow-glow group-hover:ring-primary/40">
+          <div className="logo-mark">
             <img
               src={bouibaLogo.url}
               alt="Bouiba Academy"
-              className="h-7 w-auto"
-              width={28}
-              height={28}
+              className="h-10 w-auto drop-shadow-sm"
+              width={40}
+              height={40}
               fetchPriority="high"
               decoding="async"
             />
