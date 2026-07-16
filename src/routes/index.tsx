@@ -21,16 +21,24 @@ const labelsQueryOptions = queryOptions({
 
 export const Route = createFileRoute("/")({
   loader: async ({ context }) => {
-    await Promise.all([
+    const [data] = await Promise.all([
       context.queryClient.ensureQueryData(postsQueryOptions),
       context.queryClient.ensureQueryData(labelsQueryOptions),
     ]);
+    const featured = data.posts[0];
+    const lcp = featured ? optimizeBloggerImage(featured.thumbnail, 1200, 675) : "";
+    return { lcp };
   },
-  head: () => ({
+  head: ({ loaderData }) => ({
     meta: [
       { property: "og:url", content: "https://www.bouibacademy.me/" },
     ],
-    links: [{ rel: "canonical", href: "https://www.bouibacademy.me/" }],
+    links: [
+      { rel: "canonical", href: "https://www.bouibacademy.me/" },
+      ...(loaderData?.lcp
+        ? [{ rel: "preload", as: "image", href: loaderData.lcp, fetchpriority: "high" } as unknown as { rel: string; href: string }]
+        : []),
+    ],
   }),
   component: HomePage,
   errorComponent: ({ error }) => (
