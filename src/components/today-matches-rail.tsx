@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { ExternalLink, Tv, ArrowLeft, Clock } from "lucide-react";
 import { getYalladownMatches, type YDMatch } from "@/lib/yalladown.functions";
@@ -19,11 +19,36 @@ export function TodayMatchesRail({
   variant?: "home" | "article";
   max?: number;
 }) {
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const [enabled, setEnabled] = useState(false);
+  useEffect(() => {
+    if (enabled) return;
+    const el = sectionRef.current;
+    if (!el) return;
+    // Defer fetch until section is near viewport, or after idle time on home
+    const idle = window.setTimeout(() => setEnabled(true), 2500);
+    if ("IntersectionObserver" in window) {
+      const io = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((e) => e.isIntersecting)) {
+            setEnabled(true);
+            io.disconnect();
+          }
+        },
+        { rootMargin: "300px" },
+      );
+      io.observe(el);
+      return () => { io.disconnect(); window.clearTimeout(idle); };
+    }
+    return () => window.clearTimeout(idle);
+  }, [enabled]);
+
   const yd = useQuery({
     queryKey: ["yalladown", "matches"],
     queryFn: () => getYalladownMatches(),
     staleTime: 60_000,
-    refetchInterval: 120_000,
+    refetchInterval: enabled ? 120_000 : false,
+    enabled,
   });
   const matches: YDMatch[] = useMemo(() => {
     const src: YDMatch[] = [
@@ -51,6 +76,7 @@ export function TodayMatchesRail({
 
   return (
     <section
+      ref={sectionRef}
       className={
         variant === "home"
           ? "container-page py-8 md:py-12 min-h-[360px] md:min-h-[380px]"
