@@ -87,9 +87,9 @@ export function SiteHeader() {
             <img
               src={bouibaLogo.url}
               alt="Bouiba Academy"
-              className="h-8 w-auto drop-shadow-sm"
-              width={32}
-              height={32}
+              className="h-10 w-auto drop-shadow-sm"
+              width={40}
+              height={40}
               fetchPriority="high"
               decoding="async"
             />
