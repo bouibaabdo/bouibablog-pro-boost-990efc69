@@ -187,15 +187,15 @@ export function SiteHeader() {
 
       {/* Mobile Drawer Navigation Menu */}
       {open && (
-        <div className="fixed inset-0 z-50 md:hidden flex justify-end">
+        <div className="fixed inset-0 z-[100] md:hidden flex justify-end">
           {/* Backdrop blur overlay */}
           <div 
-            className="fixed inset-0 bg-background/60 backdrop-blur-md transition-opacity duration-300 animate-in fade-in"
+            className="absolute inset-0 bg-background/60 backdrop-blur-md transition-opacity duration-300"
             onClick={() => setOpen(false)}
           />
           
           {/* Drawer panel */}
-          <div className="relative w-[85vw] max-w-sm h-full bg-background/95 border-l border-border/50 backdrop-blur-lg shadow-2xl p-6 flex flex-col justify-between overflow-y-auto animate-in slide-in-from-right duration-300">
+          <div className="relative z-10 w-[85vw] max-w-sm h-full bg-background border-l border-border/50 shadow-2xl p-6 flex flex-col justify-between overflow-y-auto transition-transform duration-300">
             <div className="space-y-6">
               {/* Drawer Header */}
               <div className="flex items-center justify-between pb-4 border-b border-border/60">
