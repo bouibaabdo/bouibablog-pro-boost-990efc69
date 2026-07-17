@@ -45,10 +45,14 @@ function extractSlug(links: RawEntry["link"]): string {
     const u = new URL(alt.href);
     // Blogger URLs are of the format: /YYYY/MM/slug.html
     const match = u.pathname.match(/^\/\d{4}\/\d{2}\/([^\/]+)\.html$/);
+    let slug = "";
     if (match && match[1]) {
-      return match[1];
+      slug = match[1];
+    } else {
+      slug = u.pathname.replace(/^\/+|\.html$|\/+$/g, "").replace(/\//g, "-");
     }
-    return u.pathname.replace(/^\/+|\.html$|\/+$/g, "").replace(/\//g, "-");
+    // Clean Blogger's auto-generated unique ID suffixes (e.g. _15, _01699559454)
+    return slug.replace(/_\d+$/, "");
   } catch {
     return "";
   }
