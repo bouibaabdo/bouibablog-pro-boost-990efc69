@@ -83,7 +83,10 @@ export function SiteHeader() {
   }));
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/80 backdrop-blur-md">
+    <header className="sticky top-0 z-50 w-full border-b border-border/60">
+      {/* Header glassmorphism background */}
+      <div className="absolute inset-0 -z-10 bg-background/80 backdrop-blur-md" />
+
       <div className="container-page flex h-16 items-center justify-between gap-4">
         <Link to="/" className="flex items-center gap-2 font-bold text-lg" aria-label="Bouiba Academy">
           <img
