@@ -1,7 +1,11 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Menu, X, Star, LogIn, ChevronDown } from "lucide-react";
+import { 
+  Menu, X, Star, LogIn, ChevronDown, 
+  Home, FileText, GraduationCap, Cpu, 
+  HelpCircle, Trophy, Info, PhoneCall, Sparkles 
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { getLabels } from "@/lib/blogger.functions";
 import { listLessons } from "@/lib/lessons.functions";
@@ -38,6 +42,18 @@ export function SiteHeader() {
     const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => setAuthed(!!s));
     return () => sub.subscription.unsubscribe();
   }, []);
+
+  // Block body scroll when mobile menu is open
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
 
   const labelsQ = useQuery({
     queryKey: ["labels"],
@@ -162,68 +178,157 @@ export function SiteHeader() {
               if (!lessonsQ.data && !lessonsQ.isFetching) lessonsQ.refetch();
             }
           }}
-          className="md:hidden inline-flex items-center justify-center rounded-md p-2 text-foreground hover:bg-accent"
+          className="md:hidden inline-flex items-center justify-center rounded-lg p-2.5 text-foreground hover:bg-accent transition-colors animate-in fade-in"
           aria-label="القائمة"
         >
           {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
       </div>
 
+      {/* Mobile Drawer Navigation Menu */}
       {open && (
-        <div className="md:hidden border-t border-border bg-background max-h-[80vh] overflow-y-auto">
-          <nav className="container-page flex flex-col py-3 gap-1">
-            <Link to="/" onClick={() => setOpen(false)} className="px-3 py-2 rounded-md text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/60">
-              الرئيسية
-            </Link>
+        <div className="fixed inset-0 z-50 md:hidden flex justify-end">
+          {/* Backdrop blur overlay */}
+          <div 
+            className="fixed inset-0 bg-background/60 backdrop-blur-md transition-opacity duration-300 animate-in fade-in"
+            onClick={() => setOpen(false)}
+          />
+          
+          {/* Drawer panel */}
+          <div className="relative w-[85vw] max-w-sm h-full bg-background/95 border-l border-border/50 backdrop-blur-lg shadow-2xl p-6 flex flex-col justify-between overflow-y-auto animate-in slide-in-from-right duration-300">
+            <div className="space-y-6">
+              {/* Drawer Header */}
+              <div className="flex items-center justify-between pb-4 border-b border-border/60">
+                <Link to="/" onClick={() => setOpen(false)} className="flex items-center gap-2">
+                  <img src={bouibaLogo.url} alt="Bouiba Academy" className="h-10 w-auto" />
+                </Link>
+                <button 
+                  onClick={() => setOpen(false)} 
+                  className="rounded-lg p-2 hover:bg-accent text-foreground transition-colors"
+                  aria-label="إغلاق القائمة"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
 
-            <MobileGroup
-              label="المقالات"
-              open={mPosts}
-              onToggle={() => setMPosts((v) => !v)}
-              overviewTo="/posts"
-              onNavigate={() => setOpen(false)}
-              items={postItems}
-            />
+              {/* Navigation Links */}
+              <nav className="flex flex-col gap-2">
+                <Link 
+                  to="/" 
+                  onClick={() => setOpen(false)} 
+                  className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-muted-foreground hover:text-foreground hover:bg-accent/40 transition-all group"
+                  activeOptions={{ exact: true }}
+                  activeProps={{ className: "text-foreground bg-accent/40 border-r-2 border-primary" }}
+                >
+                  <Home className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                  <span>الرئيسية</span>
+                </Link>
 
-            <MobileGroup
-              label="دورات"
-              open={mLessons}
-              onToggle={() => setMLessons((v) => !v)}
-              overviewTo="/lessons"
-              onNavigate={() => setOpen(false)}
-              items={lessonItems}
-            />
+                <MobileGroup
+                  label="المقالات"
+                  open={mPosts}
+                  onToggle={() => setMPosts((v) => !v)}
+                  overviewTo="/posts"
+                  onNavigate={() => setOpen(false)}
+                  items={postItems}
+                  icon={FileText}
+                />
 
-            <MobileGroup
-              label="أدوات AI"
-              open={mTools}
-              onToggle={() => setMTools((v) => !v)}
-              overviewTo="/tools"
-              onNavigate={() => setOpen(false)}
-              items={TOOL_ITEMS}
-            />
+                <MobileGroup
+                  label="دورات"
+                  open={mLessons}
+                  onToggle={() => setMLessons((v) => !v)}
+                  overviewTo="/lessons"
+                  onNavigate={() => setOpen(false)}
+                  items={lessonItems}
+                  icon={GraduationCap}
+                />
 
-            {SIMPLE_NAV.slice(1).map((item, i) => (
+                <MobileGroup
+                  label="أدوات AI"
+                  open={mTools}
+                  onToggle={() => setMTools((v) => !v)}
+                  overviewTo="/tools"
+                  onNavigate={() => setOpen(false)}
+                  items={TOOL_ITEMS}
+                  icon={Cpu}
+                  badge={true}
+                />
+
+                <Link 
+                  to="/quiz" 
+                  onClick={() => setOpen(false)} 
+                  className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-muted-foreground hover:text-foreground hover:bg-accent/40 transition-all group"
+                  activeProps={{ className: "text-foreground bg-accent/40 border-r-2 border-primary" }}
+                >
+                  <HelpCircle className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                  <span>اختبار AI</span>
+                </Link>
+
+                <Link 
+                  to="/worldcup" 
+                  onClick={() => setOpen(false)} 
+                  className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-muted-foreground hover:text-foreground hover:bg-accent/40 transition-all group"
+                  activeProps={{ className: "text-foreground bg-accent/40 border-r-2 border-primary" }}
+                >
+                  <Trophy className="h-5 w-5 text-amber-500" />
+                  <span>كأس العالم 2026</span>
+                </Link>
+
+                <Link 
+                  to="/about" 
+                  onClick={() => setOpen(false)} 
+                  className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-muted-foreground hover:text-foreground hover:bg-accent/40 transition-all group"
+                  activeProps={{ className: "text-foreground bg-accent/40 border-r-2 border-primary" }}
+                >
+                  <Info className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                  <span>عن الأكاديمية</span>
+                </Link>
+
+                <Link 
+                  to="/contact" 
+                  onClick={() => setOpen(false)} 
+                  className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-muted-foreground hover:text-foreground hover:bg-accent/40 transition-all group"
+                  activeProps={{ className: "text-foreground bg-accent/40 border-r-2 border-primary" }}
+                >
+                  <PhoneCall className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                  <span>تواصل معنا</span>
+                </Link>
+              </nav>
+            </div>
+
+            {/* Drawer Footer Actions */}
+            <div className="pt-6 border-t border-border/60 space-y-3">
+              {authed ? (
+                <Link 
+                  to="/favorites" 
+                  onClick={() => setOpen(false)} 
+                  className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl border border-border bg-accent/30 font-semibold text-amber-600 hover:bg-accent transition-colors"
+                >
+                  <Star className="h-4 w-4 text-amber-500 fill-amber-500" />
+                  المفضلة
+                </Link>
+              ) : (
+                <Link 
+                  to="/auth" 
+                  onClick={() => setOpen(false)} 
+                  className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl border border-border bg-accent/30 font-semibold text-foreground hover:bg-accent transition-colors"
+                >
+                  <LogIn className="h-4 w-4" />
+                  تسجيل الدخول
+                </Link>
+              )}
+              
               <Link
-                key={i}
-                to={item.to}
+                to="/tools/roadmap"
                 onClick={() => setOpen(false)}
-                className="px-3 py-2 rounded-md text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/60"
+                className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl bg-gradient-to-r from-primary to-purple-600 text-white font-bold shadow-lg shadow-primary/25 hover:opacity-95 text-center transition-all duration-300"
               >
-                {item.label}
+                <Sparkles className="h-4.5 w-4.5 text-amber-300 animate-pulse" />
+                ابدأ التعلم (مسار ذكي)
               </Link>
-            ))}
-
-            {authed ? (
-              <Link to="/favorites" onClick={() => setOpen(false)} className="px-3 py-2 rounded-md text-sm font-medium text-amber-600">
-                ⭐ المفضلة
-              </Link>
-            ) : (
-              <Link to="/auth" onClick={() => setOpen(false)} className="px-3 py-2 rounded-md text-sm font-medium text-primary">
-                تسجيل الدخول
-              </Link>
-            )}
-          </nav>
+            </div>
+          </div>
         </div>
       )}
     </header>
@@ -237,6 +342,8 @@ function MobileGroup({
   overviewTo,
   items,
   onNavigate,
+  icon: Icon,
+  badge,
 }: {
   label: string;
   open: boolean;
@@ -244,41 +351,64 @@ function MobileGroup({
   overviewTo: string;
   items: NavDropdownItem[];
   onNavigate: () => void;
+  icon: React.ComponentType<{ className?: string }>;
+  badge?: boolean;
 }) {
   return (
-    <div className="rounded-md">
+    <div className="rounded-xl overflow-hidden bg-accent/10 border border-border/30 transition-all">
       <button
         onClick={onToggle}
-        className="w-full flex items-center justify-between px-3 py-2 rounded-md text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/60"
+        className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold transition-all ${
+          open ? "bg-accent/40 text-foreground" : "text-muted-foreground hover:text-foreground hover:bg-accent/30"
+        }`}
         aria-expanded={open}
       >
-        <span>{label}</span>
-        <ChevronDown className={`h-4 w-4 transition-transform ${open ? "rotate-180" : ""}`} />
+        <div className="flex items-center gap-3">
+          <Icon className={`h-5 w-5 ${open ? "text-primary animate-pulse" : "text-muted-foreground"}`} />
+          <span>{label}</span>
+          {badge && (
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+            </span>
+          )}
+        </div>
+        <ChevronDown className={`h-4 w-4 transition-transform duration-300 ${open ? "rotate-180 text-primary" : "text-muted-foreground"}`} />
       </button>
       {open && (
-        <div className="mr-3 border-r border-border pr-3 py-1 space-y-0.5">
+        <div className="px-4 pb-3 pt-1 space-y-1 bg-accent/5 border-t border-border/20">
           <Link
             to={overviewTo}
             onClick={onNavigate}
-            className="block px-3 py-1.5 rounded-md text-sm font-semibold text-foreground hover:bg-accent"
+            className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold text-primary hover:bg-accent/50 transition-colors"
           >
-            {label} — نظرة عامة
+            صفحة {label} الرئيسية ←
           </Link>
-          {items.length === 0 ? (
-            <p className="px-3 py-1.5 text-xs text-muted-foreground">لا توجد عناصر</p>
-          ) : (
-            items.map((it, i) => (
-              <Link
-                key={i}
-                to={it.to}
-                search={it.search as never}
-                onClick={onNavigate}
-                className="block px-3 py-1.5 rounded-md text-xs text-muted-foreground hover:bg-accent hover:text-foreground"
-              >
-                {it.label}
-              </Link>
-            ))
-          )}
+          <div className="grid gap-1 mt-1">
+            {items.length === 0 ? (
+              <p className="px-3 py-2 text-xs text-muted-foreground">لا توجد عناصر حالياً</p>
+            ) : (
+              items.map((it, i) => (
+                <Link
+                  key={i}
+                  to={it.to}
+                  search={it.search as never}
+                  onClick={onNavigate}
+                  className="flex items-center justify-between px-3 py-2.5 rounded-lg text-xs text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-all duration-200"
+                >
+                  <div className="flex flex-col gap-0.5">
+                    <span className="font-semibold text-foreground/90">{it.label}</span>
+                    {it.description && <span className="text-[10px] text-muted-foreground/80 leading-normal">{it.description}</span>}
+                  </div>
+                  {it.badge && (
+                    <span className="bg-primary/20 text-primary text-[9px] font-bold px-1.5 py-0.5 rounded-full">
+                      {it.badge}
+                    </span>
+                  )}
+                </Link>
+              ))
+            )}
+          </div>
         </div>
       )}
     </div>
