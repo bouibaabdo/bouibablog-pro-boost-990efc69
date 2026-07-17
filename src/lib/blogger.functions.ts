@@ -43,6 +43,11 @@ function extractSlug(links: RawEntry["link"]): string {
   if (!alt) return "";
   try {
     const u = new URL(alt.href);
+    // Blogger URLs are of the format: /YYYY/MM/slug.html
+    const match = u.pathname.match(/^\/\d{4}\/\d{2}\/([^\/]+)\.html$/);
+    if (match && match[1]) {
+      return match[1];
+    }
     return u.pathname.replace(/^\/+|\.html$|\/+$/g, "").replace(/\//g, "-");
   } catch {
     return "";
