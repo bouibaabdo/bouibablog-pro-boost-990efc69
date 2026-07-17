@@ -102,6 +102,12 @@ function stripHtml(html: string): string {
     .replace(/<script[\s\S]*?<\/script>/gi, "")
     .replace(/<style[\s\S]*?<\/style>/gi, "")
     .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&lt;/gi, "<")
+    .replace(/&gt;/gi, ">")
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;/gi, "'")
     .replace(/\s+/g, " ")
     .trim();
 }
@@ -114,7 +120,7 @@ function transformEntry(entry: RawEntry): BloggerPost {
   const alt = entry.link.find((l) => l.rel === "alternate");
   return {
     id,
-    slug: extractSlug(entry.link) || id,
+    slug: (extractSlug(entry.link) || id).trim(),
     title: entry.title.$t,
     published: entry.published.$t,
     updated: entry.updated.$t,
@@ -153,9 +159,14 @@ async function fetchFeed(params: Record<string, string>): Promise<{ posts: Blogg
   } | null;
   if (!json?.feed) return { posts: [], total: 0 };
   const entries = json.feed.entry ?? [];
+  const allPosts = entries.map(transformEntry);
+  const filteredPosts = allPosts.filter((p) => {
+    const year = new Date(p.published).getFullYear();
+    return year >= 2024;
+  });
   return {
-    posts: entries.map(transformEntry),
-    total: Number(json.feed.openSearch$totalResults?.$t ?? entries.length),
+    posts: filteredPosts,
+    total: filteredPosts.length,
   };
 }
 
@@ -178,9 +189,14 @@ export const getPosts = createServerFn({ method: "GET" })
       feed: { entry?: RawEntry[]; openSearch$totalResults?: { $t: string } };
     };
     const entries = json.feed.entry ?? [];
+    const allPosts = entries.map(transformEntry);
+    const filteredPosts = allPosts.filter((p) => {
+      const year = new Date(p.published).getFullYear();
+      return year >= 2024;
+    });
     return {
-      posts: entries.map(transformEntry),
-      total: Number(json.feed.openSearch$totalResults?.$t ?? entries.length),
+      posts: filteredPosts,
+      total: filteredPosts.length,
     };
   });
 
@@ -194,7 +210,10 @@ export const getPost = createServerFn({ method: "GET" })
       if (!res.ok) return null;
       const json = (await res.json()) as { entry: RawEntry };
       if (!json.entry) return null;
-      return transformEntry(json.entry);
+      const post = transformEntry(json.entry);
+      const year = new Date(post.published).getFullYear();
+      if (year < 2024) return null;
+      return post;
     } else {
       // It's a slug! Fetch recent posts (150 results)
       const url = new URL(FEED_BASE);
@@ -206,7 +225,11 @@ export const getPost = createServerFn({ method: "GET" })
         const entries = json?.feed?.entry ?? [];
         const posts = entries.map(transformEntry);
         const found = posts.find((p) => p.slug === data.id);
-        if (found) return found;
+        if (found) {
+          const year = new Date(found.published).getFullYear();
+          if (year < 2024) return null;
+          return found;
+        }
       }
 
       // If not found in recent, search by keyword
@@ -220,7 +243,11 @@ export const getPost = createServerFn({ method: "GET" })
         const entries = json?.feed?.entry ?? [];
         const posts = entries.map(transformEntry);
         const found = posts.find((p) => p.slug === data.id);
-        if (found) return found;
+        if (found) {
+          const year = new Date(found.published).getFullYear();
+          if (year < 2024) return null;
+          return found;
+        }
       }
 
       return null;

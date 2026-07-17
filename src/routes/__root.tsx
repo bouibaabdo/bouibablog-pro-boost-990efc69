@@ -84,9 +84,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:description", content: SITE_DESC },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "ar_AR" },
+      { property: "og:image", content: "https://www.bouibacademy.me/og-banner.png" },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      { property: "og:image:alt", content: SITE_TITLE },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: SITE_TITLE },
       { name: "twitter:description", content: SITE_DESC },
+      { name: "twitter:image", content: "https://www.bouibacademy.me/og-banner.png" },
     ],
     links: [
       { rel: "preload", as: "style", href: appCss },
@@ -102,9 +107,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "WebSite",
-          name: "Bouiba Academy",
-          description: SITE_DESC,
-          inLanguage: "ar",
+          "name": "Bouiba Academy",
+          "url": "https://www.bouibacademy.me",
+          "description": SITE_DESC,
+          "inLanguage": "ar",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://www.bouibacademy.me/posts?label={search_term_string}",
+            "query-input": "required name=search_term_string"
+          }
         }),
       },
     ],
@@ -126,7 +137,12 @@ function RootShell({ children }: { children: ReactNode }) {
         </noscript>
       </head>
       <body>
-        {children}
+        <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:right-4 focus:z-50 focus:bg-background focus:text-foreground focus:p-4 focus:rounded-lg focus:border focus:shadow-md">
+          التخطي إلى المحتوى الرئيسي
+        </a>
+        <div id="main-content" className="contents">
+          {children}
+        </div>
         <Scripts />
       </body>
     </html>

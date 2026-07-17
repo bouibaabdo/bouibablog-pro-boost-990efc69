@@ -20,6 +20,8 @@ export const Route = createFileRoute("/quiz")({
       },
       { property: "og:url", content: "https://www.bouibacademy.me/quiz" },
       { property: "og:type", content: "website" },
+      { name: "twitter:title", content: "اختبار: ما أداة الذكاء الاصطناعي المناسبة لك؟ — Bouiba Academy" },
+      { name: "twitter:description", content: "أجب على 6 أسئلة سريعة واكتشف أداة AI الأنسب لك — مجاني بالكامل من Bouiba Academy." },
     ],
     links: [{ rel: "canonical", href: "https://www.bouibacademy.me/quiz" }],
   }),

@@ -14,12 +14,20 @@ export const Route = createFileRoute("/sitemap-posts.xml")({
       GET: async () => {
         const result = await getPosts({ data: { max: 500 } });
 
-        const entries: SitemapEntry[] = result.posts.map((post) => ({
-          path: `/posts/${post.slug}`,
-          lastmod: post.updated.split("T")[0],
-          changefreq: "weekly",
-          priority: "0.8",
-        }));
+        const uniqueSlugs = new Set<string>();
+        const entries: SitemapEntry[] = [];
+        for (const post of result.posts) {
+          const slug = post.slug.trim();
+          if (slug && !uniqueSlugs.has(slug)) {
+            uniqueSlugs.add(slug);
+            entries.push({
+              path: `/posts/${slug}`,
+              lastmod: post.updated.split("T")[0],
+              changefreq: "weekly",
+              priority: "0.8",
+            });
+          }
+        }
 
         return xmlResponse(buildUrlset(SITEMAP_BASE_URL, entries));
       },

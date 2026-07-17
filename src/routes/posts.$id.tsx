@@ -39,12 +39,9 @@ export const Route = createFileRoute("/posts/$id")({
   head: ({ params, loaderData }) => {
     const post = loaderData;
     const SUFFIX = " — Bouiba Academy";
-    const maxTitle = 60 - SUFFIX.length;
-    const rawTitle = post?.title ?? "مقال";
-    const shortTitle = rawTitle.length > maxTitle ? rawTitle.slice(0, maxTitle - 1).trimEnd() + "…" : rawTitle;
-    const title = `${shortTitle}${SUFFIX}`;
+    const title = `${post?.title ?? "مقال"}${SUFFIX}`;
     const desc = post ? post.excerpt.slice(0, 160) : "مقال من أكاديمية بويبة للذكاء الاصطناعي.";
-    const canonical = `https://www.bouibacademy.me/posts/${params.id}`;
+    const canonical = `https://www.bouibacademy.me/posts/${post?.slug ?? params.id}`;
     const meta: Array<Record<string, string>> = [
       { title },
       { name: "description", content: desc },
@@ -52,6 +49,9 @@ export const Route = createFileRoute("/posts/$id")({
       { property: "og:title", content: post?.title ?? "مقال — Bouiba Academy" },
       { property: "og:description", content: desc },
       { property: "og:url", content: canonical },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: post?.title ?? "مقال — Bouiba Academy" },
+      { name: "twitter:description", content: desc },
     ];
     if (post?.thumbnail) {
       meta.push({ property: "og:image", content: post.thumbnail });
@@ -70,7 +70,11 @@ export const Route = createFileRoute("/posts/$id")({
                 headline: post.title,
                 datePublished: post.published,
                 dateModified: post.updated,
-                author: { "@type": "Person", name: post.author },
+                author: {
+                  "@type": "Person",
+                  name: post.author === "AcademyBouiba" ? "فريق Bouiba Academy" : post.author,
+                  url: "https://www.bouibacademy.me/about"
+                },
                 image: post.thumbnail,
                 mainEntityOfPage: canonical,
                 publisher: { "@type": "Organization", name: "Bouiba Academy" },
