@@ -1,0 +1,27 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { Sparkles } from "lucide-react";
+import { TextToolShell } from "@/components/text-tool-shell";
+
+export const Route = createFileRoute("/tools/prompt")({
+  head: () => ({
+    meta: [
+      { title: "مُحسن ومُصمم البرومبت الذكي — أدوات AI | Bouiba Academy" },
+      { name: "description", content: "حوّل أوامرك البسيطة والقصيرة إلى أوامر (Prompts) احترافية وفعالة للغاية للحصول على أفضل نتائج." },
+      { property: "og:title", content: "مُحسن ومُصمم البرومبت الذكي — Bouiba Academy" },
+      { property: "og:description", content: "حوّل أوامرك البسيطة إلى أوامر مهيكلة تناسب نماذج الذكاء الاصطناعي." },
+      { property: "og:url", content: "https://www.bouibacademy.me/tools/prompt" },
+    ],
+    links: [{ rel: "canonical", href: "https://www.bouibacademy.me/tools/prompt" }],
+  }),
+  component: () => (
+    <TextToolShell
+      action="prompt"
+      icon={Sparkles}
+      title="مُحسن ومُصمم البرومبت الذكي"
+      description="أدخل فكرة أو أمرًا بسيطًا، وسيقوم الـ AI بإعادة صياغته وهيكلته كبرومبت احترافي متكامل للحصول على أفضل النتائج."
+      placeholder="مثال: اكتب لي مقال عن ريادة الأعمال في السعودية"
+      ctaLabel="حسّن البرومبت"
+      minRows={4}
+    />
+  ),
+});

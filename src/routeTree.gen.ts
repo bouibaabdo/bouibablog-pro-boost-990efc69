@@ -39,8 +39,10 @@ import { Route as ToolsTranslateRouteImport } from './routes/tools.translate'
 import { Route as ToolsSummarizeRouteImport } from './routes/tools.summarize'
 import { Route as ToolsSeoRouteImport } from './routes/tools.seo'
 import { Route as ToolsRoadmapRouteImport } from './routes/tools.roadmap'
+import { Route as ToolsPromptRouteImport } from './routes/tools.prompt'
 import { Route as ToolsImageRouteImport } from './routes/tools.image'
 import { Route as ToolsIdeasRouteImport } from './routes/tools.ideas'
+import { Route as ToolsCodeRouteImport } from './routes/tools.code'
 import { Route as PostsIdRouteImport } from './routes/posts.$id'
 import { Route as AuthenticatedFavoritesRouteImport } from './routes/_authenticated/favorites'
 import { Route as AuthenticatedAdminRouteRouteImport } from './routes/_authenticated/admin/route'
@@ -203,6 +205,11 @@ const ToolsRoadmapRoute = ToolsRoadmapRouteImport.update({
   path: '/roadmap',
   getParentRoute: () => ToolsRoute,
 } as any)
+const ToolsPromptRoute = ToolsPromptRouteImport.update({
+  id: '/prompt',
+  path: '/prompt',
+  getParentRoute: () => ToolsRoute,
+} as any)
 const ToolsImageRoute = ToolsImageRouteImport.update({
   id: '/image',
   path: '/image',
@@ -211,6 +218,11 @@ const ToolsImageRoute = ToolsImageRouteImport.update({
 const ToolsIdeasRoute = ToolsIdeasRouteImport.update({
   id: '/ideas',
   path: '/ideas',
+  getParentRoute: () => ToolsRoute,
+} as any)
+const ToolsCodeRoute = ToolsCodeRouteImport.update({
+  id: '/code',
+  path: '/code',
   getParentRoute: () => ToolsRoute,
 } as any)
 const PostsIdRoute = PostsIdRouteImport.update({
@@ -305,8 +317,10 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AuthenticatedAdminRouteRouteWithChildren
   '/favorites': typeof AuthenticatedFavoritesRoute
   '/posts/$id': typeof PostsIdRoute
+  '/tools/code': typeof ToolsCodeRoute
   '/tools/ideas': typeof ToolsIdeasRoute
   '/tools/image': typeof ToolsImageRoute
+  '/tools/prompt': typeof ToolsPromptRoute
   '/tools/roadmap': typeof ToolsRoadmapRoute
   '/tools/seo': typeof ToolsSeoRoute
   '/tools/summarize': typeof ToolsSummarizeRoute
@@ -348,8 +362,10 @@ export interface FileRoutesByTo {
   '/worldcup': typeof WorldcupRoute
   '/favorites': typeof AuthenticatedFavoritesRoute
   '/posts/$id': typeof PostsIdRoute
+  '/tools/code': typeof ToolsCodeRoute
   '/tools/ideas': typeof ToolsIdeasRoute
   '/tools/image': typeof ToolsImageRoute
+  '/tools/prompt': typeof ToolsPromptRoute
   '/tools/roadmap': typeof ToolsRoadmapRoute
   '/tools/seo': typeof ToolsSeoRoute
   '/tools/summarize': typeof ToolsSummarizeRoute
@@ -395,8 +411,10 @@ export interface FileRoutesById {
   '/_authenticated/admin': typeof AuthenticatedAdminRouteRouteWithChildren
   '/_authenticated/favorites': typeof AuthenticatedFavoritesRoute
   '/posts/$id': typeof PostsIdRoute
+  '/tools/code': typeof ToolsCodeRoute
   '/tools/ideas': typeof ToolsIdeasRoute
   '/tools/image': typeof ToolsImageRoute
+  '/tools/prompt': typeof ToolsPromptRoute
   '/tools/roadmap': typeof ToolsRoadmapRoute
   '/tools/seo': typeof ToolsSeoRoute
   '/tools/summarize': typeof ToolsSummarizeRoute
@@ -442,8 +460,10 @@ export interface FileRouteTypes {
     | '/admin'
     | '/favorites'
     | '/posts/$id'
+    | '/tools/code'
     | '/tools/ideas'
     | '/tools/image'
+    | '/tools/prompt'
     | '/tools/roadmap'
     | '/tools/seo'
     | '/tools/summarize'
@@ -485,8 +505,10 @@ export interface FileRouteTypes {
     | '/worldcup'
     | '/favorites'
     | '/posts/$id'
+    | '/tools/code'
     | '/tools/ideas'
     | '/tools/image'
+    | '/tools/prompt'
     | '/tools/roadmap'
     | '/tools/seo'
     | '/tools/summarize'
@@ -531,8 +553,10 @@ export interface FileRouteTypes {
     | '/_authenticated/admin'
     | '/_authenticated/favorites'
     | '/posts/$id'
+    | '/tools/code'
     | '/tools/ideas'
     | '/tools/image'
+    | '/tools/prompt'
     | '/tools/roadmap'
     | '/tools/seo'
     | '/tools/summarize'
@@ -794,6 +818,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ToolsRoadmapRouteImport
       parentRoute: typeof ToolsRoute
     }
+    '/tools/prompt': {
+      id: '/tools/prompt'
+      path: '/prompt'
+      fullPath: '/tools/prompt'
+      preLoaderRoute: typeof ToolsPromptRouteImport
+      parentRoute: typeof ToolsRoute
+    }
     '/tools/image': {
       id: '/tools/image'
       path: '/image'
@@ -806,6 +837,13 @@ declare module '@tanstack/react-router' {
       path: '/ideas'
       fullPath: '/tools/ideas'
       preLoaderRoute: typeof ToolsIdeasRouteImport
+      parentRoute: typeof ToolsRoute
+    }
+    '/tools/code': {
+      id: '/tools/code'
+      path: '/code'
+      fullPath: '/tools/code'
+      preLoaderRoute: typeof ToolsCodeRouteImport
       parentRoute: typeof ToolsRoute
     }
     '/posts/$id': {
@@ -933,8 +971,10 @@ const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
 interface ToolsRouteChildren {
+  ToolsCodeRoute: typeof ToolsCodeRoute
   ToolsIdeasRoute: typeof ToolsIdeasRoute
   ToolsImageRoute: typeof ToolsImageRoute
+  ToolsPromptRoute: typeof ToolsPromptRoute
   ToolsRoadmapRoute: typeof ToolsRoadmapRoute
   ToolsSeoRoute: typeof ToolsSeoRoute
   ToolsSummarizeRoute: typeof ToolsSummarizeRoute
@@ -943,8 +983,10 @@ interface ToolsRouteChildren {
 }
 
 const ToolsRouteChildren: ToolsRouteChildren = {
+  ToolsCodeRoute: ToolsCodeRoute,
   ToolsIdeasRoute: ToolsIdeasRoute,
   ToolsImageRoute: ToolsImageRoute,
+  ToolsPromptRoute: ToolsPromptRoute,
   ToolsRoadmapRoute: ToolsRoadmapRoute,
   ToolsSeoRoute: ToolsSeoRoute,
   ToolsSummarizeRoute: ToolsSummarizeRoute,
