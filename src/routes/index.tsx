@@ -29,17 +29,27 @@ export const Route = createFileRoute("/")({
     const lcp = featured ? optimizeBloggerImage(featured.thumbnail, 1200, 675) : "";
     return { lcp };
   },
-  head: ({ loaderData }) => ({
-    meta: [
-      { property: "og:url", content: "https://www.bouibacademy.me/" },
-    ],
-    links: [
-      { rel: "canonical", href: "https://www.bouibacademy.me/" },
-      ...(loaderData?.lcp
-        ? [{ rel: "preload", as: "image", href: loaderData.lcp, fetchpriority: "high" } as unknown as { rel: string; href: string }]
-        : []),
-    ],
-  }),
+  head: ({ loaderData }) => {
+    const title = "Bouiba Academy — أكاديميتك العربية للذكاء الاصطناعي | دروس وأدوات AI مجانية";
+    const desc = "أكاديميتك العربية للذكاء الاصطناعي. نوفر دروساً عملية مجانية، أحدث الأخبار، وأدوات ذكاء اصطناعي تفاعلية مثل توليد الصور وتلخيص النصوص ومسارات التعلم.";
+    return {
+      meta: [
+        { title },
+        { name: "description", content: desc },
+        { property: "og:title", content: title },
+        { property: "og:description", content: desc },
+        { property: "og:url", content: "https://www.bouibacademy.me/" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: desc },
+      ],
+      links: [
+        { rel: "canonical", href: "https://www.bouibacademy.me/" },
+        ...(loaderData?.lcp
+          ? [{ rel: "preload", as: "image", href: loaderData.lcp, fetchpriority: "high" } as unknown as { rel: string; href: string }]
+          : []),
+      ],
+    };
+  },
   component: HomePage,
   errorComponent: ({ error }) => (
     <div className="p-10 text-center text-muted-foreground">تعذر تحميل المحتوى: {error.message}</div>

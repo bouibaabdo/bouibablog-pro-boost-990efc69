@@ -1,10 +1,12 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { queryOptions, useSuspenseQuery, useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
 import { Calendar, Clock, ArrowRight, ExternalLink, Tag } from "lucide-react";
-import { getPost } from "@/lib/blogger.functions";
+import { getPost, getPosts } from "@/lib/blogger.functions";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { TodayMatchesRail } from "@/components/today-matches-rail";
+import { PostCard } from "@/components/post-card";
 
 function makeQuery(id: string) {
   return queryOptions({
@@ -13,6 +15,12 @@ function makeQuery(id: string) {
     staleTime: 10 * 60_000,
   });
 }
+
+const recentPostsQueryOptions = queryOptions({
+  queryKey: ["posts", "recent-list"],
+  queryFn: () => getPosts({ data: { max: 15 } }),
+  staleTime: 5 * 60_000,
+});
 
 function formatDate(iso: string) {
   try {
@@ -93,6 +101,27 @@ export const Route = createFileRoute("/posts/$id")({
 function PostPage() {
   const { id } = Route.useParams();
   const { data: post } = useSuspenseQuery(makeQuery(id));
+  const { data: recentResult } = useQuery(recentPostsQueryOptions);
+
+  const relatedPosts = useMemo(() => {
+    if (!recentResult?.posts || !post) return [];
+    // Filter out the current post
+    const otherPosts = recentResult.posts.filter((p) => p.id !== post.id);
+
+    // Find posts with matching labels
+    const matched = otherPosts.filter((p) =>
+      p.labels.some((l) => post.labels.includes(l))
+    );
+
+    // Fill up to 3 posts if we don't have enough matched ones
+    const fillCount = 3 - matched.length;
+    if (fillCount > 0) {
+      const fallback = otherPosts.filter((p) => !matched.some((m) => m.id === p.id));
+      matched.push(...fallback.slice(0, fillCount));
+    }
+
+    return matched.slice(0, 3);
+  }, [recentResult, post]);
 
   if (!post) return null;
 
@@ -107,13 +136,14 @@ function PostPage() {
             <Link to="/posts" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary mb-6">
               <ArrowRight className="h-4 w-4" /> جميع المقالات
             </Link>
-            <div className="flex flex-wrap gap-2 mb-4">
+            <div className="flex flex-wrap items-center gap-2 mb-6">
+              <span className="text-xs font-bold text-muted-foreground ml-2">تصنيف المقال:</span>
               {post.labels.map((l) => (
                 <Link
                   key={l}
                   to="/posts"
                   search={{ label: l }}
-                  className="inline-flex items-center gap-1 text-xs font-semibold text-primary bg-accent px-2.5 py-1 rounded-md hover:bg-primary hover:text-primary-foreground transition-colors"
+                  className="inline-flex items-center gap-1 text-xs font-semibold text-primary bg-primary/10 border border-primary/20 px-3 py-1.5 rounded-full hover:bg-primary hover:text-primary-foreground transition-all duration-300"
                 >
                   <Tag className="h-3 w-3" /> {l}
                 </Link>
@@ -142,7 +172,7 @@ function PostPage() {
             dangerouslySetInnerHTML={{ __html: post.contentHtml }}
           />
 
-          <div className="mt-12 pt-8 border-t border-border">
+          <div className="mt-12 pt-8 border-t border-border flex items-center justify-between">
             <a
               href={post.url}
               target="_blank"
@@ -153,6 +183,21 @@ function PostPage() {
               عرض المقال على المدونة الأصلية
             </a>
           </div>
+
+          {/* Related Articles Section */}
+          {relatedPosts.length > 0 && (
+            <div className="mt-16 pt-12 border-t border-border">
+              <h3 className="font-display text-xl font-bold mb-8 flex items-center gap-2">
+                <Tag className="h-5 w-5 text-primary animate-pulse" />
+                مقالات ذات صلة قد تهمك
+              </h3>
+              <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
+                {relatedPosts.map((relatedPost) => (
+                  <PostCard key={relatedPost.id} post={relatedPost} />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </article>
 
