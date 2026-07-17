@@ -1,0 +1,24 @@
+{
+  "title": "كيفية ربط Ollama مع n8n لبناء أتمتة محلية بالذكاء الاصطناعي",
+  "slug": "how-to-connect-ollama-with-n8n-locally",
+  "excerpt": "دليل عملي شامل لربط Ollama مع n8n على نفس جهازك المحلي لبناء سير عمل أتمتة ذكي وآمن بالكامل ومجاني دون الحاجة لـ APIs مدفوعة.",
+  "meta_description": "شرح عملي خطوة بخطوة لكيفية ربط Ollama مع n8n باستخدام Docker وتهيئة العقد الذكية (AI Nodes) لتشغيل نماذج الذكاء الاصطناعي الضخمة محلياً ومجاناً.",
+  "target_keywords": [
+    "ربط Ollama مع n8n",
+    "Ollama n8n tutorial",
+    "أتمتة محلية بالذكاء الاصطناعي",
+    "تشغيل Llama 3 محليا",
+    "Docker n8n Ollama"
+  ],
+  "category": "AI Automation",
+  "tags": [
+    "Ollama",
+    "n8n",
+    "Docker",
+    "AI",
+    "Automation",
+    "Local LLM"
+  ],
+  "created_at": "2026-07-17",
+  "language": "ar"
+}
