@@ -2,7 +2,7 @@
 /* Fallback fonts matched to Tajawal/Cairo metrics to prevent CLS on swap */
 @font-face{font-family:"Tajawal-fallback";src:local("Segoe UI"),local("Tahoma"),local("Arial");size-adjust:100%;ascent-override:100%;descent-override:47%;line-gap-override:0%}
 @font-face{font-family:"Cairo-fallback";src:local("Segoe UI"),local("Tahoma"),local("Arial");size-adjust:108%;ascent-override:97%;descent-override:35%;line-gap-override:0%}
-:root{--background:oklch(0.99 0.003 250);--foreground:oklch(0.18 0.03 260);--surface:oklch(1 0 0);--primary:oklch(0.58 0.19 258);--primary-foreground:oklch(0.99 0.003 250);--primary-glow:oklch(0.72 0.16 240);--muted-foreground:oklch(0.5 0.02 258);--border:oklch(0.92 0.008 250);--accent:oklch(0.94 0.03 245);--radius:0.75rem}
+:root{--background:oklch(0.99 0.003 272);--foreground:oklch(0.18 0.03 272);--surface:oklch(1 0 0);--primary:oklch(0.55 0.22 272);--primary-foreground:oklch(0.99 0.003 272);--primary-glow:oklch(0.70 0.18 285);--muted-foreground:oklch(0.48 0.02 272);--border:oklch(0.92 0.008 272);--accent:oklch(0.95 0.015 272);--radius:0.75rem}
 *,::before,::after{box-sizing:border-box;border:0 solid var(--border)}
 html{-webkit-text-size-adjust:100%;line-height:1.5;font-family:"Tajawal","Tajawal-fallback",ui-sans-serif,system-ui,sans-serif}
 body{margin:0;background:var(--background);color:var(--foreground);-webkit-font-smoothing:antialiased;font-family:"Tajawal","Tajawal-fallback",ui-sans-serif,system-ui,sans-serif}
@@ -48,5 +48,5 @@ header nav{display:flex;align-items:center}
 .ring-2{--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:color-mix(in oklab,var(--primary) 25%,transparent);box-shadow:var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color)}
 /* Hero area */
 main{display:block;min-height:50vh}
-.hero-bg{background:radial-gradient(ellipse 80% 60% at 50% 0%,color-mix(in oklab,var(--primary) 14%,transparent),transparent 70%),linear-gradient(180deg,var(--background),var(--surface))}
+.hero-bg{background:radial-gradient(ellipse 80% 60% at 50% 0%,color-mix(in oklab,var(--primary) 10%,transparent),transparent 70%),linear-gradient(180deg,var(--background),var(--surface))}
 .gradient-text{background:linear-gradient(135deg,var(--primary),var(--primary-glow));-webkit-background-clip:text;background-clip:text;color:transparent}

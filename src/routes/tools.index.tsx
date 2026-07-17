@@ -13,42 +13,36 @@ const TOOLS = [
     icon: ImageIcon,
     title: "تحويل النص إلى صورة",
     desc: "أنشئ صورًا احترافية من وصف نصي بالعربية أو الإنجليزية باستخدام أحدث نماذج توليد الصور.",
-    color: "from-blue-500/10 to-purple-500/10",
   },
   {
     to: "/tools/roadmap",
     icon: Map,
     title: "مستشار مسارات التعلم (Roadmap)",
     desc: "أدخل أي تخصص أو موضوع وسيقوم الـ AI بتوليد خريطة طريق تفاعلية ممتازة للتعلم مع مصادر مجانية.",
-    color: "from-violet-500/10 to-indigo-500/10",
   },
   {
     to: "/tools/summarize",
     icon: FileText,
     title: "تلخيص المقالات",
     desc: "الصق أي مقال طويل واحصل على ملخّص عربي واضح في نقاط موجزة خلال ثوانٍ.",
-    color: "from-emerald-500/10 to-teal-500/10",
   },
   {
     to: "/tools/ideas",
     icon: Lightbulb,
     title: "مولّد أفكار المقالات",
     desc: "أدخل موضوعًا واحصل على عناوين مقالات جذابة ومحسّنة لمحركات البحث.",
-    color: "from-amber-500/10 to-orange-500/10",
   },
   {
     to: "/tools/translate",
     icon: Languages,
     title: "الترجمة الاحترافية",
     desc: "ترجمة نصوص بين العربية والإنجليزية والفرنسية بأسلوب طبيعي واحترافي.",
-    color: "from-pink-500/10 to-rose-500/10",
   },
   {
     to: "/tools/seo",
     icon: Search,
     title: "مساعد SEO عربي",
     desc: "احصل على عنوان، وصف Meta، كلمات مفتاحية، وهيكل عناوين محسّن لموضوعك.",
-    color: "from-indigo-500/10 to-sky-500/10",
   },
 ] as const;
 
@@ -89,23 +83,23 @@ function ToolsIndex() {
       <section className="container-page pt-10 md:pt-14">
         <Link
           to="/quiz"
-          className="group relative flex flex-col md:flex-row items-center gap-6 overflow-hidden rounded-3xl border border-primary/30 bg-gradient-to-l from-primary/15 via-purple-500/10 to-pink-500/15 p-6 md:p-8 shadow-elegant transition-all hover:-translate-y-1"
+          className="group relative flex flex-col md:flex-row items-center gap-6 overflow-hidden rounded-3xl border border-primary/20 bg-gradient-to-br from-primary/10 via-primary-glow/5 to-transparent p-6 md:p-8 shadow-elegant transition-all duration-300 hover:-translate-y-1 hover:border-primary/30"
         >
           <div className="inline-flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-background shadow-soft ring-1 ring-border">
-            <Trophy className="h-8 w-8 text-primary" />
+            <Trophy className="h-8 w-8 text-primary animate-pulse" />
           </div>
           <div className="flex-1 text-center md:text-right">
-            <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/15 px-3 py-0.5 text-xs font-bold text-primary mb-2">
+            <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-0.5 text-xs font-bold text-primary mb-2">
               جديد ✨
             </div>
-            <h2 className="font-display text-2xl md:text-3xl font-extrabold">
+            <h2 className="font-display text-2xl md:text-3xl font-extrabold text-foreground group-hover:text-primary transition-colors">
               اختبار: ما أداة الذكاء الاصطناعي المناسبة لك؟
             </h2>
-            <p className="mt-1 text-muted-foreground">
+            <p className="mt-1 text-muted-foreground text-sm leading-relaxed">
               6 أسئلة سريعة وتوصية شخصية بأفضل أداة AI تناسب احتياجاتك من بين 8 أدوات رائدة.
             </p>
           </div>
-          <span className="inline-flex items-center rounded-lg bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-soft group-hover:opacity-90">
+          <span className="inline-flex items-center rounded-lg bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-soft group-hover:opacity-90 transition-all">
             ابدأ الاختبار ←
           </span>
         </Link>
@@ -117,12 +111,12 @@ function ToolsIndex() {
             <Link
               key={t.to}
               to={t.to}
-              className={`group relative overflow-hidden rounded-2xl border border-border bg-gradient-to-br ${t.color} p-6 transition-all hover:shadow-elegant hover:-translate-y-1`}
+              className="group relative overflow-hidden rounded-2xl border border-border bg-card p-6 transition-all duration-300 hover:shadow-elegant hover:border-primary/20 hover:-translate-y-1"
             >
-              <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-background shadow-soft ring-1 ring-border">
-                <t.icon className="h-6 w-6 text-primary" />
+              <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-primary/10 to-primary-glow/10 text-primary shadow-soft group-hover:scale-105 transition-transform duration-300">
+                <t.icon className="h-6 w-6" />
               </div>
-              <h2 className="mt-4 font-display text-xl font-bold text-foreground">{t.title}</h2>
+              <h2 className="mt-4 font-display text-xl font-bold text-foreground group-hover:text-primary transition-colors">{t.title}</h2>
               <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{t.desc}</p>
               <span className="mt-4 inline-block text-sm font-semibold text-primary group-hover:underline">
                 جرّبها الآن ←

@@ -57,10 +57,10 @@ export const Route = createFileRoute("/")({
 });
 
 const TOOL_CARDS = [
-  { href: "/tools/image", title: "توليد الصور", desc: "صور احترافية من نص عربي", icon: ImageIcon, color: "from-pink-500 to-fuchsia-500" },
-  { href: "/tools/summarize", title: "تلخيص النصوص", desc: "من مقال طويل إلى نقاط", icon: FileText, color: "from-amber-500 to-orange-500" },
-  { href: "/tools/translate", title: "المترجم الذكي", desc: "ترجمة دقيقة سياقية", icon: Languages, color: "from-emerald-500 to-teal-500" },
-  { href: "/tools/ideas", title: "مولّد الأفكار", desc: "أفكار محتوى ومشاريع", icon: Lightbulb, color: "from-blue-500 to-cyan-500" },
+  { href: "/tools/image", title: "توليد الصور", desc: "صور احترافية من نص عربي", icon: ImageIcon, color: "from-primary/10 to-primary-glow/10" },
+  { href: "/tools/summarize", title: "تلخيص النصوص", desc: "من مقال طويل إلى نقاط", icon: FileText, color: "from-primary/10 to-primary-glow/10" },
+  { href: "/tools/translate", title: "المترجم الذكي", desc: "ترجمة دقيقة سياقية", icon: Languages, color: "from-primary/10 to-primary-glow/10" },
+  { href: "/tools/ideas", title: "مولّد الأفكار", desc: "أفكار محتوى ومشاريع", icon: Lightbulb, color: "from-primary/10 to-primary-glow/10" },
 ] as const;
 
 function HomePage() {
@@ -75,11 +75,11 @@ function HomePage() {
       <SiteHeader />
       <main>
         {/* HERO — compact on mobile */}
-        <section className="relative hero-bg overflow-hidden">
-          <div className="absolute inset-0 mesh-bg opacity-40 pointer-events-none" />
-          <div className="container-page relative py-10 md:py-20 text-center">
-            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/80 backdrop-blur px-3 py-1 text-[11px] md:text-xs font-medium text-muted-foreground mb-4 shadow-soft">
-              <Sparkles className="h-3.5 w-3.5 text-primary" />
+        <section className="relative hero-bg overflow-hidden border-b border-border/30">
+          <div className="absolute inset-0 mesh-bg opacity-30 pointer-events-none" />
+          <div className="container-page relative py-12 md:py-24 text-center">
+            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/80 backdrop-blur px-3 py-1 text-[11px] md:text-xs font-semibold text-muted-foreground mb-4 shadow-soft">
+              <Sparkles className="h-3.5 w-3.5 text-primary animate-pulse" />
               أكاديميتك العربية للذكاء الاصطناعي
             </div>
             <h1 className="font-display text-3xl sm:text-4xl md:text-6xl font-extrabold leading-tight tracking-tight">
@@ -90,24 +90,24 @@ function HomePage() {
             <p className="mt-4 mx-auto max-w-2xl text-sm md:text-lg text-muted-foreground leading-relaxed">
               أدوات AI جاهزة، اختبار توصية ذكي، ونقل مباشر لمباريات كأس العالم 2026 — كل شيء في مكان واحد.
             </p>
-            <div className="mt-6 grid grid-cols-2 sm:flex sm:flex-wrap items-center justify-center gap-2 sm:gap-3">
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
               <Link
                 to="/tools"
-                className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground shadow-elegant hover:opacity-90"
+                className="btn-premium px-6 py-3 rounded-xl shadow-elegant"
               >
                 <Wand2 className="h-4 w-4" /> أدوات AI
               </Link>
               <Link
                 to="/quiz"
-                className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-gradient-to-l from-fuchsia-500 to-pink-500 px-4 py-2.5 text-sm font-semibold text-white shadow-elegant hover:opacity-90"
+                className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-violet-600/10 text-violet-700 dark:bg-violet-500/15 dark:text-violet-300 border border-violet-200/50 dark:border-violet-500/20 px-6 py-3 text-sm font-semibold hover:bg-violet-600/15 dark:hover:bg-violet-500/25 transition-all shadow-soft"
               >
-                <Sparkles className="h-4 w-4" /> اختبار AI
+                <Sparkles className="h-4 w-4 text-violet-600 dark:text-violet-300" /> اختبار AI
               </Link>
               <Link
                 to="/worldcup"
-                className="col-span-2 sm:col-span-1 inline-flex items-center justify-center gap-1.5 rounded-lg bg-gradient-to-l from-emerald-600 to-teal-600 px-4 py-2.5 text-sm font-semibold text-white shadow-elegant hover:opacity-90"
+                className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-secondary hover:bg-accent/80 text-secondary-foreground border border-border px-6 py-3 text-sm font-semibold transition-all shadow-soft"
               >
-                <Trophy className="h-4 w-4" /> كأس العالم 2026
+                <Trophy className="h-4 w-4 text-amber-500" /> كأس العالم 2026
               </Link>
             </div>
           </div>
@@ -132,12 +132,12 @@ function HomePage() {
               <Link
                 key={t.href}
                 to={t.href}
-                className="group relative overflow-hidden rounded-2xl border border-border bg-card p-4 md:p-5 shadow-card transition hover:shadow-elegant hover:-translate-y-0.5"
+                className="group relative overflow-hidden rounded-2xl border border-border bg-card p-4 md:p-5 shadow-card transition-all duration-300 hover:shadow-elegant hover:border-primary/20 hover:-translate-y-1"
               >
-                <div className={`inline-flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-xl bg-gradient-to-br ${t.color} text-white mb-3 shadow-md`}>
+                <div className={`inline-flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-xl bg-gradient-to-br ${t.color} text-primary mb-3 shadow-soft group-hover:scale-105 transition-transform duration-300`}>
                   <t.icon className="h-5 w-5 md:h-6 md:w-6" />
                 </div>
-                <h3 className="font-display text-sm md:text-base font-bold">{t.title}</h3>
+                <h3 className="font-display text-sm md:text-base font-bold text-foreground group-hover:text-primary transition-colors">{t.title}</h3>
                 <p className="text-[11px] md:text-xs text-muted-foreground mt-1 leading-relaxed line-clamp-2">{t.desc}</p>
               </Link>
             ))}
@@ -148,15 +148,15 @@ function HomePage() {
         <section className="container-page py-6 md:py-8">
           <Link
             to="/quiz"
-            className="block relative overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-fuchsia-500/10 via-pink-500/5 to-primary/10 p-6 md:p-10 shadow-card hover:shadow-elegant transition"
+            className="block relative overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-primary/10 via-primary-glow/5 to-transparent p-6 md:p-10 shadow-card hover:shadow-elegant hover:border-primary/20 transition-all duration-300"
           >
             <div className="relative flex flex-col md:flex-row md:items-center gap-4 md:gap-6">
-              <div className="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-fuchsia-500 to-pink-500 text-white shadow-lg">
-                <Sparkles className="h-7 w-7" />
+              <div className="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary-glow text-white shadow-lg">
+                <Sparkles className="h-7 w-7 animate-pulse" />
               </div>
               <div className="min-w-0 flex-1">
-                <div className="inline-block text-[10px] font-bold text-fuchsia-600 bg-fuchsia-500/10 px-2 py-0.5 rounded-full mb-2">جديد</div>
-                <h3 className="font-display text-xl md:text-2xl font-extrabold">أي أداة AI مناسبة لك؟</h3>
+                <div className="inline-block text-[10px] font-bold text-violet-600 bg-violet-500/10 px-2.5 py-0.5 rounded-full mb-2">جديد ✨</div>
+                <h3 className="font-display text-xl md:text-2xl font-extrabold text-foreground group-hover:text-primary transition-colors">أي أداة AI مناسبة لك؟</h3>
                 <p className="mt-1 text-sm text-muted-foreground">6 أسئلة سريعة — نوصي لك بالأداة الأنسب من بين 8 أدوات كبرى.</p>
               </div>
               <div className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-foreground text-background px-4 py-2.5 text-sm font-bold shrink-0">
