@@ -91,11 +91,9 @@ export function optimizeBloggerImage(url: string | undefined, w: number, h: numb
       const base = u.origin + u.pathname; // strip any `=...` suffix or query
       return `${base}=${spec}`;
     }
-    if (u.protocol === "https:" || u.protocol === "http:") {
-      const src = `${u.hostname}${u.pathname}${u.search}`;
-      return `https://images.weserv.nl/?url=${encodeURIComponent(src)}&w=${w}&h=${h}&fit=cover&output=webp&q=78`;
-    }
-    return url;
+    // Return original URL for other hosts since Weserv proxying triggers 403 hotlink protection.
+    // Also clean up any encoded ampersands.
+    return url.replace(/&amp;/g, "&");
   } catch {
     return url;
   }
