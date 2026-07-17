@@ -83,7 +83,8 @@ export function SiteHeader() {
   }));
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/60">
+    <>
+      <header className="sticky top-0 z-50 w-full border-b border-border/60">
       {/* Header glassmorphism background */}
       <div className="absolute inset-0 -z-10 bg-background/80 backdrop-blur-md" />
 
@@ -187,9 +188,10 @@ export function SiteHeader() {
           {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
       </div>
+    </header>
 
-      {/* Mobile Drawer Navigation Menu */}
-      {open && (
+    {/* Mobile Drawer Navigation Menu */}
+    {open && (
         <div className="fixed inset-0 z-[100] md:hidden flex justify-end">
           {/* Backdrop blur overlay */}
           <div 
@@ -334,7 +336,7 @@ export function SiteHeader() {
           </div>
         </div>
       )}
-    </header>
+    </>
   );
 }
 
