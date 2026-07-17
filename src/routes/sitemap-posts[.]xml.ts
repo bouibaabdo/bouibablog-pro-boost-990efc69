@@ -15,7 +15,7 @@ export const Route = createFileRoute("/sitemap-posts.xml")({
         const result = await getPosts({ data: { max: 500 } });
 
         const entries: SitemapEntry[] = result.posts.map((post) => ({
-          path: `/posts/${post.id}`,
+          path: `/posts/${post.slug}`,
           lastmod: post.updated.split("T")[0],
           changefreq: "weekly",
           priority: "0.8",

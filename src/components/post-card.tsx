@@ -27,7 +27,7 @@ export function PostCard({ post, featured = false, priority = false }: { post: B
     >
       <Link
         to="/posts/$id"
-        params={{ id: post.id }}
+        params={{ id: post.slug }}
         className="block"
       >
         {post.thumbnail && (

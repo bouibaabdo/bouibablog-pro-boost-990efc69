@@ -11,6 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WorldcupRouteImport } from './routes/worldcup'
 import { Route as ToolsRouteImport } from './routes/tools'
+import { Route as TermsOfUseRouteImport } from './routes/terms-of-use'
+import { Route as TermsOfServiceRouteImport } from './routes/terms-of-service'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SitemapWorldcupDotxmlRouteImport } from './routes/sitemap-worldcup[.]xml'
@@ -18,11 +20,16 @@ import { Route as SitemapToolsDotxmlRouteImport } from './routes/sitemap-tools[.
 import { Route as SitemapPostsDotxmlRouteImport } from './routes/sitemap-posts[.]xml'
 import { Route as SitemapPagesDotxmlRouteImport } from './routes/sitemap-pages[.]xml'
 import { Route as QuizRouteImport } from './routes/quiz'
+import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as LessonsRouteImport } from './routes/lessons'
+import { Route as DisclaimerPolicyRouteImport } from './routes/disclaimer-policy'
 import { Route as DisclaimerRouteImport } from './routes/disclaimer'
+import { Route as CoursesRouteImport } from './routes/courses'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ArticlesRouteImport } from './routes/articles'
+import { Route as AiQuizRouteImport } from './routes/ai-quiz'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
@@ -55,6 +62,16 @@ const WorldcupRoute = WorldcupRouteImport.update({
 const ToolsRoute = ToolsRouteImport.update({
   id: '/tools',
   path: '/tools',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsOfUseRoute = TermsOfUseRouteImport.update({
+  id: '/terms-of-use',
+  path: '/terms-of-use',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsOfServiceRoute = TermsOfServiceRouteImport.update({
+  id: '/terms-of-service',
+  path: '/terms-of-service',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TermsRoute = TermsRouteImport.update({
@@ -92,6 +109,11 @@ const QuizRoute = QuizRouteImport.update({
   path: '/quiz',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
+  id: '/privacy-policy',
+  path: '/privacy-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
@@ -102,9 +124,19 @@ const LessonsRoute = LessonsRouteImport.update({
   path: '/lessons',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DisclaimerPolicyRoute = DisclaimerPolicyRouteImport.update({
+  id: '/disclaimer-policy',
+  path: '/disclaimer-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DisclaimerRoute = DisclaimerRouteImport.update({
   id: '/disclaimer',
   path: '/disclaimer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CoursesRoute = CoursesRouteImport.update({
+  id: '/courses',
+  path: '/courses',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -115,6 +147,16 @@ const ContactRoute = ContactRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArticlesRoute = ArticlesRouteImport.update({
+  id: '/articles',
+  path: '/articles',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AiQuizRoute = AiQuizRouteImport.update({
+  id: '/ai-quiz',
+  path: '/ai-quiz',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -239,11 +281,16 @@ const LovableEmailQueueProcessRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/ai-quiz': typeof AiQuizRoute
+  '/articles': typeof ArticlesRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
+  '/courses': typeof CoursesRoute
   '/disclaimer': typeof DisclaimerRoute
+  '/disclaimer-policy': typeof DisclaimerPolicyRoute
   '/lessons': typeof LessonsRoute
   '/privacy': typeof PrivacyRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
   '/quiz': typeof QuizRoute
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
   '/sitemap-posts.xml': typeof SitemapPostsDotxmlRoute
@@ -251,6 +298,8 @@ export interface FileRoutesByFullPath {
   '/sitemap-worldcup.xml': typeof SitemapWorldcupDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
+  '/terms-of-service': typeof TermsOfServiceRoute
+  '/terms-of-use': typeof TermsOfUseRoute
   '/tools': typeof ToolsRouteWithChildren
   '/worldcup': typeof WorldcupRoute
   '/admin': typeof AuthenticatedAdminRouteRouteWithChildren
@@ -277,11 +326,16 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/ai-quiz': typeof AiQuizRoute
+  '/articles': typeof ArticlesRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
+  '/courses': typeof CoursesRoute
   '/disclaimer': typeof DisclaimerRoute
+  '/disclaimer-policy': typeof DisclaimerPolicyRoute
   '/lessons': typeof LessonsRoute
   '/privacy': typeof PrivacyRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
   '/quiz': typeof QuizRoute
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
   '/sitemap-posts.xml': typeof SitemapPostsDotxmlRoute
@@ -289,6 +343,8 @@ export interface FileRoutesByTo {
   '/sitemap-worldcup.xml': typeof SitemapWorldcupDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
+  '/terms-of-service': typeof TermsOfServiceRoute
+  '/terms-of-use': typeof TermsOfUseRoute
   '/worldcup': typeof WorldcupRoute
   '/favorites': typeof AuthenticatedFavoritesRoute
   '/posts/$id': typeof PostsIdRoute
@@ -315,11 +371,16 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/about': typeof AboutRoute
+  '/ai-quiz': typeof AiQuizRoute
+  '/articles': typeof ArticlesRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
+  '/courses': typeof CoursesRoute
   '/disclaimer': typeof DisclaimerRoute
+  '/disclaimer-policy': typeof DisclaimerPolicyRoute
   '/lessons': typeof LessonsRoute
   '/privacy': typeof PrivacyRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
   '/quiz': typeof QuizRoute
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
   '/sitemap-posts.xml': typeof SitemapPostsDotxmlRoute
@@ -327,6 +388,8 @@ export interface FileRoutesById {
   '/sitemap-worldcup.xml': typeof SitemapWorldcupDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
+  '/terms-of-service': typeof TermsOfServiceRoute
+  '/terms-of-use': typeof TermsOfUseRoute
   '/tools': typeof ToolsRouteWithChildren
   '/worldcup': typeof WorldcupRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteRouteWithChildren
@@ -355,11 +418,16 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/ai-quiz'
+    | '/articles'
     | '/auth'
     | '/contact'
+    | '/courses'
     | '/disclaimer'
+    | '/disclaimer-policy'
     | '/lessons'
     | '/privacy'
+    | '/privacy-policy'
     | '/quiz'
     | '/sitemap-pages.xml'
     | '/sitemap-posts.xml'
@@ -367,6 +435,8 @@ export interface FileRouteTypes {
     | '/sitemap-worldcup.xml'
     | '/sitemap.xml'
     | '/terms'
+    | '/terms-of-service'
+    | '/terms-of-use'
     | '/tools'
     | '/worldcup'
     | '/admin'
@@ -393,11 +463,16 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/ai-quiz'
+    | '/articles'
     | '/auth'
     | '/contact'
+    | '/courses'
     | '/disclaimer'
+    | '/disclaimer-policy'
     | '/lessons'
     | '/privacy'
+    | '/privacy-policy'
     | '/quiz'
     | '/sitemap-pages.xml'
     | '/sitemap-posts.xml'
@@ -405,6 +480,8 @@ export interface FileRouteTypes {
     | '/sitemap-worldcup.xml'
     | '/sitemap.xml'
     | '/terms'
+    | '/terms-of-service'
+    | '/terms-of-use'
     | '/worldcup'
     | '/favorites'
     | '/posts/$id'
@@ -430,11 +507,16 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/about'
+    | '/ai-quiz'
+    | '/articles'
     | '/auth'
     | '/contact'
+    | '/courses'
     | '/disclaimer'
+    | '/disclaimer-policy'
     | '/lessons'
     | '/privacy'
+    | '/privacy-policy'
     | '/quiz'
     | '/sitemap-pages.xml'
     | '/sitemap-posts.xml'
@@ -442,6 +524,8 @@ export interface FileRouteTypes {
     | '/sitemap-worldcup.xml'
     | '/sitemap.xml'
     | '/terms'
+    | '/terms-of-service'
+    | '/terms-of-use'
     | '/tools'
     | '/worldcup'
     | '/_authenticated/admin'
@@ -470,11 +554,16 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AboutRoute: typeof AboutRoute
+  AiQuizRoute: typeof AiQuizRoute
+  ArticlesRoute: typeof ArticlesRoute
   AuthRoute: typeof AuthRoute
   ContactRoute: typeof ContactRoute
+  CoursesRoute: typeof CoursesRoute
   DisclaimerRoute: typeof DisclaimerRoute
+  DisclaimerPolicyRoute: typeof DisclaimerPolicyRoute
   LessonsRoute: typeof LessonsRoute
   PrivacyRoute: typeof PrivacyRoute
+  PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   QuizRoute: typeof QuizRoute
   SitemapPagesDotxmlRoute: typeof SitemapPagesDotxmlRoute
   SitemapPostsDotxmlRoute: typeof SitemapPostsDotxmlRoute
@@ -482,6 +571,8 @@ export interface RootRouteChildren {
   SitemapWorldcupDotxmlRoute: typeof SitemapWorldcupDotxmlRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
+  TermsOfServiceRoute: typeof TermsOfServiceRoute
+  TermsOfUseRoute: typeof TermsOfUseRoute
   ToolsRoute: typeof ToolsRouteWithChildren
   WorldcupRoute: typeof WorldcupRoute
   PostsIdRoute: typeof PostsIdRoute
@@ -505,6 +596,20 @@ declare module '@tanstack/react-router' {
       path: '/tools'
       fullPath: '/tools'
       preLoaderRoute: typeof ToolsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms-of-use': {
+      id: '/terms-of-use'
+      path: '/terms-of-use'
+      fullPath: '/terms-of-use'
+      preLoaderRoute: typeof TermsOfUseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms-of-service': {
+      id: '/terms-of-service'
+      path: '/terms-of-service'
+      fullPath: '/terms-of-service'
+      preLoaderRoute: typeof TermsOfServiceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/terms': {
@@ -556,6 +661,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof QuizRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/privacy-policy': {
+      id: '/privacy-policy'
+      path: '/privacy-policy'
+      fullPath: '/privacy-policy'
+      preLoaderRoute: typeof PrivacyPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/privacy': {
       id: '/privacy'
       path: '/privacy'
@@ -570,11 +682,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LessonsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/disclaimer-policy': {
+      id: '/disclaimer-policy'
+      path: '/disclaimer-policy'
+      fullPath: '/disclaimer-policy'
+      preLoaderRoute: typeof DisclaimerPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/disclaimer': {
       id: '/disclaimer'
       path: '/disclaimer'
       fullPath: '/disclaimer'
       preLoaderRoute: typeof DisclaimerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/courses': {
+      id: '/courses'
+      path: '/courses'
+      fullPath: '/courses'
+      preLoaderRoute: typeof CoursesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -589,6 +715,20 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/articles': {
+      id: '/articles'
+      path: '/articles'
+      fullPath: '/articles'
+      preLoaderRoute: typeof ArticlesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ai-quiz': {
+      id: '/ai-quiz'
+      path: '/ai-quiz'
+      fullPath: '/ai-quiz'
+      preLoaderRoute: typeof AiQuizRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -818,11 +958,16 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AboutRoute: AboutRoute,
+  AiQuizRoute: AiQuizRoute,
+  ArticlesRoute: ArticlesRoute,
   AuthRoute: AuthRoute,
   ContactRoute: ContactRoute,
+  CoursesRoute: CoursesRoute,
   DisclaimerRoute: DisclaimerRoute,
+  DisclaimerPolicyRoute: DisclaimerPolicyRoute,
   LessonsRoute: LessonsRoute,
   PrivacyRoute: PrivacyRoute,
+  PrivacyPolicyRoute: PrivacyPolicyRoute,
   QuizRoute: QuizRoute,
   SitemapPagesDotxmlRoute: SitemapPagesDotxmlRoute,
   SitemapPostsDotxmlRoute: SitemapPostsDotxmlRoute,
@@ -830,6 +975,8 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapWorldcupDotxmlRoute: SitemapWorldcupDotxmlRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
+  TermsOfServiceRoute: TermsOfServiceRoute,
+  TermsOfUseRoute: TermsOfUseRoute,
   ToolsRoute: ToolsRouteWithChildren,
   WorldcupRoute: WorldcupRoute,
   PostsIdRoute: PostsIdRoute,

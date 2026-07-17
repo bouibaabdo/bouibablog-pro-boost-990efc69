@@ -182,12 +182,44 @@ export const getPosts = createServerFn({ method: "GET" })
 export const getPost = createServerFn({ method: "GET" })
   .inputValidator((d: { id: string }) => d)
   .handler(async ({ data }) => {
-    const url = `${FEED_BASE}/${data.id}?alt=json`;
-    const res = await fetch(url, { headers: { Accept: "application/json" } });
-    if (!res.ok) return null;
-    const json = (await res.json()) as { entry: RawEntry };
-    if (!json.entry) return null;
-    return transformEntry(json.entry);
+    const isNumeric = /^\d+$/.test(data.id);
+    if (isNumeric) {
+      const url = `${FEED_BASE}/${data.id}?alt=json`;
+      const res = await fetch(url, { headers: { Accept: "application/json" } });
+      if (!res.ok) return null;
+      const json = (await res.json()) as { entry: RawEntry };
+      if (!json.entry) return null;
+      return transformEntry(json.entry);
+    } else {
+      // It's a slug! Fetch recent posts (150 results)
+      const url = new URL(FEED_BASE);
+      url.searchParams.set("alt", "json");
+      url.searchParams.set("max-results", "150");
+      const res = await fetch(url.toString(), { headers: { Accept: "application/json" } });
+      if (res.ok) {
+        const json = (await res.json()) as { feed: { entry?: RawEntry[] } };
+        const entries = json?.feed?.entry ?? [];
+        const posts = entries.map(transformEntry);
+        const found = posts.find((p) => p.slug === data.id);
+        if (found) return found;
+      }
+
+      // If not found in recent, search by keyword
+      const searchUrl = new URL(FEED_BASE);
+      searchUrl.searchParams.set("alt", "json");
+      searchUrl.searchParams.set("max-results", "30");
+      searchUrl.searchParams.set("q", data.id.replace(/-/g, " "));
+      const sRes = await fetch(searchUrl.toString(), { headers: { Accept: "application/json" } });
+      if (sRes.ok) {
+        const json = (await sRes.json()) as { feed: { entry?: RawEntry[] } };
+        const entries = json?.feed?.entry ?? [];
+        const posts = entries.map(transformEntry);
+        const found = posts.find((p) => p.slug === data.id);
+        if (found) return found;
+      }
+
+      return null;
+    }
   });
 
 export const getLabels = createServerFn({ method: "GET" }).handler(async () => {
