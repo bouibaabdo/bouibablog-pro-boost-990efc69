@@ -1,7 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery, useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
-import { Calendar, Clock, ArrowRight, ExternalLink, Tag } from "lucide-react";
+import { Calendar, Clock, ArrowRight, Tag } from "lucide-react";
 import { getPost, getPosts } from "@/lib/blogger.functions";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
@@ -176,17 +176,7 @@ function PostPage() {
             dangerouslySetInnerHTML={{ __html: post.contentHtml }}
           />
 
-          <div className="mt-12 pt-8 border-t border-border flex items-center justify-between">
-            <a
-              href={post.url}
-              target="_blank"
-              rel="noopener"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
-            >
-              <ExternalLink className="h-4 w-4" />
-              عرض المقال على المدونة الأصلية
-            </a>
-          </div>
+
 
           {/* Related Articles Section */}
           {relatedPosts.length > 0 && (
