@@ -157,14 +157,14 @@ export function SiteHeader() {
               المفضلة
             </Link>
           ) : (
-            <button
+            <Link
               id="btn-login"
-              onClick={() => navigate({ to: "/auth" })}
+              to="/auth"
               className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-2 text-sm font-semibold hover:bg-accent"
             >
               <LogIn className="h-4 w-4" />
               دخول
-            </button>
+            </Link>
           )}
           <Link
             to="/tools/roadmap"
@@ -206,7 +206,7 @@ export function SiteHeader() {
               {/* Drawer Header */}
               <div className="flex items-center justify-between pb-4 border-b border-border/60">
                 <Link to="/" onClick={() => setOpen(false)} className="flex items-center gap-2">
-                  <img src={bouibaLogo.url} alt="Bouiba Academy" className="h-10 w-auto" />
+                  <img src={bouibaLogo.url} alt="Bouiba Academy" className="h-10 w-auto" width={40} height={40} />
                 </Link>
                 <button 
                   onClick={() => setOpen(false)} 
