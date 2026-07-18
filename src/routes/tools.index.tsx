@@ -84,7 +84,7 @@ const TOOLS: Array<{ to: string; icon: any; title: string; desc: string; color: 
     desc: "احصل على عنوان، وصف Meta، كلمات مفتاحية، وهيكل عناوين محسّن لموضوعك.",
     color: "from-rose-500/10 to-red-500/10 text-rose-500 dark:text-rose-400",
   },
-] as const;
+];
 
 function ToolsIndex() {
   const [activeTab, setActiveTab] = useState<"integrated" | "directory">("integrated");
