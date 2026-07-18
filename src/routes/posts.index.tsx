@@ -9,12 +9,13 @@ import { PostCard } from "@/components/post-card";
 
 const searchSchema = z.object({
   label: z.string().optional(),
+  q: z.string().optional(),
 });
 
-function makeQuery(label?: string) {
+function makeQuery(label?: string, q?: string) {
   return queryOptions({
-    queryKey: ["posts", "list", label ?? "all"],
-    queryFn: () => getPosts({ data: { max: 30, label } }),
+    queryKey: ["posts", "list", label ?? "all", q ?? "none"],
+    queryFn: () => getPosts({ data: { max: 30, label, q } }),
     staleTime: 5 * 60_000,
   });
 }
@@ -27,20 +28,23 @@ const labelsQO = queryOptions({
 
 export const Route = createFileRoute("/posts/")({
   validateSearch: zodValidator(searchSchema),
-  loaderDeps: ({ search }) => ({ label: search.label }),
+  loaderDeps: ({ search }) => ({ label: search.label, q: search.q }),
   loader: async ({ context, deps }) => {
     await Promise.all([
-      context.queryClient.ensureQueryData(makeQuery(deps.label)),
+      context.queryClient.ensureQueryData(makeQuery(deps.label, deps.q)),
       context.queryClient.ensureQueryData(labelsQO),
     ]);
   },
   head: () => ({
     meta: [
       { title: "المقالات — Bouiba Academy" },
-      { name: "description", content: "تصفح جميع مقالات ودروس أكاديمية بويبة في الذكاء الاصطناعي." },
-      { property: "og:title", content: "المقالات — Bouiba Academy" },
-      { property: "og:description", content: "مكتبة كاملة من الدروس والمقالات العربية حول أدوات وتطبيقات الذكاء الاصطناعي." },
-      { property: "og:url", content: "https://www.bouibacademy.me/posts" },
+      { name: "description", content: "تصفح جميع مقالات ودروس أكاديمية بويبة في الذكاء الاصطناعي.", key: "description" },
+      { property: "og:title", content: "المقالات — Bouiba Academy", key: "og:title" },
+      { property: "og:description", content: "مكتبة كاملة من الدروس والمقالات العربية حول أدوات وتطبيقات الذكاء الاصطناعي.", key: "og:description" },
+      { property: "og:url", content: "https://www.bouibacademy.me/posts", key: "og:url" },
+      { name: "twitter:card", content: "summary_large_image", key: "twitter:card" },
+      { name: "twitter:title", content: "المقالات — Bouiba Academy", key: "twitter:title" },
+      { name: "twitter:description", content: "مكتبة كاملة من الدروس والمقالات العربية حول أدوات وتطبيقات الذكاء الاصطناعي.", key: "twitter:description" },
     ],
     links: [{ rel: "canonical", href: "https://www.bouibacademy.me/posts" }],
   }),
@@ -52,8 +56,8 @@ export const Route = createFileRoute("/posts/")({
 });
 
 function PostsPage() {
-  const { label } = Route.useSearch();
-  const { data } = useSuspenseQuery(makeQuery(label));
+  const { label, q } = Route.useSearch();
+  const { data } = useSuspenseQuery(makeQuery(label, q));
   const { data: labels } = useSuspenseQuery(labelsQO);
 
   return (

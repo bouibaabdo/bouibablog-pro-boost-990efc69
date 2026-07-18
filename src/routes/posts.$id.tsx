@@ -1,4 +1,4 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound, redirect } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery, useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { Calendar, Clock, ArrowRight, Tag } from "lucide-react";
@@ -34,28 +34,38 @@ export const Route = createFileRoute("/posts/$id")({
   loader: async ({ context, params }) => {
     const post = await context.queryClient.ensureQueryData(makeQuery(params.id));
     if (!post) throw notFound();
+
+    // 301 redirect if requested slug matches an old slug / numeric ID instead of pretty slug
+    if (params.id !== post.slug) {
+      throw redirect({
+        to: "/posts/$id",
+        params: { id: post.slug },
+        statusCode: 301,
+      });
+    }
+
     return post;
   },
   head: ({ params, loaderData }) => {
     const post = loaderData;
     const SUFFIX = " — Bouiba Academy";
     const title = `${post?.title ?? "مقال"}${SUFFIX}`;
-    const desc = post ? post.excerpt.slice(0, 160) : "مقال من أكاديمية بويبة للذكاء الاصطناعي.";
+    const desc = post ? (post.metaDescription || post.excerpt.slice(0, 160)) : "مقال من أكاديمية بويبة للذكاء الاصطناعي.";
     const canonical = `https://www.bouibacademy.me/posts/${post?.slug ?? params.id}`;
     const meta: Array<Record<string, string>> = [
       { title },
-      { name: "description", content: desc },
-      { property: "og:type", content: "article" },
-      { property: "og:title", content: post?.title ?? "مقال — Bouiba Academy" },
-      { property: "og:description", content: desc },
-      { property: "og:url", content: canonical },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: post?.title ?? "مقال — Bouiba Academy" },
-      { name: "twitter:description", content: desc },
+      { name: "description", content: desc, key: "description" },
+      { property: "og:type", content: "article", key: "og:type" },
+      { property: "og:title", content: post?.title ?? "مقال — Bouiba Academy", key: "og:title" },
+      { property: "og:description", content: desc, key: "og:description" },
+      { property: "og:url", content: canonical, key: "og:url" },
+      { name: "twitter:card", content: "summary_large_image", key: "twitter:card" },
+      { name: "twitter:title", content: post?.title ?? "مقال — Bouiba Academy", key: "twitter:title" },
+      { name: "twitter:description", content: desc, key: "twitter:description" },
     ];
     if (post?.thumbnail) {
-      meta.push({ property: "og:image", content: post.thumbnail });
-      meta.push({ name: "twitter:image", content: post.thumbnail });
+      meta.push({ property: "og:image", content: post.thumbnail, key: "og:image" });
+      meta.push({ name: "twitter:image", content: post.thumbnail, key: "twitter:image" });
     }
     return {
       meta,
@@ -72,8 +82,9 @@ export const Route = createFileRoute("/posts/$id")({
                 dateModified: post.updated,
                 author: {
                   "@type": "Person",
-                  name: post.author === "AcademyBouiba" ? "فريق Bouiba Academy" : post.author,
-                  url: "https://www.bouibacademy.me/about"
+                  name: (post.author === "AcademyBouiba" || post.author === "Bouiba Academy") ? "فريق Bouiba Academy" : post.author,
+                  url: "https://www.bouibacademy.me/about",
+                  image: post.authorImage || "https://www.bouibacademy.me/favicon.png"
                 },
                 image: post.thumbnail,
                 mainEntityOfPage: canonical,

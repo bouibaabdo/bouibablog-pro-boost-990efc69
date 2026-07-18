@@ -17,7 +17,7 @@ export const Route = createFileRoute("/sitemap-posts.xml")({
         const uniqueSlugs = new Set<string>();
         const entries: SitemapEntry[] = [];
         for (const post of result.posts) {
-          const slug = post.slug.trim();
+          const slug = post.slug.trim().toLowerCase();
           if (slug && !uniqueSlugs.has(slug)) {
             uniqueSlugs.add(slug);
             entries.push({

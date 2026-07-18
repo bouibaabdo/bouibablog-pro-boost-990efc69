@@ -158,6 +158,7 @@ export function SiteHeader() {
             </Link>
           ) : (
             <button
+              id="btn-login"
               onClick={() => navigate({ to: "/auth" })}
               className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-2 text-sm font-semibold hover:bg-accent"
             >

@@ -7,10 +7,18 @@ export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
       { title: "عن الأكاديمية — Bouiba Academy" },
-      { name: "description", content: "تعرّف على Bouiba Academy — منصة عربية متخصصة في محتوى الذكاء الاصطناعي." },
-      { property: "og:title", content: "عن الأكاديمية — Bouiba Academy" },
-      { property: "og:description", content: "منصة عربية مستقلة لتعليم الذكاء الاصطناعي: دروس عملية، مراجعات نزيهة، وأخبار موثوقة بلغة واضحة." },
-      { property: "og:url", content: "https://www.bouibacademy.me/about" },
+      { name: "description", content: "تعرّف على Bouiba Academy — منصة عربية متخصصة في محتوى الذكاء الاصطناعي.", key: "description" },
+      { property: "og:title", content: "عن الأكاديمية — Bouiba Academy", key: "og:title" },
+      { property: "og:description", content: "منصة عربية مستقلة لتعليم الذكاء الاصطناعي: دروس عملية، مراجعات نزيهة، وأخبار موثوقة بلغة واضحة.", key: "og:description" },
+      { property: "og:url", content: "https://www.bouibacademy.me/about", key: "og:url" },
+      { property: "og:image", content: "https://www.bouibacademy.me/og-about.png", key: "og:image" },
+      { property: "og:image:width", content: "1200", key: "og:image:width" },
+      { property: "og:image:height", content: "630", key: "og:image:height" },
+      { property: "og:image:alt", content: "عن الأكاديمية — Bouiba Academy", key: "og:image:alt" },
+      { name: "twitter:card", content: "summary_large_image", key: "twitter:card" },
+      { name: "twitter:title", content: "عن الأكاديمية — Bouiba Academy", key: "twitter:title" },
+      { name: "twitter:description", content: "تعرّف على Bouiba Academy — منصة عربية متخصصة في تعليم ومحتوى الذكاء الاصطناعي.", key: "twitter:description" },
+      { name: "twitter:image", content: "https://www.bouibacademy.me/og-about.png", key: "twitter:image" },
     ],
     links: [{ rel: "canonical", href: "https://www.bouibacademy.me/about" }],
     scripts: [

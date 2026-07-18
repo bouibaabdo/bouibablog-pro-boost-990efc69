@@ -5,6 +5,8 @@ const FEED_BASE = "https://academybouiba.blogspot.com/feeds/posts/default";
 export interface BloggerPost {
   id: string;
   slug: string;
+  originalSlug?: string;
+  metaDescription?: string;
   title: string;
   published: string;
   updated: string;
@@ -51,8 +53,10 @@ function extractSlug(links: RawEntry["link"]): string {
     } else {
       slug = u.pathname.replace(/^\/+|\.html$|\/+$/g, "").replace(/\//g, "-");
     }
-    // Clean Blogger's auto-generated unique ID suffixes (e.g. _15, _01699559454)
-    return slug.replace(/_\d+$/, "");
+    // Decode percent-encoded characters (like %20) and strip all spaces/whitespaces
+    slug = decodeURIComponent(slug).replace(/\s+/g, "").trim();
+    // Do NOT strip the unique ID suffixes (like _15) as it creates duplicate slugs and pages
+    return slug;
   } catch {
     return "";
   }
@@ -104,6 +108,7 @@ function stripHtml(html: string): string {
     .replace(/<script[\s\S]*?<\/script>/gi, "")
     .replace(/<style[\s\S]*?<\/style>/gi, "")
     .replace(/<[^>]+>/g, " ")
+    .replace(/&amp;nbsp;/gi, " ")
     .replace(/&nbsp;/gi, " ")
     .replace(/&amp;/gi, "&")
     .replace(/&lt;/gi, "<")
@@ -114,12 +119,125 @@ function stripHtml(html: string): string {
     .trim();
 }
 
+const EXCLUDED_SLUGS = new Set([
+  "efootball-pes-2021-510",
+  "8-ball-pool-522",
+  "snaptube",
+  "happymod-2",
+  "fluid-simulation-free-253",
+  "gps"
+]);
+
+export function isExcludedPost(slug: string, id: string): boolean {
+  const s = slug.trim().toLowerCase();
+  const i = id.trim().toLowerCase();
+  return EXCLUDED_SLUGS.has(s) || EXCLUDED_SLUGS.has(i);
+}
+
+export function isUglySlug(slug: string): boolean {
+  const s = slug.trim().toLowerCase();
+  return (
+    s === "blog-post" ||
+    s.startsWith("blog-post_") ||
+    /^\d+$/.test(s) ||
+    /^\d+_\d+$/.test(s) ||
+    /^\d+-\d+_\d+$/.test(s) ||
+    s.includes("%20") ||
+    s.startsWith(" ")
+  );
+}
+
+export function slugify(text: string): string {
+  if (!text) return "";
+  const cleaned = text
+    .toLowerCase()
+    .replace(/[^a-z0-9\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\s\-]+/g, "")
+    .replace(/[\s\-]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+  const segments = cleaned.split("-");
+  if (segments.length > 8) {
+    return segments.slice(0, 8).join("-");
+  }
+  return cleaned;
+}
+
+export function cleanExcerpt(text: string): string {
+  let cleaned = text;
+  
+  // 1. Strip up to the reading time keyword
+  cleaned = cleaned.replace(/^.*?(?:دقائق|دقيقة|ساعات|ساعة)\s*(?:[|&nbsp;\-⏱️📅\s\uFE0F]*)/gu, "");
+  
+  // 2. Strip up to a date-like pattern followed by separator
+  cleaned = cleaned.replace(/^.*?(?:يناير|فبراير|مارس|أبريل|مايو|يونيو|يوليو|أغسطس|سبتمبر|أكتوبر|نوفمبر|ديسمبر)\s+\d{4}\s*(?:[|&nbsp;\-⏱️📅\s\uFE0F]*)/gu, "");
+  
+  // 3. Remove leading emojis, variation selectors, separators, or spaces
+  cleaned = cleaned.replace(/^[^\p{L}\p{N}]+/gu, "");
+
+  if (cleaned.trim().length < 20) {
+    cleaned = text;
+  }
+  
+  cleaned = cleaned
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/\s+/g, " ")
+    .trim();
+    
+  return cleaned;
+}
+
+export function assignPrettySlugs(posts: BloggerPost[]): BloggerPost[] {
+  const slugCounts = new Map<string, number>();
+  
+  const candidates = posts.map(post => {
+    let slugCandidate = post.slug;
+    if (isUglySlug(post.slug)) {
+      slugCandidate = slugify(post.title);
+      if (!slugCandidate) {
+        slugCandidate = `post-${post.id}`;
+      }
+    } else {
+      try {
+        slugCandidate = decodeURIComponent(slugCandidate);
+      } catch {
+        // use as is
+      }
+      slugCandidate = slugCandidate.replace(/\s+/g, "").replace(/%20/g, "").trim();
+    }
+    
+    slugCandidate = slugCandidate.toLowerCase().replace(/^-+|-+$/g, "");
+    
+    return { post, candidate: slugCandidate };
+  });
+
+  candidates.forEach(c => {
+    slugCounts.set(c.candidate, (slugCounts.get(c.candidate) ?? 0) + 1);
+  });
+
+  return candidates.map(c => {
+    let finalSlug = c.candidate;
+    if (slugCounts.get(c.candidate)! > 1) {
+      const suffix = c.post.id.slice(-4);
+      finalSlug = `${c.candidate}-${suffix}`;
+    }
+    
+    return {
+      ...c.post,
+      originalSlug: c.post.slug,
+      slug: finalSlug,
+      url: `https://www.bouibacademy.me/posts/${finalSlug}`
+    };
+  });
+}
+
 function transformEntry(entry: RawEntry): BloggerPost {
   const id = extractPostId(entry.id.$t);
   const contentHtml = entry.content?.$t ?? "";
   const plain = stripHtml(contentHtml);
   const words = plain.split(/\s+/).length;
   const alt = entry.link.find((l) => l.rel === "alternate");
+  const cleanedExcerpt = cleanExcerpt(plain);
   return {
     id,
     slug: (extractSlug(entry.link) || id).trim(),
@@ -130,7 +248,8 @@ function transformEntry(entry: RawEntry): BloggerPost {
     authorImage: entry.author?.[0]?.gd$image?.src,
     labels: (entry.category ?? []).map((c) => c.term),
     contentHtml,
-    excerpt: plain.slice(0, 200),
+    excerpt: cleanedExcerpt,
+    metaDescription: cleanedExcerpt.slice(0, 160),
     thumbnail: extractThumbnail(contentHtml, entry.media$thumbnail),
     url: alt?.href ?? `https://www.bouibacademy.me/`,
     readingMinutes: Math.max(1, Math.round(words / 200)),
@@ -164,7 +283,7 @@ async function fetchFeed(params: Record<string, string>): Promise<{ posts: Blogg
   const allPosts = entries.map(transformEntry);
   const filteredPosts = allPosts.filter((p) => {
     const year = new Date(p.published).getFullYear();
-    return year >= 2024;
+    return year >= 2024 && !isExcludedPost(p.slug, p.id);
   });
   return {
     posts: filteredPosts,
@@ -281,6 +400,7 @@ async function loadLocalPosts(): Promise<BloggerPost[]> {
           thumbnail = "https://images.unsplash.com/photo-1677442136019-21780efad99a?w=800&auto=format&fit=crop";
         }
 
+        const excerptText = meta.meta_description || meta.excerpt;
         posts.push({
           id: meta.slug,
           slug: meta.slug,
@@ -291,6 +411,7 @@ async function loadLocalPosts(): Promise<BloggerPost[]> {
           labels: Array.from(new Set([meta.category, ...meta.tags])),
           contentHtml,
           excerpt: meta.excerpt,
+          metaDescription: excerptText,
           thumbnail,
           url: `https://www.bouibacademy.me/posts/${meta.slug}`,
           readingMinutes: Math.max(1, Math.round(postContent.split(/\s+/).length / 200)),
@@ -307,7 +428,9 @@ async function loadLocalPosts(): Promise<BloggerPost[]> {
 }
 
 export const getPosts = createServerFn({ method: "GET" })
-  .inputValidator((d: { max?: number; label?: string; start?: number } | undefined) => d ?? {})
+  .inputValidator(
+    (d: { max?: number; label?: string; start?: number; q?: string } | undefined) => d ?? {}
+  )
   .handler(async ({ data }) => {
     // 1. Fetch local posts
     const localPosts = await loadLocalPosts();
@@ -337,7 +460,7 @@ export const getPosts = createServerFn({ method: "GET" })
         const entries = json.feed.entry ?? [];
         bloggerPosts = entries.map(transformEntry).filter((p) => {
           const year = new Date(p.published).getFullYear();
-          return year >= 2024;
+          return year >= 2024 && !isExcludedPost(p.slug, p.id);
         });
       }
     } catch (err) {
@@ -345,9 +468,21 @@ export const getPosts = createServerFn({ method: "GET" })
     }
 
     // 3. Combine and sort
-    const combined = [...filteredLocal, ...bloggerPosts].sort(
+    let combined = [...filteredLocal, ...bloggerPosts].filter(p => !isExcludedPost(p.slug, p.id));
+    combined = assignPrettySlugs(combined).sort(
       (a, b) => new Date(b.published).getTime() - new Date(a.published).getTime()
     );
+
+    // Apply search query filter if provided
+    if (data.q) {
+      const queryVal = data.q.toLowerCase().trim();
+      combined = combined.filter(
+        (p) =>
+          p.title.toLowerCase().includes(queryVal) ||
+          p.excerpt.toLowerCase().includes(queryVal) ||
+          p.contentHtml.toLowerCase().includes(queryVal)
+      );
+    }
 
     const maxResults = data.max ?? 20;
     const startIndex = (data.start ?? 1) - 1;
@@ -362,14 +497,28 @@ export const getPosts = createServerFn({ method: "GET" })
 export const getPost = createServerFn({ method: "GET" })
   .inputValidator((d: { id: string }) => d)
   .handler(async ({ data }) => {
-    // 1. Check if it matches a local post slug
-    const localPosts = await loadLocalPosts();
-    const localFound = localPosts.find((p) => p.slug === data.id || p.id === data.id);
-    if (localFound) return localFound;
+    const decodedId = decodeURIComponent(data.id).trim().toLowerCase();
 
-    // 2. Fallback to Blogger API
+    // 1. Fetch all posts (max 500) which are already processed with pretty slugs
+    const allPostsResult = await getPosts({ data: { max: 500 } });
+    const posts = allPostsResult.posts;
+
+    // 2. Look for matches against: slug, id, or originalSlug
+    const found = posts.find(
+      (p) =>
+        p.slug.toLowerCase() === decodedId ||
+        p.id.toLowerCase() === decodedId ||
+        p.originalSlug?.toLowerCase() === decodedId
+    );
+
+    if (found) {
+      return found;
+    }
+
+    // 3. Fallback: if not found in the combined list, do direct lookup
     const isNumeric = /^\d+$/.test(data.id);
     if (isNumeric) {
+      if (isExcludedPost("", data.id)) return null;
       const url = `${FEED_BASE}/${data.id}?alt=json`;
       const res = await fetch(url, { headers: { Accept: "application/json" } });
       if (!res.ok) return null;
@@ -377,46 +526,11 @@ export const getPost = createServerFn({ method: "GET" })
       if (!json.entry) return null;
       const post = transformEntry(json.entry);
       const year = new Date(post.published).getFullYear();
-      if (year < 2024) return null;
-      return post;
-    } else {
-      // It's a slug! Fetch recent posts (150 results)
-      const url = new URL(FEED_BASE);
-      url.searchParams.set("alt", "json");
-      url.searchParams.set("max-results", "150");
-      const res = await fetch(url.toString(), { headers: { Accept: "application/json" } });
-      if (res.ok) {
-        const json = (await res.json()) as { feed: { entry?: RawEntry[] } };
-        const entries = json?.feed?.entry ?? [];
-        const posts = entries.map(transformEntry);
-        const found = posts.find((p) => p.slug === data.id);
-        if (found) {
-          const year = new Date(found.published).getFullYear();
-          if (year < 2024) return null;
-          return found;
-        }
-      }
-
-      // Search by keyword in Blogger
-      const searchUrl = new URL(FEED_BASE);
-      searchUrl.searchParams.set("alt", "json");
-      searchUrl.searchParams.set("max-results", "30");
-      searchUrl.searchParams.set("q", data.id.replace(/-/g, " "));
-      const sRes = await fetch(searchUrl.toString(), { headers: { Accept: "application/json" } });
-      if (sRes.ok) {
-        const json = (await sRes.json()) as { feed: { entry?: RawEntry[] } };
-        const entries = json?.feed?.entry ?? [];
-        const posts = entries.map(transformEntry);
-        const found = posts.find((p) => p.slug === data.id);
-        if (found) {
-          const year = new Date(found.published).getFullYear();
-          if (year < 2024) return null;
-          return found;
-        }
-      }
-
-      return null;
+      if (year < 2024 || isExcludedPost(post.slug, post.id)) return null;
+      return assignPrettySlugs([post])[0];
     }
+
+    return null;
   });
 
 export const getLabels = createServerFn({ method: "GET" }).handler(async () => {
