@@ -205,8 +205,8 @@ export function SiteHeader() {
             <div className="space-y-6">
               {/* Drawer Header */}
               <div className="flex items-center justify-between pb-4 border-b border-border/60">
-                <Link to="/" onClick={() => setOpen(false)} className="flex items-center gap-2">
-                  <img src={bouibaLogo.url} alt="Bouiba Academy" className="h-10 w-auto" />
+                <Link to="/" onClick={() => setOpen(false)} className="flex items-center gap-2 min-w-0">
+                  <img src={bouibaLogo.url} alt="Bouiba Academy" className="h-9 w-auto max-w-[150px] object-contain" />
                 </Link>
                 <button 
                   onClick={() => setOpen(false)} 
