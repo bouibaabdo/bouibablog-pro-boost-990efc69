@@ -89,11 +89,11 @@ export function SiteHeader() {
       <div className="absolute inset-0 -z-10 bg-background/80 backdrop-blur-md" />
 
       <div className="container-page flex h-16 items-center justify-between gap-4">
-        <Link to="/" className="flex items-center gap-2 font-bold text-lg" aria-label="Bouiba Academy">
+        <Link to="/" className="flex items-center gap-2 font-bold text-lg shrink-0 min-w-0" aria-label="Bouiba Academy">
           <img
             src={bouibaLogo.url}
             alt="Bouiba Academy"
-            className="h-11 w-auto"
+            className="h-9 sm:h-10 md:h-11 w-auto max-w-[140px] sm:max-w-none object-contain"
             width={44}
             height={44}
             fetchPriority="high"
