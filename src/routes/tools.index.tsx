@@ -25,7 +25,7 @@ export const Route = createFileRoute("/tools/")({
   component: ToolsIndex,
 });
 
-const TOOLS = [
+const TOOLS: Array<{ to: string; icon: any; title: string; desc: string; color: string; badge?: string }> = [
   {
     to: "/tools/image",
     icon: ImageIcon,
