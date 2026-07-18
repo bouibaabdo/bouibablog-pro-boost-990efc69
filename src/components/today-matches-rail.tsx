@@ -169,7 +169,16 @@ export function TodayMatchesRail({
             </div>
             {m.streamUrls && m.streamUrls.length > 0 ? (
               <div className="mt-3 grid grid-cols-2 gap-1.5">
-                {m.streamUrls.slice(0, 4).map((url, idx) => (
+                <a
+                  href={`https://koorayallah.com/?s=${encodeURIComponent(`${m.home} ${m.away}`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="col-span-2 inline-flex items-center justify-center gap-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 px-3 py-2 text-xs font-bold text-white transition shadow-sm"
+                >
+                  <ExternalLink className="h-3.5 w-3.5" />
+                  مشاهدة البث المباشر (كورة يلا)
+                </a>
+                {m.streamUrls.slice(0, 2).map((url, idx) => (
                   <a
                     key={idx}
                     href={url}
@@ -178,24 +187,22 @@ export function TodayMatchesRail({
                     className="inline-flex items-center justify-center gap-1 rounded-lg bg-red-600/10 hover:bg-red-600 hover:text-white px-2 py-1.5 text-[11px] font-bold text-red-600 transition"
                   >
                     <ExternalLink className="h-3 w-3" />
-                    سيرفر {idx + 1}
+                    سيرفر احتياطي {idx + 1}
                   </a>
                 ))}
               </div>
             ) : (
-              <a
-                href={STREAM_URL}
-                target="_blank"
-                rel="noopener"
-                className={`mt-3 w-full inline-flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-xs font-bold transition ${
-                  m.live
-                    ? "bg-red-600 hover:bg-red-700 text-white"
-                    : "bg-primary hover:opacity-95 text-primary-foreground"
-                }`}
-              >
-                <ExternalLink className="h-3.5 w-3.5" />
-                {m.live ? "افتح البث الآن" : "افتح البث المباشر"}
-              </a>
+              <div className="mt-3 flex flex-col gap-1.5">
+                <a
+                  href={`https://koorayallah.com/?s=${encodeURIComponent(`${m.home} ${m.away}`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full inline-flex items-center justify-center gap-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 px-3 py-2 text-xs font-bold text-white transition shadow-sm"
+                >
+                  <ExternalLink className="h-3.5 w-3.5" />
+                  مشاهدة البث المباشر (كورة يلا)
+                </a>
+              </div>
             )}
           </article>
         ))}
