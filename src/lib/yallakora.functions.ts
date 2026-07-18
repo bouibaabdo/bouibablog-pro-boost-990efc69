@@ -20,6 +20,56 @@ export interface YKMatch {
   league?: string;
   matchUrl: string; // صفحة المباراة على يلا كورة
   day: "yesterday" | "today" | "tomorrow";
+  streamUrls: string[];
+}
+
+function channelPlayerUrls(channel: string): string[] {
+  const normalized = channel
+    .replace(/[٠-٩]/g, (d) => String("٠١٢٣٤٥٦٧٨٩".indexOf(d)))
+    .toLowerCase();
+  const urls: string[] = [];
+  const max = normalized.match(/(?:bein\s*)?(?:sports\s*)?max\s*(?:hd\s*)?(\d+)/i);
+  if (max?.[1]) {
+    const n = max[1];
+    urls.push(
+      `https://topx.poiy.online/albaplayer/max${n}/`,
+      `https://embedsports.top/embed/alpha/beinmax${n}/1`,
+      `https://embedsports.me/embed/alpha/beinmax${n}/1`,
+      `https://embedsports.top/embed/bravo/beinmax${n}/1`,
+      `https://weblivehdplay.ru/?player=desktop&live=beinmax${n}`,
+    );
+    return urls;
+  }
+  const xtra = normalized.match(/(?:bein\s*)?xtra\s*(\d+)/i);
+  if (xtra?.[1]) {
+    const n = xtra[1];
+    urls.push(
+      `https://topx.poiy.online/albaplayer/xtra${n}/`,
+      `https://embedsports.top/embed/alpha/beinxtra${n}/1`,
+    );
+    return urls;
+  }
+  const bein = normalized.match(/(?:bein\s*)?(?:sports?\s*)?(?:hd\s*)?(\d+)/i);
+  if (bein?.[1]) {
+    const n = bein[1];
+    urls.push(
+      `https://topx.poiy.online/albaplayer/bein${n}/`,
+      `https://embedsports.top/embed/alpha/beinsports${n}/1`,
+      `https://embedsports.top/embed/bravo/beinsports${n}/1`,
+      `https://weblivehdplay.ru/?player=desktop&live=beinsports${n}`,
+    );
+    return urls;
+  }
+  const ssc = normalized.match(/ssc\s*(?:hd\s*)?(\d+)/i);
+  if (ssc?.[1]) {
+    const n = ssc[1];
+    urls.push(
+      `https://topx.poiy.online/albaplayer/ssc${n}/`,
+      `https://embedsports.top/embed/alpha/ssc${n}/1`,
+      `https://embedsports.top/embed/bravo/ssc${n}/1`,
+    );
+  }
+  return urls;
 }
 
 function fmtDate(d: Date): string {
@@ -86,6 +136,7 @@ function parseMatchItem(item: HTMLElement, league: string | undefined, day: YKMa
   const { live, finished } = classifyStatus(item.getAttribute("class") || "", status);
 
   const matchUrl = href.startsWith("http") ? href : `${BASE}${href}`.split("#")[0];
+  const streamUrls = channel ? channelPlayerUrls(channel) : [];
 
   return {
     id,
@@ -103,6 +154,7 @@ function parseMatchItem(item: HTMLElement, league: string | undefined, day: YKMa
     league: roundLabel ? `${league ?? ""}${league && roundLabel ? " · " : ""}${roundLabel}` : league,
     matchUrl,
     day,
+    streamUrls,
   };
 }
 

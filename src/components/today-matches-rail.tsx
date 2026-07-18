@@ -167,19 +167,36 @@ export function TodayMatchesRail({
                 <span dir="rtl" className="text-xs font-semibold leading-tight line-clamp-2">{m.away}</span>
               </div>
             </div>
-            <a
-              href={STREAM_URL}
-              target="_blank"
-              rel="noopener"
-              className={`mt-3 w-full inline-flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-xs font-bold transition ${
-                m.live
-                  ? "bg-red-600 hover:bg-red-700 text-white"
-                  : "bg-primary hover:opacity-95 text-primary-foreground"
-              }`}
-            >
-              <ExternalLink className="h-3.5 w-3.5" />
-              {m.live ? "افتح البث الآن" : "افتح البث المباشر"}
-            </a>
+            {m.streamUrls && m.streamUrls.length > 0 ? (
+              <div className="mt-3 grid grid-cols-2 gap-1.5">
+                {m.streamUrls.slice(0, 4).map((url, idx) => (
+                  <a
+                    key={idx}
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-1 rounded-lg bg-red-600/10 hover:bg-red-600 hover:text-white px-2 py-1.5 text-[11px] font-bold text-red-600 transition"
+                  >
+                    <ExternalLink className="h-3 w-3" />
+                    سيرفر {idx + 1}
+                  </a>
+                ))}
+              </div>
+            ) : (
+              <a
+                href={STREAM_URL}
+                target="_blank"
+                rel="noopener"
+                className={`mt-3 w-full inline-flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-xs font-bold transition ${
+                  m.live
+                    ? "bg-red-600 hover:bg-red-700 text-white"
+                    : "bg-primary hover:opacity-95 text-primary-foreground"
+                }`}
+              >
+                <ExternalLink className="h-3.5 w-3.5" />
+                {m.live ? "افتح البث الآن" : "افتح البث المباشر"}
+              </a>
+            )}
           </article>
         ))}
       </div>

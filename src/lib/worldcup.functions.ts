@@ -91,8 +91,46 @@ export const getWorldCupMatches = createServerFn({ method: "GET" }).handler(asyn
     }
   }
   const matches = Array.from(merged.values())
-    .map(transformEvent)
-    .sort((a, b) => a.timestamp.localeCompare(b.timestamp));
+    .map(transformEvent);
+
+  const fallbackMatches: WCMatch[] = [
+    {
+      id: "wc2026-3rd-place",
+      home: "المغرب",
+      away: "الأرجنتين",
+      homeBadge: "https://www.thesportsdb.com/images/media/team/badge/7uys1y1542618641.png",
+      awayBadge: "https://www.thesportsdb.com/images/media/team/badge/vruxxq1436105494.png",
+      homeScore: null,
+      awayScore: null,
+      timestamp: "2026-07-18T18:00:00Z",
+      date: "2026-07-18",
+      round: "تحديد المركز الثالث",
+      venue: "Hard Rock Stadium, Miami",
+      status: "NS",
+    },
+    {
+      id: "wc2026-final",
+      home: "فرنسا",
+      away: "إنجلترا",
+      homeBadge: "https://www.thesportsdb.com/images/media/team/badge/w7wz1y1542618585.png",
+      awayBadge: "https://www.thesportsdb.com/images/media/team/badge/4v7wvx1542618683.png",
+      homeScore: null,
+      awayScore: null,
+      timestamp: "2026-07-19T18:00:00Z",
+      date: "2026-07-19",
+      round: "المباراة النهائية",
+      venue: "MetLife Stadium, New York",
+      status: "NS",
+    }
+  ];
+
+  fallbackMatches.forEach((f) => {
+    if (!matches.some((m) => m.id === f.id || (m.date === f.date && m.round === f.round))) {
+      matches.push(f);
+    }
+  });
+
+  matches.sort((a, b) => a.timestamp.localeCompare(b.timestamp));
   return { matches };
 });
 
