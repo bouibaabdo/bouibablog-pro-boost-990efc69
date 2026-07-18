@@ -10,7 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { getLabels } from "@/lib/blogger.functions";
 import { listLessons } from "@/lib/lessons.functions";
 import { NavDropdown, type NavDropdownItem } from "@/components/nav-dropdown";
-import bouibaLogo from "@/assets/bouiba-logo-v2.png.asset.json";
+import bouibaLogo from "@/assets/bouiba-logo-v3.png.asset.json";
 
 const TOOL_ITEMS: NavDropdownItem[] = [
   { label: "مسارات التعلم (Roadmap)", to: "/tools/roadmap", description: "خريطة طريق تفاعلية للدراسة", badge: "جديد ✨" },
@@ -89,11 +89,11 @@ export function SiteHeader() {
       <div className="absolute inset-0 -z-10 bg-background/80 backdrop-blur-md" />
 
       <div className="container-page flex h-16 items-center justify-between gap-4">
-        <Link to="/" className="flex items-center gap-2 font-bold text-lg" aria-label="Bouiba Academy">
+        <Link to="/" className="flex items-center gap-2 font-bold text-lg shrink-0 min-w-0" aria-label="Bouiba Academy">
           <img
             src={bouibaLogo.url}
             alt="Bouiba Academy"
-            className="h-11 w-auto"
+            className="h-9 sm:h-10 md:h-11 w-auto max-w-[140px] sm:max-w-none object-contain"
             width={44}
             height={44}
             fetchPriority="high"
@@ -205,8 +205,8 @@ export function SiteHeader() {
             <div className="space-y-6">
               {/* Drawer Header */}
               <div className="flex items-center justify-between pb-4 border-b border-border/60">
-                <Link to="/" onClick={() => setOpen(false)} className="flex items-center gap-2">
-                  <img src={bouibaLogo.url} alt="Bouiba Academy" className="h-10 w-auto" width={40} height={40} />
+                <Link to="/" onClick={() => setOpen(false)} className="flex items-center gap-2 min-w-0">
+                  <img src={bouibaLogo.url} alt="Bouiba Academy" className="h-9 w-auto max-w-[150px] object-contain" width={36} height={36} />
                 </Link>
                 <button 
                   onClick={() => setOpen(false)} 
