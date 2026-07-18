@@ -183,7 +183,7 @@ function HomePage() {
 
           {featured && (
             <div className="mb-5 md:mb-6">
-              <PostCard post={featured} featured />
+              <PostCard post={featured} featured priority />
             </div>
           )}
 

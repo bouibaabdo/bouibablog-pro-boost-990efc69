@@ -94,7 +94,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:image", content: "https://www.bouibacademy.me/og-banner.png", key: "twitter:image" },
     ],
     links: [
-      { rel: "stylesheet", href: appCss },
+      { rel: "preload", as: "style", href: appCss },
       { rel: "icon", href: "/favicon.png", type: "image/png" },
     ],
     scripts: [
@@ -131,6 +131,13 @@ function RootShell({ children }: { children: ReactNode }) {
       <head>
         <style dangerouslySetInnerHTML={{ __html: criticalCss }} />
         <HeadContent />
+        <link
+          rel="stylesheet"
+          href={appCss}
+          media="print"
+          // @ts-expect-error - onload string is required for SSR HTML serialization
+          onload="this.media='all'"
+        />
         <noscript>
           <link rel="stylesheet" href={appCss} />
         </noscript>

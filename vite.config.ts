@@ -12,4 +12,30 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
+  vite: {
+    build: {
+      cssMinify: true,
+      minify: "esbuild",
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (id.includes("node_modules")) {
+              if (id.includes("react") || id.includes("scheduler") || id.includes("react-dom")) {
+                return "react-core";
+              }
+              if (id.includes("lucide-react")) {
+                return "lucide";
+              }
+              if (id.includes("supabase") || id.includes("@supabase")) {
+                return "supabase";
+              }
+              if (id.includes("tanstack")) {
+                return "tanstack";
+              }
+            }
+          },
+        },
+      },
+    },
+  },
 });
