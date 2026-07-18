@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { ExternalLink, Tv, ArrowLeft, Clock } from "lucide-react";
-import { getYalladownMatches, type YDMatch } from "@/lib/yalladown.functions";
+import { getYallakoraMatches, type YKMatch as YDMatch } from "@/lib/yallakora.functions";
 import { normalizeArName } from "@/lib/match-streams";
 
 const STREAM_URL = "https://tv.bouibacademy.me/#sports";
@@ -44,8 +44,8 @@ export function TodayMatchesRail({
   }, [enabled]);
 
   const yd = useQuery({
-    queryKey: ["yalladown", "matches"],
-    queryFn: () => getYalladownMatches(),
+    queryKey: ["yallakora", "matches"],
+    queryFn: () => getYallakoraMatches(),
     staleTime: 60_000,
     refetchInterval: enabled ? 120_000 : false,
     enabled,
