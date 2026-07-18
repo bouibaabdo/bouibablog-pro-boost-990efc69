@@ -6,10 +6,10 @@ export const Route = createFileRoute("/privacy")({
   head: () => ({
     meta: [
       { title: "سياسة الخصوصية — Bouiba Academy" },
-      { name: "description", content: "سياسة الخصوصية الخاصة بموقع Bouiba Academy: البيانات التي نجمعها، ملفات تعريف الارتباط، وإعلانات Google AdSense." },
-      { property: "og:title", content: "سياسة الخصوصية — Bouiba Academy" },
-      { property: "og:description", content: "كيف نجمع ونستخدم البيانات، ملفات الكوكيز، وإعلانات الطرف الثالث في Bouiba Academy." },
-      { property: "og:url", content: "https://www.bouibacademy.me/privacy" },
+      { name: "description", content: "سياسة الخصوصية الخاصة بموقع Bouiba Academy: البيانات التي نجمعها، ملفات تعريف الارتباط، وإعلانات Google AdSense.", key: "description" },
+      { property: "og:title", content: "سياسة الخصوصية — Bouiba Academy", key: "og:title" },
+      { property: "og:description", content: "كيف نجمع ونستخدم البيانات، ملفات الكوكيز، وإعلانات الطرف الثالث في Bouiba Academy.", key: "og:description" },
+      { property: "og:url", content: "https://www.bouibacademy.me/privacy", key: "og:url" },
     ],
     links: [{ rel: "canonical", href: "https://www.bouibacademy.me/privacy" }],
   }),

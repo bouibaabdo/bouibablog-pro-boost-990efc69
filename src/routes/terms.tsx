@@ -6,10 +6,10 @@ export const Route = createFileRoute("/terms")({
   head: () => ({
     meta: [
       { title: "شروط الاستخدام — Bouiba Academy" },
-      { name: "description", content: "شروط استخدام موقع Bouiba Academy، حقوق الملكية الفكرية، والمسؤوليات القانونية." },
-      { property: "og:title", content: "شروط الاستخدام — Bouiba Academy" },
-      { property: "og:description", content: "الشروط والأحكام التي تحكم استخدام موقع Bouiba Academy وخدماته." },
-      { property: "og:url", content: "https://www.bouibacademy.me/terms" },
+      { name: "description", content: "شروط استخدام موقع Bouiba Academy، حقوق الملكية الفكرية، والمسؤوليات القانونية.", key: "description" },
+      { property: "og:title", content: "شروط الاستخدام — Bouiba Academy", key: "og:title" },
+      { property: "og:description", content: "الشروط والأحكام التي تحكم استخدام موقع Bouiba Academy وخدماته.", key: "og:description" },
+      { property: "og:url", content: "https://www.bouibacademy.me/terms", key: "og:url" },
     ],
     links: [{ rel: "canonical", href: "https://www.bouibacademy.me/terms" }],
   }),

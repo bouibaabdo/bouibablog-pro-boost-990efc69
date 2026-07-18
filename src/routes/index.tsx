@@ -35,12 +35,12 @@ export const Route = createFileRoute("/")({
     return {
       meta: [
         { title },
-        { name: "description", content: desc },
-        { property: "og:title", content: title },
-        { property: "og:description", content: desc },
-        { property: "og:url", content: "https://www.bouibacademy.me/" },
-        { name: "twitter:title", content: title },
-        { name: "twitter:description", content: desc },
+        { name: "description", content: desc, key: "description" },
+        { property: "og:title", content: title, key: "og:title" },
+        { property: "og:description", content: desc, key: "og:description" },
+        { property: "og:url", content: "https://www.bouibacademy.me/", key: "og:url" },
+        { name: "twitter:title", content: title, key: "twitter:title" },
+        { name: "twitter:description", content: desc, key: "twitter:description" },
       ],
       links: [
         { rel: "canonical", href: "https://www.bouibacademy.me/" },

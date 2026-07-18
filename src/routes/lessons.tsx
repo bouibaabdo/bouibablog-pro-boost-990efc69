@@ -17,13 +17,11 @@ export const Route = createFileRoute("/lessons")({
   head: () => ({
     meta: [
       { title: "دورات — Bouiba Academy" },
-      {
-        name: "description",
-        content: "مكتبة دورات فيديو حول الذكاء الاصطناعي وأدواته باللغة العربية.",
-      },
-      { property: "og:title", content: "دورات — Bouiba Academy" },
-      { property: "og:description", content: "دورات عربية حول الذكاء الاصطناعي." },
-      { property: "og:url", content: "https://www.bouibacademy.me/lessons" },
+      { name: "description",
+        content: "مكتبة دورات فيديو حول الذكاء الاصطناعي وأدواته باللغة العربية.", key: "description" },
+      { property: "og:title", content: "دورات — Bouiba Academy", key: "og:title" },
+      { property: "og:description", content: "دورات عربية حول الذكاء الاصطناعي.", key: "og:description" },
+      { property: "og:url", content: "https://www.bouibacademy.me/lessons", key: "og:url" },
     ],
     links: [{ rel: "canonical", href: "https://www.bouibacademy.me/lessons" }],
   }),

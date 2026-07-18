@@ -6,10 +6,10 @@ export const Route = createFileRoute("/disclaimer")({
   head: () => ({
     meta: [
       { title: "إخلاء المسؤولية — Bouiba Academy" },
-      { name: "description", content: "إخلاء المسؤولية بخصوص المحتوى، أدوات الذكاء الاصطناعي، وروابط البث المباشر على Bouiba Academy." },
-      { property: "og:title", content: "إخلاء المسؤولية — Bouiba Academy" },
-      { property: "og:description", content: "توضيحات قانونية عن حدود مسؤولية Bouiba Academy تجاه المحتوى والأدوات والروابط الخارجية." },
-      { property: "og:url", content: "https://www.bouibacademy.me/disclaimer" },
+      { name: "description", content: "إخلاء المسؤولية بخصوص المحتوى، أدوات الذكاء الاصطناعي، وروابط البث المباشر على Bouiba Academy.", key: "description" },
+      { property: "og:title", content: "إخلاء المسؤولية — Bouiba Academy", key: "og:title" },
+      { property: "og:description", content: "توضيحات قانونية عن حدود مسؤولية Bouiba Academy تجاه المحتوى والأدوات والروابط الخارجية.", key: "og:description" },
+      { property: "og:url", content: "https://www.bouibacademy.me/disclaimer", key: "og:url" },
     ],
     links: [{ rel: "canonical", href: "https://www.bouibacademy.me/disclaimer" }],
   }),

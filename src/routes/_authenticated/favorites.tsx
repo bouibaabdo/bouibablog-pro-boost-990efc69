@@ -12,8 +12,8 @@ export const Route = createFileRoute("/_authenticated/favorites")({
   head: () => ({
     meta: [
       { title: "المباريات المفضلة والتنبيهات | Bouiba Academy" },
-      { name: "description", content: "أدر مبارياتك المفضلة وقم بتفعيل تنبيهات البريد وإشعارات المتصفح." },
-      { name: "robots", content: "noindex" },
+      { name: "description", content: "أدر مبارياتك المفضلة وقم بتفعيل تنبيهات البريد وإشعارات المتصفح.", key: "description" },
+      { name: "robots", content: "noindex", key: "robots" },
     ],
   }),
   component: FavoritesPage,

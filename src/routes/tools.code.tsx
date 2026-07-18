@@ -6,10 +6,10 @@ export const Route = createFileRoute("/tools/code")({
   head: () => ({
     meta: [
       { title: "مساعد البرمجة وشرح الأكواد — أدوات AI | Bouiba Academy" },
-      { name: "description", content: "الصق الكود البرمجي واحصل على شرح تفصيلي وتصحيح للأخطاء أو اقتراح للتحسينات بالذكاء الاصطناعي." },
-      { property: "og:title", content: "مساعد البرمجة وشرح الأكواد — Bouiba Academy" },
-      { property: "og:description", content: "حلل، اشرح، وصحح أخطاء الأكواد البرمجية مباشرة باستخدام الذكاء الاصطناعي." },
-      { property: "og:url", content: "https://www.bouibacademy.me/tools/code" },
+      { name: "description", content: "الصق الكود البرمجي واحصل على شرح تفصيلي وتصحيح للأخطاء أو اقتراح للتحسينات بالذكاء الاصطناعي.", key: "description" },
+      { property: "og:title", content: "مساعد البرمجة وشرح الأكواد — Bouiba Academy", key: "og:title" },
+      { property: "og:description", content: "حلل، اشرح، وصحح أخطاء الأكواد البرمجية مباشرة باستخدام الذكاء الاصطناعي.", key: "og:description" },
+      { property: "og:url", content: "https://www.bouibacademy.me/tools/code", key: "og:url" },
     ],
     links: [{ rel: "canonical", href: "https://www.bouibacademy.me/tools/code" }],
   }),

@@ -6,10 +6,10 @@ export const Route = createFileRoute("/tools/summarize")({
   head: () => ({
     meta: [
       { title: "تلخيص المقالات — أدوات AI | Bouiba Academy" },
-      { name: "description", content: "أداة عربية لتلخيص المقالات الطويلة في نقاط واضحة." },
-      { property: "og:title", content: "تلخيص المقالات — Bouiba Academy" },
-      { property: "og:description", content: "لخّص أي مقال طويل إلى نقاط عربية موجزة خلال ثوانٍ." },
-      { property: "og:url", content: "https://www.bouibacademy.me/tools/summarize" },
+      { name: "description", content: "أداة عربية لتلخيص المقالات الطويلة في نقاط واضحة.", key: "description" },
+      { property: "og:title", content: "تلخيص المقالات — Bouiba Academy", key: "og:title" },
+      { property: "og:description", content: "لخّص أي مقال طويل إلى نقاط عربية موجزة خلال ثوانٍ.", key: "og:description" },
+      { property: "og:url", content: "https://www.bouibacademy.me/tools/summarize", key: "og:url" },
     ],
     links: [{ rel: "canonical", href: "https://www.bouibacademy.me/tools/summarize" }],
   }),

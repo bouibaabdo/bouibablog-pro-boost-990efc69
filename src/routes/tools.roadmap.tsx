@@ -20,13 +20,11 @@ export const Route = createFileRoute("/tools/roadmap")({
   head: () => ({
     meta: [
       { title: "مولّد مسارات التعلم الذكي بالذكاء الاصطناعي — أدوات AI | Bouiba Academy" },
-      {
-        name: "description",
-        content: "أنشئ خريطة طريق (Roadmap) تفاعلية ومسار تعلم مخصص لأي مجال بالذكاء الاصطناعي مجانًا وبأفضل المصادر.",
-      },
-      { property: "og:title", content: "مولّد مسارات التعلم الذكي بالذكاء الاصطناعي — Bouiba Academy" },
-      { property: "og:description", content: "أنشئ خريطة طريق تفاعلية ومسار تعلم مخصص لأي مجال بالذكاء الاصطناعي." },
-      { property: "og:url", content: "https://www.bouibacademy.me/tools/roadmap" },
+      { name: "description",
+        content: "أنشئ خريطة طريق (Roadmap) تفاعلية ومسار تعلم مخصص لأي مجال بالذكاء الاصطناعي مجانًا وبأفضل المصادر.", key: "description" },
+      { property: "og:title", content: "مولّد مسارات التعلم الذكي بالذكاء الاصطناعي — Bouiba Academy", key: "og:title" },
+      { property: "og:description", content: "أنشئ خريطة طريق تفاعلية ومسار تعلم مخصص لأي مجال بالذكاء الاصطناعي.", key: "og:description" },
+      { property: "og:url", content: "https://www.bouibacademy.me/tools/roadmap", key: "og:url" },
     ],
     links: [{ rel: "canonical", href: "https://www.bouibacademy.me/tools/roadmap" }],
   }),

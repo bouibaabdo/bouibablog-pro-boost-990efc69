@@ -43,18 +43,14 @@ export const Route = createFileRoute("/worldcup")({
   head: () => ({
     meta: [
       { title: "كأس العالم 2026 — جدول، ترتيب وبث مباشر" },
-      {
-        name: "description",
+      { name: "description",
         content:
-          "متابعة شاملة لمونديال 2026: جدول كل المباريات، مباريات اليوم مع القنوات الناقلة، ترتيب المجموعات، وروابط البث الرسمي المباشر.",
-      },
-      { property: "og:title", content: "كأس العالم 2026 — بث مباشر وترتيب المجموعات" },
-      {
-        property: "og:description",
-        content: "جدول شامل، ترتيب المجموعات، ومباريات اليوم مع القنوات الناقلة وروابط المشاهدة المباشرة.",
-      },
-      { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://www.bouibacademy.me/worldcup" },
+          "متابعة شاملة لمونديال 2026: جدول كل المباريات، مباريات اليوم مع القنوات الناقلة، ترتيب المجموعات، وروابط البث الرسمي المباشر.", key: "description" },
+      { property: "og:title", content: "كأس العالم 2026 — بث مباشر وترتيب المجموعات", key: "og:title" },
+      { property: "og:description",
+        content: "جدول شامل، ترتيب المجموعات، ومباريات اليوم مع القنوات الناقلة وروابط المشاهدة المباشرة.", key: "og:description" },
+      { property: "og:type", content: "website", key: "og:type" },
+      { property: "og:url", content: "https://www.bouibacademy.me/worldcup", key: "og:url" },
     ],
     links: [{ rel: "canonical", href: "https://www.bouibacademy.me/worldcup" }],
   }),

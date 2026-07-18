@@ -6,10 +6,10 @@ export const Route = createFileRoute("/tools/seo")({
   head: () => ({
     meta: [
       { title: "مساعد SEO عربي — أدوات AI | Bouiba Academy" },
-      { name: "description", content: "احصل على عنوان، وصف Meta، كلمات مفتاحية، وهيكل عناوين محسّن." },
-      { property: "og:title", content: "مساعد SEO عربي — Bouiba Academy" },
-      { property: "og:description", content: "حزمة SEO متكاملة بالعربية: عنوان، وصف Meta، كلمات مفتاحية، وهيكل عناوين جاهز." },
-      { property: "og:url", content: "https://www.bouibacademy.me/tools/seo" },
+      { name: "description", content: "احصل على عنوان، وصف Meta، كلمات مفتاحية، وهيكل عناوين محسّن.", key: "description" },
+      { property: "og:title", content: "مساعد SEO عربي — Bouiba Academy", key: "og:title" },
+      { property: "og:description", content: "حزمة SEO متكاملة بالعربية: عنوان، وصف Meta، كلمات مفتاحية، وهيكل عناوين جاهز.", key: "og:description" },
+      { property: "og:url", content: "https://www.bouibacademy.me/tools/seo", key: "og:url" },
     ],
     links: [{ rel: "canonical", href: "https://www.bouibacademy.me/tools/seo" }],
   }),

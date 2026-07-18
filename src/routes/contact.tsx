@@ -7,10 +7,10 @@ export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
       { title: "تواصل معنا — Bouiba Academy" },
-      { name: "description", content: "تواصل مع فريق Bouiba Academy — لأسئلتك، اقتراحاتك، أو فرص التعاون في محتوى الذكاء الاصطناعي العربي." },
-      { property: "og:title", content: "تواصل معنا — Bouiba Academy" },
-      { property: "og:description", content: "راسل فريق Bouiba Academy لأي سؤال، اقتراح، أو تعاون في محتوى الذكاء الاصطناعي." },
-      { property: "og:url", content: "https://www.bouibacademy.me/contact" },
+      { name: "description", content: "تواصل مع فريق Bouiba Academy — لأسئلتك، اقتراحاتك، أو فرص التعاون في محتوى الذكاء الاصطناعي العربي.", key: "description" },
+      { property: "og:title", content: "تواصل معنا — Bouiba Academy", key: "og:title" },
+      { property: "og:description", content: "راسل فريق Bouiba Academy لأي سؤال، اقتراح، أو تعاون في محتوى الذكاء الاصطناعي.", key: "og:description" },
+      { property: "og:url", content: "https://www.bouibacademy.me/contact", key: "og:url" },
     ],
     links: [{ rel: "canonical", href: "https://www.bouibacademy.me/contact" }],
   }),
