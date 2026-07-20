@@ -104,6 +104,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         children: "(function(){var loaded=false;function load(){if(loaded)return;loaded=true;var s=document.createElement('script');s.async=true;s.crossOrigin='anonymous';s.src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6865528919843764';document.head.appendChild(s);}var evts=['scroll','click','touchstart','keydown','mousemove'];evts.forEach(function(e){window.addEventListener(e,load,{once:true,passive:true})});setTimeout(load,4000);})();",
       },
       {
+        children: "window.googleTranslateElementInit=function(){new google.translate.TranslateElement({pageLanguage:'ar',includedLanguages:'en,ar',autoDisplay:false},'google_translate_element');};",
+      },
+      {
+        src: "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit",
+        async: true,
+      },
+      {
         type: "application/ld+json",
         children: JSON.stringify({
           "@context": "https://schema.org",
@@ -135,6 +142,7 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
+        <div id="google_translate_element" className="hidden opacity-0 pointer-events-none absolute -top-9999 -left-9999 h-0 w-0" />
         <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:right-4 focus:z-50 focus:bg-background focus:text-foreground focus:p-4 focus:rounded-lg focus:border focus:shadow-md">
           التخطي إلى المحتوى الرئيسي
         </a>

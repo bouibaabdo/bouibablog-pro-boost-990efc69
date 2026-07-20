@@ -70,6 +70,16 @@ export function SiteHeader() {
       localStorage.setItem("bouiba_lang", newLang);
       document.documentElement.lang = newLang;
       document.documentElement.dir = newLang === "ar" ? "rtl" : "ltr";
+
+      const domain = window.location.hostname;
+      if (newLang === "en") {
+        document.cookie = `googtrans=/ar/en; path=/; domain=${domain}`;
+        document.cookie = `googtrans=/ar/en; path=/`;
+      } else {
+        document.cookie = `googtrans=/ar/ar; path=/; domain=${domain}`;
+        document.cookie = `googtrans=/ar/ar; path=/`;
+      }
+      window.location.reload();
     }
   };
 
