@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { 
   Menu, X, Star, LogIn, ChevronDown, 
   Home, FileText, GraduationCap, Cpu, 
-  HelpCircle, Trophy, Info, PhoneCall, Sparkles 
+  HelpCircle, Trophy, Info, PhoneCall, Sparkles, Globe 
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { getLabels } from "@/lib/blogger.functions";
@@ -12,7 +12,7 @@ import { listLessons } from "@/lib/lessons.functions";
 import { NavDropdown, type NavDropdownItem } from "@/components/nav-dropdown";
 import bouibaLogo from "@/assets/bouiba-logo-v3.png.asset.json";
 
-const TOOL_ITEMS: NavDropdownItem[] = [
+const TOOL_ITEMS_AR: NavDropdownItem[] = [
   { label: "مسارات التعلم (Roadmap)", to: "/tools/roadmap", description: "خريطة طريق تفاعلية للدراسة", badge: "جديد ✨" },
   { label: "نص إلى صورة", to: "/tools/image", description: "توليد صور بالذكاء الاصطناعي" },
   { label: "تلخيص المقالات", to: "/tools/summarize", description: "ملخصات ذكية سريعة" },
@@ -21,12 +21,29 @@ const TOOL_ITEMS: NavDropdownItem[] = [
   { label: "مساعد SEO", to: "/tools/seo", description: "تحسين ترتيب موقعك" },
 ];
 
-const SIMPLE_NAV = [
+const TOOL_ITEMS_EN: NavDropdownItem[] = [
+  { label: "Learning Roadmaps", to: "/tools/roadmap", description: "Interactive study roadmaps", badge: "New ✨" },
+  { label: "Text to Image", to: "/tools/image", description: "Generate AI images from prompts" },
+  { label: "Article Summarizer", to: "/tools/summarize", description: "Fast AI summaries" },
+  { label: "Smart Translator", to: "/tools/translate", description: "Accurate multi-language translation" },
+  { label: "Idea Generator", to: "/tools/ideas", description: "Content & project ideas" },
+  { label: "SEO Assistant", to: "/tools/seo", description: "Optimize search ranking" },
+];
+
+const SIMPLE_NAV_AR = [
   { to: "/", label: "الرئيسية" },
   { to: "/quiz", label: "اختبار AI" },
   { to: "/worldcup", label: "كأس العالم 2026" },
   { to: "/about", label: "عن الأكاديمية" },
   { to: "/contact", label: "تواصل" },
+] as const;
+
+const SIMPLE_NAV_EN = [
+  { to: "/", label: "Home" },
+  { to: "/quiz", label: "AI Quiz" },
+  { to: "/worldcup", label: "World Cup 2026" },
+  { to: "/about", label: "About" },
+  { to: "/contact", label: "Contact" },
 ] as const;
 
 export function SiteHeader() {
@@ -35,7 +52,26 @@ export function SiteHeader() {
   const [mPosts, setMPosts] = useState(false);
   const [mLessons, setMLessons] = useState(false);
   const [mTools, setMTools] = useState(false);
+  const [lang, setLang] = useState<"ar" | "en">("ar");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const saved = (localStorage.getItem("bouiba_lang") as "ar" | "en") || "ar";
+      setLang(saved);
+      document.documentElement.lang = saved;
+      document.documentElement.dir = saved === "ar" ? "rtl" : "ltr";
+    }
+  }, []);
+
+  const switchLanguage = (newLang: "ar" | "en") => {
+    setLang(newLang);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("bouiba_lang", newLang);
+      document.documentElement.lang = newLang;
+      document.documentElement.dir = newLang === "ar" ? "rtl" : "ltr";
+    }
+  };
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setAuthed(!!data.session));
@@ -111,34 +147,34 @@ export function SiteHeader() {
             activeOptions={{ exact: true }}
             activeProps={{ className: "text-foreground bg-accent/60" }}
           >
-            الرئيسية
+            {lang === "en" ? "Home" : "الرئيسية"}
           </Link>
 
           <NavDropdown
-            label="المقالات"
+            label={lang === "en" ? "Articles" : "المقالات"}
             to="/posts"
             items={postItems}
-            footer={{ label: "عرض جميع المقالات", to: "/posts" }}
+            footer={{ label: lang === "en" ? "View all articles" : "عرض جميع المقالات", to: "/posts" }}
             onLoad={() => { if (!labelsQ.data && !labelsQ.isFetching) labelsQ.refetch(); }}
           />
 
           <NavDropdown
-            label="دورات"
+            label={lang === "en" ? "Courses" : "دورات"}
             to="/lessons"
             items={lessonItems}
-            footer={{ label: "عرض كل الدورات", to: "/lessons" }}
+            footer={{ label: lang === "en" ? "View all courses" : "عرض كل الدورات", to: "/lessons" }}
             onLoad={() => { if (!lessonsQ.data && !lessonsQ.isFetching) lessonsQ.refetch(); }}
           />
 
           <NavDropdown
-            label="أدوات AI"
+            label={lang === "en" ? "AI Tools" : "أدوات AI"}
             to="/tools"
-            items={TOOL_ITEMS}
-            footer={{ label: "استعرض كل الأدوات", to: "/tools" }}
+            items={lang === "en" ? TOOL_ITEMS_EN : TOOL_ITEMS_AR}
+            footer={{ label: lang === "en" ? "Browse all tools" : "استعرض كل الأدوات", to: "/tools" }}
             badge={true}
           />
 
-          {SIMPLE_NAV.slice(1).map((item, i) => (
+          {(lang === "en" ? SIMPLE_NAV_EN : SIMPLE_NAV_AR).slice(1).map((item, i) => (
             <Link
               key={i}
               to={item.to}
@@ -151,13 +187,23 @@ export function SiteHeader() {
         </nav>
 
         <div className="hidden md:flex items-center gap-2">
+          {/* Language Switcher */}
+          <button
+            onClick={() => switchLanguage(lang === "ar" ? "en" : "ar")}
+            className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-accent/30 px-2.5 py-1.5 text-xs font-bold text-foreground hover:bg-accent transition-all cursor-pointer"
+            title={lang === "ar" ? "Switch to English" : "التحويل للغة العربية"}
+          >
+            <Globe className="h-3.5 w-3.5 text-primary" />
+            <span>{lang === "ar" ? "EN" : "العربية"}</span>
+          </button>
+
           {authed ? (
             <Link
               to="/favorites"
               className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-2 text-sm font-semibold hover:bg-accent"
             >
               <Star className="h-4 w-4 text-amber-500 fill-amber-500" />
-              المفضلة
+              {lang === "en" ? "Favorites" : "المفضلة"}
             </Link>
           ) : (
             <Link
@@ -166,14 +212,14 @@ export function SiteHeader() {
               className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-2 text-sm font-semibold hover:bg-accent"
             >
               <LogIn className="h-4 w-4" />
-              دخول
+              {lang === "en" ? "Login" : "دخول"}
             </Link>
           )}
           <Link
             to="/tools/roadmap"
             className="inline-flex items-center rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-soft transition-all hover:opacity-90 hover:shadow-elegant"
           >
-            ابدأ التعلم
+            {lang === "en" ? "Start Learning" : "ابدأ التعلم"}
           </Link>
         </div>
 
@@ -311,6 +357,13 @@ export function SiteHeader() {
 
             {/* Drawer Footer Actions */}
             <div className="pt-6 border-t border-border/60 space-y-3">
+              <button
+                onClick={() => switchLanguage(lang === "ar" ? "en" : "ar")}
+                className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl border border-border bg-accent/30 font-semibold text-foreground hover:bg-accent transition-colors cursor-pointer"
+              >
+                <Globe className="h-4 w-4 text-primary" />
+                <span>{lang === "ar" ? "Switch to English 🇬🇧" : "التحويل للغة العربية 🇸🇦"}</span>
+              </button>
               {authed ? (
                 <Link 
                   to="/favorites" 
