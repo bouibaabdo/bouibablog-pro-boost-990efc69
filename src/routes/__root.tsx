@@ -197,11 +197,12 @@ function RootComponent() {
       const target = document.getElementById("google_translate_element");
       if (target) target.innerHTML = "";
 
-      if (w.google?.translate?.TranslateElement) {
+      const TranslateElement = w.google?.translate?.TranslateElement;
+      if (TranslateElement) {
         w.googleTranslateElementInit = () => {
           const container = document.getElementById("google_translate_element");
           if (container) container.innerHTML = "";
-          new w.google!.translate!.TranslateElement(
+          new TranslateElement(
             { pageLanguage: "ar", includedLanguages: "en,ar", autoDisplay: false },
             "google_translate_element",
           );
@@ -249,14 +250,14 @@ function RootComponent() {
     };
 
     const timer = window.setTimeout(run, 600);
-    const observer =
-      content &&
-      new MutationObserver(() => {
+    const observer = content
+      ? new MutationObserver(() => {
         window.clearTimeout(timer);
         window.setTimeout(run, 150);
-      });
+      })
+      : null;
 
-    observer?.observe(content, { childList: true, subtree: true });
+    if (content) observer?.observe(content, { childList: true, subtree: true });
     return () => {
       cancelled = true;
       window.clearTimeout(timer);
