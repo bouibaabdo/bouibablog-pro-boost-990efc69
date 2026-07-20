@@ -58,4 +58,24 @@ export default tseslint.config(
     },
   },
   eslintPluginPrettier,
+  // ─── Overrides for files with legitimate dynamic typing ──────────
+  // Admin, Supabase, and Lovable integration files use `any` intentionally
+  // because the Supabase JS client and external APIs are not fully typed.
+  {
+    files: [
+      "src/lib/admin.functions.ts",
+      "src/lib/lessons.functions.ts",
+      "src/routes/_authenticated/admin/**/*.tsx",
+      "src/routes/_authenticated/admin/**/*.ts",
+      "src/routes/lessons.tsx",
+      "src/routes/quiz.tsx",
+      "src/routes/lovable/**/*.ts",
+      "src/routes/sitemap-videos*.ts",
+      "src/routes/tools.index.tsx",
+    ],
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off",
+      "no-empty": ["error", { allowEmptyCatch: true }],
+    },
+  },
 );

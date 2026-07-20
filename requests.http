@@ -1,0 +1,55 @@
+### ============================================================
+### Bouiba Academy — HTTP Client
+### اضغط ▶️ بجانب أي طلب لتشغيله مباشرة من Antigravity IDE
+### ============================================================
+
+### 1. فحص الـ Sitemap الرئيسي
+GET https://www.bouibacademy.me/sitemap.xml
+Accept: application/xml
+
+### 2. فحص Sitemap المقالات
+GET https://www.bouibacademy.me/sitemap-posts.xml
+Accept: application/xml
+
+### 3. فحص Sitemap الصفحات
+GET https://www.bouibacademy.me/sitemap-pages.xml
+Accept: application/xml
+
+### 4. فحص الصفحة الرئيسية
+GET https://www.bouibacademy.me/
+Accept: text/html
+
+### 5. فحص صفحة المقالات
+GET https://www.bouibacademy.me/posts
+Accept: text/html
+
+### 6. فحص صفحة الأدوات
+GET https://www.bouibacademy.me/tools
+Accept: text/html
+
+### 7. فحص مقال RAG (slug جيد)
+GET https://www.bouibacademy.me/posts/rag
+Accept: text/html
+
+### 8. فحص مقال Norton (يحتوي محتوى خاطئ)
+GET https://www.bouibacademy.me/posts/norton-360-deluxe
+Accept: text/html
+
+### 9. فحص robots.txt
+GET https://www.bouibacademy.me/robots.txt
+
+### 10. فحص og-banner
+GET https://www.bouibacademy.me/og-banner.png
+
+### 11. اختبار API أداة التلخيص
+POST https://www.bouibacademy.me/api/tools/text
+Content-Type: application/json
+
+{
+  "tool": "summarize",
+  "text": "اختبار واجهة برمجة أداة التلخيص"
+}
+
+### 12. فحص صفحة 404 (للتأكد من وجود صفحة خطأ مناسبة)
+GET https://www.bouibacademy.me/posts/this-page-does-not-exist-test
+Accept: text/html

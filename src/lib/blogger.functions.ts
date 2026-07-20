@@ -47,7 +47,7 @@ function extractSlug(links: RawEntry["link"]): string {
   try {
     const u = new URL(alt.href);
     // Blogger URLs are of the format: /YYYY/MM/slug.html
-    const match = u.pathname.match(/^\/\d{4}\/\d{2}\/([^\/]+)\.html$/);
+    const match = u.pathname.match(/^\/\d{4}\/\d{2}\/([^/]+)\.html$/);
     let slug = "";
     if (match && match[1]) {
       slug = match[1];
@@ -156,8 +156,8 @@ export function slugify(text: string): string {
   if (!text) return "";
   const cleaned = text
     .toLowerCase()
-    .replace(/[^a-z0-9\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\s\-]+/g, "")
-    .replace(/[\s\-]+/g, "-")
+    .replace(/[^a-z0-9\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\s-]+/g, "")
+    .replace(/[\s-]+/g, "-")
     .replace(/^-+|-+$/g, "");
   const segments = cleaned.split("-");
   if (segments.length > 8) {
@@ -170,9 +170,11 @@ export function cleanExcerpt(text: string): string {
   let cleaned = text;
 
   // 1. Strip up to the reading time keyword
+  // eslint-disable-next-line no-misleading-character-class
   cleaned = cleaned.replace(/^.*?(?:دقائق|دقيقة|ساعات|ساعة)\s*(?:[|&nbsp;\-⏱️📅\s\uFE0F]*)/gu, "");
 
   // 2. Strip up to a date-like pattern followed by separator
+  // eslint-disable-next-line no-misleading-character-class
   cleaned = cleaned.replace(
     /^.*?(?:يناير|فبراير|مارس|أبريل|مايو|يونيو|يوليو|أغسطس|سبتمبر|أكتوبر|نوفمبر|ديسمبر)\s+\d{4}\s*(?:[|&nbsp;\-⏱️📅\s\uFE0F]*)/gu,
     "",
