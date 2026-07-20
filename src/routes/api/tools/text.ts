@@ -63,7 +63,10 @@ export const Route = createFileRoute("/api/tools/text")({
           return new Response("input is required", { status: 400 });
         }
         if (input.length > 10000) {
-          return Response.json({ error: "النص طويل جدًا (الحد الأقصى 10000 حرف)." }, { status: 413 });
+          return Response.json(
+            { error: "النص طويل جدًا (الحد الأقصى 10000 حرف)." },
+            { status: 413 },
+          );
         }
         // Enforce admin enable/disable toggle server-side
         try {
@@ -112,7 +115,10 @@ export const Route = createFileRoute("/api/tools/text")({
         };
         let text = data.choices?.[0]?.message?.content ?? "";
         if (action === "roadmap") {
-          text = text.replace(/^```json\s*/i, "").replace(/```$/, "").trim();
+          text = text
+            .replace(/^```json\s*/i, "")
+            .replace(/```$/, "")
+            .trim();
         }
         return Response.json({ text });
       },

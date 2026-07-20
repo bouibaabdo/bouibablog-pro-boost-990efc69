@@ -101,8 +101,7 @@ async function resolvePageIframes(pageUrl: string): Promise<string[]> {
   try {
     const res = await fetch(pageUrl, {
       headers: {
-        "User-Agent":
-          "Mozilla/5.0 (compatible; BouibAcademyBot/1.0; +https://www.bouibacademy.me)",
+        "User-Agent": "Mozilla/5.0 (compatible; BouibAcademyBot/1.0; +https://www.bouibacademy.me)",
         Accept: "text/html,application/xhtml+xml",
         "Accept-Language": "ar,en;q=0.8",
       },
@@ -127,10 +126,8 @@ function parseCard(html: string, day: YDMatch["day"]): YDMatch | null {
   if (!home || !away) return null;
   const homeImg = t1.querySelector("img");
   const awayImg = t2.querySelector("img");
-  const homeBadge =
-    cleanUrl(homeImg?.getAttribute("data-src") || homeImg?.getAttribute("src"));
-  const awayBadge =
-    cleanUrl(awayImg?.getAttribute("data-src") || awayImg?.getAttribute("src"));
+  const homeBadge = cleanUrl(homeImg?.getAttribute("data-src") || homeImg?.getAttribute("src"));
+  const awayBadge = cleanUrl(awayImg?.getAttribute("data-src") || awayImg?.getAttribute("src"));
   const time = root.querySelector(".MT_Time")?.text.trim() || "";
   const status = root.querySelector(".MT_Stat")?.text.trim() || "";
   const infoItems = root.querySelectorAll(".MT_Info li span").map((s) => s.text.trim());
@@ -138,8 +135,7 @@ function parseCard(html: string, day: YDMatch["day"]): YDMatch | null {
   const league = infoItems[2];
   const finished = status.includes("انتهت");
   const live =
-    !finished &&
-    (status.includes("جارية") || status.includes("مباشر") || /^\d+\s*'/.test(status));
+    !finished && (status.includes("جارية") || status.includes("مباشر") || /^\d+\s*'/.test(status));
   const href = root.querySelector("a[href]")?.getAttribute("href") || "";
   const pageUrl = cleanUrl(href);
   const isRealPage = pageUrl && !/^https?:\/\/[^/]+\/?$/.test(pageUrl);
@@ -166,8 +162,7 @@ function parseCard(html: string, day: YDMatch["day"]): YDMatch | null {
 async function scrape(day: YDMatch["day"]): Promise<YDMatch[]> {
   const res = await fetch(PAGES[day], {
     headers: {
-      "User-Agent":
-        "Mozilla/5.0 (compatible; BouibAcademyBot/1.0; +https://www.bouibacademy.me)",
+      "User-Agent": "Mozilla/5.0 (compatible; BouibAcademyBot/1.0; +https://www.bouibacademy.me)",
       Accept: "text/html",
     },
     signal: AbortSignal.timeout(15000),

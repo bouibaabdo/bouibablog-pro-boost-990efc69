@@ -40,10 +40,7 @@ type YDData = { today?: YDMatch[]; tomorrow?: YDMatch[]; yesterday?: YDMatch[] }
  * (n.hdshoo.online/…) are exposed — every other provider was returning
  * broken/ad-heavy embeds so we intentionally drop them.
  */
-export function buildStreamLookup(
-  yd: YDData | null | undefined,
-  _ys: YSData | null | undefined,
-) {
+export function buildStreamLookup(yd: YDData | null | undefined, _ys: YSData | null | undefined) {
   const entries: StreamEntry[] = [];
 
   const pushYd = (m: YDMatch) => {

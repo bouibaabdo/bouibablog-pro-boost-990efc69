@@ -90,8 +90,7 @@ export const getWorldCupMatches = createServerFn({ method: "GET" }).handler(asyn
       merged.set(ev.idEvent, ev);
     }
   }
-  const matches = Array.from(merged.values())
-    .map(transformEvent);
+  const matches = Array.from(merged.values()).map(transformEvent);
 
   const fallbackMatches: WCMatch[] = [
     {
@@ -121,7 +120,7 @@ export const getWorldCupMatches = createServerFn({ method: "GET" }).handler(asyn
       round: "المباراة النهائية",
       venue: "MetLife Stadium, New York",
       status: "NS",
-    }
+    },
   ];
 
   fallbackMatches.forEach((f) => {
@@ -133,7 +132,6 @@ export const getWorldCupMatches = createServerFn({ method: "GET" }).handler(asyn
   matches.sort((a, b) => a.timestamp.localeCompare(b.timestamp));
   return { matches };
 });
-
 
 export interface WCStanding {
   rank: number;
@@ -189,4 +187,3 @@ export const getWorldCupStandings = createServerFn({ method: "GET" }).handler(as
   }));
   return { standings };
 });
-

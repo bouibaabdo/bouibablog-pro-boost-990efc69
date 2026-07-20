@@ -17,10 +17,17 @@ export const Route = createFileRoute("/lessons")({
   head: () => ({
     meta: [
       { title: "دورات — Bouiba Academy" },
-      { name: "description",
-        content: "مكتبة دورات فيديو حول الذكاء الاصطناعي وأدواته باللغة العربية.", key: "description" },
+      {
+        name: "description",
+        content: "مكتبة دورات فيديو حول الذكاء الاصطناعي وأدواته باللغة العربية.",
+        key: "description",
+      },
       { property: "og:title", content: "دورات — Bouiba Academy", key: "og:title" },
-      { property: "og:description", content: "دورات عربية حول الذكاء الاصطناعي.", key: "og:description" },
+      {
+        property: "og:description",
+        content: "دورات عربية حول الذكاء الاصطناعي.",
+        key: "og:description",
+      },
       { property: "og:url", content: "https://www.bouibacademy.me/lessons", key: "og:url" },
     ],
     links: [{ rel: "canonical", href: "https://www.bouibacademy.me/lessons" }],
@@ -56,9 +63,7 @@ function LessonsPage() {
         <section className="hero-bg border-b border-border">
           <div className="container-page py-12 md:py-16 text-center">
             <p className="text-sm font-semibold text-primary mb-2">تعلم بالفيديو</p>
-            <h1 className="font-display text-3xl md:text-5xl font-extrabold">
-              دورات
-            </h1>
+            <h1 className="font-display text-3xl md:text-5xl font-extrabold">دورات</h1>
             <p className="mt-3 text-muted-foreground max-w-xl mx-auto">
               مكتبة دورات فيديو حول الذكاء الاصطناعي وأدواته باللغة العربية.
             </p>
@@ -80,7 +85,9 @@ function LessonsPage() {
               <div className="p-4 md:p-6">
                 <h2 className="font-display text-xl md:text-2xl font-bold">{current.title}</h2>
                 {current.description && (
-                  <p className="mt-2 text-muted-foreground whitespace-pre-line">{current.description}</p>
+                  <p className="mt-2 text-muted-foreground whitespace-pre-line">
+                    {current.description}
+                  </p>
                 )}
               </div>
             </div>
@@ -91,7 +98,9 @@ function LessonsPage() {
               <button
                 onClick={() => setCat(null)}
                 className={`rounded-full border px-4 py-1.5 text-sm font-medium ${
-                  !cat ? "bg-primary text-primary-foreground border-primary" : "bg-surface border-border"
+                  !cat
+                    ? "bg-primary text-primary-foreground border-primary"
+                    : "bg-surface border-border"
                 }`}
               >
                 الكل
@@ -101,7 +110,9 @@ function LessonsPage() {
                   key={c}
                   onClick={() => setCat(c)}
                   className={`rounded-full border px-4 py-1.5 text-sm font-medium ${
-                    cat === c ? "bg-primary text-primary-foreground border-primary" : "bg-surface border-border"
+                    cat === c
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "bg-surface border-border"
                   }`}
                 >
                   {c}
@@ -111,9 +122,7 @@ function LessonsPage() {
           )}
 
           {filtered.length === 0 ? (
-            <div className="text-center py-20 text-muted-foreground">
-              لا توجد دروس منشورة بعد.
-            </div>
+            <div className="text-center py-20 text-muted-foreground">لا توجد دروس منشورة بعد.</div>
           ) : (
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {filtered.map((l: any) => (
@@ -156,7 +165,9 @@ function LessonsPage() {
                     )}
                     <h3 className="font-display font-bold leading-snug line-clamp-2">{l.title}</h3>
                     {l.description && (
-                      <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{l.description}</p>
+                      <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+                        {l.description}
+                      </p>
                     )}
                   </div>
                 </button>

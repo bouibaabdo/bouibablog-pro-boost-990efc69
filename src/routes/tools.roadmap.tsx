@@ -13,17 +13,29 @@ import {
   Download,
   Award,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
 } from "lucide-react";
 
 export const Route = createFileRoute("/tools/roadmap")({
   head: () => ({
     meta: [
       { title: "مولّد مسارات التعلم الذكي بالذكاء الاصطناعي — أدوات AI | Bouiba Academy" },
-      { name: "description",
-        content: "أنشئ خريطة طريق (Roadmap) تفاعلية ومسار تعلم مخصص لأي مجال بالذكاء الاصطناعي مجانًا وبأفضل المصادر.", key: "description" },
-      { property: "og:title", content: "مولّد مسارات التعلم الذكي بالذكاء الاصطناعي — Bouiba Academy", key: "og:title" },
-      { property: "og:description", content: "أنشئ خريطة طريق تفاعلية ومسار تعلم مخصص لأي مجال بالذكاء الاصطناعي.", key: "og:description" },
+      {
+        name: "description",
+        content:
+          "أنشئ خريطة طريق (Roadmap) تفاعلية ومسار تعلم مخصص لأي مجال بالذكاء الاصطناعي مجانًا وبأفضل المصادر.",
+        key: "description",
+      },
+      {
+        property: "og:title",
+        content: "مولّد مسارات التعلم الذكي بالذكاء الاصطناعي — Bouiba Academy",
+        key: "og:title",
+      },
+      {
+        property: "og:description",
+        content: "أنشئ خريطة طريق تفاعلية ومسار تعلم مخصص لأي مجال بالذكاء الاصطناعي.",
+        key: "og:description",
+      },
       { property: "og:url", content: "https://www.bouibacademy.me/tools/roadmap", key: "og:url" },
     ],
     links: [{ rel: "canonical", href: "https://www.bouibacademy.me/tools/roadmap" }],
@@ -95,7 +107,9 @@ function RoadmapTool() {
 
       const parsed = JSON.parse(data.text || "{}") as RoadmapData;
       if (!parsed.title || !parsed.nodes || parsed.nodes.length === 0) {
-        throw new Error("عذرًا، لم يتمكن الذكاء الاصطناعي من تنسيق مسار التعلم بالشكل المطلوب. يرجى المحاولة مجددًا.");
+        throw new Error(
+          "عذرًا، لم يتمكن الذكاء الاصطناعي من تنسيق مسار التعلم بالشكل المطلوب. يرجى المحاولة مجددًا.",
+        );
       }
 
       setRoadmap(parsed);
@@ -140,9 +154,12 @@ function RoadmapTool() {
             <Map className="h-6 w-6" />
           </span>
           <div>
-            <h1 className="font-display text-3xl md:text-4xl font-extrabold">مستشار مسارات التعلم الذكي</h1>
+            <h1 className="font-display text-3xl md:text-4xl font-extrabold">
+              مستشار مسارات التعلم الذكي
+            </h1>
             <p className="text-muted-foreground text-sm mt-1">
-              أدخل أي تخصص علمي أو تقني وسيقوم المساعد الذكي بتصميم خريطة طريق تفاعلية غنية ومصادر مجانية.
+              أدخل أي تخصص علمي أو تقني وسيقوم المساعد الذكي بتصميم خريطة طريق تفاعلية غنية ومصادر
+              مجانية.
             </p>
           </div>
         </div>
@@ -151,7 +168,9 @@ function RoadmapTool() {
       <div className="bg-card rounded-2xl border border-border p-6 shadow-soft mb-8">
         <form onSubmit={generateRoadmap} className="space-y-4">
           <div className="relative">
-            <label htmlFor="topic-input" className="sr-only">المجال التعليمي أو الموضوع</label>
+            <label htmlFor="topic-input" className="sr-only">
+              المجال التعليمي أو الموضوع
+            </label>
             <input
               id="topic-input"
               type="text"
@@ -197,9 +216,12 @@ function RoadmapTool() {
             <div className="absolute h-14 w-14 animate-pulse rounded-full bg-primary/20"></div>
             <Map className="h-10 w-10 text-primary animate-bounce" />
           </div>
-          <h3 className="font-display text-xl font-bold mb-2">يقوم المساعد الذكي بتحليل موضوعك...</h3>
+          <h3 className="font-display text-xl font-bold mb-2">
+            يقوم المساعد الذكي بتحليل موضوعك...
+          </h3>
           <p className="text-muted-foreground text-sm max-w-sm">
-            نحن نحدد أفضل المهارات والخطوات والمصادر التعليمية المجانية المناسبة لك. قد يستغرق هذا بضع ثوانٍ.
+            نحن نحدد أفضل المهارات والخطوات والمصادر التعليمية المجانية المناسبة لك. قد يستغرق هذا
+            بضع ثوانٍ.
           </p>
         </div>
       )}
@@ -211,7 +233,9 @@ function RoadmapTool() {
             <div className="bg-card rounded-2xl border border-border p-6 shadow-soft">
               <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-4 mb-6">
                 <div>
-                  <h2 className="font-display text-2xl font-extrabold text-foreground">{roadmap.title}</h2>
+                  <h2 className="font-display text-2xl font-extrabold text-foreground">
+                    {roadmap.title}
+                  </h2>
                   <p className="text-muted-foreground text-sm mt-1">{roadmap.description}</p>
                 </div>
                 <div className="flex items-center gap-3">
@@ -258,7 +282,9 @@ function RoadmapTool() {
                         }`}
                         title={isCompleted ? "تعيين كغير مكتمل" : "تعيين كمكتمل"}
                       >
-                        <CheckCircle2 className={`h-4 w-4 ${isCompleted ? "opacity-100" : "opacity-0 hover:opacity-40 hover:text-primary"}`} />
+                        <CheckCircle2
+                          className={`h-4 w-4 ${isCompleted ? "opacity-100" : "opacity-0 hover:opacity-40 hover:text-primary"}`}
+                        />
                       </button>
 
                       {/* Timeline Node Card */}
@@ -299,7 +325,10 @@ function RoadmapTool() {
                         <div className="flex flex-wrap items-center justify-between mt-4 pt-3 border-t border-border/60 gap-2">
                           <div className="flex flex-wrap gap-1">
                             {node.skills.slice(0, 3).map((skill, idx) => (
-                              <span key={idx} className="text-[10px] px-2 py-0.5 bg-muted rounded text-muted-foreground">
+                              <span
+                                key={idx}
+                                className="text-[10px] px-2 py-0.5 bg-muted rounded text-muted-foreground"
+                              >
                                 {skill}
                               </span>
                             ))}
@@ -342,7 +371,9 @@ function RoadmapTool() {
                   </button>
                 </div>
 
-                <h4 className="font-display text-lg font-bold text-foreground mb-2">{selectedNode.label}</h4>
+                <h4 className="font-display text-lg font-bold text-foreground mb-2">
+                  {selectedNode.label}
+                </h4>
                 <p className="text-muted-foreground text-sm leading-relaxed mb-6 bg-muted/30 p-3 rounded-lg border border-border/40">
                   {selectedNode.description}
                 </p>
@@ -355,7 +386,10 @@ function RoadmapTool() {
                   </h5>
                   <div className="flex flex-wrap gap-1.5">
                     {selectedNode.skills.map((skill, idx) => (
-                      <span key={idx} className="text-xs px-2.5 py-1 bg-primary/5 text-primary border border-primary/10 rounded-lg">
+                      <span
+                        key={idx}
+                        className="text-xs px-2.5 py-1 bg-primary/5 text-primary border border-primary/10 rounded-lg"
+                      >
                         {skill}
                       </span>
                     ))}
@@ -380,7 +414,11 @@ function RoadmapTool() {
                         >
                           <div className="flex items-center gap-2">
                             <span className="text-xs font-medium px-2 py-0.5 rounded bg-muted text-muted-foreground capitalize">
-                              {resource.type === "video" ? "فيديو" : resource.type === "course" ? "دورة" : "مقال"}
+                              {resource.type === "video"
+                                ? "فيديو"
+                                : resource.type === "course"
+                                  ? "دورة"
+                                  : "مقال"}
                             </span>
                             <span className="text-xs font-semibold text-foreground line-clamp-1 group-hover:text-primary transition-colors">
                               {resource.title}
@@ -390,7 +428,9 @@ function RoadmapTool() {
                         </a>
                       ))
                     ) : (
-                      <p className="text-xs text-muted-foreground">ابحث عن مصادر مجانية في منصات: يوتيوب، كورسيرا، أو مقالات مجانية.</p>
+                      <p className="text-xs text-muted-foreground">
+                        ابحث عن مصادر مجانية في منصات: يوتيوب، كورسيرا، أو مقالات مجانية.
+                      </p>
                     )}
                   </div>
                 </div>
@@ -400,7 +440,8 @@ function RoadmapTool() {
                 <Map className="h-10 w-10 text-muted-foreground/60 mx-auto mb-3" />
                 <h4 className="font-display font-bold text-foreground mb-1">حدد خطوة لمعاينتها</h4>
                 <p className="text-muted-foreground text-xs">
-                  اضغط على أي خطوة في خريطة الطريق لعرض المهارات والمصادر التعليمية المقترحة لها هنا.
+                  اضغط على أي خطوة في خريطة الطريق لعرض المهارات والمصادر التعليمية المقترحة لها
+                  هنا.
                 </p>
               </div>
             )}

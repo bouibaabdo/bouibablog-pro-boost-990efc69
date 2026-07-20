@@ -11,14 +11,40 @@ export const Route = createFileRoute("/_authenticated/admin/")({
 function AdminOverview() {
   const [stats, setStats] = useState<Awaited<ReturnType<typeof getAdminStats>> | null>(null);
   useEffect(() => {
-    getAdminStats().then(setStats).catch(() => setStats(null));
+    getAdminStats()
+      .then(setStats)
+      .catch(() => setStats(null));
   }, []);
 
   const cards = [
-    { title: "أدوات AI المتاحة", value: stats?.toolsCount, icon: Sparkles, color: "text-purple-500", bg: "from-purple-500/10 to-indigo-500/10" },
-    { title: "روابط بث مخصصة", value: stats?.overridesCount, icon: Radio, color: "text-blue-500", bg: "from-blue-500/10 to-sky-500/10" },
-    { title: "مباريات مثبّتة", value: stats?.pinnedCount, icon: Pin, color: "text-emerald-500", bg: "from-emerald-500/10 to-teal-500/10" },
-    { title: "متابعات المستخدمين", value: stats?.favoritesCount, icon: Heart, color: "text-rose-500", bg: "from-rose-500/10 to-pink-500/10" },
+    {
+      title: "أدوات AI المتاحة",
+      value: stats?.toolsCount,
+      icon: Sparkles,
+      color: "text-purple-500",
+      bg: "from-purple-500/10 to-indigo-500/10",
+    },
+    {
+      title: "روابط بث مخصصة",
+      value: stats?.overridesCount,
+      icon: Radio,
+      color: "text-blue-500",
+      bg: "from-blue-500/10 to-sky-500/10",
+    },
+    {
+      title: "مباريات مثبّتة",
+      value: stats?.pinnedCount,
+      icon: Pin,
+      color: "text-emerald-500",
+      bg: "from-emerald-500/10 to-teal-500/10",
+    },
+    {
+      title: "متابعات المستخدمين",
+      value: stats?.favoritesCount,
+      icon: Heart,
+      color: "text-rose-500",
+      bg: "from-rose-500/10 to-pink-500/10",
+    },
   ];
 
   return (
@@ -34,16 +60,25 @@ function AdminOverview() {
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {cards.map((c) => (
-          <Card key={c.title} className="overflow-hidden hover:shadow-elegant hover:-translate-y-0.5 transition-all duration-300">
+          <Card
+            key={c.title}
+            className="overflow-hidden hover:shadow-elegant hover:-translate-y-0.5 transition-all duration-300"
+          >
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-xs font-semibold text-muted-foreground">{c.title}</CardTitle>
+              <CardTitle className="text-xs font-semibold text-muted-foreground">
+                {c.title}
+              </CardTitle>
               <div className={`p-2 rounded-lg bg-gradient-to-br ${c.bg}`}>
                 <c.icon className={`h-4 w-4 ${c.color}`} />
               </div>
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-extrabold tracking-tight">
-                {stats === null ? <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /> : c.value}
+                {stats === null ? (
+                  <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+                ) : (
+                  c.value
+                )}
               </div>
             </CardContent>
           </Card>
@@ -58,14 +93,18 @@ function AdminOverview() {
           </CardTitle>
         </CardHeader>
         <CardContent className="grid gap-4 md:grid-cols-2">
-          <Link to="/admin/tools" className="group rounded-xl border p-4 hover:bg-muted/40 hover:border-primary/30 transition-all flex flex-col justify-between">
+          <Link
+            to="/admin/tools"
+            className="group rounded-xl border p-4 hover:bg-muted/40 hover:border-primary/30 transition-all flex flex-col justify-between"
+          >
             <div>
               <div className="flex items-center gap-1.5 text-primary font-bold">
                 <Sparkles className="h-4 w-4" />
                 <span>إدارة أدوات الذكاء الاصطناعي</span>
               </div>
               <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
-                تفعيل أو تعطيل الأدوات الذكية المعروضة للزوار بما فيها الأداة الجديدة (مسارات التعلم).
+                تفعيل أو تعطيل الأدوات الذكية المعروضة للزوار بما فيها الأداة الجديدة (مسارات
+                التعلم).
               </p>
             </div>
             <span className="text-xs font-bold text-primary mt-4 flex items-center gap-1 group-hover:translate-x-[-3px] transition-transform origin-right">
@@ -73,7 +112,10 @@ function AdminOverview() {
             </span>
           </Link>
 
-          <Link to="/tools/roadmap" className="group rounded-xl border p-4 hover:bg-muted/40 hover:border-primary/30 transition-all flex flex-col justify-between">
+          <Link
+            to="/tools/roadmap"
+            className="group rounded-xl border p-4 hover:bg-muted/40 hover:border-primary/30 transition-all flex flex-col justify-between"
+          >
             <div>
               <div className="flex items-center gap-1.5 text-indigo-500 font-bold">
                 <Eye className="h-4 w-4" />
@@ -88,8 +130,12 @@ function AdminOverview() {
             </span>
           </Link>
 
-          <a href="https://www.blogger.com/" target="_blank" rel="noopener noreferrer"
-             className="group rounded-xl border p-4 hover:bg-muted/40 hover:border-primary/30 transition-all flex flex-col justify-between">
+          <a
+            href="https://www.blogger.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group rounded-xl border p-4 hover:bg-muted/40 hover:border-primary/30 transition-all flex flex-col justify-between"
+          >
             <div>
               <div className="flex items-center gap-1.5 text-foreground font-bold">
                 <ArrowRight className="h-4 w-4 text-muted-foreground rotate-180" />
@@ -104,8 +150,12 @@ function AdminOverview() {
             </span>
           </a>
 
-          <a href="https://search.google.com/search-console" target="_blank" rel="noopener noreferrer"
-             className="group rounded-xl border p-4 hover:bg-muted/40 hover:border-primary/30 transition-all flex flex-col justify-between">
+          <a
+            href="https://search.google.com/search-console"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group rounded-xl border p-4 hover:bg-muted/40 hover:border-primary/30 transition-all flex flex-col justify-between"
+          >
             <div>
               <div className="flex items-center gap-1.5 text-foreground font-bold">
                 <ArrowRight className="h-4 w-4 text-muted-foreground rotate-180" />

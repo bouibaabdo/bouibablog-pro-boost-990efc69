@@ -84,7 +84,9 @@ export function TextToolShell({
       <form onSubmit={run} className="space-y-4">
         {showTargetLang && (
           <div className="flex items-center gap-2">
-            <label htmlFor="tool-target-lang" className="text-sm font-medium text-muted-foreground">الترجمة إلى:</label>
+            <label htmlFor="tool-target-lang" className="text-sm font-medium text-muted-foreground">
+              الترجمة إلى:
+            </label>
             <select
               id="tool-target-lang"
               value={target}
@@ -99,7 +101,9 @@ export function TextToolShell({
             </select>
           </div>
         )}
-        <label htmlFor="tool-input" className="sr-only">{title}</label>
+        <label htmlFor="tool-input" className="sr-only">
+          {title}
+        </label>
         <textarea
           id="tool-input"
           value={input}

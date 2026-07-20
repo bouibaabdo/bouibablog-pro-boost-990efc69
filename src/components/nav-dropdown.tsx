@@ -46,12 +46,7 @@ export function NavDropdown({ label, to, items, footer, onLoad, badge }: Props) 
   }
 
   return (
-    <div
-      ref={ref}
-      className="relative"
-      onMouseEnter={openNow}
-      onMouseLeave={closeSoon}
-    >
+    <div ref={ref} className="relative" onMouseEnter={openNow} onMouseLeave={closeSoon}>
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
@@ -105,7 +100,9 @@ export function NavDropdown({ label, to, items, footer, onLoad, badge }: Props) 
                       )}
                     </span>
                     {it.description && (
-                      <span className="block text-xs text-muted-foreground/80 mt-0.5">{it.description}</span>
+                      <span className="block text-xs text-muted-foreground/80 mt-0.5">
+                        {it.description}
+                      </span>
                     )}
                   </Link>
                 </li>

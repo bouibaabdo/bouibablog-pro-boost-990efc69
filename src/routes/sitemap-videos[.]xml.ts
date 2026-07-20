@@ -26,11 +26,15 @@ export const Route = createFileRoute("/sitemap-videos.xml")({
         const videoBlocks = lessons
           .map((lesson) => {
             const title = escapeXml(lesson.title || "درس تعليمي");
-            const desc = escapeXml((lesson.description || lesson.title || "درس تعليمي بالذكاء الاصطناعي").slice(0, 2048));
+            const desc = escapeXml(
+              (lesson.description || lesson.title || "درس تعليمي بالذكاء الاصطناعي").slice(0, 2048),
+            );
             const thumb = escapeXml(lesson.thumbnail_url || `${SITEMAP_BASE_URL}/og-banner.png`);
             const contentLoc = lesson.video_url ? escapeXml(lesson.video_url) : null;
             const duration = lesson.duration_seconds ? Math.max(1, lesson.duration_seconds) : null;
-            const pubDate = lesson.created_at ? new Date(lesson.created_at).toISOString().split("T")[0] : new Date().toISOString().split("T")[0];
+            const pubDate = lesson.created_at
+              ? new Date(lesson.created_at).toISOString().split("T")[0]
+              : new Date().toISOString().split("T")[0];
 
             return [
               `  <url>`,

@@ -14,10 +14,15 @@ export const Route = createFileRoute("/quiz")({
           "اختبار تفاعلي قصير باللغة العربية يوصي لك بأفضل أداة ذكاء اصطناعي حسب احتياجاتك — ChatGPT، Claude، Gemini، Grok، Midjourney، Perplexity وأكثر.",
         key: "description",
       },
-      { property: "og:title", content: "اختبار: ما أداة الذكاء الاصطناعي المناسبة لك؟ — Bouiba Academy", key: "og:title" },
+      {
+        property: "og:title",
+        content: "اختبار: ما أداة الذكاء الاصطناعي المناسبة لك؟ — Bouiba Academy",
+        key: "og:title",
+      },
       {
         property: "og:description",
-        content: "أجب على 6 أسئلة سريعة واكتشف أداة AI الأنسب لك — مجاني بالكامل من Bouiba Academy.",
+        content:
+          "أجب على 6 أسئلة سريعة واكتشف أداة AI الأنسب لك — مجاني بالكامل من Bouiba Academy.",
         key: "og:description",
       },
       { property: "og:url", content: "https://www.bouibacademy.me/quiz", key: "og:url" },
@@ -25,18 +30,36 @@ export const Route = createFileRoute("/quiz")({
       { property: "og:image", content: "https://www.bouibacademy.me/og-quiz.png", key: "og:image" },
       { property: "og:image:width", content: "1200", key: "og:image:width" },
       { property: "og:image:height", content: "630", key: "og:image:height" },
-      { property: "og:image:alt", content: "اختبار أدوات الذكاء الاصطناعي — Bouiba Academy", key: "og:image:alt" },
+      {
+        property: "og:image:alt",
+        content: "اختبار أدوات الذكاء الاصطناعي — Bouiba Academy",
+        key: "og:image:alt",
+      },
       { name: "twitter:card", content: "summary_large_image", key: "twitter:card" },
-      { name: "twitter:title", content: "اختبار: ما أداة الذكاء الاصطناعي المناسبة لك؟ — Bouiba Academy", key: "twitter:title" },
-      { name: "twitter:description", content: "أجب على 6 أسئلة سريعة واكتشف أداة AI الأنسب لك — مجاني بالكامل من Bouiba Academy.", key: "twitter:description" },
-      { name: "twitter:image", content: "https://www.bouibacademy.me/og-quiz.png", key: "twitter:image" },
+      {
+        name: "twitter:title",
+        content: "اختبار: ما أداة الذكاء الاصطناعي المناسبة لك؟ — Bouiba Academy",
+        key: "twitter:title",
+      },
+      {
+        name: "twitter:description",
+        content:
+          "أجب على 6 أسئلة سريعة واكتشف أداة AI الأنسب لك — مجاني بالكامل من Bouiba Academy.",
+        key: "twitter:description",
+      },
+      {
+        name: "twitter:image",
+        content: "https://www.bouibacademy.me/og-quiz.png",
+        key: "twitter:image",
+      },
     ],
     links: [{ rel: "canonical", href: "https://www.bouibacademy.me/quiz" }],
   }),
   component: QuizPage,
 });
 
-type ToolKey = "chatgpt" | "claude" | "gemini" | "grok" | "perplexity" | "midjourney" | "runway" | "copilot";
+type ToolKey =
+  "chatgpt" | "claude" | "gemini" | "grok" | "perplexity" | "midjourney" | "runway" | "copilot";
 
 type Tool = {
   key: ToolKey;
@@ -159,7 +182,10 @@ const QUESTIONS: Question[] = [
     options: [
       { label: "مجاني فقط", scores: { gemini: 2, grok: 2, perplexity: 2, chatgpt: 1 } },
       { label: "أقل من 20$", scores: { chatgpt: 2, claude: 2, perplexity: 2, copilot: 2 } },
-      { label: "أكثر من 20$ لا مشكلة", scores: { midjourney: 3, runway: 3, claude: 2, chatgpt: 2 } },
+      {
+        label: "أكثر من 20$ لا مشكلة",
+        scores: { midjourney: 3, runway: 3, claude: 2, chatgpt: 2 },
+      },
     ],
   },
   {
@@ -185,7 +211,14 @@ const QUESTIONS: Question[] = [
 
 function computeResult(picks: number[]): Tool {
   const scores: Record<ToolKey, number> = {
-    chatgpt: 0, claude: 0, gemini: 0, grok: 0, perplexity: 0, midjourney: 0, runway: 0, copilot: 0,
+    chatgpt: 0,
+    claude: 0,
+    gemini: 0,
+    grok: 0,
+    perplexity: 0,
+    midjourney: 0,
+    runway: 0,
+    copilot: 0,
   };
   picks.forEach((pick, i) => {
     const opt = QUESTIONS[i]?.options[pick];
@@ -210,7 +243,14 @@ function QuizPage() {
   const runnerUp = useMemo(() => {
     if (!done) return null;
     const scores: Record<ToolKey, number> = {
-      chatgpt: 0, claude: 0, gemini: 0, grok: 0, perplexity: 0, midjourney: 0, runway: 0, copilot: 0,
+      chatgpt: 0,
+      claude: 0,
+      gemini: 0,
+      grok: 0,
+      perplexity: 0,
+      midjourney: 0,
+      runway: 0,
+      copilot: 0,
     };
     picks.forEach((pick, i) => {
       const opt = QUESTIONS[i]?.options[pick];
@@ -228,14 +268,21 @@ function QuizPage() {
     setTimeout(() => setStep(step + 1), 150);
   };
 
-  const reset = () => { setStep(0); setPicks([]); setCopied(false); };
+  const reset = () => {
+    setStep(0);
+    setPicks([]);
+    setCopied(false);
+  };
 
   const share = async () => {
     if (!result) return;
     const text = `اكتشفت أن أداة الذكاء الاصطناعي الأنسب لي هي ${result.name} ${result.emoji} — جرّب الاختبار من Bouiba Academy:`;
     const url = "https://www.bouibacademy.me/quiz";
     if (typeof navigator !== "undefined" && (navigator as any).share) {
-      try { await (navigator as any).share({ title: "اختبار أدوات AI", text, url }); return; } catch {}
+      try {
+        await (navigator as any).share({ title: "اختبار أدوات AI", text, url });
+        return;
+      } catch {}
     }
     if (typeof navigator !== "undefined" && navigator.clipboard) {
       await navigator.clipboard.writeText(`${text} ${url}`);
@@ -244,7 +291,7 @@ function QuizPage() {
     }
   };
 
-  const progress = done ? 100 : Math.round(((step) / total) * 100);
+  const progress = done ? 100 : Math.round((step / total) * 100);
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -260,7 +307,8 @@ function QuizPage() {
               ما <span className="gradient-text">أداة الـ AI</span> المناسبة لك؟
             </h1>
             <p className="mt-4 text-lg text-muted-foreground leading-relaxed">
-              6 أسئلة سريعة، وتوصية دقيقة بأفضل أداة ذكاء اصطناعي تناسب احتياجاتك من بين أشهر الأدوات في 2026.
+              6 أسئلة سريعة، وتوصية دقيقة بأفضل أداة ذكاء اصطناعي تناسب احتياجاتك من بين أشهر
+              الأدوات في 2026.
             </p>
           </div>
         </section>
@@ -314,7 +362,9 @@ function QuizPage() {
             )}
 
             {done && result && (
-              <div className={`rounded-3xl border border-border bg-gradient-to-br ${result.color} p-8 md:p-10 shadow-elegant text-center animate-in fade-in-0 zoom-in-95 duration-500`}>
+              <div
+                className={`rounded-3xl border border-border bg-gradient-to-br ${result.color} p-8 md:p-10 shadow-elegant text-center animate-in fade-in-0 zoom-in-95 duration-500`}
+              >
                 <div className="inline-flex items-center gap-2 rounded-full border border-border bg-background/70 backdrop-blur px-4 py-1.5 text-xs font-semibold text-primary mb-4">
                   <Trophy className="h-3.5 w-3.5" />
                   الأداة الأنسب لك
@@ -324,7 +374,9 @@ function QuizPage() {
                   {result.name}
                 </h2>
                 <p className="text-lg font-semibold text-foreground/90">{result.tagline}</p>
-                <p className="mt-4 text-muted-foreground leading-relaxed max-w-xl mx-auto">{result.desc}</p>
+                <p className="mt-4 text-muted-foreground leading-relaxed max-w-xl mx-auto">
+                  {result.desc}
+                </p>
 
                 <div className="mt-8 flex flex-wrap justify-center gap-3">
                   <a
@@ -340,7 +392,15 @@ function QuizPage() {
                     onClick={share}
                     className="inline-flex items-center gap-2 rounded-lg border border-border bg-background/80 backdrop-blur px-6 py-3 text-sm font-semibold hover:bg-accent"
                   >
-                    {copied ? <><Check className="h-4 w-4 text-emerald-600" /> تم النسخ</> : <><Share2 className="h-4 w-4" /> شارك النتيجة</>}
+                    {copied ? (
+                      <>
+                        <Check className="h-4 w-4 text-emerald-600" /> تم النسخ
+                      </>
+                    ) : (
+                      <>
+                        <Share2 className="h-4 w-4" /> شارك النتيجة
+                      </>
+                    )}
                   </button>
                   <button
                     onClick={reset}
@@ -353,9 +413,12 @@ function QuizPage() {
 
                 {runnerUp && runnerUp.key !== result.key && (
                   <div className="mt-8 pt-6 border-t border-border/60">
-                    <p className="text-xs uppercase tracking-wider text-muted-foreground mb-2">خيار ثانٍ يستحق التجربة</p>
+                    <p className="text-xs uppercase tracking-wider text-muted-foreground mb-2">
+                      خيار ثانٍ يستحق التجربة
+                    </p>
                     <p className="font-semibold">
-                      {runnerUp.emoji} {runnerUp.name} — <span className="text-muted-foreground font-normal">{runnerUp.tagline}</span>
+                      {runnerUp.emoji} {runnerUp.name} —{" "}
+                      <span className="text-muted-foreground font-normal">{runnerUp.tagline}</span>
                     </p>
                   </div>
                 )}

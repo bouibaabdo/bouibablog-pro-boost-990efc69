@@ -1,6 +1,17 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { ArrowLeft, Sparkles, Trophy, Wand2, Lightbulb, Image as ImageIcon, Languages, FileText, Newspaper, Search } from "lucide-react";
+import {
+  ArrowLeft,
+  Sparkles,
+  Trophy,
+  Wand2,
+  Lightbulb,
+  Image as ImageIcon,
+  Languages,
+  FileText,
+  Newspaper,
+  Search,
+} from "lucide-react";
 import { getPosts, getLabels, optimizeBloggerImage } from "@/lib/blogger.functions";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
@@ -31,7 +42,8 @@ export const Route = createFileRoute("/")({
   },
   head: ({ loaderData }) => {
     const title = "Bouiba Academy — أكاديميتك العربية للذكاء الاصطناعي | دروس وأدوات AI مجانية";
-    const desc = "أكاديميتك العربية للذكاء الاصطناعي. نوفر دروساً عملية مجانية، أحدث الأخبار، وأدوات ذكاء اصطناعي تفاعلية مثل توليد الصور وتلخيص النصوص ومسارات التعلم.";
+    const desc =
+      "أكاديميتك العربية للذكاء الاصطناعي. نوفر دروساً عملية مجانية، أحدث الأخبار، وأدوات ذكاء اصطناعي تفاعلية مثل توليد الصور وتلخيص النصوص ومسارات التعلم.";
     return {
       meta: [
         { title },
@@ -45,22 +57,55 @@ export const Route = createFileRoute("/")({
       links: [
         { rel: "canonical", href: "https://www.bouibacademy.me/" },
         ...(loaderData?.lcp
-          ? [{ rel: "preload", as: "image", href: loaderData.lcp, fetchpriority: "high" } as unknown as { rel: string; href: string }]
+          ? [
+              {
+                rel: "preload",
+                as: "image",
+                href: loaderData.lcp,
+                fetchpriority: "high",
+              } as unknown as { rel: string; href: string },
+            ]
           : []),
       ],
     };
   },
   component: HomePage,
   errorComponent: ({ error }) => (
-    <div className="p-10 text-center text-muted-foreground">تعذر تحميل المحتوى: {error.message}</div>
+    <div className="p-10 text-center text-muted-foreground">
+      تعذر تحميل المحتوى: {error.message}
+    </div>
   ),
 });
 
 const TOOL_CARDS = [
-  { href: "/tools/image", title: "توليد الصور", desc: "صور احترافية من نص عربي", icon: ImageIcon, color: "from-primary/10 to-primary-glow/10" },
-  { href: "/tools/summarize", title: "تلخيص النصوص", desc: "من مقال طويل إلى نقاط", icon: FileText, color: "from-primary/10 to-primary-glow/10" },
-  { href: "/tools/translate", title: "المترجم الذكي", desc: "ترجمة دقيقة سياقية", icon: Languages, color: "from-primary/10 to-primary-glow/10" },
-  { href: "/tools/ideas", title: "مولّد الأفكار", desc: "أفكار محتوى ومشاريع", icon: Lightbulb, color: "from-primary/10 to-primary-glow/10" },
+  {
+    href: "/tools/image",
+    title: "توليد الصور",
+    desc: "صور احترافية من نص عربي",
+    icon: ImageIcon,
+    color: "from-primary/10 to-primary-glow/10",
+  },
+  {
+    href: "/tools/summarize",
+    title: "تلخيص النصوص",
+    desc: "من مقال طويل إلى نقاط",
+    icon: FileText,
+    color: "from-primary/10 to-primary-glow/10",
+  },
+  {
+    href: "/tools/translate",
+    title: "المترجم الذكي",
+    desc: "ترجمة دقيقة سياقية",
+    icon: Languages,
+    color: "from-primary/10 to-primary-glow/10",
+  },
+  {
+    href: "/tools/ideas",
+    title: "مولّد الأفكار",
+    desc: "أفكار محتوى ومشاريع",
+    icon: Lightbulb,
+    color: "from-primary/10 to-primary-glow/10",
+  },
 ] as const;
 
 function HomePage() {
@@ -88,13 +133,11 @@ function HomePage() {
               <span className="sm:inline"> بالعربية، بطريقة احترافية</span>
             </h1>
             <p className="mt-4 mx-auto max-w-2xl text-sm md:text-lg text-muted-foreground leading-relaxed">
-              أدوات AI جاهزة، اختبار توصية ذكي، ونقل مباشر لمباريات كأس العالم 2026 — كل شيء في مكان واحد.
+              أدوات AI جاهزة، اختبار توصية ذكي، ونقل مباشر لمباريات كأس العالم 2026 — كل شيء في مكان
+              واحد.
             </p>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-              <Link
-                to="/tools"
-                className="btn-premium px-6 py-3 rounded-xl shadow-elegant"
-              >
+              <Link to="/tools" className="btn-premium px-6 py-3 rounded-xl shadow-elegant">
                 <Wand2 className="h-4 w-4" /> أدوات AI
               </Link>
               <Link
@@ -120,10 +163,17 @@ function HomePage() {
         <section className="container-page py-8 md:py-12">
           <div className="flex items-end justify-between mb-5">
             <div>
-              <h2 className="font-display text-2xl md:text-3xl font-bold">أدوات الذكاء الاصطناعي</h2>
-              <p className="mt-1 text-sm text-muted-foreground">جرّب أقوى الأدوات مباشرة داخل الموقع</p>
+              <h2 className="font-display text-2xl md:text-3xl font-bold">
+                أدوات الذكاء الاصطناعي
+              </h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                جرّب أقوى الأدوات مباشرة داخل الموقع
+              </p>
             </div>
-            <Link to="/tools" className="inline-flex items-center gap-1 text-xs md:text-sm font-semibold text-primary hover:underline shrink-0">
+            <Link
+              to="/tools"
+              className="inline-flex items-center gap-1 text-xs md:text-sm font-semibold text-primary hover:underline shrink-0"
+            >
               كل الأدوات <ArrowLeft className="h-4 w-4" />
             </Link>
           </div>
@@ -134,11 +184,17 @@ function HomePage() {
                 to={t.href}
                 className="group relative overflow-hidden rounded-2xl border border-border bg-card p-4 md:p-5 shadow-card transition-all duration-300 hover:shadow-elegant hover:border-primary/20 hover:-translate-y-1"
               >
-                <div className={`inline-flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-xl bg-gradient-to-br ${t.color} text-primary mb-3 shadow-soft group-hover:scale-105 transition-transform duration-300`}>
+                <div
+                  className={`inline-flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-xl bg-gradient-to-br ${t.color} text-primary mb-3 shadow-soft group-hover:scale-105 transition-transform duration-300`}
+                >
                   <t.icon className="h-5 w-5 md:h-6 md:w-6" />
                 </div>
-                <h3 className="font-display text-sm md:text-base font-bold text-foreground group-hover:text-primary transition-colors">{t.title}</h3>
-                <p className="text-[11px] md:text-xs text-muted-foreground mt-1 leading-relaxed line-clamp-2">{t.desc}</p>
+                <h3 className="font-display text-sm md:text-base font-bold text-foreground group-hover:text-primary transition-colors">
+                  {t.title}
+                </h3>
+                <p className="text-[11px] md:text-xs text-muted-foreground mt-1 leading-relaxed line-clamp-2">
+                  {t.desc}
+                </p>
               </Link>
             ))}
           </div>
@@ -155,9 +211,15 @@ function HomePage() {
                 <Sparkles className="h-7 w-7 animate-pulse" />
               </div>
               <div className="min-w-0 flex-1">
-                <div className="inline-block text-[10px] font-bold text-violet-600 bg-violet-500/10 px-2.5 py-0.5 rounded-full mb-2">جديد ✨</div>
-                <h3 className="font-display text-xl md:text-2xl font-extrabold text-foreground group-hover:text-primary transition-colors">أي أداة AI مناسبة لك؟</h3>
-                <p className="mt-1 text-sm text-muted-foreground">6 أسئلة سريعة — نوصي لك بالأداة الأنسب من بين 8 أدوات كبرى.</p>
+                <div className="inline-block text-[10px] font-bold text-violet-600 bg-violet-500/10 px-2.5 py-0.5 rounded-full mb-2">
+                  جديد ✨
+                </div>
+                <h3 className="font-display text-xl md:text-2xl font-extrabold text-foreground group-hover:text-primary transition-colors">
+                  أي أداة AI مناسبة لك؟
+                </h3>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  6 أسئلة سريعة — نوصي لك بالأداة الأنسب من بين 8 أدوات كبرى.
+                </p>
               </div>
               <div className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-foreground text-background px-4 py-2.5 text-sm font-bold shrink-0">
                 ابدأ الاختبار <ArrowLeft className="h-4 w-4" />
@@ -174,9 +236,14 @@ function HomePage() {
                 <Newspaper className="h-6 w-6 text-primary" />
                 أحدث المقالات
               </h2>
-              <p className="mt-1 text-sm text-muted-foreground">اقرأ آخر ما نشرناه في عالم الـ AI</p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                اقرأ آخر ما نشرناه في عالم الـ AI
+              </p>
             </div>
-            <Link to="/posts" className="inline-flex items-center gap-1 text-xs md:text-sm font-semibold text-primary hover:underline shrink-0">
+            <Link
+              to="/posts"
+              className="inline-flex items-center gap-1 text-xs md:text-sm font-semibold text-primary hover:underline shrink-0"
+            >
               عرض الكل <ArrowLeft className="h-4 w-4" />
             </Link>
           </div>

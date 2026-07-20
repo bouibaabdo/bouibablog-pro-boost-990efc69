@@ -36,7 +36,6 @@ import {
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 
-
 export const Route = createFileRoute("/_authenticated/admin/lessons")({
   component: AdminLessons,
 });
@@ -66,7 +65,7 @@ async function captureThumb(file: File, atSec: number): Promise<Blob | null> {
         canvas.width = w;
         canvas.height = h;
         const ctx = canvas.getContext("2d");
-        if (!ctx) return resolve(null), cleanup();
+        if (!ctx) return (resolve(null), cleanup());
         ctx.drawImage(v, 0, 0, w, h);
         canvas.toBlob(
           (b) => {
@@ -245,12 +244,10 @@ function AdminLessons() {
       const base = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
       const path = `${base}.${ext}`;
 
-      const { error } = await supabase.storage
-        .from("lessons")
-        .upload(path, file, {
-          contentType: file.type || "video/mp4",
-          upsert: false,
-        });
+      const { error } = await supabase.storage.from("lessons").upload(path, file, {
+        contentType: file.type || "video/mp4",
+        upsert: false,
+      });
       if (error) throw error;
 
       // Upload thumbnail in parallel step
@@ -361,7 +358,6 @@ function AdminLessons() {
       setSavingEdit(false);
     }
   }
-
 
   const uploading = stage === "uploading";
   const publishing = stage === "publishing";
@@ -501,8 +497,12 @@ function AdminLessons() {
                       step={0.5}
                       value={thumbAt}
                       onChange={(e) => setThumbAt(parseFloat(e.target.value))}
-                      onMouseUp={(e) => regenerateThumb(parseFloat((e.target as HTMLInputElement).value))}
-                      onTouchEnd={(e) => regenerateThumb(parseFloat((e.target as HTMLInputElement).value))}
+                      onMouseUp={(e) =>
+                        regenerateThumb(parseFloat((e.target as HTMLInputElement).value))
+                      }
+                      onTouchEnd={(e) =>
+                        regenerateThumb(parseFloat((e.target as HTMLInputElement).value))
+                      }
                       className="flex-1"
                     />
                     <span className="text-xs text-muted-foreground w-14 text-end" dir="ltr">
@@ -625,7 +625,6 @@ function AdminLessons() {
                     <Button size="icon" variant="ghost" onClick={() => onDelete(l)} title="حذف">
                       <Trash2 className="h-4 w-4 text-destructive" />
                     </Button>
-
                   </div>
                 </div>
               ))}
@@ -675,5 +674,4 @@ function AdminLessons() {
       </Dialog>
     </div>
   );
-
 }

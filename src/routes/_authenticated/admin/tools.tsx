@@ -24,7 +24,9 @@ function AdminTools() {
     setSaving(tool_key);
     try {
       await toggleAiTool({ data: { tool_key, enabled } });
-      setTools((prev) => prev?.map((t) => (t.tool_key === tool_key ? { ...t, enabled } : t)) ?? null);
+      setTools(
+        (prev) => prev?.map((t) => (t.tool_key === tool_key ? { ...t, enabled } : t)) ?? null,
+      );
       toast.success("تم الحفظ");
     } catch {
       toast.error("فشل الحفظ");
@@ -51,7 +53,10 @@ function AdminTools() {
             <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
           ) : (
             tools.map((t) => (
-              <div key={t.tool_key} className="flex items-center justify-between rounded-lg border p-4">
+              <div
+                key={t.tool_key}
+                className="flex items-center justify-between rounded-lg border p-4"
+              >
                 <div>
                   <p className="font-semibold">{t.title}</p>
                   <p className="text-xs text-muted-foreground mt-0.5">/tools/{t.tool_key}</p>

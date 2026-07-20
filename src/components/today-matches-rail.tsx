@@ -38,7 +38,10 @@ export function TodayMatchesRail({
         { rootMargin: "300px" },
       );
       io.observe(el);
-      return () => { io.disconnect(); window.clearTimeout(idle); };
+      return () => {
+        io.disconnect();
+        window.clearTimeout(idle);
+      };
     }
     return () => window.clearTimeout(idle);
   }, [enabled]);
@@ -51,10 +54,7 @@ export function TodayMatchesRail({
     enabled,
   });
   const matches: YDMatch[] = useMemo(() => {
-    const src: YDMatch[] = [
-      ...(yd.data?.today ?? []),
-      ...(yd.data?.tomorrow ?? []),
-    ];
+    const src: YDMatch[] = [...(yd.data?.today ?? []), ...(yd.data?.tomorrow ?? [])];
     const seen = new Set<string>();
     const out: YDMatch[] = [];
     for (const m of src) {
@@ -69,8 +69,7 @@ export function TodayMatchesRail({
     return out;
   }, [yd.data, max]);
 
-  const heading =
-    variant === "home" ? "مباريات اليوم — بث مباشر" : "مباريات اليوم";
+  const heading = variant === "home" ? "مباريات اليوم — بث مباشر" : "مباريات اليوم";
   const hasContent = matches.length > 0;
   const showEmpty = yd.isFetched && !hasContent;
 
@@ -122,90 +121,109 @@ export function TodayMatchesRail({
             لا توجد مباريات متاحة الآن
           </div>
         )}
-        {hasContent && matches.map((m) => (
-          <article
-            key={m.id}
-            className={`snap-start shrink-0 w-[280px] md:w-[300px] rounded-2xl border bg-card p-4 shadow-card transition ${
-              m.live
-                ? "border-red-500/50 ring-1 ring-red-500/20"
-                : "border-border"
-            }`}
-          >
-            <div className="flex items-center justify-between text-[11px] mb-2">
-              <span className="inline-flex items-center gap-1 text-muted-foreground truncate max-w-[65%]">
-                <Tv className="h-3 w-3 text-primary shrink-0" />
-                <span className="truncate">{m.channel || m.league || "مباراة"}</span>
-              </span>
-              {m.live ? (
-                <span className="inline-flex items-center gap-1 rounded-full bg-red-500/10 text-red-600 px-2 py-0.5 font-bold">
-                  <span className="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse" /> مباشر
+        {hasContent &&
+          matches.map((m) => (
+            <article
+              key={m.id}
+              className={`snap-start shrink-0 w-[280px] md:w-[300px] rounded-2xl border bg-card p-4 shadow-card transition ${
+                m.live ? "border-red-500/50 ring-1 ring-red-500/20" : "border-border"
+              }`}
+            >
+              <div className="flex items-center justify-between text-[11px] mb-2">
+                <span className="inline-flex items-center gap-1 text-muted-foreground truncate max-w-[65%]">
+                  <Tv className="h-3 w-3 text-primary shrink-0" />
+                  <span className="truncate">{m.channel || m.league || "مباراة"}</span>
                 </span>
-              ) : (
-                <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 text-primary px-2 py-0.5 font-semibold">
-                  <Clock className="h-3 w-3" /> {m.time}
-                </span>
-              )}
-            </div>
-            <div dir="ltr" className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
-              <div className="flex flex-col items-center gap-1 text-center min-w-0">
-                {m.homeBadge ? (
-                  <img src={m.homeBadge} alt={m.home} width={40} height={40} loading="lazy" decoding="async" className="h-10 w-10 object-contain" />
+                {m.live ? (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-red-500/10 text-red-600 px-2 py-0.5 font-bold">
+                    <span className="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse" /> مباشر
+                  </span>
                 ) : (
-                  <div className="h-10 w-10 rounded-full bg-surface-muted" />
+                  <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 text-primary px-2 py-0.5 font-semibold">
+                    <Clock className="h-3 w-3" /> {m.time}
+                  </span>
                 )}
-                <span dir="rtl" className="text-xs font-semibold leading-tight line-clamp-2">{m.home}</span>
               </div>
-              <div className="text-center min-w-[52px]">
-                <div className="font-display font-extrabold text-lg gradient-text">VS</div>
+              <div dir="ltr" className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
+                <div className="flex flex-col items-center gap-1 text-center min-w-0">
+                  {m.homeBadge ? (
+                    <img
+                      src={m.homeBadge}
+                      alt={m.home}
+                      width={40}
+                      height={40}
+                      loading="lazy"
+                      decoding="async"
+                      className="h-10 w-10 object-contain"
+                    />
+                  ) : (
+                    <div className="h-10 w-10 rounded-full bg-surface-muted" />
+                  )}
+                  <span dir="rtl" className="text-xs font-semibold leading-tight line-clamp-2">
+                    {m.home}
+                  </span>
+                </div>
+                <div className="text-center min-w-[52px]">
+                  <div className="font-display font-extrabold text-lg gradient-text">VS</div>
+                </div>
+                <div className="flex flex-col items-center gap-1 text-center min-w-0">
+                  {m.awayBadge ? (
+                    <img
+                      src={m.awayBadge}
+                      alt={m.away}
+                      width={40}
+                      height={40}
+                      loading="lazy"
+                      decoding="async"
+                      className="h-10 w-10 object-contain"
+                    />
+                  ) : (
+                    <div className="h-10 w-10 rounded-full bg-surface-muted" />
+                  )}
+                  <span dir="rtl" className="text-xs font-semibold leading-tight line-clamp-2">
+                    {m.away}
+                  </span>
+                </div>
               </div>
-              <div className="flex flex-col items-center gap-1 text-center min-w-0">
-                {m.awayBadge ? (
-                  <img src={m.awayBadge} alt={m.away} width={40} height={40} loading="lazy" decoding="async" className="h-10 w-10 object-contain" />
-                ) : (
-                  <div className="h-10 w-10 rounded-full bg-surface-muted" />
-                )}
-                <span dir="rtl" className="text-xs font-semibold leading-tight line-clamp-2">{m.away}</span>
-              </div>
-            </div>
-            {m.streamUrls && m.streamUrls.length > 0 ? (
-              <div className="mt-3 grid grid-cols-2 gap-1.5">
-                <a
-                  href={`https://koorayallah.com/?s=${encodeURIComponent(`${m.home} ${m.away}`)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="col-span-2 inline-flex items-center justify-center gap-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 px-3 py-2 text-xs font-bold text-white transition shadow-sm"
-                >
-                  <ExternalLink className="h-3.5 w-3.5" />
-                  مشاهدة البث المباشر (كورة يلا)
-                </a>
-                {m.streamUrls.slice(0, 2).map((url, idx) => (
+              {m.streamUrls && m.streamUrls.length > 0 ? (
+                <div className="mt-3 grid grid-cols-2 gap-1.5">
                   <a
-                    key={idx}
-                    href={url}
+                    href={`https://koorayallah.com/?s=${encodeURIComponent(`${m.home} ${m.away}`)}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-1 rounded-lg bg-red-600/10 hover:bg-red-600 hover:text-white px-2 py-1.5 text-[11px] font-bold text-red-600 transition"
+                    className="col-span-2 inline-flex items-center justify-center gap-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 px-3 py-2 text-xs font-bold text-white transition shadow-sm"
                   >
-                    <ExternalLink className="h-3 w-3" />
-                    سيرفر احتياطي {idx + 1}
+                    <ExternalLink className="h-3.5 w-3.5" />
+                    مشاهدة البث المباشر (كورة يلا)
                   </a>
-                ))}
-              </div>
-            ) : (
-              <div className="mt-3 flex flex-col gap-1.5">
-                <a
-                  href={`https://koorayallah.com/?s=${encodeURIComponent(`${m.home} ${m.away}`)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full inline-flex items-center justify-center gap-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 px-3 py-2 text-xs font-bold text-white transition shadow-sm"
-                >
-                  <ExternalLink className="h-3.5 w-3.5" />
-                  مشاهدة البث المباشر (كورة يلا)
-                </a>
-              </div>
-            )}
-          </article>
-        ))}
+                  {m.streamUrls.slice(0, 2).map((url, idx) => (
+                    <a
+                      key={idx}
+                      href={url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center gap-1 rounded-lg bg-red-600/10 hover:bg-red-600 hover:text-white px-2 py-1.5 text-[11px] font-bold text-red-600 transition"
+                    >
+                      <ExternalLink className="h-3 w-3" />
+                      سيرفر احتياطي {idx + 1}
+                    </a>
+                  ))}
+                </div>
+              ) : (
+                <div className="mt-3 flex flex-col gap-1.5">
+                  <a
+                    href={`https://koorayallah.com/?s=${encodeURIComponent(`${m.home} ${m.away}`)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full inline-flex items-center justify-center gap-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 px-3 py-2 text-xs font-bold text-white transition shadow-sm"
+                  >
+                    <ExternalLink className="h-3.5 w-3.5" />
+                    مشاهدة البث المباشر (كورة يلا)
+                  </a>
+                </div>
+              )}
+            </article>
+          ))}
       </div>
     </section>
   );

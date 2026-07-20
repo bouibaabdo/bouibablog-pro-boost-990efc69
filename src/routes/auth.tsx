@@ -12,7 +12,11 @@ export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
       { title: "تسجيل الدخول | Bouiba Academy" },
-      { name: "description", content: "سجل دخولك لحفظ مبارياتك المفضلة وتفعيل تنبيهات كأس العالم 2026.", key: "description" },
+      {
+        name: "description",
+        content: "سجل دخولك لحفظ مبارياتك المفضلة وتفعيل تنبيهات كأس العالم 2026.",
+        key: "description",
+      },
       { name: "robots", content: "noindex", key: "robots" },
     ],
   }),
@@ -151,7 +155,9 @@ function AuthPage() {
           </div>
 
           <p className="mt-6 text-center text-xs text-muted-foreground">
-            <Link to="/" className="hover:text-foreground">← العودة إلى الموقع</Link>
+            <Link to="/" className="hover:text-foreground">
+              ← العودة إلى الموقع
+            </Link>
           </p>
         </div>
       </main>

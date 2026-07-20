@@ -14,7 +14,15 @@ function formatDate(iso: string) {
   }
 }
 
-export function PostCard({ post, featured = false, priority = false }: { post: BloggerPost; featured?: boolean; priority?: boolean }) {
+export function PostCard({
+  post,
+  featured = false,
+  priority = false,
+}: {
+  post: BloggerPost;
+  featured?: boolean;
+  priority?: boolean;
+}) {
   const w = featured ? 1200 : 800;
   const h = featured ? 675 : 500;
   const src = optimizeBloggerImage(post.thumbnail, w, h);
@@ -25,23 +33,23 @@ export function PostCard({ post, featured = false, priority = false }: { post: B
         featured ? "md:col-span-2 md:row-span-2" : ""
       }`}
     >
-      <Link
-        to="/posts/$id"
-        params={{ id: post.slug }}
-        className="block"
-      >
+      <Link to="/posts/$id" params={{ id: post.slug }} className="block">
         {post.thumbnail && (
-          <div className={`overflow-hidden bg-surface-muted ${featured ? "aspect-[16/9]" : "aspect-[16/10]"}`}>
+          <div
+            className={`overflow-hidden bg-surface-muted ${featured ? "aspect-[16/9]" : "aspect-[16/10]"}`}
+          >
             <img
               src={src}
-              srcSet={src && src2x ? `${src} 1x, ${src2x} 2x` : undefined}
+              srcSet={src && src2x ? `${src} ${w}w, ${src2x} ${w * 2}w` : undefined}
               width={w}
               height={h}
               alt={post.title}
               loading={priority ? "eager" : "lazy"}
               fetchPriority={priority ? "high" : "auto"}
-              decoding="async"
-              sizes={featured ? "(min-width: 768px) 800px, 100vw" : "(min-width: 768px) 400px, 100vw"}
+              decoding={priority ? "sync" : "async"}
+              sizes={
+                featured ? "(min-width: 768px) 800px, 100vw" : "(min-width: 768px) 400px, 100vw"
+              }
               className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
             />
           </div>
@@ -59,7 +67,9 @@ export function PostCard({ post, featured = false, priority = false }: { post: B
           >
             {post.title}
           </h3>
-          <p className={`text-muted-foreground mt-2 ${featured ? "text-base line-clamp-3" : "text-sm line-clamp-2"}`}>
+          <p
+            className={`text-muted-foreground mt-2 ${featured ? "text-base line-clamp-3" : "text-sm line-clamp-2"}`}
+          >
             {post.excerpt}
           </p>
           <div className="mt-4 flex items-center justify-between text-xs text-muted-foreground">

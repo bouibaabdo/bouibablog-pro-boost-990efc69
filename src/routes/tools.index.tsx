@@ -15,7 +15,7 @@ import {
   Info,
   Globe,
   Tag,
-  DollarSign
+  DollarSign,
 } from "lucide-react";
 import { useEffect, useState, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -25,7 +25,14 @@ export const Route = createFileRoute("/tools/")({
   component: ToolsIndex,
 });
 
-const TOOLS: Array<{ to: string; icon: any; title: string; desc: string; color: string; badge?: string }> = [
+const TOOLS: Array<{
+  to: string;
+  icon: any;
+  title: string;
+  desc: string;
+  color: string;
+  badge?: string;
+}> = [
   {
     to: "/tools/image",
     icon: ImageIcon,
@@ -143,7 +150,8 @@ function ToolsIndex() {
             أدوات <span className="gradient-text">الذكاء الاصطناعي</span>
           </h1>
           <p className="mt-4 text-base md:text-lg text-muted-foreground leading-relaxed">
-            استكشف أدوات AI التفاعلية المدمجة في موقعنا، وتصفّح دليلاً شاملاً لأقوى أدوات الذكاء الاصطناعي العالمية مع مراجعات عربية.
+            استكشف أدوات AI التفاعلية المدمجة في موقعنا، وتصفّح دليلاً شاملاً لأقوى أدوات الذكاء
+            الاصطناعي العالمية مع مراجعات عربية.
           </p>
 
           {/* TAB TOGGLE CONTROLLER */}
@@ -210,7 +218,9 @@ function ToolsIndex() {
                   to={t.to}
                   className="group relative overflow-hidden rounded-2xl border border-border bg-card p-6 transition-all duration-300 hover:shadow-elegant hover:border-primary/20 hover:-translate-y-1"
                 >
-                  <div className={`inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${t.color} shadow-soft group-hover:scale-105 transition-transform duration-300`}>
+                  <div
+                    className={`inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${t.color} shadow-soft group-hover:scale-105 transition-transform duration-300`}
+                  >
                     <t.icon className="h-6 w-6" />
                   </div>
                   {t.badge && (
@@ -337,7 +347,11 @@ function ToolsIndex() {
             {/* RESULTS STATE */}
             <div className="flex items-center justify-between mb-6">
               <div className="text-sm text-muted-foreground">
-                تم العثور على <span className="font-semibold text-foreground">{filteredDirectoryTools.length}</span> أداة
+                تم العثور على{" "}
+                <span className="font-semibold text-foreground">
+                  {filteredDirectoryTools.length}
+                </span>{" "}
+                أداة
               </div>
             </div>
 
@@ -354,7 +368,9 @@ function ToolsIndex() {
                         <h3 className="font-display text-lg font-extrabold text-foreground flex items-center gap-1.5 flex-wrap">
                           {tool.name}
                           {tool.arabicName && (
-                            <span className="text-xs font-normal text-muted-foreground">({tool.arabicName})</span>
+                            <span className="text-xs font-normal text-muted-foreground">
+                              ({tool.arabicName})
+                            </span>
                           )}
                         </h3>
                         <span
@@ -362,15 +378,15 @@ function ToolsIndex() {
                             tool.pricing === "free"
                               ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
                               : tool.pricing === "freemium"
-                              ? "bg-blue-500/10 text-blue-600 dark:text-blue-400"
-                              : "bg-amber-500/10 text-amber-600 dark:text-amber-400"
+                                ? "bg-blue-500/10 text-blue-600 dark:text-blue-400"
+                                : "bg-amber-500/10 text-amber-600 dark:text-amber-400"
                           }`}
                         >
                           {tool.pricing === "free"
                             ? "مجاني"
                             : tool.pricing === "freemium"
-                            ? "فريميوم"
-                            : "مدفوع"}
+                              ? "فريميوم"
+                              : "مدفوع"}
                         </span>
                       </div>
 

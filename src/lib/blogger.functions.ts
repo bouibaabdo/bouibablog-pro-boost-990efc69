@@ -77,7 +77,11 @@ function extractThumbnail(html: string, media?: { url: string }): string | undef
  * For Google URLs that already carry a `=...` suffix, the suffix is replaced
  * (not appended twice) so the transform is always honored.
  */
-export function optimizeBloggerImage(url: string | undefined, w: number, h: number): string | undefined {
+export function optimizeBloggerImage(
+  url: string | undefined,
+  w: number,
+  h: number,
+): string | undefined {
   if (!url) return url;
   if (url.startsWith("data:") || url.startsWith("/")) return url;
   try {
@@ -125,7 +129,7 @@ const EXCLUDED_SLUGS = new Set([
   "snaptube",
   "happymod-2",
   "fluid-simulation-free-253",
-  "gps"
+  "gps",
 ]);
 
 export function isExcludedPost(slug: string, id: string): boolean {
@@ -163,34 +167,37 @@ export function slugify(text: string): string {
 
 export function cleanExcerpt(text: string): string {
   let cleaned = text;
-  
+
   // 1. Strip up to the reading time keyword
   cleaned = cleaned.replace(/^.*?(?:دقائق|دقيقة|ساعات|ساعة)\s*(?:[|&nbsp;\-⏱️📅\s\uFE0F]*)/gu, "");
-  
+
   // 2. Strip up to a date-like pattern followed by separator
-  cleaned = cleaned.replace(/^.*?(?:يناير|فبراير|مارس|أبريل|مايو|يونيو|يوليو|أغسطس|سبتمبر|أكتوبر|نوفمبر|ديسمبر)\s+\d{4}\s*(?:[|&nbsp;\-⏱️📅\s\uFE0F]*)/gu, "");
-  
+  cleaned = cleaned.replace(
+    /^.*?(?:يناير|فبراير|مارس|أبريل|مايو|يونيو|يوليو|أغسطس|سبتمبر|أكتوبر|نوفمبر|ديسمبر)\s+\d{4}\s*(?:[|&nbsp;\-⏱️📅\s\uFE0F]*)/gu,
+    "",
+  );
+
   // 3. Remove leading emojis, variation selectors, separators, or spaces
   cleaned = cleaned.replace(/^[^\p{L}\p{N}]+/gu, "");
 
   if (cleaned.trim().length < 20) {
     cleaned = text;
   }
-  
+
   cleaned = cleaned
     .replace(/&nbsp;/gi, " ")
     .replace(/&amp;nbsp;/gi, " ")
     .replace(/&amp;/gi, "&")
     .replace(/\s+/g, " ")
     .trim();
-    
+
   return cleaned;
 }
 
 export function assignPrettySlugs(posts: BloggerPost[]): BloggerPost[] {
   const slugCounts = new Map<string, number>();
-  
-  const candidates = posts.map(post => {
+
+  const candidates = posts.map((post) => {
     let slugCandidate = post.slug;
     if (isUglySlug(post.slug)) {
       slugCandidate = slugify(post.title);
@@ -205,28 +212,28 @@ export function assignPrettySlugs(posts: BloggerPost[]): BloggerPost[] {
       }
       slugCandidate = slugCandidate.replace(/\s+/g, "").replace(/%20/g, "").trim();
     }
-    
+
     slugCandidate = slugCandidate.toLowerCase().replace(/^-+|-+$/g, "");
-    
+
     return { post, candidate: slugCandidate };
   });
 
-  candidates.forEach(c => {
+  candidates.forEach((c) => {
     slugCounts.set(c.candidate, (slugCounts.get(c.candidate) ?? 0) + 1);
   });
 
-  return candidates.map(c => {
+  return candidates.map((c) => {
     let finalSlug = c.candidate;
     if (slugCounts.get(c.candidate)! > 1) {
       const suffix = c.post.id.slice(-4);
       finalSlug = `${c.candidate}-${suffix}`;
     }
-    
+
     return {
       ...c.post,
       originalSlug: c.post.slug,
       slug: finalSlug,
-      url: `https://www.bouibacademy.me/posts/${finalSlug}`
+      url: `https://www.bouibacademy.me/posts/${finalSlug}`,
     };
   });
 }
@@ -256,7 +263,9 @@ function transformEntry(entry: RawEntry): BloggerPost {
   };
 }
 
-async function fetchFeed(params: Record<string, string>): Promise<{ posts: BloggerPost[]; total: number }> {
+async function fetchFeed(
+  params: Record<string, string>,
+): Promise<{ posts: BloggerPost[]; total: number }> {
   const url = new URL(FEED_BASE);
   url.searchParams.set("alt", "json");
   Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
@@ -301,24 +310,45 @@ function parseMarkdownToHtml(md: string): string {
   });
 
   // Inline code: `code`
-  html = html.replace(/`([^`]+)`/g, "<code class='bg-muted px-1.5 py-0.5 rounded text-sm'>$1</code>");
+  html = html.replace(
+    /`([^`]+)`/g,
+    "<code class='bg-muted px-1.5 py-0.5 rounded text-sm'>$1</code>",
+  );
 
   // Headers: # H1, ## H2, ### H3
-  html = html.replace(/^#\s+(.+)$/gm, "<h1 class='text-3xl font-extrabold my-6 font-display'>$1</h1>");
-  html = html.replace(/^##\s+(.+)$/gm, "<h2 class='text-2xl font-bold my-5 font-display border-b border-border pb-2'>$1</h2>");
+  html = html.replace(
+    /^#\s+(.+)$/gm,
+    "<h1 class='text-3xl font-extrabold my-6 font-display'>$1</h1>",
+  );
+  html = html.replace(
+    /^##\s+(.+)$/gm,
+    "<h2 class='text-2xl font-bold my-5 font-display border-b border-border pb-2'>$1</h2>",
+  );
   html = html.replace(/^###\s+(.+)$/gm, "<h3 class='text-xl font-bold my-4 font-display'>$1</h3>");
 
   // Alerts: > [!IMPORTANT] or > [!NOTE]
-  html = html.replace(/^>\s+\[!(IMPORTANT|WARNING|TIP|NOTE|CAUTION)\]\n([\s\S]*?)(?=\n\n|\n[^>])/gm, (_, type, text) => {
-    const color = type === "IMPORTANT" ? "border-primary bg-primary/5 text-foreground" : "border-amber-500 bg-amber-500/5 text-foreground";
-    return `<div class="border-r-4 ${color} p-4 my-4 rounded-l-md">${text.replace(/^>\s?/gm, "").trim()}</div>`;
-  });
+  html = html.replace(
+    /^>\s+\[!(IMPORTANT|WARNING|TIP|NOTE|CAUTION)\]\n([\s\S]*?)(?=\n\n|\n[^>])/gm,
+    (_, type, text) => {
+      const color =
+        type === "IMPORTANT"
+          ? "border-primary bg-primary/5 text-foreground"
+          : "border-amber-500 bg-amber-500/5 text-foreground";
+      return `<div class="border-r-4 ${color} p-4 my-4 rounded-l-md">${text.replace(/^>\s?/gm, "").trim()}</div>`;
+    },
+  );
 
   // Blockquotes: > quote
-  html = html.replace(/^>\s+(.+)$/gm, "<blockquote class='border-r-4 border-muted p-4 my-4 italic'>$1</blockquote>");
+  html = html.replace(
+    /^>\s+(.+)$/gm,
+    "<blockquote class='border-r-4 border-muted p-4 my-4 italic'>$1</blockquote>",
+  );
 
   // Links: [text](url)
-  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, "<a href='$2' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline font-semibold'>$1</a>");
+  html = html.replace(
+    /\[([^\]]+)\]\(([^)]+)\)/g,
+    "<a href='$2' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline font-semibold'>$1</a>",
+  );
 
   // Unordered lists: - item or * item
   html = html.replace(/^\s*[-*]\s+(.+)$/gm, "<li class='list-disc mr-6 my-1'>$1</li>");
@@ -342,14 +372,16 @@ function parseMarkdownToHtml(md: string): string {
 
   // Paragraphs (split by double newlines)
   const lines = html.split(/\n\n+/);
-  html = lines.map(line => {
-    line = line.trim();
-    if (!line) return "";
-    if (/^<(h\d|pre|blockquote|div|ul|ol|li)/.test(line)) {
-      return line;
-    }
-    return `<p class="my-4 leading-relaxed">${line}</p>`;
-  }).join("\n");
+  html = lines
+    .map((line) => {
+      line = line.trim();
+      if (!line) return "";
+      if (/^<(h\d|pre|blockquote|div|ul|ol|li)/.test(line)) {
+        return line;
+      }
+      return `<p class="my-4 leading-relaxed">${line}</p>`;
+    })
+    .join("\n");
 
   return html;
 }
@@ -359,7 +391,7 @@ async function loadLocalPosts(): Promise<BloggerPost[]> {
     const fs = await import("fs/promises");
     const path = await import("path");
     const postsDir = path.join(process.cwd(), "content", "posts");
-    
+
     try {
       await fs.access(postsDir);
     } catch {
@@ -380,7 +412,7 @@ async function loadLocalPosts(): Promise<BloggerPost[]> {
       try {
         const metaContent = await fs.readFile(metaPath, "utf-8");
         const postContent = await fs.readFile(postPath, "utf-8");
-        
+
         const meta = JSON.parse(metaContent) as {
           title: string;
           slug: string;
@@ -394,10 +426,12 @@ async function loadLocalPosts(): Promise<BloggerPost[]> {
         };
 
         const contentHtml = parseMarkdownToHtml(postContent);
-        
-        let thumbnail = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop";
+
+        let thumbnail =
+          "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop";
         if (meta.slug.includes("ollama") || meta.slug.includes("n8n")) {
-          thumbnail = "https://images.unsplash.com/photo-1677442136019-21780efad99a?w=800&auto=format&fit=crop";
+          thumbnail =
+            "https://images.unsplash.com/photo-1677442136019-21780efad99a?w=800&auto=format&fit=crop";
         }
 
         const excerptText = meta.meta_description || meta.excerpt;
@@ -429,13 +463,15 @@ async function loadLocalPosts(): Promise<BloggerPost[]> {
 
 export const getPosts = createServerFn({ method: "GET" })
   .inputValidator(
-    (d: { max?: number; label?: string; start?: number; q?: string } | undefined) => d ?? {}
+    (d: { max?: number; label?: string; start?: number; q?: string } | undefined) => d ?? {},
   )
   .handler(async ({ data }) => {
     // 1. Fetch local posts
     const localPosts = await loadLocalPosts();
     const filteredLocal = data.label
-      ? localPosts.filter((p) => p.labels.some((l) => l.toLowerCase() === data.label!.toLowerCase()))
+      ? localPosts.filter((p) =>
+          p.labels.some((l) => l.toLowerCase() === data.label!.toLowerCase()),
+        )
       : localPosts;
 
     // 2. Fetch Blogger posts
@@ -443,9 +479,7 @@ export const getPosts = createServerFn({ method: "GET" })
       "max-results": String(data.max ?? 30),
       "start-index": String(data.start ?? 1),
     };
-    const url = data.label
-      ? `${FEED_BASE}/-/${encodeURIComponent(data.label)}`
-      : FEED_BASE;
+    const url = data.label ? `${FEED_BASE}/-/${encodeURIComponent(data.label)}` : FEED_BASE;
     const q = new URL(url);
     q.searchParams.set("alt", "json");
     Object.entries(params).forEach(([k, v]) => q.searchParams.set(k, v));
@@ -468,9 +502,9 @@ export const getPosts = createServerFn({ method: "GET" })
     }
 
     // 3. Combine and sort
-    let combined = [...filteredLocal, ...bloggerPosts].filter(p => !isExcludedPost(p.slug, p.id));
+    let combined = [...filteredLocal, ...bloggerPosts].filter((p) => !isExcludedPost(p.slug, p.id));
     combined = assignPrettySlugs(combined).sort(
-      (a, b) => new Date(b.published).getTime() - new Date(a.published).getTime()
+      (a, b) => new Date(b.published).getTime() - new Date(a.published).getTime(),
     );
 
     // Apply search query filter if provided
@@ -480,7 +514,7 @@ export const getPosts = createServerFn({ method: "GET" })
         (p) =>
           p.title.toLowerCase().includes(queryVal) ||
           p.excerpt.toLowerCase().includes(queryVal) ||
-          p.contentHtml.toLowerCase().includes(queryVal)
+          p.contentHtml.toLowerCase().includes(queryVal),
       );
     }
 
@@ -508,7 +542,7 @@ export const getPost = createServerFn({ method: "GET" })
       (p) =>
         p.slug.toLowerCase() === decodedId ||
         p.id.toLowerCase() === decodedId ||
-        p.originalSlug?.toLowerCase() === decodedId
+        p.originalSlug?.toLowerCase() === decodedId,
     );
 
     if (found) {
@@ -537,7 +571,7 @@ export const getLabels = createServerFn({ method: "GET" }).handler(async () => {
   // Fetch from Blogger
   const result = await fetchFeed({ "max-results": "150" });
   const counts = new Map<string, number>();
-  
+
   result.posts.forEach((p) => {
     p.labels.forEach((l) => counts.set(l, (counts.get(l) ?? 0) + 1));
   });

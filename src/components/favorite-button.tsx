@@ -21,7 +21,14 @@ interface Props {
   size?: "sm" | "md";
 }
 
-export function FavoriteButton({ matchId, matchData, kickoffAt, initiallyFavorited, onChange, size = "md" }: Props) {
+export function FavoriteButton({
+  matchId,
+  matchData,
+  kickoffAt,
+  initiallyFavorited,
+  onChange,
+  size = "md",
+}: Props) {
   const [fav, setFav] = useState(!!initiallyFavorited);
   const [loading, setLoading] = useState(false);
   const [authed, setAuthed] = useState<boolean | null>(null);

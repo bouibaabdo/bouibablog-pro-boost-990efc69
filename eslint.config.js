@@ -4,6 +4,7 @@ import globals from "globals";
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
 import tseslint from "typescript-eslint";
+import jsxA11y from "eslint-plugin-jsx-a11y";
 
 export default tseslint.config(
   { ignores: ["dist", ".output", ".vinxi"] },
@@ -17,9 +18,29 @@ export default tseslint.config(
     plugins: {
       "react-hooks": reactHooks,
       "react-refresh": reactRefresh,
+      "jsx-a11y": jsxA11y,
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
+
+      // ─── CLS & Image Rules ────────────────────────────────────────────
+      // يُضلّل كل <img> بدون width/height أو alt مباشرة في الـ Editor
+      "jsx-a11y/alt-text": [
+        "error",
+        {
+          elements: ["img"],
+          img: ["Image"],
+        },
+      ],
+      "jsx-a11y/img-redundant-alt": "warn",
+
+      // ─── Accessibility Rules ──────────────────────────────────────────
+      "jsx-a11y/anchor-is-valid": "warn",
+      "jsx-a11y/aria-role": "error",
+      "jsx-a11y/no-autofocus": "warn",
+      "jsx-a11y/interactive-supports-focus": "warn",
+
+      // ─── TanStack / React Rules ───────────────────────────────────────
       "no-restricted-imports": [
         "error",
         {

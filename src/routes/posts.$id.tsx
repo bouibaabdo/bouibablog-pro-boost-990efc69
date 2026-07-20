@@ -24,7 +24,11 @@ const recentPostsQueryOptions = queryOptions({
 
 function formatDate(iso: string) {
   try {
-    return new Intl.DateTimeFormat("ar-EG-u-nu-latn", { year: "numeric", month: "long", day: "numeric" }).format(new Date(iso));
+    return new Intl.DateTimeFormat("ar-EG-u-nu-latn", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }).format(new Date(iso));
   } catch {
     return iso;
   }
@@ -50,7 +54,9 @@ export const Route = createFileRoute("/posts/$id")({
     const post = loaderData;
     const SUFFIX = " — Bouiba Academy";
     const title = `${post?.title ?? "مقال"}${SUFFIX}`;
-    const desc = post ? (post.metaDescription || post.excerpt.slice(0, 160)) : "مقال من أكاديمية بويبة للذكاء الاصطناعي.";
+    const desc = post
+      ? post.metaDescription || post.excerpt.slice(0, 160)
+      : "مقال من أكاديمية بويبة للذكاء الاصطناعي.";
     const canonical = `https://www.bouibacademy.me/posts/${post?.slug ?? params.id}`;
     const meta: Array<Record<string, string>> = [
       { title },
@@ -60,7 +66,11 @@ export const Route = createFileRoute("/posts/$id")({
       { property: "og:description", content: desc, key: "og:description" },
       { property: "og:url", content: canonical, key: "og:url" },
       { name: "twitter:card", content: "summary_large_image", key: "twitter:card" },
-      { name: "twitter:title", content: post?.title ?? "مقال — Bouiba Academy", key: "twitter:title" },
+      {
+        name: "twitter:title",
+        content: post?.title ?? "مقال — Bouiba Academy",
+        key: "twitter:title",
+      },
       { name: "twitter:description", content: desc, key: "twitter:description" },
     ];
     if (post?.thumbnail) {
@@ -82,9 +92,12 @@ export const Route = createFileRoute("/posts/$id")({
                 dateModified: post.updated,
                 author: {
                   "@type": "Person",
-                  name: (post.author === "AcademyBouiba" || post.author === "Bouiba Academy") ? "فريق Bouiba Academy" : post.author,
+                  name:
+                    post.author === "AcademyBouiba" || post.author === "Bouiba Academy"
+                      ? "فريق Bouiba Academy"
+                      : post.author,
                   url: "https://www.bouibacademy.me/about",
-                  image: post.authorImage || "https://www.bouibacademy.me/favicon.png"
+                  image: post.authorImage || "https://www.bouibacademy.me/favicon.png",
                 },
                 image: post.thumbnail,
                 mainEntityOfPage: canonical,
@@ -99,7 +112,9 @@ export const Route = createFileRoute("/posts/$id")({
   errorComponent: ({ error }) => (
     <div className="min-h-screen">
       <SiteHeader />
-      <div className="container-page py-20 text-center text-muted-foreground">تعذر التحميل: {error.message}</div>
+      <div className="container-page py-20 text-center text-muted-foreground">
+        تعذر التحميل: {error.message}
+      </div>
     </div>
   ),
   notFoundComponent: () => (
@@ -107,7 +122,9 @@ export const Route = createFileRoute("/posts/$id")({
       <SiteHeader />
       <div className="container-page py-20 text-center">
         <h1 className="text-3xl font-bold">المقال غير موجود</h1>
-        <Link to="/posts" className="mt-6 inline-block text-primary font-semibold">← العودة للمقالات</Link>
+        <Link to="/posts" className="mt-6 inline-block text-primary font-semibold">
+          ← العودة للمقالات
+        </Link>
       </div>
     </div>
   ),
@@ -124,9 +141,7 @@ function PostPage() {
     const otherPosts = recentResult.posts.filter((p) => p.id !== post.id);
 
     // Find posts with matching labels
-    const matched = otherPosts.filter((p) =>
-      p.labels.some((l) => post.labels.includes(l))
-    );
+    const matched = otherPosts.filter((p) => p.labels.some((l) => post.labels.includes(l)));
 
     // Fill up to 3 posts if we don't have enough matched ones
     const fillCount = 3 - matched.length;
@@ -148,7 +163,10 @@ function PostPage() {
         {/* Header */}
         <header className="hero-bg border-b border-border">
           <div className="container-page max-w-3xl py-14 md:py-20">
-            <Link to="/posts" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary mb-6">
+            <Link
+              to="/posts"
+              className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary mb-6"
+            >
               <ArrowRight className="h-4 w-4" /> جميع المقالات
             </Link>
             <div className="flex flex-wrap items-center gap-2 mb-6">
@@ -186,8 +204,6 @@ function PostPage() {
             // Blogger content is trusted (own blog)
             dangerouslySetInnerHTML={{ __html: post.contentHtml }}
           />
-
-
 
           {/* Related Articles Section */}
           {relatedPosts.length > 0 && (

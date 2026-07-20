@@ -6,9 +6,17 @@ export const Route = createFileRoute("/tools/ideas")({
   head: () => ({
     meta: [
       { title: "مولّد أفكار المقالات — أدوات AI | Bouiba Academy" },
-      { name: "description", content: "احصل على 8 عناوين مقالات جذابة ومحسّنة لمحركات البحث.", key: "description" },
+      {
+        name: "description",
+        content: "احصل على 8 عناوين مقالات جذابة ومحسّنة لمحركات البحث.",
+        key: "description",
+      },
       { property: "og:title", content: "مولّد أفكار المقالات — Bouiba Academy", key: "og:title" },
-      { property: "og:description", content: "أدخل موضوعًا واحصل على عناوين مقالات عربية جاهزة ومحسّنة لمحركات البحث.", key: "og:description" },
+      {
+        property: "og:description",
+        content: "أدخل موضوعًا واحصل على عناوين مقالات عربية جاهزة ومحسّنة لمحركات البحث.",
+        key: "og:description",
+      },
       { property: "og:url", content: "https://www.bouibacademy.me/tools/ideas", key: "og:url" },
     ],
     links: [{ rel: "canonical", href: "https://www.bouibacademy.me/tools/ideas" }],

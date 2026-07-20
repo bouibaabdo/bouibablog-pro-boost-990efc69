@@ -51,7 +51,10 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <button
-            onClick={() => { router.invalidate(); reset(); }}
+            onClick={() => {
+              router.invalidate();
+              reset();
+            }}
             className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90"
           >
             حاول مجددًا
@@ -69,7 +72,8 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 }
 
 const SITE_TITLE = "Bouiba Academy — أكاديميتك العربية للذكاء الاصطناعي";
-const SITE_DESC = "دروس عملية، أحدث الأخبار، وأدوات مجانية في الذكاء الاصطناعي — Grok • Claude • Gemini • Llama.";
+const SITE_DESC =
+  "دروس عملية، أحدث الأخبار، وأدوات مجانية في الذكاء الاصطناعي — Grok • Claude • Gemini • Llama.";
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({
@@ -84,14 +88,22 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:description", content: SITE_DESC, key: "og:description" },
       { property: "og:type", content: "website", key: "og:type" },
       { property: "og:locale", content: "ar_AR", key: "og:locale" },
-      { property: "og:image", content: "https://www.bouibacademy.me/og-banner.png", key: "og:image" },
+      {
+        property: "og:image",
+        content: "https://www.bouibacademy.me/og-banner.png",
+        key: "og:image",
+      },
       { property: "og:image:width", content: "1200", key: "og:image:width" },
       { property: "og:image:height", content: "630", key: "og:image:height" },
       { property: "og:image:alt", content: SITE_TITLE, key: "og:image:alt" },
       { name: "twitter:card", content: "summary_large_image", key: "twitter:card" },
       { name: "twitter:title", content: SITE_TITLE, key: "twitter:title" },
       { name: "twitter:description", content: SITE_DESC, key: "twitter:description" },
-      { name: "twitter:image", content: "https://www.bouibacademy.me/og-banner.png", key: "twitter:image" },
+      {
+        name: "twitter:image",
+        content: "https://www.bouibacademy.me/og-banner.png",
+        key: "twitter:image",
+      },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -101,10 +113,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     scripts: [
       {
-        children: "(function(){var loaded=false;function load(){if(loaded)return;loaded=true;var s=document.createElement('script');s.async=true;s.crossOrigin='anonymous';s.src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6865528919843764';document.head.appendChild(s);}var evts=['scroll','click','touchstart','keydown','mousemove'];evts.forEach(function(e){window.addEventListener(e,load,{once:true,passive:true})});setTimeout(load,4000);})();",
+        children:
+          "(function(){var loaded=false;function load(){if(loaded)return;loaded=true;var s=document.createElement('script');s.async=true;s.crossOrigin='anonymous';s.src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6865528919843764';document.head.appendChild(s);}var evts=['scroll','click','touchstart','keydown','mousemove'];evts.forEach(function(e){window.addEventListener(e,load,{once:true,passive:true})});setTimeout(load,4000);})();",
       },
       {
-        children: "window.googleTranslateElementInit=function(){new google.translate.TranslateElement({pageLanguage:'ar',includedLanguages:'en,ar',autoDisplay:false},'google_translate_element');};",
+        children:
+          "window.googleTranslateElementInit=function(){new google.translate.TranslateElement({pageLanguage:'ar',includedLanguages:'en,ar',autoDisplay:false},'google_translate_element');};",
       },
       {
         src: "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit",
@@ -115,15 +129,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "WebSite",
-          "name": "Bouiba Academy",
-          "url": "https://www.bouibacademy.me",
-          "description": SITE_DESC,
-          "inLanguage": "ar",
-          "potentialAction": {
+          name: "Bouiba Academy",
+          url: "https://www.bouibacademy.me",
+          description: SITE_DESC,
+          inLanguage: "ar",
+          potentialAction: {
             "@type": "SearchAction",
-            "target": "https://www.bouibacademy.me/posts?q={search_term_string}",
-            "query-input": "required name=search_term_string"
-          }
+            target: "https://www.bouibacademy.me/posts?q={search_term_string}",
+            "query-input": "required name=search_term_string",
+          },
         }),
       },
     ],
@@ -142,8 +156,14 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        <div id="google_translate_element" className="hidden opacity-0 pointer-events-none absolute -top-9999 -left-9999 h-0 w-0" />
-        <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:right-4 focus:z-50 focus:bg-background focus:text-foreground focus:p-4 focus:rounded-lg focus:border focus:shadow-md">
+        <div
+          id="google_translate_element"
+          className="hidden opacity-0 pointer-events-none absolute -top-9999 -left-9999 h-0 w-0"
+        />
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:right-4 focus:z-50 focus:bg-background focus:text-foreground focus:p-4 focus:rounded-lg focus:border focus:shadow-md"
+        >
           التخطي إلى المحتوى الرئيسي
         </a>
         <div id="main-content" className="contents">

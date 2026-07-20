@@ -41,7 +41,9 @@ export const listLessons = createServerFn({ method: "GET" }).handler(async () =>
   });
   const { data, error } = await supabase
     .from("lessons")
-    .select("id, title, description, category, video_path, thumbnail_path, thumbnail_url, duration_seconds, created_at")
+    .select(
+      "id, title, description, category, video_path, thumbnail_path, thumbnail_url, duration_seconds, created_at",
+    )
     .eq("published", true)
     .order("sort_order", { ascending: true })
     .order("created_at", { ascending: false });

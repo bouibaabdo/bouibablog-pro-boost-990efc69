@@ -2,7 +2,15 @@ export interface AIDirectoryTool {
   name: string;
   arabicName?: string;
   description: string;
-  category: "writing" | "design" | "video" | "coding" | "productivity" | "education" | "business" | "arabic";
+  category:
+    | "writing"
+    | "design"
+    | "video"
+    | "coding"
+    | "productivity"
+    | "education"
+    | "business"
+    | "arabic";
   tags: string[];
   pricing: "free" | "freemium" | "paid";
   link: string;
@@ -25,7 +33,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   {
     name: "ChatGPT",
     arabicName: "شات جي بي تي",
-    description: "مساعد ذكي رائد من OpenAI لإنشاء المحتوى والكتابة الإبداعية والتحليل البرمجي بأكثر من 90 لغة.",
+    description:
+      "مساعد ذكي رائد من OpenAI لإنشاء المحتوى والكتابة الإبداعية والتحليل البرمجي بأكثر من 90 لغة.",
     category: "writing",
     tags: ["مساعد ذكي", "توليد نصوص", "عصف ذهني"],
     pricing: "freemium",
@@ -35,7 +44,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   {
     name: "Claude",
     arabicName: "كلود",
-    description: "نموذج لغوي متقدم من Anthropic يتميز بالدقة الشديدة، التحليل المعمّق للنصوص الطويلة، والأمان العالي.",
+    description:
+      "نموذج لغوي متقدم من Anthropic يتميز بالدقة الشديدة، التحليل المعمّق للنصوص الطويلة، والأمان العالي.",
     category: "writing",
     tags: ["مساعد ذكي", "تحليل نصوص", "برمجة"],
     pricing: "freemium",
@@ -45,7 +55,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   {
     name: "Jasper",
     arabicName: "جاسبر",
-    description: "منصة كتابة تسويقية متكاملة بالذكاء الاصطناعي مصممة لفرق التسويق وكتاب المحتوى الرقمي.",
+    description:
+      "منصة كتابة تسويقية متكاملة بالذكاء الاصطناعي مصممة لفرق التسويق وكتاب المحتوى الرقمي.",
     category: "writing",
     tags: ["تسويق", "إعلانات", "مدونات"],
     pricing: "paid",
@@ -55,7 +66,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   {
     name: "Copy.ai",
     arabicName: "كوبي إيه آي",
-    description: "أداة ذكية لتوليد النصوص التسويقية والإعلانية السريعة والمنشورات الاجتماعية باستخدام قوالب جاهزة.",
+    description:
+      "أداة ذكية لتوليد النصوص التسويقية والإعلانية السريعة والمنشورات الاجتماعية باستخدام قوالب جاهزة.",
     category: "writing",
     tags: ["تسويق", "سوشيال ميديا", "نسخ إعلانية"],
     pricing: "freemium",
@@ -65,7 +77,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   {
     name: "QuillBot",
     arabicName: "كوايل بوت",
-    description: "أداة رائدة في إعادة صياغة النصوص، التلخيص، والتدقيق الإملائي باللغات المختلفة ومساعد الاقتباس الأكاديمي.",
+    description:
+      "أداة رائدة في إعادة صياغة النصوص، التلخيص، والتدقيق الإملائي باللغات المختلفة ومساعد الاقتباس الأكاديمي.",
     category: "writing",
     tags: ["إعادة صياغة", "تدقيق لغوي", "تلخيص"],
     pricing: "freemium",
@@ -75,7 +88,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   {
     name: "Writesonic",
     arabicName: "رايت سونيك",
-    description: "منصة شاملة لتوليد المحتوى وتحسين محركات البحث SEO وصناعة مقالات طويلة موثوقة بالذكاء الاصطناعي.",
+    description:
+      "منصة شاملة لتوليد المحتوى وتحسين محركات البحث SEO وصناعة مقالات طويلة موثوقة بالذكاء الاصطناعي.",
     category: "writing",
     tags: ["SEO", "مدونات", "توليد نصوص"],
     pricing: "freemium",
@@ -84,7 +98,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   },
   {
     name: "Lex",
-    description: "محرر نصوص حديث وبسيط يعتمد على الذكاء الاصطناعي لمساعدة الكتاب والمدونين في الحفاظ على تدفق الكتابة.",
+    description:
+      "محرر نصوص حديث وبسيط يعتمد على الذكاء الاصطناعي لمساعدة الكتاب والمدونين في الحفاظ على تدفق الكتابة.",
     category: "writing",
     tags: ["محرر نصوص", "تدفق الكتابة", "أفكار"],
     pricing: "freemium",
@@ -96,7 +111,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   {
     name: "Midjourney",
     arabicName: "ميدجورني",
-    description: "أداة توليد صور فنية فائقة الجودة والواقعية من الوصف النصي البسيط عبر منصة ديسكورد.",
+    description:
+      "أداة توليد صور فنية فائقة الجودة والواقعية من الوصف النصي البسيط عبر منصة ديسكورد.",
     category: "design",
     tags: ["توليد صور", "فنون رقمية", "واقعية"],
     pricing: "paid",
@@ -105,7 +121,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   },
   {
     name: "DALL-E 3",
-    description: "أحدث نماذج توليد الصور من OpenAI، مدمج بشكل كامل في ChatGPT ويوفر دقة فائقة في فهم التعليمات المعقدة.",
+    description:
+      "أحدث نماذج توليد الصور من OpenAI، مدمج بشكل كامل في ChatGPT ويوفر دقة فائقة في فهم التعليمات المعقدة.",
     category: "design",
     tags: ["توليد صور", "رسوم توضيحية", "OpenAI"],
     pricing: "freemium",
@@ -115,7 +132,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   {
     name: "Leonardo AI",
     arabicName: "ليوناردو إيه آي",
-    description: "منصة توليد وتحرير صور احترافية للغاية توفر أدوات تحكم متقدمة وتدريب نماذج مخصصة للمصممين ومطوري الألعاب.",
+    description:
+      "منصة توليد وتحرير صور احترافية للغاية توفر أدوات تحكم متقدمة وتدريب نماذج مخصصة للمصممين ومطوري الألعاب.",
     category: "design",
     tags: ["توليد صور", "تحرير بيكسل", "ألعاب"],
     pricing: "freemium",
@@ -124,7 +142,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   },
   {
     name: "Stable Diffusion",
-    description: "نموذج توليد صور قوي ومفتوح المصدر يمكن تشغيله وتخصيصه محليًا بالكامل من قبل المطورين والفنانين.",
+    description:
+      "نموذج توليد صور قوي ومفتوح المصدر يمكن تشغيله وتخصيصه محليًا بالكامل من قبل المطورين والفنانين.",
     category: "design",
     tags: ["مفتوح المصدر", "توليد صور", "تخصيص"],
     pricing: "free",
@@ -134,7 +153,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   {
     name: "Canva AI",
     arabicName: "كانفا ذكاء اصطناعي",
-    description: "مجموعة أدوات سحرية مدمجة في منصة Canva تتيح إزالة العناصر، وتوليد الصور، وتعديل التصاميم بذكاء.",
+    description:
+      "مجموعة أدوات سحرية مدمجة في منصة Canva تتيح إزالة العناصر، وتوليد الصور، وتعديل التصاميم بذكاء.",
     category: "design",
     tags: ["تصميم قوالب", "سوشيال ميديا", "تعديل سحري"],
     pricing: "freemium",
@@ -144,7 +164,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   {
     name: "Ideogram",
     arabicName: "أيديوجرام",
-    description: "أداة رائدة لتوليد الصور تتميز بالقدرة الاستثنائية على كتابة النصوص والكلمات داخل الصور بدقة ووضوح.",
+    description:
+      "أداة رائدة لتوليد الصور تتميز بالقدرة الاستثنائية على كتابة النصوص والكلمات داخل الصور بدقة ووضوح.",
     category: "design",
     tags: ["نصوص في الصور", "تصميم شعارات", "بوسترات"],
     pricing: "freemium",
@@ -153,7 +174,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   },
   {
     name: "Remove.bg",
-    description: "أداة فائقة السرعة لإزالة خلفية أي صورة تلقائيًا بدقة استثنائية خلال ثوانٍ معدودة.",
+    description:
+      "أداة فائقة السرعة لإزالة خلفية أي صورة تلقائيًا بدقة استثنائية خلال ثوانٍ معدودة.",
     category: "design",
     tags: ["إزالة خلفية", "تفريغ صور", "سرعة"],
     pricing: "freemium",
@@ -165,7 +187,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   {
     name: "Runway",
     arabicName: "رنواي",
-    description: "منصة رائدة لتوليد وتحرير مقاطع الفيديو بالذكاء الاصطناعي من نصوص أو صور ثابتة بجودة سينمائية.",
+    description:
+      "منصة رائدة لتوليد وتحرير مقاطع الفيديو بالذكاء الاصطناعي من نصوص أو صور ثابتة بجودة سينمائية.",
     category: "video",
     tags: ["توليد فيديو", "تحرير سينمائي", "مؤثرات"],
     pricing: "freemium",
@@ -175,7 +198,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   {
     name: "Suno AI",
     arabicName: "سونو إيه آي",
-    description: "أداة ثورية لإنشاء الأغاني والموسيقى الكاملة والألحان بجودة عالية من وصف نصي بسيط وباللغة العربية أيضًا.",
+    description:
+      "أداة ثورية لإنشاء الأغاني والموسيقى الكاملة والألحان بجودة عالية من وصف نصي بسيط وباللغة العربية أيضًا.",
     category: "video",
     tags: ["توليد أغانٍ", "موسيقى", "صوت"],
     pricing: "freemium",
@@ -185,7 +209,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   {
     name: "Kling AI",
     arabicName: "كلينغ",
-    description: "نموذج متقدم لتوليد الفيديو يتميز بالحركات الطبيعية الدقيقة ومحاكاة الفيزياء بجودة عالية ومدة طويلة.",
+    description:
+      "نموذج متقدم لتوليد الفيديو يتميز بالحركات الطبيعية الدقيقة ومحاكاة الفيزياء بجودة عالية ومدة طويلة.",
     category: "video",
     tags: ["فيديو طويل", "محاكاة فيزيائية", "واقعي"],
     pricing: "freemium",
@@ -194,7 +219,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   },
   {
     name: "Luma Dream Machine",
-    description: "أداة ذكية لتوليد الفيديوهات الواقعية والحركية بجودة سينمائية من النصوص والصور بسرعة.",
+    description:
+      "أداة ذكية لتوليد الفيديوهات الواقعية والحركية بجودة سينمائية من النصوص والصور بسرعة.",
     category: "video",
     tags: ["توليد فيديو", "ثلاثي الأبعاد", "جودة عالية"],
     pricing: "freemium",
@@ -204,7 +230,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   {
     name: "HeyGen",
     arabicName: "هاي جين",
-    description: "إنشاء فيديوهات احترافية بمقدمين افتراضيين (Avatars) واقعيين للغاية مع ميزة الترجمة والدبلجة الصوتية التلقائية.",
+    description:
+      "إنشاء فيديوهات احترافية بمقدمين افتراضيين (Avatars) واقعيين للغاية مع ميزة الترجمة والدبلجة الصوتية التلقائية.",
     category: "video",
     tags: ["مقدمون افتراضيون", "دبلجة", "تسويق فيديو"],
     pricing: "freemium",
@@ -214,7 +241,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   {
     name: "ElevenLabs",
     arabicName: "إيليفن لابس",
-    description: "أفضل منصة لتوليد الأصوات البشرية وتوليد كلام واقعي للغاية بلهجات متعددة مع ميزة استنساخ الأصوات.",
+    description:
+      "أفضل منصة لتوليد الأصوات البشرية وتوليد كلام واقعي للغاية بلهجات متعددة مع ميزة استنساخ الأصوات.",
     category: "video",
     tags: ["تحويل نص لصوت", "استنساخ صوتي", "دبلجة"],
     pricing: "freemium",
@@ -236,7 +264,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   {
     name: "GitHub Copilot",
     arabicName: "كوبيلوت",
-    description: "مساعد برمجي مدمج يكتب الأكواد تلقائيًا ويقترح حلولاً وخوارزميات داخل محرر الأكواد بناءً على السياق.",
+    description:
+      "مساعد برمجي مدمج يكتب الأكواد تلقائيًا ويقترح حلولاً وخوارزميات داخل محرر الأكواد بناءً على السياق.",
     category: "coding",
     tags: ["إكمال الكود", "VS Code", "مساعد مبرمج"],
     pricing: "paid",
@@ -246,7 +275,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   {
     name: "Cursor",
     arabicName: "كيرسر",
-    description: "محرر أكواد ثوري مبني على VS Code مدمج بالكامل مع نماذج لغوية قوية لتطوير وتعديل ملفات الكود بأوامر نصية.",
+    description:
+      "محرر أكواد ثوري مبني على VS Code مدمج بالكامل مع نماذج لغوية قوية لتطوير وتعديل ملفات الكود بأوامر نصية.",
     category: "coding",
     tags: ["محرر أكواد", "تطوير سريع", "أتمتة الكود"],
     pricing: "freemium",
@@ -255,7 +285,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   },
   {
     name: "v0.dev",
-    description: "أداة ثورية من Vercel لتوليد واجهات مستخدم متجاوبة (React, Tailwind, Shadcn) من وصف نصي مباشرة.",
+    description:
+      "أداة ثورية من Vercel لتوليد واجهات مستخدم متجاوبة (React, Tailwind, Shadcn) من وصف نصي مباشرة.",
     category: "coding",
     tags: ["واجهات مستخدم", "Vercel", "Tailwind CSS"],
     pricing: "freemium",
@@ -264,7 +295,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   },
   {
     name: "Bolt.new",
-    description: "بيئة تطوير وتشغيل كاملة في المتصفح تتيح بناء تطبيقات ويب كاملة ونشرها فورًا بمجرد وصفها باللغة العربية أو الإنجليزية.",
+    description:
+      "بيئة تطوير وتشغيل كاملة في المتصفح تتيح بناء تطبيقات ويب كاملة ونشرها فورًا بمجرد وصفها باللغة العربية أو الإنجليزية.",
     category: "coding",
     tags: ["تطبيقات كاملة", "تشغيل فوري", "متصفح"],
     pricing: "freemium",
@@ -274,7 +306,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   {
     name: "Lovable.dev",
     arabicName: "لوفابل",
-    description: "منصة متطورة للغاية تتيح بناء وتطوير تطبيقات ويب متكاملة وإدارتها من خلال التحدث مع الوكيل الذكي باللغة الطبيعية.",
+    description:
+      "منصة متطورة للغاية تتيح بناء وتطوير تطبيقات ويب متكاملة وإدارتها من خلال التحدث مع الوكيل الذكي باللغة الطبيعية.",
     category: "coding",
     tags: ["تطوير تطبيقات", "بدون كود", "نشر سريع"],
     pricing: "freemium",
@@ -284,7 +317,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   {
     name: "Codeium",
     arabicName: "كوديوم",
-    description: "بديل قوي ومجاني بالكامل للأفراد لـ GitHub Copilot يوفر إكمال أكواد ذكي وسريع لأكثر من 70 لغة برمجة.",
+    description:
+      "بديل قوي ومجاني بالكامل للأفراد لـ GitHub Copilot يوفر إكمال أكواد ذكي وسريع لأكثر من 70 لغة برمجة.",
     category: "coding",
     tags: ["مجاني", "إكمال الكود", "مساعد برمجة"],
     pricing: "freemium",
@@ -294,7 +328,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   {
     name: "JetBrains AI Assistant",
     arabicName: "مساعد JetBrains الذكي",
-    description: "مساعد برمجي ذكي مدمج داخل كافة بيئات تطوير JetBrains وVS Code يقدم إكمال أكواد مخصص، توليد وتوثيق تلقائي، وشرح مفسر للثغرات والأخطاء.",
+    description:
+      "مساعد برمجي ذكي مدمج داخل كافة بيئات تطوير JetBrains وVS Code يقدم إكمال أكواد مخصص، توليد وتوثيق تلقائي، وشرح مفسر للثغرات والأخطاء.",
     category: "coding",
     tags: ["مساعد ذكي", "JetBrains", "إكمال الكود", "توليد توثيق"],
     pricing: "paid",
@@ -304,7 +339,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   {
     name: "JetBrains WebStorm",
     arabicName: "ويب ستورم",
-    description: "أقوى بيئة تطوير متكاملة (IDE) مخصصة لـ JavaScript وTypeScript، توفر دعماً استثنائياً لـ React وNode.js وVue وتصحيح الأخطاء الذكي.",
+    description:
+      "أقوى بيئة تطوير متكاملة (IDE) مخصصة لـ JavaScript وTypeScript، توفر دعماً استثنائياً لـ React وNode.js وVue وتصحيح الأخطاء الذكي.",
     category: "coding",
     tags: ["JavaScript", "TypeScript", "React", "IDE"],
     pricing: "paid",
@@ -314,7 +350,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   {
     name: "JetBrains PyCharm",
     arabicName: "باايتشارم",
-    description: "بيئة التطوير القياسية للغة Python، علوم البيانات، الذكاء الاصطناعي، وتطوير الويب باستخدام Django وFastAPI.",
+    description:
+      "بيئة التطوير القياسية للغة Python، علوم البيانات، الذكاء الاصطناعي، وتطوير الويب باستخدام Django وFastAPI.",
     category: "coding",
     tags: ["Python", "ذكاء اصطناعي", "علوم البيانات", "Django"],
     pricing: "freemium",
@@ -324,7 +361,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   {
     name: "JetBrains PhpStorm",
     arabicName: "بي إتش بي ستورم",
-    description: "بيئة تطوير احترافية لمطوري PHP وLaravel وSymfony، توفر تحليلاً عميقاً للكود وتصحيح أخطاء فوري وفحوصات أمان.",
+    description:
+      "بيئة تطوير احترافية لمطوري PHP وLaravel وSymfony، توفر تحليلاً عميقاً للكود وتصحيح أخطاء فوري وفحوصات أمان.",
     category: "coding",
     tags: ["PHP", "Laravel", "Symfony", "تطوير ويب"],
     pricing: "paid",
@@ -334,7 +372,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   {
     name: "JetBrains DataGrip",
     arabicName: "داتا جريب",
-    description: "أداة متقدمة ومتكاملة لإدارة ومطوري قواعد البيانات، تدعم التعامل مع جميع أنظمة SQL وNoSQL مثل PostgreSQL وMySQL وSQLite في واجهة واحدة.",
+    description:
+      "أداة متقدمة ومتكاملة لإدارة ومطوري قواعد البيانات، تدعم التعامل مع جميع أنظمة SQL وNoSQL مثل PostgreSQL وMySQL وSQLite في واجهة واحدة.",
     category: "coding",
     tags: ["قواعد بيانات", "SQL", "PostgreSQL", "إدارة بيانات"],
     pricing: "paid",
@@ -344,7 +383,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   {
     name: "Windsurf",
     arabicName: "ويند سيرف",
-    description: "محرر كود حديث يحتوي على وكيل ذكي ثنائي العمل لتنفيذ وتعديل الأكواد البرمجية عبر ملفات متعددة في وقت واحد.",
+    description:
+      "محرر كود حديث يحتوي على وكيل ذكي ثنائي العمل لتنفيذ وتعديل الأكواد البرمجية عبر ملفات متعددة في وقت واحد.",
     category: "coding",
     tags: ["محرر كود", "وكيل برمجي", "متعدد الملفات"],
     pricing: "freemium",
@@ -356,7 +396,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   {
     name: "Motion",
     arabicName: "موشن",
-    description: "تطبيق تقويم وجدولة ذكي يعيد ترتيب مهامك اليومية واجتماعاتك تلقائيًا بناءً على الأولويات والأوقات المتاحة.",
+    description:
+      "تطبيق تقويم وجدولة ذكي يعيد ترتيب مهامك اليومية واجتماعاتك تلقائيًا بناءً على الأولويات والأوقات المتاحة.",
     category: "productivity",
     tags: ["جدولة مهام", "تقويم ذكي", "تنظيم وقت"],
     pricing: "paid",
@@ -366,7 +407,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   {
     name: "Todoist AI",
     arabicName: "تودويست",
-    description: "مساعد ذكي مدمج في تطبيق تودويست يقترح خطط عمل للمهام الضخمة ويصنّف أولوياتك تلقائيًا.",
+    description:
+      "مساعد ذكي مدمج في تطبيق تودويست يقترح خطط عمل للمهام الضخمة ويصنّف أولوياتك تلقائيًا.",
     category: "productivity",
     tags: ["إدارة مهام", "قوائم مهام", "أتمتة"],
     pricing: "freemium",
@@ -376,7 +418,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   {
     name: "Zapier AI",
     arabicName: "زابيير",
-    description: "أداة أتمتة سير العمل التي تسمح بربط التطبيقات المختلفة وبناء أتمتة ذكية بدون الحاجة لكتابة كود.",
+    description:
+      "أداة أتمتة سير العمل التي تسمح بربط التطبيقات المختلفة وبناء أتمتة ذكية بدون الحاجة لكتابة كود.",
     category: "productivity",
     tags: ["أتمتة الأعمال", "ربط تطبيقات", "بدون كود"],
     pricing: "freemium",
@@ -385,7 +428,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   },
   {
     name: "tl;dv",
-    description: "مسجل ومحلل اجتماعات Zoom وGoogle Meet يقوم بنسخ وتلخيص الحوارات واستخراج نقاط العمل تلقائيًا.",
+    description:
+      "مسجل ومحلل اجتماعات Zoom وGoogle Meet يقوم بنسخ وتلخيص الحوارات واستخراج نقاط العمل تلقائيًا.",
     category: "productivity",
     tags: ["تلخيص اجتماعات", "فيديو", "ملاحظات"],
     pricing: "freemium",
@@ -395,7 +439,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   {
     name: "Taskade AI",
     arabicName: "تاسكاد",
-    description: "مساحة عمل تعاونية تدمج المهام، الخرائط الذهنية، والوثائق المشتركة مع وكلاء ذكاء اصطناعي مخصصين.",
+    description:
+      "مساحة عمل تعاونية تدمج المهام، الخرائط الذهنية، والوثائق المشتركة مع وكلاء ذكاء اصطناعي مخصصين.",
     category: "productivity",
     tags: ["خرائط ذهنية", "مساحة تعاونية", "وكلاء AI"],
     pricing: "freemium",
@@ -407,7 +452,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   {
     name: "Consensus",
     arabicName: "كونسينسس",
-    description: "محرك بحث أكاديمي يستخرج إجابات موثوقة ومدعومة بأدلة مباشرة من ملايين الأوراق والأبحاث العلمية المحكّمة.",
+    description:
+      "محرك بحث أكاديمي يستخرج إجابات موثوقة ومدعومة بأدلة مباشرة من ملايين الأوراق والأبحاث العلمية المحكّمة.",
     category: "education",
     tags: ["بحث علمي", "أوراق أكاديمية", "أدلة"],
     pricing: "freemium",
@@ -416,7 +462,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   },
   {
     name: "ChatPDF",
-    description: "أداة تفاعلية تتيح لك تحميل مستندات PDF الضخمة ومحاورتها واستخلاص المعلومات منها في ثوانٍ.",
+    description:
+      "أداة تفاعلية تتيح لك تحميل مستندات PDF الضخمة ومحاورتها واستخلاص المعلومات منها في ثوانٍ.",
     category: "education",
     tags: ["محادثة PDF", "تلخيص كتب", "دراسة"],
     pricing: "freemium",
@@ -425,7 +472,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   },
   {
     name: "NotebookLM",
-    description: "أداة بحث ودراسة استثنائية من Google تقوم بتحليل مستنداتك وتلخيصها وتحويلها إلى برامج حوارية صوتية شيقة.",
+    description:
+      "أداة بحث ودراسة استثنائية من Google تقوم بتحليل مستنداتك وتلخيصها وتحويلها إلى برامج حوارية صوتية شيقة.",
     category: "education",
     tags: ["أداة من جوجل", "تلخيص مستندات", "بودكاست"],
     pricing: "free",
@@ -435,7 +483,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   {
     name: "Julius AI",
     arabicName: "جوليوس",
-    description: "مساعد بيانات ذكي يقوم بتحليل جداول Excel وبيانات CSV المرفوعة ورسم رسوم بيانية تفاعلية بالمحادثة.",
+    description:
+      "مساعد بيانات ذكي يقوم بتحليل جداول Excel وبيانات CSV المرفوعة ورسم رسوم بيانية تفاعلية بالمحادثة.",
     category: "education",
     tags: ["تحليل بيانات", "رسم بياني", "Excel"],
     pricing: "freemium",
@@ -444,7 +493,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   },
   {
     name: "Wolfram Alpha",
-    description: "محرك معرفة حاسوبية قوي يجيب عن مسائل الرياضيات، الفيزياء، والعلوم المتقدمة بدقة متناهية وشرح للخطوات.",
+    description:
+      "محرك معرفة حاسوبية قوي يجيب عن مسائل الرياضيات، الفيزياء، والعلوم المتقدمة بدقة متناهية وشرح للخطوات.",
     category: "education",
     tags: ["رياضيات", "حسابات علمية", "فيزياء"],
     pricing: "freemium",
@@ -454,7 +504,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   {
     name: "SciSpace",
     arabicName: "ساي سبيس",
-    description: "منصة متطورة لقراءة وفهم الأوراق العلمية المعقدة مع شرح فوري للمصطلحات الرياضية واللغوية الصعبة.",
+    description:
+      "منصة متطورة لقراءة وفهم الأوراق العلمية المعقدة مع شرح فوري للمصطلحات الرياضية واللغوية الصعبة.",
     category: "education",
     tags: ["تبسيط الأبحاث", "مساعد دراسي", "قراءة"],
     pricing: "freemium",
@@ -466,7 +517,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   {
     name: "Zendesk AI",
     arabicName: "زين ديسك",
-    description: "نظام دعم عملاء ذكي يقوم بتصنيف التذاكر وتوجيهها تلقائيًا للعميل المناسب مع اقتراح ردود ذكية فورية.",
+    description:
+      "نظام دعم عملاء ذكي يقوم بتصنيف التذاكر وتوجيهها تلقائيًا للعميل المناسب مع اقتراح ردود ذكية فورية.",
     category: "business",
     tags: ["دعم عملاء", "تذاكر", "أتمتة خدمة"],
     pricing: "paid",
@@ -476,7 +528,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   {
     name: "Tidio AI",
     arabicName: "تيديو",
-    description: "شات بوت خدمة عملاء ذكي مخصص لمتاجر التجارة الإلكترونية يجيب على استفسارات الطلبات والشحن تلقائيًا.",
+    description:
+      "شات بوت خدمة عملاء ذكي مخصص لمتاجر التجارة الإلكترونية يجيب على استفسارات الطلبات والشحن تلقائيًا.",
     category: "business",
     tags: ["دردشة موقع", "تجارة إلكترونية", "خدمة عملاء"],
     pricing: "freemium",
@@ -486,7 +539,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   {
     name: "Clay",
     arabicName: "كلاي",
-    description: "أداة مبيعات قوية تجمع بيانات العملاء المحتملين من مصادر متعددة وتكتب لهم رسائل بريدية مخصصة للغاية.",
+    description:
+      "أداة مبيعات قوية تجمع بيانات العملاء المحتملين من مصادر متعددة وتكتب لهم رسائل بريدية مخصصة للغاية.",
     category: "business",
     tags: ["تنقيب مبيعات", "بيانات العملاء", "تخصيص رسائل"],
     pricing: "paid",
@@ -496,7 +550,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   {
     name: "Apollo.io",
     arabicName: "أبولو",
-    description: "منصة استخبارات مبيعات ضخمة تحتوي على بيانات تواصل ملايين المهنيين وتتيح أتمتة حملات البريد الإلكتروني.",
+    description:
+      "منصة استخبارات مبيعات ضخمة تحتوي على بيانات تواصل ملايين المهنيين وتتيح أتمتة حملات البريد الإلكتروني.",
     category: "business",
     tags: ["قواعد بيانات", "تسويق بريدي", "مبيعات"],
     pricing: "freemium",
@@ -506,7 +561,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   {
     name: "Monday.com AI",
     arabicName: "مونداي",
-    description: "منصة لإدارة المشاريع وفرق العمل تدعم الذكاء الاصطناعي لتوليد المهام والملخصات وتحديث الحالات تلقائيًا.",
+    description:
+      "منصة لإدارة المشاريع وفرق العمل تدعم الذكاء الاصطناعي لتوليد المهام والملخصات وتحديث الحالات تلقائيًا.",
     category: "business",
     tags: ["إدارة مشاريع", "تعاون فرق", "أتمتة"],
     pricing: "paid",
@@ -518,7 +574,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   {
     name: "Qalam AI",
     arabicName: "قلم",
-    description: "أداة تدقيق إملائي ونحوي ذكية مخصصة للغة العربية تساعد على تحسين صياغة المقالات ورسائل البريد.",
+    description:
+      "أداة تدقيق إملائي ونحوي ذكية مخصصة للغة العربية تساعد على تحسين صياغة المقالات ورسائل البريد.",
     category: "arabic",
     tags: ["تدقيق لغوي", "كتابة عربية", "إملاء"],
     pricing: "freemium",
@@ -528,7 +585,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   {
     name: "Rewaa",
     arabicName: "رواء",
-    description: "منصة سعودية ذكية لإدارة المخازن ونقاط البيع والفواتير تدعم تجار التجزئة بأدوات تحليل مخزون آلية.",
+    description:
+      "منصة سعودية ذكية لإدارة المخازن ونقاط البيع والفواتير تدعم تجار التجزئة بأدوات تحليل مخزون آلية.",
     category: "arabic",
     tags: ["نقاط بيع", "إدارة مخزون", "سعودية"],
     pricing: "paid",
@@ -538,7 +596,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   {
     name: "ALLaM",
     arabicName: "علام",
-    description: "نموذج لغوي عربي متميز تم تطويره بواسطة الهيئة السعودية للذكاء الاصطناعي (سدايا) لفهم وتوليد المحتوى العربي الفصيح.",
+    description:
+      "نموذج لغوي عربي متميز تم تطويره بواسطة الهيئة السعودية للذكاء الاصطناعي (سدايا) لفهم وتوليد المحتوى العربي الفصيح.",
     category: "arabic",
     tags: ["نموذج لغوي", "سدايا", "السعودية"],
     pricing: "free",
@@ -548,7 +607,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   {
     name: "Jais LLM",
     arabicName: "جيس",
-    description: "النموذج اللغوي العربي الضخم ثنائي اللغة (العربية والإنجليزية) الحائز على تصنيفات رائدة من تطوير شركة Core42 الإماراتية.",
+    description:
+      "النموذج اللغوي العربي الضخم ثنائي اللغة (العربية والإنجليزية) الحائز على تصنيفات رائدة من تطوير شركة Core42 الإماراتية.",
     category: "arabic",
     tags: ["نموذج لغوي", "إماراتية", "ثنائي اللغة"],
     pricing: "free",
@@ -558,7 +618,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   {
     name: "Salla",
     arabicName: "سلة",
-    description: "منصة التجارة الإلكترونية السعودية الرائدة لبناء المتاجر وتهيئتها بالذكاء الاصطناعي لتوليد التوصيات وكتابة أوصاف المنتجات.",
+    description:
+      "منصة التجارة الإلكترونية السعودية الرائدة لبناء المتاجر وتهيئتها بالذكاء الاصطناعي لتوليد التوصيات وكتابة أوصاف المنتجات.",
     category: "arabic",
     tags: ["تجارة إلكترونية", "سعودية", "متاجر ذكية"],
     pricing: "paid",
@@ -568,7 +629,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   {
     name: "Zid",
     arabicName: "زد",
-    description: "منصة متكاملة لبناء وتفعيل المتاجر الإلكترونية في العالم العربي مع أدوات نمو وإدارة مبنية بالذكاء الاصطناعي.",
+    description:
+      "منصة متكاملة لبناء وتفعيل المتاجر الإلكترونية في العالم العربي مع أدوات نمو وإدارة مبنية بالذكاء الاصطناعي.",
     category: "arabic",
     tags: ["متاجر إلكترونية", "نمو مبيعات", "شحن"],
     pricing: "paid",
@@ -578,7 +640,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   {
     name: "Lucidya",
     arabicName: "لوسيديا",
-    description: "المنصة العربية الأولى لرصد شبكات التواصل الاجتماعي وتحليل مشاعر العملاء وفهم اللهجات العربية بالذكاء الاصطناعي.",
+    description:
+      "المنصة العربية الأولى لرصد شبكات التواصل الاجتماعي وتحليل مشاعر العملاء وفهم اللهجات العربية بالذكاء الاصطناعي.",
     category: "arabic",
     tags: ["استماع اجتماعي", "تحليل مشاعر", "لهجات عربية"],
     pricing: "paid",
@@ -588,7 +651,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   {
     name: "Mudawala",
     arabicName: "مداولة",
-    description: "منصة استشارات وتقييم مشاريع ذكية تجمع خبراء افتراضيين لتقديم نصائح وتوجيهات للمشاريع الريادية والناشئة.",
+    description:
+      "منصة استشارات وتقييم مشاريع ذكية تجمع خبراء افتراضيين لتقديم نصائح وتوجيهات للمشاريع الريادية والناشئة.",
     category: "arabic",
     tags: ["مستشار افتراضي", "ريادة أعمال", "تقييم"],
     pricing: "freemium",
