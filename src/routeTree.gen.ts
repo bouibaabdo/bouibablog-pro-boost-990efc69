@@ -19,6 +19,7 @@ import { Route as SitemapWorldcupDotxmlRouteImport } from './routes/sitemap-worl
 import { Route as SitemapToolsDotxmlRouteImport } from './routes/sitemap-tools[.]xml'
 import { Route as SitemapPostsDotxmlRouteImport } from './routes/sitemap-posts[.]xml'
 import { Route as SitemapPagesDotxmlRouteImport } from './routes/sitemap-pages[.]xml'
+import { Route as SitemapCategoriesDotxmlRouteImport } from './routes/sitemap-categories[.]xml'
 import { Route as QuizRouteImport } from './routes/quiz'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as PrivacyRouteImport } from './routes/privacy'
@@ -104,6 +105,11 @@ const SitemapPostsDotxmlRoute = SitemapPostsDotxmlRouteImport.update({
 const SitemapPagesDotxmlRoute = SitemapPagesDotxmlRouteImport.update({
   id: '/sitemap-pages.xml',
   path: '/sitemap-pages.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapCategoriesDotxmlRoute = SitemapCategoriesDotxmlRouteImport.update({
+  id: '/sitemap-categories.xml',
+  path: '/sitemap-categories.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const QuizRoute = QuizRouteImport.update({
@@ -304,6 +310,7 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/quiz': typeof QuizRoute
+  '/sitemap-categories.xml': typeof SitemapCategoriesDotxmlRoute
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
   '/sitemap-posts.xml': typeof SitemapPostsDotxmlRoute
   '/sitemap-tools.xml': typeof SitemapToolsDotxmlRoute
@@ -351,6 +358,7 @@ export interface FileRoutesByTo {
   '/privacy': typeof PrivacyRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/quiz': typeof QuizRoute
+  '/sitemap-categories.xml': typeof SitemapCategoriesDotxmlRoute
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
   '/sitemap-posts.xml': typeof SitemapPostsDotxmlRoute
   '/sitemap-tools.xml': typeof SitemapToolsDotxmlRoute
@@ -398,6 +406,7 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/quiz': typeof QuizRoute
+  '/sitemap-categories.xml': typeof SitemapCategoriesDotxmlRoute
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
   '/sitemap-posts.xml': typeof SitemapPostsDotxmlRoute
   '/sitemap-tools.xml': typeof SitemapToolsDotxmlRoute
@@ -447,6 +456,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/privacy-policy'
     | '/quiz'
+    | '/sitemap-categories.xml'
     | '/sitemap-pages.xml'
     | '/sitemap-posts.xml'
     | '/sitemap-tools.xml'
@@ -494,6 +504,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/privacy-policy'
     | '/quiz'
+    | '/sitemap-categories.xml'
     | '/sitemap-pages.xml'
     | '/sitemap-posts.xml'
     | '/sitemap-tools.xml'
@@ -540,6 +551,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/privacy-policy'
     | '/quiz'
+    | '/sitemap-categories.xml'
     | '/sitemap-pages.xml'
     | '/sitemap-posts.xml'
     | '/sitemap-tools.xml'
@@ -589,6 +601,7 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   QuizRoute: typeof QuizRoute
+  SitemapCategoriesDotxmlRoute: typeof SitemapCategoriesDotxmlRoute
   SitemapPagesDotxmlRoute: typeof SitemapPagesDotxmlRoute
   SitemapPostsDotxmlRoute: typeof SitemapPostsDotxmlRoute
   SitemapToolsDotxmlRoute: typeof SitemapToolsDotxmlRoute
@@ -676,6 +689,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap-pages.xml'
       fullPath: '/sitemap-pages.xml'
       preLoaderRoute: typeof SitemapPagesDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap-categories.xml': {
+      id: '/sitemap-categories.xml'
+      path: '/sitemap-categories.xml'
+      fullPath: '/sitemap-categories.xml'
+      preLoaderRoute: typeof SitemapCategoriesDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/quiz': {
@@ -1011,6 +1031,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   QuizRoute: QuizRoute,
+  SitemapCategoriesDotxmlRoute: SitemapCategoriesDotxmlRoute,
   SitemapPagesDotxmlRoute: SitemapPagesDotxmlRoute,
   SitemapPostsDotxmlRoute: SitemapPostsDotxmlRoute,
   SitemapToolsDotxmlRoute: SitemapToolsDotxmlRoute,

@@ -12,11 +12,43 @@ export interface SitemapEntry {
   priority?: string;
 }
 
+export function encodePath(path: string): string {
+  if (!path) return "";
+  const [pathname, query] = path.split("?");
+  const encodedPathname = pathname
+    .split("/")
+    .map((segment) => {
+      try {
+        return encodeURIComponent(decodeURIComponent(segment));
+      } catch {
+        return encodeURIComponent(segment);
+      }
+    })
+    .join("/");
+
+  if (!query) return encodedPathname;
+
+  const encodedQuery = query
+    .split("&")
+    .map((pair) => {
+      const [key, val] = pair.split("=");
+      if (!val) return key;
+      try {
+        return `${key}=${encodeURIComponent(decodeURIComponent(val))}`;
+      } catch {
+        return `${key}=${encodeURIComponent(val)}`;
+      }
+    })
+    .join("&");
+
+  return `${encodedPathname}?${encodedQuery}`;
+}
+
 export function buildUrlset(baseUrl: string, entries: SitemapEntry[]): string {
   const urls = entries.map((e) =>
     [
       `  <url>`,
-      `    <loc>${baseUrl}${e.path}</loc>`,
+      `    <loc>${baseUrl}${encodePath(e.path)}</loc>`,
       e.lastmod ? `    <lastmod>${e.lastmod}</lastmod>` : null,
       e.changefreq ? `    <changefreq>${e.changefreq}</changefreq>` : null,
       e.priority ? `    <priority>${e.priority}</priority>` : null,
