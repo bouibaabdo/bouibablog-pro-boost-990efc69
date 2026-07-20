@@ -8,7 +8,10 @@ import { Sparkles, RotateCcw, Share2, Check, ArrowLeft, ArrowRight, Trophy } fro
 export const Route = createFileRoute("/quiz")({
   head: () => ({
     meta: [
-      { title: "اختبار: ما أداة الذكاء الاصطناعي المناسبة لك؟ — Bouiba Academy" },
+      {
+        title:
+          "\u0623\u064a \u0623\u062f\u0627\u0629 AI \u062a\u0646\u0627\u0633\u0628\u0643\u061f \u0627\u062e\u062a\u0628\u0631 \u0648\u0627\u0643\u062a\u0634\u0641 \u2014 Bouiba Academy",
+      },
       {
         name: "description",
         content:

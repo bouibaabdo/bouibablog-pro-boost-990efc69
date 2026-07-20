@@ -37,25 +37,48 @@ export const Route = createFileRoute("/posts/")({
   },
   head: () => ({
     meta: [
-      { title: "المقالات — Bouiba Academy" },
+      { title: "مقالات الذكاء الاصطناعي بالعربي — Bouiba Academy" },
       {
         name: "description",
-        content: "تصفح جميع مقالات ودروس أكاديمية بويبة في الذكاء الاصطناعي.",
+        content:
+          "مكتبة شاملة من المقالات والدروس العربية في الذكاء الاصطناعي. تعلّم ChatGPT وGemini وClaude وأدوات AI الأحدث بأسلوب عملي ومبسط.",
         key: "description",
       },
-      { property: "og:title", content: "المقالات — Bouiba Academy", key: "og:title" },
+      {
+        property: "og:title",
+        content: "مقالات الذكاء الاصطناعي بالعربي — Bouiba Academy",
+        key: "og:title",
+      },
       {
         property: "og:description",
-        content: "مكتبة كاملة من الدروس والمقالات العربية حول أدوات وتطبيقات الذكاء الاصطناعي.",
+        content:
+          "مكتبة شاملة من المقالات والدروس العربية في الذكاء الاصطناعي. تعلّم ChatGPT وGemini وClaude وأدوات AI الأحدث بأسلوب عملي ومبسط.",
         key: "og:description",
       },
+      {
+        property: "og:image",
+        content: "https://www.bouibacademy.me/og-banner.png",
+        key: "og:image",
+      },
+      { property: "og:image:width", content: "1200", key: "og:image:width" },
+      { property: "og:image:height", content: "630", key: "og:image:height" },
       { property: "og:url", content: "https://www.bouibacademy.me/posts", key: "og:url" },
       { name: "twitter:card", content: "summary_large_image", key: "twitter:card" },
-      { name: "twitter:title", content: "المقالات — Bouiba Academy", key: "twitter:title" },
+      {
+        name: "twitter:title",
+        content: "مقالات الذكاء الاصطناعي بالعربي — Bouiba Academy",
+        key: "twitter:title",
+      },
       {
         name: "twitter:description",
-        content: "مكتبة كاملة من الدروس والمقالات العربية حول أدوات وتطبيقات الذكاء الاصطناعي.",
+        content:
+          "مكتبة شاملة من المقالات والدروس العربية في الذكاء الاصطناعي. تعلّم ChatGPT وGemini وClaude وأدوات AI الأحدث بأسلوب عملي ومبسط.",
         key: "twitter:description",
+      },
+      {
+        name: "twitter:image",
+        content: "https://www.bouibacademy.me/og-banner.png",
+        key: "twitter:image",
       },
     ],
     links: [{ rel: "canonical", href: "https://www.bouibacademy.me/posts" }],
@@ -129,8 +152,9 @@ function PostsPage() {
             </div>
           ) : (
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {data.posts.map((p) => (
-                <PostCard key={p.id} post={p} />
+              {data.posts.map((p, i) => (
+                // أول مقالَين = LCP — يجب أن يُحمَّلا بـ eager + high priority
+                <PostCard key={p.id} post={p} priority={i < 2} />
               ))}
             </div>
           )}

@@ -7,8 +7,13 @@ meta_checker.py — Bouiba Academy SEO Auditor
 import requests
 import re
 import sys
+import io
 from datetime import datetime
 from bs4 import BeautifulSoup
+
+# Fix Unicode output on Windows terminals
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
+
 
 # ─── ألوان الـ Terminal ────────────────────────────────────────────
 GREEN  = "\033[92m"

@@ -41,7 +41,7 @@ export const Route = createFileRoute("/")({
     return { lcp };
   },
   head: ({ loaderData }) => {
-    const title = "Bouiba Academy — أكاديميتك العربية للذكاء الاصطناعي | دروس وأدوات AI مجانية";
+    const title = "Bouiba Academy — تعلّم AI بالعربية مجاناً";
     const desc =
       "أكاديميتك العربية للذكاء الاصطناعي. نوفر دروساً عملية مجانية، أحدث الأخبار، وأدوات ذكاء اصطناعي تفاعلية مثل توليد الصور وتلخيص النصوص ومسارات التعلم.";
     return {
@@ -255,8 +255,9 @@ function HomePage() {
           )}
 
           <div className="grid gap-4 md:gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {rest.map((p) => (
-              <PostCard key={p.id} post={p} />
+            {rest.map((p, i) => (
+              // أول مقال في الـ grid = مرئي فوق الطية على الموبايل
+              <PostCard key={p.id} post={p} priority={i === 0} />
             ))}
           </div>
         </section>

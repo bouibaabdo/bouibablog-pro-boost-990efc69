@@ -6,18 +6,32 @@ import { Mail, MessageCircle, Globe } from "lucide-react";
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "تواصل معنا — Bouiba Academy" },
+      {
+        title:
+          "\u062a\u0648\u0627\u0635\u0644 \u0645\u0639 \u0641\u0631\u064a\u0642 Bouiba Academy \u2014 \u0646\u062d\u0646 \u0647\u0646\u0627",
+      },
       {
         name: "description",
         content:
-          "تواصل مع فريق Bouiba Academy — لأسئلتك، اقتراحاتك، أو فرص التعاون في محتوى الذكاء الاصطناعي العربي.",
+          "\u062a\u0648\u0627\u0635\u0644 \u0645\u0639 \u0641\u0631\u064a\u0642 Bouiba Academy \u2014 \u0644\u0623\u0633\u0626\u0644\u062a\u0643\u060c \u0627\u0642\u062a\u0631\u0627\u062d\u0627\u062a\u0643\u060c \u0623\u0648 \u0641\u0631\u0635 \u0627\u0644\u062a\u0639\u0627\u0648\u0646 \u0641\u064a \u0645\u062d\u062a\u0648\u0649 \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064a \u0627\u0644\u0639\u0631\u0628\u064a.",
         key: "description",
       },
-      { property: "og:title", content: "تواصل معنا — Bouiba Academy", key: "og:title" },
+      {
+        property: "og:title",
+        content:
+          "\u062a\u0648\u0627\u0635\u0644 \u0645\u0639 \u0641\u0631\u064a\u0642 Bouiba Academy \u2014 \u0646\u062d\u0646 \u0647\u0646\u0627",
+        key: "og:title",
+      },
       {
         property: "og:description",
-        content: "راسل فريق Bouiba Academy لأي سؤال، اقتراح، أو تعاون في محتوى الذكاء الاصطناعي.",
+        content:
+          "\u0631\u0627\u0633\u0644 \u0641\u0631\u064a\u0642 Bouiba Academy \u0644\u0623\u064a \u0633\u0624\u0627\u0644\u060c \u0627\u0642\u062a\u0631\u0627\u062d\u060c \u0623\u0648 \u062a\u0639\u0627\u0648\u0646 \u0641\u064a \u0645\u062d\u062a\u0648\u0649 \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064a.",
         key: "og:description",
+      },
+      {
+        property: "og:image",
+        content: "https://www.bouibacademy.me/og-banner.png",
+        key: "og:image",
       },
       { property: "og:url", content: "https://www.bouibacademy.me/contact", key: "og:url" },
     ],

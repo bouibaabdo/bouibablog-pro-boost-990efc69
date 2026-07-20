@@ -53,10 +53,15 @@ export const Route = createFileRoute("/posts/$id")({
   head: ({ params, loaderData }) => {
     const post = loaderData;
     const SUFFIX = " — Bouiba Academy";
-    const title = `${post?.title ?? "مقال"}${SUFFIX}`;
-    const desc = post
-      ? post.metaDescription || post.excerpt.slice(0, 160)
+    const rawDesc = post
+      ? post.metaDescription || post.excerpt
       : "مقال من أكاديمية بويبة للذكاء الاصطناعي.";
+    // Trim description to Google's 155-char limit to avoid "Meta Description طويلة" issues
+    const desc = rawDesc.length > 150 ? rawDesc.slice(0, 148) + "…" : rawDesc;
+    // Trim title to 60 chars (without suffix) to avoid over-long title warnings
+    const rawTitle = post?.title ?? "مقال";
+    const shortTitle = rawTitle.length > 43 ? rawTitle.slice(0, 41) + "…" : rawTitle;
+    const title = `${shortTitle}${SUFFIX}`;
     const canonical = `https://www.bouibacademy.me/posts/${post?.slug ?? params.id}`;
     const meta: Array<Record<string, string>> = [
       { title },
