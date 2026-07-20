@@ -4,6 +4,7 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
@@ -169,6 +170,7 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -191,18 +193,31 @@ function RootComponent() {
       };
     };
 
-    let cancelled = false;
+    const initWidget = () => {
+      const target = document.getElementById("google_translate_element");
+      if (target) target.innerHTML = "";
 
-    const initGoogleTranslate = () => {
-      if (cancelled) return;
       if (w.google?.translate?.TranslateElement) {
         w.googleTranslateElementInit = () => {
+          const container = document.getElementById("google_translate_element");
+          if (container) container.innerHTML = "";
           new w.google!.translate!.TranslateElement(
             { pageLanguage: "ar", includedLanguages: "en,ar", autoDisplay: false },
             "google_translate_element",
           );
         };
         w.googleTranslateElementInit();
+        return true;
+      }
+
+      return false;
+    };
+
+    let cancelled = false;
+
+    const initGoogleTranslate = () => {
+      if (cancelled) return;
+      if (initWidget()) {
         return;
       }
 
@@ -227,12 +242,27 @@ function RootComponent() {
       document.head.appendChild(script);
     };
 
-    const timer = window.setTimeout(initGoogleTranslate, 600);
+    const content = document.getElementById("main-content");
+    const run = () => {
+      if (cancelled) return;
+      initGoogleTranslate();
+    };
+
+    const timer = window.setTimeout(run, 600);
+    const observer =
+      content &&
+      new MutationObserver(() => {
+        window.clearTimeout(timer);
+        window.setTimeout(run, 150);
+      });
+
+    observer?.observe(content, { childList: true, subtree: true });
     return () => {
       cancelled = true;
       window.clearTimeout(timer);
+      observer?.disconnect();
     };
-  }, []);
+  }, [pathname]);
 
   return (
     <QueryClientProvider client={queryClient}>
