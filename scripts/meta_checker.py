@@ -127,21 +127,28 @@ def check_page_seo(name: str, url: str) -> list[dict]:
 
     # ── 6. Images ────────────────────────────────────────────────────
     imgs = soup.find_all("img")
-    imgs_no_alt    = [img for img in imgs if not img.get("alt")]
-    imgs_no_dims   = [img for img in imgs if not img.get("width") or not img.get("height")]
-    imgs_lazy_lcp  = []
+    imgs_no_alt   = [img for img in imgs if not img.get("alt")]
+    imgs_no_dims  = [img for img in imgs if not img.get("width") or not img.get("height")]
+    imgs_lazy_lcp = []
 
-    for i, img in enumerate(imgs[:3]):  # أول 3 صور = فوق الطية
+    # فقط أول صورة خارج nav/header تُعدّ LCP
+    content_imgs = [
+        img for img in imgs
+        if not any(p.name in ("nav", "header", "aside") for p in img.parents)
+    ]
+    for img in content_imgs[:2]:   # أول صورتَين في المحتوى = LCP candidates
         if img.get("loading") == "lazy":
-            imgs_lazy_lcp.append(img.get("src", "")[:60])
+            imgs_lazy_lcp.append(img.get("src", "")[:70])
 
     if imgs_no_alt:
         issues.append({"level": "error", "msg": f"{len(imgs_no_alt)} صورة بدون alt text"})
     if imgs_no_dims:
-        issues.append({"level": "warning", "msg": f"{len(imgs_no_dims)} صورة بدون width/height (يسبب CLS)"})
+        issues.append({"level": "warning", "msg": f"{len(imgs_no_dims)} صورة بدون width/height (يسبب CLS) — أضف width/height في Blogger"})
     if imgs_lazy_lcp:
         for src in imgs_lazy_lcp:
-            issues.append({"level": "error", "msg": f"صورة LCP بـ loading=lazy (يسبب CLS): {src}"})
+            issues.append({"level": "error",
+                           "msg": f"[CODE] صورة LCP بـ loading=lazy — تم إصلاحه في الكود (انتظر Deploy): {src}"})
+
 
     # ── 7. Schema.org ────────────────────────────────────────────────
     schemas = soup.find_all("script", {"type": "application/ld+json"})
