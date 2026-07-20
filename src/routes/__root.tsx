@@ -117,14 +117,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "(function(){var loaded=false;function load(){if(loaded)return;loaded=true;var s=document.createElement('script');s.async=true;s.crossOrigin='anonymous';s.src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6865528919843764';document.head.appendChild(s);}var evts=['scroll','click','touchstart','keydown','mousemove'];evts.forEach(function(e){window.addEventListener(e,load,{once:true,passive:true})});setTimeout(load,4000);})();",
       },
       {
-        children:
-          "window.googleTranslateElementInit=function(){new google.translate.TranslateElement({pageLanguage:'ar',includedLanguages:'en,ar',autoDisplay:false},'google_translate_element');};",
-      },
-      {
-        src: "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit",
-        async: true,
-      },
-      {
         type: "application/ld+json",
         children: JSON.stringify({
           "@context": "https://schema.org",
@@ -150,7 +142,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="ar" dir="rtl">
+    <html lang="ar" dir="rtl" data-ui-lang="ar">
       <head>
         <style dangerouslySetInnerHTML={{ __html: criticalCss }} />
         <HeadContent />
@@ -177,6 +169,71 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const lang =
+      (window.localStorage.getItem("bouiba_lang") as "ar" | "en") ||
+      (document.documentElement.dataset.uiLang as "ar" | "en") ||
+      "ar";
+    if (lang !== "en") return;
+
+    const w = window as Window & {
+      googleTranslateElementInit?: () => void;
+      google?: {
+        translate?: {
+          TranslateElement?: new (
+            options: { pageLanguage: string; includedLanguages: string; autoDisplay: boolean },
+            elementId: string,
+          ) => void;
+        };
+      };
+    };
+
+    let cancelled = false;
+
+    const initGoogleTranslate = () => {
+      if (cancelled) return;
+      if (w.google?.translate?.TranslateElement) {
+        w.googleTranslateElementInit = () => {
+          new w.google!.translate!.TranslateElement(
+            { pageLanguage: "ar", includedLanguages: "en,ar", autoDisplay: false },
+            "google_translate_element",
+          );
+        };
+        w.googleTranslateElementInit();
+        return;
+      }
+
+      if (document.querySelector('script[data-google-translate="true"]')) {
+        return;
+      }
+
+      w.googleTranslateElementInit = () => {
+        if (w.google?.translate?.TranslateElement) {
+          new w.google.translate.TranslateElement(
+            { pageLanguage: "ar", includedLanguages: "en,ar", autoDisplay: false },
+            "google_translate_element",
+          );
+        }
+      };
+
+      const script = document.createElement("script");
+      script.async = true;
+      script.dataset.googleTranslate = "true";
+      script.src =
+        "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+      document.head.appendChild(script);
+    };
+
+    const timer = window.setTimeout(initGoogleTranslate, 600);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+    };
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <Outlet />

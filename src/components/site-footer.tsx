@@ -8,12 +8,15 @@ export function SiteFooter() {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const current = (document.documentElement.lang as "ar" | "en") || "ar";
+      const current = (document.documentElement.dataset.uiLang as "ar" | "en") || "ar";
       setLang(current);
       const observer = new MutationObserver(() => {
-        setLang((document.documentElement.lang as "ar" | "en") || "ar");
+        setLang((document.documentElement.dataset.uiLang as "ar" | "en") || "ar");
       });
-      observer.observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
+      observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ["data-ui-lang"],
+      });
       return () => observer.disconnect();
     }
   }, []);

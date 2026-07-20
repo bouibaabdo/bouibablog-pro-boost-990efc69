@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
   Menu,
@@ -88,29 +88,31 @@ export function SiteHeader() {
     if (typeof window !== "undefined") {
       const saved = (localStorage.getItem("bouiba_lang") as "ar" | "en") || "ar";
       setLang(saved);
-      document.documentElement.lang = saved;
+      document.documentElement.lang = "ar";
       document.documentElement.dir = saved === "ar" ? "rtl" : "ltr";
+      document.documentElement.dataset.uiLang = saved;
     }
   }, []);
 
-  const switchLanguage = (newLang: "ar" | "en") => {
+  const switchLanguage = useCallback((newLang: "ar" | "en") => {
     setLang(newLang);
-    if (typeof window !== "undefined") {
-      localStorage.setItem("bouiba_lang", newLang);
-      document.documentElement.lang = newLang;
-      document.documentElement.dir = newLang === "ar" ? "rtl" : "ltr";
+    if (typeof window === "undefined") return;
 
-      const domain = window.location.hostname;
-      if (newLang === "en") {
-        document.cookie = `googtrans=/ar/en; path=/; domain=${domain}`;
-        document.cookie = `googtrans=/ar/en; path=/`;
-      } else {
-        document.cookie = `googtrans=/ar/ar; path=/; domain=${domain}`;
-        document.cookie = `googtrans=/ar/ar; path=/`;
-      }
-      window.location.reload();
+    localStorage.setItem("bouiba_lang", newLang);
+    document.documentElement.lang = "ar";
+    document.documentElement.dir = newLang === "ar" ? "rtl" : "ltr";
+    document.documentElement.dataset.uiLang = newLang;
+
+    if (newLang === "en") {
+      document.cookie = "googtrans=/ar/en; path=/";
+      document.cookie = `googtrans=/ar/en; path=/; domain=${window.location.hostname}`;
+    } else {
+      document.cookie = "googtrans=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+      document.cookie = `googtrans=; path=/; domain=${window.location.hostname}; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
     }
-  };
+
+    window.location.reload();
+  }, []);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setAuthed(!!data.session));
@@ -118,13 +120,9 @@ export function SiteHeader() {
     return () => sub.subscription.unsubscribe();
   }, []);
 
-  // Block body scroll when mobile menu is open
+  // Block body scroll when mobile drawer is open
   useEffect(() => {
-    if (open) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
+    document.body.style.overflow = open ? "hidden" : "";
     return () => {
       document.body.style.overflow = "";
     };
@@ -166,10 +164,11 @@ export function SiteHeader() {
   return (
     <>
       <header className="sticky top-0 z-50 w-full border-b border-border/60">
-        {/* Header glassmorphism background */}
+        {/* Glassmorphism background */}
         <div className="absolute inset-0 -z-10 bg-background/80 backdrop-blur-md" />
 
         <div className="container-page flex h-16 items-center justify-between gap-4">
+          {/* Logo */}
           <Link
             to="/"
             className="flex items-center gap-2.5 shrink-0 min-w-0"
@@ -178,7 +177,7 @@ export function SiteHeader() {
             <img
               src={bouibaLogo.url}
               alt="Bouiba Academy"
-              className="h-8 w-8 sm:h-9 sm:w-9 md:h-9.5 md:w-9.5 object-contain"
+              className="h-8 w-8 sm:h-9 sm:w-9 object-contain"
               width={38}
               height={38}
               fetchPriority="high"
@@ -189,6 +188,7 @@ export function SiteHeader() {
             </span>
           </Link>
 
+          {/* ── Desktop nav ──────────────────────────────────────────── */}
           <nav className="hidden md:flex items-center gap-1">
             <Link
               to="/"
@@ -248,8 +248,8 @@ export function SiteHeader() {
             ))}
           </nav>
 
+          {/* ── Desktop actions ──────────────────────────────────────── */}
           <div className="hidden md:flex items-center gap-2">
-            {/* Language Switcher */}
             <button
               onClick={() => switchLanguage(lang === "ar" ? "en" : "ar")}
               className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-accent/30 px-2.5 py-1.5 text-xs font-bold text-foreground hover:bg-accent transition-all cursor-pointer"
@@ -285,52 +285,37 @@ export function SiteHeader() {
             </Link>
           </div>
 
-          <button
-            onClick={() => {
-              const next = !open;
-              setOpen(next);
-              if (next) {
-                if (!labelsQ.data && !labelsQ.isFetching) labelsQ.refetch();
-                if (!lessonsQ.data && !lessonsQ.isFetching) lessonsQ.refetch();
-              }
-            }}
-            className="md:hidden inline-flex items-center justify-center rounded-lg p-2.5 text-foreground hover:bg-accent transition-colors animate-in fade-in"
-            aria-label="القائمة"
-          >
-            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </button>
-        </div>
-
-        <div className="md:hidden border-t border-border/50">
-          <div className="container-page py-2">
-            <nav className="flex items-center gap-2 overflow-x-auto whitespace-nowrap pb-0.5">
-              {(lang === "en" ? SIMPLE_NAV_EN : SIMPLE_NAV_AR).map((item) => (
-                <Link
-                  key={item.to}
-                  to={item.to}
-                  onClick={() => setOpen(false)}
-                  className="inline-flex shrink-0 items-center rounded-full border border-border bg-background/80 px-3 py-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground hover:bg-accent/60"
-                  activeProps={{ className: "text-foreground bg-accent/60 border-primary/30" }}
-                >
-                  {item.label}
-                </Link>
-              ))}
-            </nav>
+          {/* ── Mobile: hamburger only ──────────────────────────────── */}
+          <div className="flex md:hidden items-center gap-2">
+            <button
+              onClick={() => {
+                const next = !open;
+                setOpen(next);
+                if (next) {
+                  if (!labelsQ.data && !labelsQ.isFetching) labelsQ.refetch();
+                  if (!lessonsQ.data && !lessonsQ.isFetching) lessonsQ.refetch();
+                }
+              }}
+              className="inline-flex items-center justify-center rounded-lg p-2.5 text-foreground hover:bg-accent transition-colors"
+              aria-label="القائمة"
+            >
+              {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
           </div>
         </div>
       </header>
 
-      {/* Mobile Drawer Navigation Menu */}
+      {/* ── Mobile Drawer ─────────────────────────────────────────────── */}
       {open && (
         <div className="fixed inset-0 z-[100] md:hidden flex justify-end">
-          {/* Backdrop blur overlay */}
+          {/* Backdrop */}
           <div
-            className="absolute inset-0 bg-background/60 backdrop-blur-md transition-opacity duration-300"
+            className="absolute inset-0 bg-background/60 backdrop-blur-md"
             onClick={() => setOpen(false)}
           />
 
           {/* Drawer panel */}
-          <div className="relative z-10 w-[85vw] max-w-sm h-full bg-background border-l border-border/50 shadow-2xl p-6 flex flex-col justify-between overflow-y-auto transition-transform duration-300">
+          <div className="relative z-10 w-[85vw] max-w-sm h-full bg-background border-l border-border/50 shadow-2xl p-6 flex flex-col justify-between overflow-y-auto">
             <div className="space-y-6">
               {/* Drawer Header */}
               <div className="flex items-center justify-between pb-4 border-b border-border/60">
@@ -371,11 +356,11 @@ export function SiteHeader() {
                   }}
                 >
                   <Home className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
-                  <span>الرئيسية</span>
+                  <span>{lang === "en" ? "Home" : "الرئيسية"}</span>
                 </Link>
 
                 <MobileGroup
-                  label="المقالات"
+                  label={lang === "en" ? "Articles" : "المقالات"}
                   open={mPosts}
                   onToggle={() => setMPosts((v) => !v)}
                   overviewTo="/posts"
@@ -385,7 +370,7 @@ export function SiteHeader() {
                 />
 
                 <MobileGroup
-                  label="دورات"
+                  label={lang === "en" ? "Courses" : "دورات"}
                   open={mLessons}
                   onToggle={() => setMLessons((v) => !v)}
                   overviewTo="/lessons"
@@ -395,12 +380,12 @@ export function SiteHeader() {
                 />
 
                 <MobileGroup
-                  label="أدوات AI"
+                  label={lang === "en" ? "AI Tools" : "أدوات AI"}
                   open={mTools}
                   onToggle={() => setMTools((v) => !v)}
                   overviewTo="/tools"
                   onNavigate={() => setOpen(false)}
-                  items={TOOL_ITEMS_AR}
+                  items={lang === "en" ? TOOL_ITEMS_EN : TOOL_ITEMS_AR}
                   icon={Cpu}
                   badge={true}
                 />
@@ -414,7 +399,7 @@ export function SiteHeader() {
                   }}
                 >
                   <HelpCircle className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
-                  <span>اختبار AI</span>
+                  <span>{lang === "en" ? "AI Quiz" : "اختبار AI"}</span>
                 </Link>
 
                 <Link
@@ -426,7 +411,7 @@ export function SiteHeader() {
                   }}
                 >
                   <Trophy className="h-5 w-5 text-amber-500" />
-                  <span>كأس العالم 2026</span>
+                  <span>{lang === "en" ? "World Cup 2026" : "كأس العالم 2026"}</span>
                 </Link>
 
                 <Link
@@ -438,7 +423,7 @@ export function SiteHeader() {
                   }}
                 >
                   <Info className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
-                  <span>عن الأكاديمية</span>
+                  <span>{lang === "en" ? "About" : "عن الأكاديمية"}</span>
                 </Link>
 
                 <Link
@@ -450,20 +435,13 @@ export function SiteHeader() {
                   }}
                 >
                   <PhoneCall className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
-                  <span>تواصل معنا</span>
+                  <span>{lang === "en" ? "Contact" : "تواصل معنا"}</span>
                 </Link>
               </nav>
             </div>
 
-            {/* Drawer Footer Actions */}
+            {/* Drawer Footer */}
             <div className="pt-6 border-t border-border/60 space-y-3">
-              <button
-                onClick={() => switchLanguage(lang === "ar" ? "en" : "ar")}
-                className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl border border-border bg-accent/30 font-semibold text-foreground hover:bg-accent transition-colors cursor-pointer"
-              >
-                <Globe className="h-4 w-4 text-primary" />
-                <span>{lang === "ar" ? "Switch to English 🇬🇧" : "التحويل للغة العربية 🇸🇦"}</span>
-              </button>
               {authed ? (
                 <Link
                   to="/favorites"
@@ -471,7 +449,7 @@ export function SiteHeader() {
                   className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl border border-border bg-accent/30 font-semibold text-amber-600 hover:bg-accent transition-colors"
                 >
                   <Star className="h-4 w-4 text-amber-500 fill-amber-500" />
-                  المفضلة
+                  {lang === "en" ? "Favorites" : "المفضلة"}
                 </Link>
               ) : (
                 <Link
@@ -480,7 +458,7 @@ export function SiteHeader() {
                   className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl border border-border bg-accent/30 font-semibold text-foreground hover:bg-accent transition-colors"
                 >
                   <LogIn className="h-4 w-4" />
-                  تسجيل الدخول
+                  {lang === "en" ? "Login" : "تسجيل الدخول"}
                 </Link>
               )}
 
@@ -489,9 +467,21 @@ export function SiteHeader() {
                 onClick={() => setOpen(false)}
                 className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl bg-gradient-to-r from-primary to-purple-600 text-white font-bold shadow-lg shadow-primary/25 hover:opacity-95 text-center transition-all duration-300"
               >
-                <Sparkles className="h-4.5 w-4.5 text-amber-300 animate-pulse" />
-                ابدأ التعلم (مسار ذكي)
+                <Sparkles className="h-4 w-4 text-amber-300 animate-pulse" />
+                {lang === "en" ? "Start Learning" : "ابدأ التعلم (مسار ذكي)"}
               </Link>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setOpen(false);
+                  switchLanguage(lang === "ar" ? "en" : "ar");
+                }}
+                className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl border border-border bg-accent/20 font-semibold text-foreground hover:bg-accent transition-colors"
+              >
+                <Globe className="h-4 w-4 text-primary" />
+                <span>{lang === "ar" ? "English" : "العربية"}</span>
+              </button>
             </div>
           </div>
         </div>
