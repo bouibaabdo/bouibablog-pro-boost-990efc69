@@ -66,6 +66,9 @@ const SIMPLE_NAV_AR = [
 
 const SIMPLE_NAV_EN = [
   { to: "/", label: "Home" },
+  { to: "/posts", label: "Posts" },
+  { to: "/lessons", label: "Courses" },
+  { to: "/tools", label: "Tools" },
   { to: "/quiz", label: "AI Quiz" },
   { to: "/worldcup", label: "World Cup 2026" },
   { to: "/about", label: "About" },
@@ -296,6 +299,24 @@ export function SiteHeader() {
           >
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
+        </div>
+
+        <div className="md:hidden border-t border-border/50">
+          <div className="container-page py-2">
+            <nav className="flex items-center gap-2 overflow-x-auto whitespace-nowrap pb-0.5">
+              {(lang === "en" ? SIMPLE_NAV_EN : SIMPLE_NAV_AR).map((item) => (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  onClick={() => setOpen(false)}
+                  className="inline-flex shrink-0 items-center rounded-full border border-border bg-background/80 px-3 py-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground hover:bg-accent/60"
+                  activeProps={{ className: "text-foreground bg-accent/60 border-primary/30" }}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
+          </div>
         </div>
       </header>
 
