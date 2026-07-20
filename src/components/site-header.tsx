@@ -400,7 +400,7 @@ export function SiteHeader() {
                   onToggle={() => setMTools((v) => !v)}
                   overviewTo="/tools"
                   onNavigate={() => setOpen(false)}
-                  items={TOOL_ITEMS}
+                  items={TOOL_ITEMS_AR}
                   icon={Cpu}
                   badge={true}
                 />
