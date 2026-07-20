@@ -1,10 +1,21 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { useState, useMemo } from "react";
-import { PlayCircle, Clock } from "lucide-react";
+import {
+  PlayCircle,
+  Clock,
+  Sparkles,
+  Download,
+  BookOpen,
+  Video,
+  Layers3,
+  FileText,
+  ChevronRight,
+} from "lucide-react";
 import { listLessons } from "@/lib/lessons.functions";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { YOUTUBE_AI_MASTERY } from "@/lib/course-manifests/youtube-ai-mastery";
 
 type LessonItem = {
   id: string;
@@ -52,10 +63,17 @@ function formatDuration(s?: number | null) {
   return `${m}:${String(sec).padStart(2, "0")}`;
 }
 
+function formatLessonLabel(name: string) {
+  return name.replace(/\.(mp4|txt|pdf|md)$/i, "");
+}
+
 function LessonsPage() {
   const { data: lessons } = useSuspenseQuery(lessonsQO);
   const [active, setActive] = useState<string | null>(null);
   const [cat, setCat] = useState<string | null>(null);
+  const featuredCourse = YOUTUBE_AI_MASTERY;
+  const totalPublishedVideos =
+    featuredCourse.stats.find((s) => s.label === "الفيديوهات")?.value ?? "0";
 
   const categories = useMemo(() => {
     const s = new Set<string>();
@@ -81,6 +99,203 @@ function LessonsPage() {
         </section>
 
         <div className="container-page py-8">
+          <section className="mb-10 overflow-hidden rounded-[2rem] border border-primary/15 bg-gradient-to-br from-card via-card to-primary/5 shadow-elegant">
+            <div className="grid gap-0 lg:grid-cols-12">
+              <div className="relative lg:col-span-5">
+                <img
+                  src={featuredCourse.cover}
+                  alt={featuredCourse.title}
+                  className="h-full w-full object-cover min-h-[280px]"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                <div className="absolute left-5 bottom-5 right-5">
+                  <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur">
+                    <Sparkles className="h-3.5 w-3.5 text-cyan-300" />
+                    دورة مختارة للنشر
+                  </div>
+                  <h2 className="mt-3 font-display text-2xl md:text-3xl font-extrabold text-white leading-tight">
+                    {featuredCourse.title}
+                  </h2>
+                  <p className="mt-2 text-sm md:text-base text-white/80 leading-relaxed">
+                    {featuredCourse.subtitle}
+                  </p>
+                </div>
+              </div>
+
+              <div className="lg:col-span-7 p-6 md:p-8">
+                <div className="max-w-2xl">
+                  <div className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-primary/5 px-3 py-1 text-[11px] font-semibold text-primary">
+                    <BookOpen className="h-3.5 w-3.5" />
+                    فيديوهات + وثائق + تنسيق حديث
+                  </div>
+                  <h3 className="mt-4 font-display text-2xl md:text-3xl font-bold text-foreground">
+                    عرض احترافي جاهز للنشر داخل موقعك
+                  </h3>
+                  <p className="mt-3 text-sm md:text-base text-muted-foreground leading-relaxed">
+                    {featuredCourse.description}
+                  </p>
+
+                  <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-3">
+                    {featuredCourse.stats.map((stat) => (
+                      <div
+                        key={stat.label}
+                        className="rounded-2xl border border-border bg-background/70 p-4 text-center"
+                      >
+                        <div className="text-2xl font-extrabold gradient-text">{stat.value}</div>
+                        <div className="mt-1 text-[11px] font-semibold text-muted-foreground">
+                          {stat.label}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="mt-6 flex flex-wrap gap-3">
+                    <a
+                      href="#course-modules"
+                      className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-soft transition-all hover:opacity-90"
+                    >
+                      ابدأ الاستعراض
+                      <ChevronRight className="h-4 w-4" />
+                    </a>
+                    <a
+                      href="#course-resources"
+                      className="inline-flex items-center gap-2 rounded-xl border border-border bg-background px-5 py-3 text-sm font-semibold text-foreground transition-all hover:border-primary/30 hover:text-primary"
+                    >
+                      الوثائق المرفقة
+                      <Download className="h-4 w-4" />
+                    </a>
+                  </div>
+
+                  <div className="mt-6 flex flex-wrap gap-2">
+                    {featuredCourse.modules.map((module) => (
+                      <span
+                        key={module.title}
+                        className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1.5 text-xs font-medium text-muted-foreground"
+                      >
+                        <Layers3 className="h-3.5 w-3.5 text-primary" />
+                        {module.title}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section id="course-modules" className="mb-10">
+            <div className="mb-5 flex items-end justify-between gap-4">
+              <div>
+                <h2 className="font-display text-2xl md:text-3xl font-bold">
+                  هيكل الدورة والملفات المرفقة
+                </h2>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  تنظيم حديث يسهّل على الزائر متابعة الفيديوهات والموارد.
+                </p>
+              </div>
+              <div className="hidden sm:inline-flex items-center gap-2 rounded-full border border-primary/15 bg-primary/5 px-3 py-1.5 text-xs font-semibold text-primary">
+                <Video className="h-3.5 w-3.5" />
+                {totalPublishedVideos} فيديو
+              </div>
+            </div>
+
+            <div className="grid gap-4 lg:grid-cols-2">
+              {featuredCourse.modules.map((module, index) => (
+                <div
+                  key={module.title}
+                  className="rounded-3xl border border-border bg-card p-5 md:p-6 shadow-card"
+                >
+                  <div className="flex items-start gap-3">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary font-bold">
+                      {String(index + 1).padStart(2, "0")}
+                    </div>
+                    <div className="min-w-0">
+                      <h3 className="font-display text-lg md:text-xl font-bold">{module.title}</h3>
+                      <p className="mt-1 text-sm text-muted-foreground leading-relaxed">
+                        {module.summary}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 grid gap-2">
+                    {module.lessons.map((lesson) => {
+                      const isDoc = /\.(txt|md|pdf)$/i.test(lesson);
+                      return (
+                        <div
+                          key={lesson}
+                          className="flex items-center justify-between gap-3 rounded-2xl border border-border/60 bg-background/70 px-4 py-3"
+                        >
+                          <div className="flex items-center gap-3 min-w-0">
+                            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                              {isDoc ? (
+                                <FileText className="h-4 w-4" />
+                              ) : (
+                                <PlayCircle className="h-4 w-4" />
+                              )}
+                            </div>
+                            <div className="min-w-0">
+                              <p className="font-medium text-sm truncate">
+                                {formatLessonLabel(lesson)}
+                              </p>
+                              <p className="text-[11px] text-muted-foreground">
+                                {isDoc ? "وثيقة مرفقة" : "فيديو تعليمي"}
+                              </p>
+                            </div>
+                          </div>
+                          <span className="text-[10px] font-bold rounded-full bg-accent px-2.5 py-1 text-muted-foreground">
+                            {isDoc ? "DOC" : "VIDEO"}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section id="course-resources" className="mb-10">
+            <div className="mb-5">
+              <h2 className="font-display text-2xl md:text-3xl font-bold">
+                الوثائق القابلة للتحميل
+              </h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                المرفقات منظمة بشكل احترافي لتبدو مثل حزمة دورة جاهزة.
+              </p>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              {featuredCourse.resources.map((resource) => (
+                <a
+                  key={resource.href}
+                  href={resource.href}
+                  download
+                  className="group rounded-3xl border border-border bg-card p-5 shadow-card transition-all hover:-translate-y-0.5 hover:shadow-elegant hover:border-primary/20"
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/15 to-purple-500/10 text-primary">
+                      <Download className="h-6 w-6" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2">
+                        <h3 className="font-display text-lg font-bold">{resource.title}</h3>
+                        <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold text-primary">
+                          {resource.type}
+                        </span>
+                      </div>
+                      <p className="mt-1 text-sm text-muted-foreground leading-relaxed">
+                        {resource.description}
+                      </p>
+                      <div className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-primary">
+                        تنزيل المرفق
+                        <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                      </div>
+                    </div>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </section>
+
           {current && (
             <div className="mb-8 rounded-2xl overflow-hidden border border-border bg-card shadow-elegant">
               <video
