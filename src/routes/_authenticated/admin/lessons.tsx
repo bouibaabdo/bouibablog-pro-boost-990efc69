@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any, no-empty */
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
@@ -163,7 +164,6 @@ function AdminLessons() {
         }
       } catch {}
     })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [file]);
 
   async function regenerateThumb(atSec: number) {

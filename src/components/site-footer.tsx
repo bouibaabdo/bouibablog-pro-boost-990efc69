@@ -114,18 +114,18 @@ export function SiteFooter() {
             {isEn ? "All rights reserved." : "جميع الحقوق محفوظة."}
           </p>
           <div className="flex items-center gap-3 text-muted-foreground">
-            <a href="#" aria-label="Facebook" className="hover:text-primary">
+            <button type="button" aria-label="Facebook" className="hover:text-primary">
               <Facebook className="h-4 w-4" />
-            </a>
-            <a href="#" aria-label="Twitter" className="hover:text-primary">
+            </button>
+            <button type="button" aria-label="Twitter" className="hover:text-primary">
               <Twitter className="h-4 w-4" />
-            </a>
-            <a href="#" aria-label="Instagram" className="hover:text-primary">
+            </button>
+            <button type="button" aria-label="Instagram" className="hover:text-primary">
               <Instagram className="h-4 w-4" />
-            </a>
-            <a href="#" aria-label="Youtube" className="hover:text-primary">
+            </button>
+            <button type="button" aria-label="Youtube" className="hover:text-primary">
               <Youtube className="h-4 w-4" />
-            </a>
+            </button>
           </div>
         </div>
       </div>

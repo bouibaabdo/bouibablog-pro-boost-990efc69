@@ -1,8 +1,15 @@
 import { createServerFn } from "@tanstack/react-start";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import type { Database } from "@/integrations/supabase/types";
 import { z } from "zod";
 
-async function assertAdmin(context: { supabase: any; userId: string }) {
+type AdminContext = {
+  supabase: SupabaseClient<Database>;
+  userId: string;
+};
+
+async function assertAdmin(context: AdminContext) {
   const { data, error } = await context.supabase.rpc("has_role", {
     _user_id: context.userId,
     _role: "admin",
@@ -35,7 +42,7 @@ export const listAiTools = createServerFn({ method: "GET" })
 
 export const toggleAiTool = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d) => z.object({ tool_key: z.string(), enabled: z.boolean() }).parse(d))
+  .validator((d) => z.object({ tool_key: z.string(), enabled: z.boolean() }).parse(d))
   .handler(async ({ data, context }) => {
     await assertAdmin(context);
     const { error } = await context.supabase
@@ -61,7 +68,7 @@ export const listStreamOverrides = createServerFn({ method: "GET" })
 
 export const upsertStreamOverride = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d) =>
+  .validator((d) =>
     z
       .object({
         match_id: z.string().min(1),
@@ -87,7 +94,7 @@ export const upsertStreamOverride = createServerFn({ method: "POST" })
 
 export const deleteStreamOverride = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d) => z.object({ match_id: z.string() }).parse(d))
+  .validator((d) => z.object({ match_id: z.string() }).parse(d))
   .handler(async ({ data, context }) => {
     await assertAdmin(context);
     const { error } = await context.supabase
@@ -113,7 +120,7 @@ export const listPinnedMatches = createServerFn({ method: "GET" })
 
 export const pinMatch = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d) =>
+  .validator((d) =>
     z
       .object({
         match_id: z.string().min(1),
@@ -133,7 +140,7 @@ export const pinMatch = createServerFn({ method: "POST" })
 
 export const unpinMatch = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d) => z.object({ match_id: z.string() }).parse(d))
+  .validator((d) => z.object({ match_id: z.string() }).parse(d))
   .handler(async ({ data, context }) => {
     await assertAdmin(context);
     const { error } = await context.supabase

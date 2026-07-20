@@ -167,7 +167,7 @@ async function fetchStreamedSources(source: string, id: string): Promise<Streame
 }
 
 export const getLiveStreamsFor = createServerFn({ method: "GET" })
-  .inputValidator((input: { home: string; away: string }) => ({
+  .validator((input: { home: string; away: string }) => ({
     home: String(input?.home ?? "").slice(0, 80),
     away: String(input?.away ?? "").slice(0, 80),
   }))

@@ -18,6 +18,7 @@ import {
   DollarSign,
 } from "lucide-react";
 import { useEffect, useState, useMemo } from "react";
+import type { LucideIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { AI_DIRECTORY_TOOLS, CATEGORIES_MAP, type AIDirectoryTool } from "@/lib/ai-directory-data";
 
@@ -27,7 +28,7 @@ export const Route = createFileRoute("/tools/")({
 
 const TOOLS: Array<{
   to: string;
-  icon: any;
+  icon: LucideIcon;
   title: string;
   desc: string;
   color: string;
@@ -108,7 +109,7 @@ function ToolsIndex() {
       .select("tool_key,enabled")
       .then(({ data }) => {
         if (!data) return setEnabledKeys(null);
-        setEnabledKeys(new Set(data.filter((t: any) => t.enabled).map((t: any) => t.tool_key)));
+        setEnabledKeys(new Set(data.filter((t) => t.enabled).map((t) => t.tool_key)));
       });
   }, []);
 

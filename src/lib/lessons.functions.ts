@@ -1,10 +1,31 @@
 import { createServerFn } from "@tanstack/react-start";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import type { Database } from "@/integrations/supabase/types";
 import { z } from "zod";
 
 const SIGN_EXPIRY = 60 * 60 * 24; // 24h
 
-async function signRows(admin: any, rows: any[]) {
+type LessonRow = {
+  id?: string;
+  title?: string;
+  description?: string | null;
+  category?: string | null;
+  video_path: string;
+  thumbnail_path?: string | null;
+  thumbnail_url?: string | null;
+  duration_seconds?: number | null;
+  created_at?: string;
+  published?: boolean;
+  sort_order?: number | null;
+};
+
+type SignedLessonRow = LessonRow & {
+  video_url: string | null;
+  thumbnail_url: string | null;
+};
+
+async function signRows(admin: SupabaseClient<Database>, rows: LessonRow[]) {
   return Promise.all(
     rows.map(async (r) => {
       const [videoRes, thumbRes] = await Promise.all([
@@ -17,7 +38,7 @@ async function signRows(admin: any, rows: any[]) {
         ...r,
         video_url: videoRes.data?.signedUrl ?? null,
         thumbnail_url: thumbRes?.data?.signedUrl ?? r.thumbnail_url ?? null,
-      };
+      } satisfies SignedLessonRow;
     }),
   );
 }
@@ -52,7 +73,7 @@ export const listLessons = createServerFn({ method: "GET" }).handler(async () =>
   return signRows(supabaseAdmin, data ?? []);
 });
 
-async function assertAdmin(context: { supabase: any; userId: string }) {
+async function assertAdmin(context: { supabase: SupabaseClient<Database>; userId: string }) {
   const { data, error } = await context.supabase.rpc("has_role", {
     _user_id: context.userId,
     _role: "admin",
@@ -77,7 +98,7 @@ export const adminListLessons = createServerFn({ method: "GET" })
 
 export const createLesson = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d) =>
+  .validator((d) =>
     z
       .object({
         title: z.string().min(1).max(200),
@@ -101,7 +122,7 @@ export const createLesson = createServerFn({ method: "POST" })
 
 export const updateLesson = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d) =>
+  .validator((d) =>
     z
       .object({
         id: z.string().uuid(),
@@ -126,7 +147,7 @@ export const updateLesson = createServerFn({ method: "POST" })
 
 export const deleteLesson = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d) =>
+  .validator((d) =>
     z
       .object({
         id: z.string().uuid(),

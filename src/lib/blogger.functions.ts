@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape, no-misleading-character-class */
 import { createServerFn } from "@tanstack/react-start";
 
 const FEED_BASE = "https://academybouiba.blogspot.com/feeds/posts/default";
@@ -462,7 +463,7 @@ async function loadLocalPosts(): Promise<BloggerPost[]> {
 }
 
 export const getPosts = createServerFn({ method: "GET" })
-  .inputValidator(
+  .validator(
     (d: { max?: number; label?: string; start?: number; q?: string } | undefined) => d ?? {},
   )
   .handler(async ({ data }) => {
@@ -529,7 +530,7 @@ export const getPosts = createServerFn({ method: "GET" })
   });
 
 export const getPost = createServerFn({ method: "GET" })
-  .inputValidator((d: { id: string }) => d)
+  .validator((d: { id: string }) => d)
   .handler(async ({ data }) => {
     const decodedId = decodeURIComponent(data.id).trim().toLowerCase();
 

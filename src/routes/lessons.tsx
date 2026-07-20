@@ -6,9 +6,19 @@ import { listLessons } from "@/lib/lessons.functions";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 
+type LessonItem = {
+  id: string;
+  title: string;
+  description?: string | null;
+  category?: string | null;
+  video_url?: string | null;
+  thumbnail_url?: string | null;
+  duration_seconds?: number | null;
+};
+
 const lessonsQO = queryOptions({
   queryKey: ["lessons", "public"],
-  queryFn: () => listLessons(),
+  queryFn: async () => (await listLessons()) as LessonItem[],
   staleTime: 5 * 60_000,
 });
 
@@ -49,12 +59,12 @@ function LessonsPage() {
 
   const categories = useMemo(() => {
     const s = new Set<string>();
-    lessons.forEach((l: any) => l.category && s.add(l.category));
+    lessons.forEach((l) => l.category && s.add(l.category));
     return Array.from(s);
   }, [lessons]);
 
-  const filtered = cat ? lessons.filter((l: any) => l.category === cat) : lessons;
-  const current = active ? lessons.find((l: any) => l.id === active) : null;
+  const filtered = cat ? lessons.filter((l) => l.category === cat) : lessons;
+  const current = active ? lessons.find((l) => l.id === active) : null;
 
   return (
     <div className="min-h-screen bg-background">
@@ -125,7 +135,7 @@ function LessonsPage() {
             <div className="text-center py-20 text-muted-foreground">لا توجد دروس منشورة بعد.</div>
           ) : (
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {filtered.map((l: any) => (
+              {filtered.map((l) => (
                 <button
                   key={l.id}
                   onClick={() => {

@@ -28,7 +28,7 @@ export const listFavorites = createServerFn({ method: "GET" })
 
 export const addFavorite = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => favoriteInput.parse(d))
+  .validator((d: unknown) => favoriteInput.parse(d))
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase.from("match_favorites").insert({
       user_id: context.userId,
@@ -42,7 +42,7 @@ export const addFavorite = createServerFn({ method: "POST" })
 
 export const removeFavorite = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ match_id: z.string() }).parse(d))
+  .validator((d: unknown) => z.object({ match_id: z.string() }).parse(d))
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase
       .from("match_favorites")
@@ -54,7 +54,7 @@ export const removeFavorite = createServerFn({ method: "POST" })
 
 export const updateFavoritePrefs = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z
       .object({
         id: z.string().uuid(),
