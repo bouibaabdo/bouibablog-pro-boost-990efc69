@@ -12,6 +12,7 @@ export const Route = createFileRoute("/sitemap.xml")({
           { loc: `${BASE_URL}/sitemap-pages.xml`, lastmod: today },
           { loc: `${BASE_URL}/sitemap-posts.xml`, lastmod: today },
           { loc: `${BASE_URL}/sitemap-categories.xml`, lastmod: today },
+          { loc: `${BASE_URL}/sitemap-videos.xml`, lastmod: today },
           { loc: `${BASE_URL}/sitemap-tools.xml`, lastmod: today },
           { loc: `${BASE_URL}/sitemap-worldcup.xml`, lastmod: today },
         ];

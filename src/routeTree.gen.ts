@@ -16,6 +16,7 @@ import { Route as TermsOfServiceRouteImport } from './routes/terms-of-service'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SitemapWorldcupDotxmlRouteImport } from './routes/sitemap-worldcup[.]xml'
+import { Route as SitemapVideosDotxmlRouteImport } from './routes/sitemap-videos[.]xml'
 import { Route as SitemapToolsDotxmlRouteImport } from './routes/sitemap-tools[.]xml'
 import { Route as SitemapPostsDotxmlRouteImport } from './routes/sitemap-posts[.]xml'
 import { Route as SitemapPagesDotxmlRouteImport } from './routes/sitemap-pages[.]xml'
@@ -90,6 +91,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const SitemapWorldcupDotxmlRoute = SitemapWorldcupDotxmlRouteImport.update({
   id: '/sitemap-worldcup.xml',
   path: '/sitemap-worldcup.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapVideosDotxmlRoute = SitemapVideosDotxmlRouteImport.update({
+  id: '/sitemap-videos.xml',
+  path: '/sitemap-videos.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SitemapToolsDotxmlRoute = SitemapToolsDotxmlRouteImport.update({
@@ -314,6 +320,7 @@ export interface FileRoutesByFullPath {
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
   '/sitemap-posts.xml': typeof SitemapPostsDotxmlRoute
   '/sitemap-tools.xml': typeof SitemapToolsDotxmlRoute
+  '/sitemap-videos.xml': typeof SitemapVideosDotxmlRoute
   '/sitemap-worldcup.xml': typeof SitemapWorldcupDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
@@ -362,6 +369,7 @@ export interface FileRoutesByTo {
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
   '/sitemap-posts.xml': typeof SitemapPostsDotxmlRoute
   '/sitemap-tools.xml': typeof SitemapToolsDotxmlRoute
+  '/sitemap-videos.xml': typeof SitemapVideosDotxmlRoute
   '/sitemap-worldcup.xml': typeof SitemapWorldcupDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
@@ -410,6 +418,7 @@ export interface FileRoutesById {
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
   '/sitemap-posts.xml': typeof SitemapPostsDotxmlRoute
   '/sitemap-tools.xml': typeof SitemapToolsDotxmlRoute
+  '/sitemap-videos.xml': typeof SitemapVideosDotxmlRoute
   '/sitemap-worldcup.xml': typeof SitemapWorldcupDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
@@ -460,6 +469,7 @@ export interface FileRouteTypes {
     | '/sitemap-pages.xml'
     | '/sitemap-posts.xml'
     | '/sitemap-tools.xml'
+    | '/sitemap-videos.xml'
     | '/sitemap-worldcup.xml'
     | '/sitemap.xml'
     | '/terms'
@@ -508,6 +518,7 @@ export interface FileRouteTypes {
     | '/sitemap-pages.xml'
     | '/sitemap-posts.xml'
     | '/sitemap-tools.xml'
+    | '/sitemap-videos.xml'
     | '/sitemap-worldcup.xml'
     | '/sitemap.xml'
     | '/terms'
@@ -555,6 +566,7 @@ export interface FileRouteTypes {
     | '/sitemap-pages.xml'
     | '/sitemap-posts.xml'
     | '/sitemap-tools.xml'
+    | '/sitemap-videos.xml'
     | '/sitemap-worldcup.xml'
     | '/sitemap.xml'
     | '/terms'
@@ -605,6 +617,7 @@ export interface RootRouteChildren {
   SitemapPagesDotxmlRoute: typeof SitemapPagesDotxmlRoute
   SitemapPostsDotxmlRoute: typeof SitemapPostsDotxmlRoute
   SitemapToolsDotxmlRoute: typeof SitemapToolsDotxmlRoute
+  SitemapVideosDotxmlRoute: typeof SitemapVideosDotxmlRoute
   SitemapWorldcupDotxmlRoute: typeof SitemapWorldcupDotxmlRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
@@ -668,6 +681,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap-worldcup.xml'
       fullPath: '/sitemap-worldcup.xml'
       preLoaderRoute: typeof SitemapWorldcupDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap-videos.xml': {
+      id: '/sitemap-videos.xml'
+      path: '/sitemap-videos.xml'
+      fullPath: '/sitemap-videos.xml'
+      preLoaderRoute: typeof SitemapVideosDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sitemap-tools.xml': {
@@ -1035,6 +1055,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapPagesDotxmlRoute: SitemapPagesDotxmlRoute,
   SitemapPostsDotxmlRoute: SitemapPostsDotxmlRoute,
   SitemapToolsDotxmlRoute: SitemapToolsDotxmlRoute,
+  SitemapVideosDotxmlRoute: SitemapVideosDotxmlRoute,
   SitemapWorldcupDotxmlRoute: SitemapWorldcupDotxmlRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
