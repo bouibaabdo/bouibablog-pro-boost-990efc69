@@ -25,13 +25,13 @@ type SignedLessonRow = LessonRow & {
   thumbnail_url: string | null;
 };
 
-async function signRows(admin: SupabaseClient<Database>, rows: LessonRow[]) {
+async function signRows(storageClient: SupabaseClient<Database>, rows: LessonRow[]) {
   return Promise.all(
     rows.map(async (r) => {
       const [videoRes, thumbRes] = await Promise.all([
-        admin.storage.from("lessons").createSignedUrl(r.video_path, SIGN_EXPIRY),
+        storageClient.storage.from("lessons").createSignedUrl(r.video_path, SIGN_EXPIRY),
         r.thumbnail_path
-          ? admin.storage.from("lessons").createSignedUrl(r.thumbnail_path, SIGN_EXPIRY)
+          ? storageClient.storage.from("lessons").createSignedUrl(r.thumbnail_path, SIGN_EXPIRY)
           : Promise.resolve({ data: null }),
       ]);
       return {
@@ -47,7 +47,7 @@ async function signRows(admin: SupabaseClient<Database>, rows: LessonRow[]) {
 export const listLessons = createServerFn({ method: "GET" }).handler(async () => {
   const { createClient } = await import("@supabase/supabase-js");
   const key = process.env.SUPABASE_PUBLISHABLE_KEY!;
-  const supabase = createClient(process.env.SUPABASE_URL!, key, {
+  const supabase = createClient<Database>(process.env.SUPABASE_URL!, key, {
     auth: { persistSession: false },
     global: {
       fetch: (input, init) => {
@@ -69,8 +69,7 @@ export const listLessons = createServerFn({ method: "GET" }).handler(async () =>
     .order("sort_order", { ascending: true })
     .order("created_at", { ascending: false });
   if (error) throw error;
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-  return signRows(supabaseAdmin, data ?? []);
+  return signRows(supabase, data ?? []);
 });
 
 async function assertAdmin(context: { supabase: SupabaseClient<Database>; userId: string }) {
@@ -92,8 +91,7 @@ export const adminListLessons = createServerFn({ method: "GET" })
       .order("sort_order", { ascending: true })
       .order("created_at", { ascending: false });
     if (error) throw error;
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    return signRows(supabaseAdmin, data ?? []);
+    return signRows(context.supabase, data ?? []);
   });
 
 export const createLesson = createServerFn({ method: "POST" })
