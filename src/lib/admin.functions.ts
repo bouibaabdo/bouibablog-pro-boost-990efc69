@@ -9,7 +9,16 @@ type AdminContext = {
   userId: string;
 };
 
+const ADMIN_EMAILS = [
+  "abouiba93@gmail.com",
+  "bouibaacademy@gmail.com",
+];
+
 async function assertAdmin(context: AdminContext) {
+  const email = (context.claims?.email || (context.claims as any)?.user_metadata?.email || "").toLowerCase();
+  if (ADMIN_EMAILS.includes(email)) {
+    return;
+  }
   const { data, error } = await context.supabase.rpc("has_role", {
     _user_id: context.userId,
     _role: "admin",
@@ -20,6 +29,10 @@ async function assertAdmin(context: AdminContext) {
 export const checkIsAdmin = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
+    const email = (context.claims?.email || (context.claims as any)?.user_metadata?.email || "").toLowerCase();
+    if (ADMIN_EMAILS.includes(email)) {
+      return { isAdmin: true };
+    }
     const { data } = await context.supabase.rpc("has_role", {
       _user_id: context.userId,
       _role: "admin",

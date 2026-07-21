@@ -32,7 +32,14 @@ function AuthPage() {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: "/favorites" });
+      if (data.session) {
+        const userEmail = data.session.user.email?.toLowerCase();
+        if (userEmail && ["abouiba93@gmail.com", "bouibaacademy@gmail.com"].includes(userEmail)) {
+          navigate({ to: "/admin" });
+        } else {
+          navigate({ to: "/favorites" });
+        }
+      }
     });
   }, [navigate]);
 
@@ -52,7 +59,11 @@ function AuthPage() {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
         toast.success("مرحبًا بعودتك!");
-        navigate({ to: "/favorites" });
+        if (["abouiba93@gmail.com", "bouibaacademy@gmail.com"].includes(email.toLowerCase())) {
+          navigate({ to: "/admin" });
+        } else {
+          navigate({ to: "/favorites" });
+        }
       }
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "حدث خطأ");
