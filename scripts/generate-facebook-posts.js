@@ -7,6 +7,74 @@ const OUTPUT_DIR = path.join(process.cwd(), "content", "facebook-posts");
 const JSON_OUTPUT_PATH = path.join(OUTPUT_DIR, "facebook-posts.json");
 const CSV_OUTPUT_PATH = path.join(OUTPUT_DIR, "facebook-posts.csv");
 
+// Interactive Platform Tools on Bouiba Academy
+const PLATFORM_TOOLS = [
+  {
+    slug: "tool-image-gen",
+    title: "أداة تحويل النص إلى صورة بالذكاء الاصطناعي 🖼️",
+    desc: "أنشئ صوراً وتصاميم احترافية عالية الجودة من وصف نصي بالعربية أو الإنجليزية مجاناً بضغطة زر واحدة.",
+    url: "https://www.bouibacademy.me/tools/image",
+    category: "أدوات الذكاء الاصطناعي (AI Tools)",
+    promptName: "Text to Image AI Generator Tool",
+  },
+  {
+    slug: "tool-roadmap-ai",
+    title: "مستشار مسارات التعلم التفاعلي (AI Learning Roadmap) 🗺️",
+    desc: "أدخل أي تخصص أو تقنية وسيولد لك الذكاء الاصطناعي خريطة طريق تفاعلية ممتازة للتعلم مع مصادر مجانية.",
+    url: "https://www.bouibacademy.me/tools/roadmap",
+    category: "أدوات الذكاء الاصطناعي (AI Tools)",
+    promptName: "AI Learning Roadmap Consultant Tool",
+  },
+  {
+    slug: "tool-prompt-architect",
+    title: "مُصمم ومُحسن البرومبت الذكي (Smart Prompt Architect) ✨",
+    desc: "حوّل أوامرك البسيطة إلى Prompts احترافية ومواصفات هندسية دقيقة للحصول على أفضل نتائج من ChatGPT و Midjourney.",
+    url: "https://www.bouibacademy.me/tools/prompt",
+    category: "أدوات الذكاء الاصطناعي (AI Tools)",
+    promptName: "Smart Prompt Architect Tool",
+  },
+  {
+    slug: "tool-code-assistant",
+    title: "مساعد البرمجة وشرح الأكواد والـ Debugging 💻",
+    desc: "الصق أي كود برمجي بلغة Python أو JS أو C++ وسيشرحه لك الذكاء الاصطناعي مع اكتشاف الثغرات وتصحيح الأخطاء فورياً.",
+    url: "https://www.bouibacademy.me/tools/code",
+    category: "أدوات الذكاء الاصطناعي (AI Tools)",
+    promptName: "AI Code Assistant and Debugger Tool",
+  },
+  {
+    slug: "tool-summarizer-ai",
+    title: "أداة تلخيص المقالات والوثائق الطويلة 📄",
+    desc: "احصل على ملخص عربي مكثف وواضح لأطول المقالات والبحوث التقنية في نقاط سريعة خلال ثوانٍ معدودة.",
+    url: "https://www.bouibacademy.me/tools/summarize",
+    category: "أدوات الذكاء الاصطناعي (AI Tools)",
+    promptName: "AI Article Summarizer Tool",
+  },
+  {
+    slug: "tool-idea-generator",
+    title: "مولّد أفكار المقالات والمحتوى الجذاب 💡",
+    desc: "أدخل أي موضوع تقني وسيقوم الذكاء الاصطناعي بتوليد عشرات العناوين والمحاور التسويقية المحسنة لمسارات البحث.",
+    url: "https://www.bouibacademy.me/tools/ideas",
+    category: "أدوات الذكاء الاصطناعي (AI Tools)",
+    promptName: "AI Article Ideas Generator Tool",
+  },
+  {
+    slug: "tool-translator-ai",
+    title: "مُترجم النصوص والوثائق التقنية الاحترافي 🌐",
+    desc: "ترجمة دقيقة وطبيعية بين العربية والإنجليزية والفرنسية مصممة خصيصاً للمصطلحات البرمجية والتقنية دون ترجمة حرفية.",
+    url: "https://www.bouibacademy.me/tools/translate",
+    category: "أدوات الذكاء الاصطناعي (AI Tools)",
+    promptName: "AI Technical Translator Tool",
+  },
+  {
+    slug: "tool-seo-assistant",
+    title: "مساعد السيو (SEO) والكلمات المفتاحية العربي 🔍",
+    desc: "احصل على عناوين متوافقة مع محركات البحث، Meta Descriptions، وكلمات مفتاحية مستهدفة لرفع ترتيب موقعك على جوجل.",
+    url: "https://www.bouibacademy.me/tools/seo",
+    category: "أدوات الذكاء الاصطناعي (AI Tools)",
+    promptName: "Arabic SEO Assistant Tool",
+  },
+];
+
 // Helper to strip HTML tags and sanitize text
 function cleanHtmlText(html = "") {
   return html
@@ -19,23 +87,20 @@ function cleanHtmlText(html = "") {
 
 // Generate Moroccan / Arab developer friendly hashtags
 function generateHashtags(category, title) {
-  const baseTags = ["#BouibaAcademy", "#Bouiba_Academy", "#تقنية", "#تطوير_الويب"];
+  const baseTags = ["#BouibaAcademy", "#Bouiba_Academy", "#أدوات_الذكاء_الاصطناعي", "#تقنية"];
   const text = (category + " " + title).toLowerCase();
 
-  if (text.includes("ai") || text.includes("ذكاء") || text.includes("ollama")) {
+  if (text.includes("ai") || text.includes("ذكاء") || text.includes("ollama") || text.includes("صورة")) {
     baseTags.push("#الذكاء_الاصطناعي", "#AI", "#ArtificialIntelligence");
   }
   if (text.includes("n8n") || text.includes("أتمتة") || text.includes("automation") || text.includes("make")) {
     baseTags.push("#أتمتة", "#Automation", "#n8n", "#NoCode");
   }
-  if (text.includes("web") || text.includes("تطوير") || text.includes("برمجة") || text.includes("react")) {
+  if (text.includes("code") || text.includes("كود") || text.includes("برمجة") || text.includes("تطوير")) {
     baseTags.push("#برمجة", "#WebDev", "#تكوين_تقني");
   }
   if (text.includes("seo") || text.includes("سيو")) {
     baseTags.push("#سيو", "#SEO", "#تسويق_رقمي");
-  }
-  if (text.includes("تطبيقات") || text.includes("آيفون") || text.includes("أندرويد")) {
-    baseTags.push("#تطبيقات", "#Android", "#iOS");
   }
 
   return Array.from(new Set(baseTags)).join(" ");
@@ -48,47 +113,46 @@ function mapCategory(labels = [], title = "") {
   if (combined.includes("ollama") || combined.includes("ai") || combined.includes("ذكاء")) return "الذكاء الاصطناعي (Artificial Intelligence)";
   if (combined.includes("seo") || combined.includes("سيو")) return "SEO وتقنيات البحث";
   if (combined.includes("تطبيقات") || combined.includes("أندرويد") || combined.includes("آيفون")) return "تطبيقات وأجهزة ذكية";
-  if (combined.includes("ويندوز") || combined.includes("حاسوب") || combined.includes("رام")) return "أنظمة التشغيل والعتاد";
-  return "تقنية وتطوير الويب";
+  return "أدوات وتقنيات";
 }
 
-// Generate Facebook Arabic Post Text (Facebook Algorithm Compliant: Link in First Comment)
-function generateFacebookPostAr(title, excerpt, url, category) {
+// Generate Facebook Arabic Post Text for Tools & Articles
+function generateFacebookPostAr(title, desc, url, category) {
   const hashtags = generateHashtags(category, title);
   
-  return `🔥 ${title}
+  return `🛠️ ${title}
 
-💡 ${excerpt.slice(0, 180)}...
+💡 ${desc.slice(0, 190)}...
 
-🚀 دليل عملي وسهل للجميع لتطوير مهاراتك وتقنياتك اليوم مع Bouiba Academy!
+🚀 جرب هذه الأداة/المقال مجاناً اليوم وطوّر إنتاجيتك بنقرة واحدة مع Bouiba Academy!
 
-👇 رابط المقال والشرح التطبيقي تجدونه في أول تعليق (Comment 💬) 📌
+👇 رابط الاستخدام والتطبيق المباشر تجدونه في أول تعليق (Comment 💬) 📌
 
 ${hashtags}`;
 }
 
-// Generate First Comment Link Text (Avoiding FB reach penalty)
+// Generate First Comment Link Text
 function generateFacebookCommentLink(url) {
-  return `🔗 اقرأ المقال والتطبيقات التوضيحية من هنا:\n${url}`;
+  return `🔗 جرب واستخدم الأداة/المقال مباشرة من هنا:\n${url}`;
 }
 
 // Generate French/English Short Excerpt
-function generateFacebookPostFrEn(title, excerpt, url) {
+function generateFacebookPostFrEn(title, desc, url) {
   return `📌 ${title}
-Discover this practical tech guide on Bouiba Academy:
-👉 Link in first comment 💬`;
+Try this free interactive AI tool on Bouiba Academy:
+👉 Direct Link in first comment 💬`;
 }
 
 // Generate Arabic Image Description
 function generateArabicImageDescription(title, category) {
-  return `تصميم تقني عصري وأنيق يجسد موضوع "${title}" بنمط 3D داكن مع إضاءة نيون زرقاء وأرجوانية وشاشة برمجية تفاعلية تعكس التكنولوجيا والابتكار.`;
+  return `تصميم تقني عصري بنمط 3D داكن يعكس أداة "${title}" مع شاشة تفاعلية وإضاءة نيون أرجوانية وزرقاء تعبر عن التكنولوجيا والذكاء الاصطناعي.`;
 }
 
 // Generate AI Image Prompt in English
-function generateAiImagePromptEn(title, category) {
-  const topicClean = title.replace(/[^\w\s]/gi, "").trim() || "modern AI automation workspace";
+function generateAiImagePromptEn(titleName) {
+  const clean = titleName.replace(/[^\w\s]/gi, "").trim() || "modern AI tool UI workspace";
   
-  return `A high-end, professional 3D tech illustration representing "${topicClean}". Modern minimalist style with glowing neon blue and purple accents, sleek dark futuristic workspace interface, subtle holographic data nodes and code elements on glass screen. Clean composition, cinematic lighting, octane render, 8k resolution, photorealistic tech aesthetic, no text or typography inside image --ar 4:5`;
+  return `A sleek high-end 3D tech render representing "${clean}". Modern dark glass user interface, glowing neon blue and gold elements, developer desktop workspace, floating AI holographic icons, octane render, 8k resolution, minimalist style, no text --ar 4:5`;
 }
 
 // Extract Local Posts
@@ -212,19 +276,49 @@ function saveCsv(records) {
 // Main Execution
 async function main() {
   console.log("=========================================");
-  console.log("🚀 Bouiba Academy — Facebook Link-in-Comment Post Automation");
+  console.log("🚀 Bouiba Academy — Tools & Posts Facebook Automation");
   console.log("=========================================\n");
 
   if (!fs.existsSync(OUTPUT_DIR)) {
     fs.mkdirSync(OUTPUT_DIR, { recursive: true });
   }
 
+  const records = [];
+
+  // 1. Process Interactive Platform Tools
+  console.log("🛠️ Processing Interactive Platform AI Tools...");
+  for (const tool of PLATFORM_TOOLS) {
+    const fbPostAr = generateFacebookPostAr(tool.title, tool.desc, tool.url, tool.category);
+    const fbCommentLink = generateFacebookCommentLink(tool.url);
+    const fbPostFrEn = generateFacebookPostFrEn(tool.title, tool.desc, tool.url);
+    const imgDescAr = generateArabicImageDescription(tool.title, tool.category);
+    const imgPromptEn = generateAiImagePromptEn(tool.promptName);
+
+    records.push({
+      id: tool.slug,
+      title: tool.title,
+      slug: tool.slug,
+      url: tool.url,
+      category: tool.category,
+      labels: ["أدوات_الموقع", "ذكاء_اصطناعي"],
+      published: new Date().toISOString().split("T")[0],
+      excerpt: tool.desc,
+      thumbnail: "https://www.bouibacademy.me/og-banner.png",
+      facebook_post_ar: fbPostAr,
+      facebook_comment_link: fbCommentLink,
+      facebook_post_fr_en: fbPostFrEn,
+      image_description_ar: imgDescAr,
+      image_prompt_en: imgPromptEn,
+      created_at: new Date().toISOString(),
+    });
+  }
+
+  // 2. Process Blog Articles
+  console.log("🔍 Extracting published blog posts (Local + Blogger)...");
   const [localPosts, bloggerPosts] = await Promise.all([getLocalPosts(), getBloggerPosts()]);
   const allArticles = [...localPosts, ...bloggerPosts];
 
   console.log(`📦 Retrieved total ${allArticles.length} articles.`);
-
-  const records = [];
 
   for (const article of allArticles) {
     const cat = mapCategory(article.labels, article.title);
@@ -232,7 +326,7 @@ async function main() {
     const fbCommentLink = generateFacebookCommentLink(article.url);
     const fbPostFrEn = generateFacebookPostFrEn(article.title, article.excerpt, article.url);
     const imgDescAr = generateArabicImageDescription(article.title, cat);
-    const imgPromptEn = generateAiImagePromptEn(article.title, cat);
+    const imgPromptEn = generateAiImagePromptEn(article.title);
 
     records.push({
       id: article.slug || article.id,
@@ -258,8 +352,9 @@ async function main() {
   saveCsv(records);
 
   console.log("\n=========================================");
-  console.log(`🎉 Updated Facebook Posts (Link in First Comment Compliant)!`);
-  console.log(`📁 Total processed posts: ${records.length}`);
+  console.log(`🎉 Facebook Content Generation Finished!`);
+  console.log(`🛠️ Included ${PLATFORM_TOOLS.length} Interactive AI Tools.`);
+  console.log(`📁 Total processed posts & tools: ${records.length}`);
   console.log(`📄 Saved to JSON: ${JSON_OUTPUT_PATH}`);
   console.log(`📊 Saved to CSV: ${CSV_OUTPUT_PATH}`);
   console.log("=========================================\n");
