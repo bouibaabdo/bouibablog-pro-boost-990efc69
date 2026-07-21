@@ -13,7 +13,8 @@
     "cf:deploy": "npm run build && npx wrangler deploy",
     "cf:deploy:output": "npm run build && npx wrangler --cwd .output deploy",
     "cf:preview": "npm run build && npx wrangler dev",
-    "cf:typegen": "npx wrangler types"
+    "cf:typegen": "npx wrangler types",
+    "generate-fb": "node scripts/generate-facebook-posts.js"
   },
   "dependencies": {
     "@fontsource/cairo": "^5.2.7",

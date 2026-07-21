@@ -55,6 +55,7 @@ import { Route as AuthenticatedAdminWorldcupRouteImport } from './routes/_authen
 import { Route as AuthenticatedAdminToolsRouteImport } from './routes/_authenticated/admin/tools'
 import { Route as AuthenticatedAdminPostsRouteImport } from './routes/_authenticated/admin/posts'
 import { Route as AuthenticatedAdminLessonsRouteImport } from './routes/_authenticated/admin/lessons'
+import { Route as AuthenticatedAdminFacebookRouteImport } from './routes/_authenticated/admin/facebook'
 import { Route as AuthenticatedAdminAnalyticsRouteImport } from './routes/_authenticated/admin/analytics'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 
@@ -289,6 +290,12 @@ const AuthenticatedAdminLessonsRoute =
     path: '/lessons',
     getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
+const AuthenticatedAdminFacebookRoute =
+  AuthenticatedAdminFacebookRouteImport.update({
+    id: '/facebook',
+    path: '/facebook',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
 const AuthenticatedAdminAnalyticsRoute =
   AuthenticatedAdminAnalyticsRouteImport.update({
     id: '/analytics',
@@ -342,6 +349,7 @@ export interface FileRoutesByFullPath {
   '/posts/': typeof PostsIndexRoute
   '/tools/': typeof ToolsIndexRoute
   '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
+  '/admin/facebook': typeof AuthenticatedAdminFacebookRoute
   '/admin/lessons': typeof AuthenticatedAdminLessonsRoute
   '/admin/posts': typeof AuthenticatedAdminPostsRoute
   '/admin/tools': typeof AuthenticatedAdminToolsRoute
@@ -389,6 +397,7 @@ export interface FileRoutesByTo {
   '/posts': typeof PostsIndexRoute
   '/tools': typeof ToolsIndexRoute
   '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
+  '/admin/facebook': typeof AuthenticatedAdminFacebookRoute
   '/admin/lessons': typeof AuthenticatedAdminLessonsRoute
   '/admin/posts': typeof AuthenticatedAdminPostsRoute
   '/admin/tools': typeof AuthenticatedAdminToolsRoute
@@ -440,6 +449,7 @@ export interface FileRoutesById {
   '/posts/': typeof PostsIndexRoute
   '/tools/': typeof ToolsIndexRoute
   '/_authenticated/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
+  '/_authenticated/admin/facebook': typeof AuthenticatedAdminFacebookRoute
   '/_authenticated/admin/lessons': typeof AuthenticatedAdminLessonsRoute
   '/_authenticated/admin/posts': typeof AuthenticatedAdminPostsRoute
   '/_authenticated/admin/tools': typeof AuthenticatedAdminToolsRoute
@@ -491,6 +501,7 @@ export interface FileRouteTypes {
     | '/posts/'
     | '/tools/'
     | '/admin/analytics'
+    | '/admin/facebook'
     | '/admin/lessons'
     | '/admin/posts'
     | '/admin/tools'
@@ -538,6 +549,7 @@ export interface FileRouteTypes {
     | '/posts'
     | '/tools'
     | '/admin/analytics'
+    | '/admin/facebook'
     | '/admin/lessons'
     | '/admin/posts'
     | '/admin/tools'
@@ -588,6 +600,7 @@ export interface FileRouteTypes {
     | '/posts/'
     | '/tools/'
     | '/_authenticated/admin/analytics'
+    | '/_authenticated/admin/facebook'
     | '/_authenticated/admin/lessons'
     | '/_authenticated/admin/posts'
     | '/_authenticated/admin/tools'
@@ -956,6 +969,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminLessonsRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
+    '/_authenticated/admin/facebook': {
+      id: '/_authenticated/admin/facebook'
+      path: '/facebook'
+      fullPath: '/admin/facebook'
+      preLoaderRoute: typeof AuthenticatedAdminFacebookRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
     '/_authenticated/admin/analytics': {
       id: '/_authenticated/admin/analytics'
       path: '/analytics'
@@ -975,6 +995,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedAdminRouteRouteChildren {
   AuthenticatedAdminAnalyticsRoute: typeof AuthenticatedAdminAnalyticsRoute
+  AuthenticatedAdminFacebookRoute: typeof AuthenticatedAdminFacebookRoute
   AuthenticatedAdminLessonsRoute: typeof AuthenticatedAdminLessonsRoute
   AuthenticatedAdminPostsRoute: typeof AuthenticatedAdminPostsRoute
   AuthenticatedAdminToolsRoute: typeof AuthenticatedAdminToolsRoute
@@ -985,6 +1006,7 @@ interface AuthenticatedAdminRouteRouteChildren {
 const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren =
   {
     AuthenticatedAdminAnalyticsRoute: AuthenticatedAdminAnalyticsRoute,
+    AuthenticatedAdminFacebookRoute: AuthenticatedAdminFacebookRoute,
     AuthenticatedAdminLessonsRoute: AuthenticatedAdminLessonsRoute,
     AuthenticatedAdminPostsRoute: AuthenticatedAdminPostsRoute,
     AuthenticatedAdminToolsRoute: AuthenticatedAdminToolsRoute,

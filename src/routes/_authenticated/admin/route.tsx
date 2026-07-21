@@ -24,6 +24,7 @@ export const Route = createFileRoute("/_authenticated/admin")({
 const NAV_ITEMS = [
   { title: "نظرة عامة (Dashboard)", url: "/admin", icon: LayoutDashboard, exact: true },
   { title: "المقالات (Posts)", url: "/admin/posts", icon: FileText },
+  { title: "منشورات فيسبوك (FB Automation)", url: "/admin/facebook", icon: Tags },
   { title: "دورات YouTube والفيديو", url: "/admin/lessons", icon: Youtube },
   { title: "أدوات الذكاء الاصطناعي", url: "/admin/tools", icon: Sparkles },
   { title: "التحليلات والإحصائيات", url: "/admin/analytics", icon: BarChart3 },
