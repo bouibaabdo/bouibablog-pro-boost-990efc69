@@ -59,7 +59,6 @@ const TOOL_ITEMS_EN: NavDropdownItem[] = [
 const SIMPLE_NAV_AR = [
   { to: "/", label: "الرئيسية" },
   { to: "/quiz", label: "اختبار AI" },
-  { to: "/worldcup", label: "كأس العالم 2026" },
   { to: "/about", label: "عن الأكاديمية" },
   { to: "/contact", label: "تواصل" },
 ] as const;
@@ -70,7 +69,6 @@ const SIMPLE_NAV_EN = [
   { to: "/lessons", label: "Courses" },
   { to: "/tools", label: "Tools" },
   { to: "/quiz", label: "AI Quiz" },
-  { to: "/worldcup", label: "World Cup 2026" },
   { to: "/about", label: "About" },
   { to: "/contact", label: "Contact" },
 ] as const;
@@ -402,17 +400,7 @@ export function SiteHeader() {
                   <span>{lang === "en" ? "AI Quiz" : "اختبار AI"}</span>
                 </Link>
 
-                <Link
-                  to="/worldcup"
-                  onClick={() => setOpen(false)}
-                  className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-muted-foreground hover:text-foreground hover:bg-accent/40 transition-all group"
-                  activeProps={{
-                    className: "text-foreground bg-accent/40 border-r-2 border-primary",
-                  }}
-                >
-                  <Trophy className="h-5 w-5 text-amber-500" />
-                  <span>{lang === "en" ? "World Cup 2026" : "كأس العالم 2026"}</span>
-                </Link>
+
 
                 <Link
                   to="/about"

@@ -175,13 +175,8 @@ function HomePage() {
           <div className="container-page relative z-10 text-center">
             {/* Top Live Badge */}
             <div className="inline-flex items-center gap-2 rounded-full border border-primary/25 bg-surface/90 backdrop-blur-md px-4 py-1.5 text-xs md:text-sm font-bold text-foreground shadow-soft mb-6 transition-all hover:border-primary/40 hover:scale-105 cursor-default">
-              <span className="relative flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
-              </span>
-              <span className="gradient-text font-extrabold">بث مباشر كأس العالم 2026</span>
-              <span className="text-muted-foreground">|</span>
-              <span className="text-muted-foreground">6+ أدوات ذكاء اصطناعي مجانية 100%</span>
+              <Sparkles className="h-3.5 w-3.5 text-primary animate-pulse" />
+              <span className="gradient-text font-extrabold">منصتك الشاملة لتعلم الأتمتة والذكاء الاصطناعي بالعربية</span>
             </div>
 
             {/* Main Headline */}
@@ -193,7 +188,7 @@ function HomePage() {
 
             {/* Subtitle */}
             <p className="mt-6 mx-auto max-w-2xl text-base md:text-xl text-muted-foreground leading-relaxed font-medium">
-              دروس عملية، أدوات AI مجانية للتوليد والتلخيص والترجمة، ومتابعة حية لمباريات كأس العالم 2026 في منصة واحدة.
+              دروس عملية مجانية، أدوات AI تفاعلية ومبتكرة للتوليد والتلخيص والترجمة ومسارات التعلم الاحترافية.
             </p>
 
             {/* Instant Search Bar */}
@@ -224,13 +219,6 @@ function HomePage() {
               </Link>
 
               <Link
-                to="/worldcup"
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-amber-500/10 via-amber-500/15 to-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30 px-6 py-3.5 text-sm font-bold hover:bg-amber-500/20 transition-all shadow-soft"
-              >
-                <Trophy className="h-4 w-4 text-amber-500 animate-bounce" /> بث كأس العالم 2026
-              </Link>
-
-              <Link
                 to="/quiz"
                 className="inline-flex items-center justify-center gap-2 rounded-xl bg-violet-600/10 text-violet-700 dark:bg-violet-500/15 dark:text-violet-300 border border-violet-500/30 px-6 py-3.5 text-sm font-bold hover:bg-violet-600/20 transition-all shadow-soft"
               >
@@ -238,11 +226,6 @@ function HomePage() {
               </Link>
             </div>
           </div>
-        </section>
-
-        {/* WORLD CUP MATCHES LIVE STREAM RAIL — TOP PRIORITY */}
-        <section className="bg-surface-muted/40 py-2">
-          <TodayMatchesRail variant="home" max={12} />
         </section>
 
         {/* AI TOOLS SHOWCASE — Grid of 6 High-Converting Cards */}
@@ -397,13 +380,13 @@ function HomePage() {
         )}
 
         {/* TRUST STATS FOOTER BAR */}
-        <section className="container-page pb-16">
+        <section className="container-page pb-12">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto border border-border/60 bg-card p-6 md:p-8 rounded-3xl shadow-card text-center">
             {[
               { n: `${data.total}+`, l: "مقال تقني منشور", icon: FileText },
               { n: "6+", l: "أدوات AI مجانية", icon: Wand2 },
               { n: "100%", l: "محتوى مجاني بالعربية", icon: BadgeCheck },
-              { n: "2026", l: "بث مباشر كأس العالم", icon: Trophy },
+              { n: "يومي", l: "شروحات وتحديثات", icon: Layers },
             ].map((s, i) => (
               <div key={i} className="space-y-1">
                 <div className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary mb-2">
@@ -413,6 +396,24 @@ function HomePage() {
                 <div className="text-xs md:text-sm text-muted-foreground font-semibold">{s.l}</div>
               </div>
             ))}
+          </div>
+        </section>
+
+        {/* Minimal Today's Matches details card at the very bottom */}
+        <section className="container-page pb-16">
+          <div className="max-w-xl mx-auto rounded-2xl border border-border bg-card/40 p-4 shadow-soft">
+            <details className="group">
+              <summary className="flex items-center justify-between cursor-pointer list-none select-none">
+                <div className="flex items-center gap-2 text-xs font-bold text-muted-foreground">
+                  <Trophy className="h-3.5 w-3.5 text-amber-500" />
+                  <span>مباريات اليوم (رياضة)</span>
+                </div>
+                <span className="text-[10px] text-primary group-open:rotate-180 transition-transform">▼</span>
+              </summary>
+              <div className="mt-3 pt-3 border-t border-border/40">
+                <TodayMatchesRail variant="article" max={4} />
+              </div>
+            </details>
           </div>
         </section>
       </main>
