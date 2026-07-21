@@ -24,9 +24,14 @@ import {
   UploadCloud,
   CheckCircle2,
   X,
-  Send,
   RefreshCw,
   Pencil,
+  Youtube,
+  Plus,
+  Video,
+  FileText,
+  ExternalLink,
+  Sparkles,
 } from "lucide-react";
 import {
   Dialog,
@@ -35,7 +40,6 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/admin/lessons")({
   component: AdminLessons,
@@ -43,7 +47,11 @@ export const Route = createFileRoute("/_authenticated/admin/lessons")({
 
 const MAX_UPLOAD_BYTES = 500 * 1024 * 1024; // 500 MB
 
-type UploadStage = "idle" | "uploading" | "uploaded" | "publishing" | "done";
+function extractYouTubeId(url: string): string | null {
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+  const match = url.match(regExp);
+  return match && match[2].length === 11 ? match[2] : null;
+}
 
 async function captureThumb(file: File, atSec: number): Promise<Blob | null> {
   return new Promise((resolve) => {
@@ -90,26 +98,28 @@ async function captureThumb(file: File, atSec: number): Promise<Blob | null> {
 
 function AdminLessons() {
   const [items, setItems] = useState<any[] | null>(null);
+  const [addMode, setAddMode] = useState<"youtube" | "upload">("youtube");
 
-  // Form
+  // Form State
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState("دورات الذكاء الاصطناعي");
+  const [youtubeUrl, setYoutubeUrl] = useState("");
+  const [publishing, setPublishing] = useState(false);
 
-  // Edit dialog
+  // Edit dialog state
   const [editing, setEditing] = useState<any | null>(null);
   const [editTitle, setEditTitle] = useState("");
   const [editDescription, setEditDescription] = useState("");
   const [editCategory, setEditCategory] = useState("");
+  const [editVideoPath, setEditVideoPath] = useState("");
   const [editPublished, setEditPublished] = useState(true);
   const [savingEdit, setSavingEdit] = useState(false);
 
-  // Upload state
-
+  // Upload video file state
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [dragOver, setDragOver] = useState(false);
-  const [stage, setStage] = useState<UploadStage>("idle");
+  const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [uploadedPath, setUploadedPath] = useState<string | null>(null);
   const [thumbPath, setThumbPath] = useState<string | null>(null);
@@ -117,32 +127,39 @@ function AdminLessons() {
   const [thumbBlob, setThumbBlob] = useState<Blob | null>(null);
   const [thumbAt, setThumbAt] = useState(1);
   const [duration, setDuration] = useState<number | null>(null);
-  const [regenerating, setRegenerating] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
 
   async function refresh() {
-    const list = await adminListLessons();
-    setItems(list as any[]);
+    try {
+      const list = await adminListLessons();
+      setItems(list as any[]);
+    } catch {
+      setItems([]);
+    }
   }
+
   useEffect(() => {
     refresh();
   }, []);
 
-  useEffect(() => {
-    if (!file) {
-      setPreviewUrl(null);
+  const acceptFile = useCallback((f: File | null | undefined) => {
+    if (!f) return;
+    if (!f.type.startsWith("video/")) {
+      toast.error("يُرجى اختيار ملف فيديو صالح");
       return;
     }
-    const url = URL.createObjectURL(file);
-    setPreviewUrl(url);
-    return () => URL.revokeObjectURL(url);
-  }, [file]);
+    if (f.size > MAX_UPLOAD_BYTES) {
+      toast.error(`حجم الملف ${(f.size / (1024 * 1024)).toFixed(1)}MB يتجاوز 500MB.`);
+      return;
+    }
+    setFile(f);
+    setProgress(0);
+    setUploadedPath(null);
+  }, []);
 
-  // Auto-generate thumbnail + read duration when a file is picked
   useEffect(() => {
     if (!file) return;
     (async () => {
-      // duration
       try {
         const dur = await new Promise<number>((resolve, reject) => {
           const v = document.createElement("video");
@@ -166,79 +183,49 @@ function AdminLessons() {
     })();
   }, [file]);
 
-  async function regenerateThumb(atSec: number) {
-    if (!file) return;
-    setRegenerating(true);
+  // Publish YouTube Course Lesson
+  async function publishYouTubeLesson() {
+    if (!youtubeUrl.trim()) return toast.error("يرجى وضع رابط فيديو YouTube أولاً");
+    if (!title.trim()) return toast.error("يرجى كتابة عنوان الدرس");
+
+    const ytId = extractYouTubeId(youtubeUrl.trim());
+    if (!ytId) return toast.error("رابط YouTube غير صحيح، يرجى التأكد من الرابط");
+
+    const thumbUrl = `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
+
+    setPublishing(true);
     try {
-      const b = await captureThumb(file, atSec);
-      if (b) {
-        setThumbBlob(b);
-        setThumbPreview((prev) => {
-          if (prev) URL.revokeObjectURL(prev);
-          return URL.createObjectURL(b);
-        });
-      }
+      await createLesson({
+        data: {
+          title: title.trim(),
+          description: description.trim() || null,
+          category: category.trim() || "دورات YouTube",
+          video_path: youtubeUrl.trim(),
+          thumbnail_path: null,
+          thumbnail_url: thumbUrl,
+          duration_seconds: duration || 600,
+          sort_order: 0,
+          published: true,
+        },
+      });
+      toast.success("تم نشر دورة YouTube بنجاح!");
+      setTitle("");
+      setDescription("");
+      setYoutubeUrl("");
+      await refresh();
+    } catch (e: any) {
+      toast.error(e?.message ?? "فشل نشر الدرس");
     } finally {
-      setRegenerating(false);
+      setPublishing(false);
     }
   }
 
-  const acceptFile = useCallback((f: File | null | undefined) => {
-    if (!f) return;
-    if (!f.type.startsWith("video/")) {
-      toast.error("يُرجى اختيار ملف فيديو صالح");
-      return;
-    }
-    if (f.size > MAX_UPLOAD_BYTES) {
-      toast.error(
-        `حجم الملف ${(f.size / (1024 * 1024)).toFixed(1)}MB يتجاوز 500MB. اضغطه إلى 720p.`,
-      );
-      return;
-    }
-    setFile(f);
-    setStage("idle");
-    setProgress(0);
-    setUploadedPath(null);
-    setThumbPath(null);
-    setThumbBlob(null);
-    setThumbPreview((prev) => {
-      if (prev) URL.revokeObjectURL(prev);
-      return null;
-    });
-    setDuration(null);
-  }, []);
+  // Publish Uploaded Video Lesson
+  async function publishUploadedLesson() {
+    if (!file) return toast.error("اختر ملف الفيديو أولاً");
+    if (!title.trim()) return toast.error("أدخل عنوان الدرس");
 
-  function onDrop(e: React.DragEvent) {
-    e.preventDefault();
-    setDragOver(false);
-    acceptFile(e.dataTransfer.files?.[0]);
-  }
-
-  function resetAll() {
-    setFile(null);
-    setPreviewUrl(null);
-    setStage("idle");
-    setProgress(0);
-    setUploadedPath(null);
-    setThumbPath(null);
-    setThumbBlob(null);
-    setThumbPreview((prev) => {
-      if (prev) URL.revokeObjectURL(prev);
-      return null;
-    });
-    setDuration(null);
-    if (fileInput.current) fileInput.current.value = "";
-  }
-
-  async function onUpload() {
-    if (!file) return toast.error("اختر ملف فيديو");
-    setStage("uploading");
-    setProgress(0);
-
-    const timer = setInterval(() => {
-      setProgress((p) => (p < 90 ? p + Math.max(1, Math.round((95 - p) / 15)) : p));
-    }, 400);
-
+    setUploading(true);
     try {
       const ext = file.name.split(".").pop() || "mp4";
       const base = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
@@ -250,58 +237,36 @@ function AdminLessons() {
       });
       if (error) throw error;
 
-      // Upload thumbnail in parallel step
       let tPath: string | null = null;
       if (thumbBlob) {
         tPath = `thumbs/${base}.jpg`;
-        const { error: tErr } = await supabase.storage
-          .from("lessons")
-          .upload(tPath, thumbBlob, { contentType: "image/jpeg", upsert: true });
-        if (tErr) tPath = null;
+        await supabase.storage.from("lessons").upload(tPath, thumbBlob, { contentType: "image/jpeg", upsert: true });
       }
 
-      setUploadedPath(path);
-      setThumbPath(tPath);
-      setProgress(100);
-      setStage("uploaded");
-      toast.success("تم رفع الفيديو. أكمل التفاصيل ثم اضغط نشر.");
-    } catch (e: any) {
-      toast.error(e?.message ?? "فشل الرفع");
-      setStage("idle");
-      setProgress(0);
-    } finally {
-      clearInterval(timer);
-    }
-  }
-
-  async function onPublish() {
-    if (!uploadedPath) return toast.error("ارفع الفيديو أولًا");
-    if (!title.trim()) return toast.error("أضف عنوانًا للدرس");
-    setStage("publishing");
-    try {
       await createLesson({
         data: {
           title: title.trim(),
           description: description.trim() || null,
-          category: category.trim() || null,
-          video_path: uploadedPath,
-          thumbnail_path: thumbPath,
+          category: category.trim() || "دروس فيديو",
+          video_path: path,
+          thumbnail_path: tPath,
           thumbnail_url: null,
           duration_seconds: duration,
           sort_order: 0,
           published: true,
         },
       });
-      toast.success("تم نشر الدرس");
-      setStage("done");
+
+      toast.success("تم رفع ونشر الدرس بنجاح!");
       setTitle("");
       setDescription("");
-      setCategory("");
-      resetAll();
+      setFile(null);
+      setUploadedPath(null);
       await refresh();
     } catch (e: any) {
-      toast.error(e?.message ?? "فشل النشر");
-      setStage("uploaded");
+      toast.error(e?.message ?? "فشل الرفع والنشر");
+    } finally {
+      setUploading(false);
     }
   }
 
@@ -315,12 +280,12 @@ function AdminLessons() {
   }
 
   async function onDelete(l: any) {
-    if (!confirm(`حذف "${l.title}" نهائيًا؟`)) return;
+    if (!confirm(`حذف الدرس "${l.title}" نهائياً؟`)) return;
     try {
       await deleteLesson({
         data: { id: l.id, video_path: l.video_path, thumbnail_path: l.thumbnail_path },
       });
-      toast.success("تم الحذف");
+      toast.success("تم حذف الدرس");
       await refresh();
     } catch {
       toast.error("فشل الحذف");
@@ -332,6 +297,7 @@ function AdminLessons() {
     setEditTitle(l.title ?? "");
     setEditDescription(l.description ?? "");
     setEditCategory(l.category ?? "");
+    setEditVideoPath(l.video_path ?? "");
     setEditPublished(!!l.published);
   }
 
@@ -349,281 +315,221 @@ function AdminLessons() {
           published: editPublished,
         },
       });
-      toast.success("تم حفظ التعديلات");
+      toast.success("تم حفظ التعديلات بنجاح!");
       setEditing(null);
       await refresh();
-    } catch (e: any) {
-      toast.error(e?.message ?? "فشل الحفظ");
+    } catch {
+      toast.error("فشل الحفظ");
     } finally {
       setSavingEdit(false);
     }
   }
 
-  const uploading = stage === "uploading";
-  const publishing = stage === "publishing";
-  const readyToPublish = stage === "uploaded" || stage === "publishing";
-
   return (
-    <div className="space-y-6 max-w-4xl">
-      <div>
-        <h2 className="text-2xl font-bold">دروس الفيديو</h2>
-        <p className="text-muted-foreground text-sm mt-1">
-          اسحب الفيديو، ارفعه، ثم أضف التفاصيل واضغط نشر.
-        </p>
+    <div className="space-y-8">
+      {/* Header */}
+      <div className="flex items-center justify-between flex-wrap gap-4 border-b border-border/60 pb-4">
+        <div>
+          <h2 className="text-2xl font-black font-display tracking-tight flex items-center gap-2">
+            <Youtube className="h-6 w-6 text-rose-500" />
+            إدارة دورات YouTube وفيديوهات الدروس
+          </h2>
+          <p className="text-muted-foreground text-sm mt-1">
+            أضف وعدّل دورات YouTube ورفع الدروس والفيديوهات والوثائق المصاحبة بكل سهولة.
+          </p>
+        </div>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">إضافة درس جديد</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-5">
-          {/* Dropzone */}
-          <div
-            onDragOver={(e) => {
-              e.preventDefault();
-              setDragOver(true);
-            }}
-            onDragLeave={() => setDragOver(false)}
-            onDrop={onDrop}
-            onClick={() => !file && fileInput.current?.click()}
-            className={cn(
-              "relative rounded-xl border-2 border-dashed transition-colors",
-              "p-6 sm:p-8 text-center cursor-pointer",
-              dragOver
-                ? "border-primary bg-primary/5"
-                : "border-border hover:border-primary/60 hover:bg-muted/40",
-              file && "cursor-default",
-            )}
+      {/* Course Creator Form */}
+      <Card className="p-6 shadow-card border border-border/80">
+        <div className="flex items-center gap-3 border-b border-border/60 pb-4 mb-6">
+          <Button
+            variant={addMode === "youtube" ? "default" : "outline"}
+            onClick={() => setAddMode("youtube")}
+            className="gap-2 font-bold"
           >
-            <input
-              ref={fileInput}
-              type="file"
-              accept="video/*"
-              className="hidden"
-              onChange={(e) => acceptFile(e.target.files?.[0])}
-            />
+            <Youtube className="h-4 w-4 text-rose-500" />
+            إضافة عبر رابط YouTube
+          </Button>
+          <Button
+            variant={addMode === "upload" ? "default" : "outline"}
+            onClick={() => setAddMode("upload")}
+            className="gap-2 font-bold"
+          >
+            <UploadCloud className="h-4 w-4 text-primary" />
+            رفع فيديو مباشر (Up to 500MB)
+          </Button>
+        </div>
 
-            {!file ? (
-              <div className="flex flex-col items-center gap-2">
-                <div className="h-12 w-12 rounded-full bg-primary/10 grid place-items-center">
-                  <UploadCloud className="h-6 w-6 text-primary" />
-                </div>
-                <p className="font-semibold">اسحب وأفلت الفيديو هنا</p>
-                <p className="text-sm text-muted-foreground">
-                  أو اضغط لاختيار ملف من جهازك (حتى 500MB)
-                </p>
-              </div>
-            ) : (
-              <div className="flex flex-col sm:flex-row gap-4 items-center text-start">
-                {previewUrl && (
-                  <video
-                    src={previewUrl}
-                    className="h-28 w-44 rounded-lg bg-black object-cover shrink-0"
-                    muted
-                    playsInline
-                  />
-                )}
-                <div className="flex-1 min-w-0 w-full">
-                  <div className="flex items-start gap-2">
-                    <div className="flex-1 min-w-0">
-                      <p className="font-semibold truncate">{file.name}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {(file.size / (1024 * 1024)).toFixed(1)} MB
-                        {duration ? ` · ${Math.round(duration / 60)} د` : ""}
-                      </p>
-                    </div>
-                    {stage === "idle" && (
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          resetAll();
-                        }}
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
-                    )}
-                    {readyToPublish && (
-                      <span className="inline-flex items-center gap-1 text-xs text-emerald-600 font-medium">
-                        <CheckCircle2 className="h-4 w-4" /> تم الرفع
-                      </span>
-                    )}
-                  </div>
-                  {(uploading || readyToPublish) && (
-                    <div className="mt-3 space-y-1">
-                      <Progress value={progress} className="h-2" />
-                      <p className="text-xs text-muted-foreground">
-                        {uploading ? `جارٍ الرفع... ${progress}%` : "جاهز للنشر"}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Thumbnail preview + regenerate */}
-          {file && thumbPreview && (
-            <div className="rounded-lg border p-3 flex flex-col sm:flex-row gap-3 items-start">
-              <img
-                src={thumbPreview}
-                alt="thumbnail"
-                className="w-40 h-24 object-cover rounded bg-muted shrink-0"
+        <div className="space-y-4 max-w-3xl">
+          {addMode === "youtube" ? (
+            <div className="space-y-2">
+              <Label className="text-xs font-bold">رابط فيديو YouTube (Direct YouTube Link)</Label>
+              <Input
+                type="url"
+                placeholder="https://www.youtube.com/watch?v=XXXXXX أو https://youtu.be/XXXXXX"
+                value={youtubeUrl}
+                onChange={(e) => {
+                  setYoutubeUrl(e.target.value);
+                  const ytId = extractYouTubeId(e.target.value);
+                  if (ytId && !title) {
+                    setTitle(`درس جديد - YouTube`);
+                  }
+                }}
+                className="dir-ltr text-sm font-mono"
               />
-              <div className="flex-1 space-y-2 w-full">
-                <div className="flex items-center justify-between">
-                  <Label className="text-xs">صورة مصغّرة مُولَّدة تلقائيًا</Label>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    disabled={regenerating || !duration}
-                    onClick={() => regenerateThumb(thumbAt)}
-                  >
-                    {regenerating ? (
-                      <Loader2 className="h-3 w-3 animate-spin" />
-                    ) : (
-                      <RefreshCw className="h-3 w-3" />
-                    )}
-                    <span className="mr-1">إعادة الالتقاط</span>
-                  </Button>
-                </div>
-                {duration ? (
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="range"
-                      min={0}
-                      max={duration}
-                      step={0.5}
-                      value={thumbAt}
-                      onChange={(e) => setThumbAt(parseFloat(e.target.value))}
-                      onMouseUp={(e) =>
-                        regenerateThumb(parseFloat((e.target as HTMLInputElement).value))
-                      }
-                      onTouchEnd={(e) =>
-                        regenerateThumb(parseFloat((e.target as HTMLInputElement).value))
-                      }
-                      className="flex-1"
-                    />
-                    <span className="text-xs text-muted-foreground w-14 text-end" dir="ltr">
-                      {thumbAt.toFixed(1)}s
-                    </span>
-                  </div>
-                ) : null}
-              </div>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              <Label className="text-xs font-bold">ملف الفيديو (Video File)</Label>
+              <Input
+                type="file"
+                accept="video/*"
+                onChange={(e) => acceptFile(e.target.files?.[0])}
+                className="text-xs"
+              />
+              {file && (
+                <p className="text-xs text-emerald-600 font-bold">
+                  تم اختيار: {file.name} ({(file.size / (1024 * 1024)).toFixed(1)} MB)
+                </p>
+              )}
             </div>
           )}
 
-          {file && stage === "idle" && (
-            <Button onClick={onUpload} className="gap-2 w-full sm:w-auto">
-              <Upload className="h-4 w-4" />
-              رفع الفيديو
-            </Button>
-          )}
-
-          {uploading && (
-            <Button disabled className="gap-2 w-full sm:w-auto">
-              <Loader2 className="h-4 w-4 animate-spin" />
-              جارٍ الرفع...
-            </Button>
-          )}
-
-          {/* Details — enabled after upload */}
-          <div
-            className={cn(
-              "space-y-4 transition-opacity",
-              !readyToPublish && "opacity-50 pointer-events-none",
-            )}
-          >
-            <div className="grid gap-2">
-              <Label>العنوان *</Label>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-2">
+              <Label className="text-xs font-bold">عنوان الدرس / الدورة *</Label>
               <Input
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder="مثال: مقدمة في ChatGPT"
+                placeholder="أدخل عنوان الدرس الجذاب..."
               />
             </div>
-            <div className="grid gap-2">
-              <Label>الوصف</Label>
-              <Textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                rows={3}
-                placeholder="وصف مختصر عن محتوى الدرس"
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label>التصنيف</Label>
+
+            <div className="space-y-2">
+              <Label className="text-xs font-bold">اسم الدورة / التصنيف</Label>
               <Input
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                placeholder="مثال: ChatGPT، Midjourney..."
+                placeholder="مثال: دورة n8n الشاملة, دورة الذكاء الاصطناعي..."
               />
             </div>
-
-            <div className="flex flex-col sm:flex-row gap-2">
-              <Button
-                onClick={onPublish}
-                disabled={!readyToPublish || publishing || !title.trim()}
-                className="gap-2"
-                size="lg"
-              >
-                {publishing ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <Send className="h-4 w-4" />
-                )}
-                {publishing ? "جارٍ النشر..." : "نشر الدرس"}
-              </Button>
-              {readyToPublish && !publishing && (
-                <Button variant="ghost" onClick={resetAll}>
-                  إلغاء
-                </Button>
-              )}
-            </div>
           </div>
-        </CardContent>
+
+          <div className="space-y-2">
+            <Label className="text-xs font-bold">وصف الدرس والوثائق المصاحبة</Label>
+            <Textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="اكتب شرحاً مختصراً للدرس وروابط المرفقات والملفات..."
+              rows={3}
+            />
+          </div>
+
+          <div className="pt-2">
+            {addMode === "youtube" ? (
+              <Button
+                onClick={publishYouTubeLesson}
+                disabled={publishing}
+                className="gap-2 font-bold bg-rose-600 hover:bg-rose-700 text-white"
+              >
+                {publishing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
+                نشر دورة YouTube فوراً
+              </Button>
+            ) : (
+              <Button
+                onClick={publishUploadedLesson}
+                disabled={uploading}
+                className="gap-2 font-bold bg-emerald-600 hover:bg-emerald-700 text-white"
+              >
+                {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+                رفع ونشر الدرس
+              </Button>
+            )}
+          </div>
+        </div>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">الدروس المنشورة</CardTitle>
+      {/* Courses & Lessons Catalog */}
+      <Card className="shadow-card border border-border/80">
+        <CardHeader className="py-4 border-b border-border/60">
+          <CardTitle className="text-base font-bold flex items-center justify-between">
+            <span>سجل الدورات والدروس المتاحة ({items?.length ?? 0})</span>
+            <span className="text-xs text-muted-foreground font-normal">يتم تحديث الجلسات فورياً</span>
+          </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-0">
           {items === null ? (
-            <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+            <div className="p-10 text-center">
+              <Loader2 className="h-6 w-6 animate-spin text-primary mx-auto mb-2" />
+              <span className="text-sm text-muted-foreground">جاري تحميل الدورات والدروس...</span>
+            </div>
           ) : items.length === 0 ? (
-            <p className="text-sm text-muted-foreground">لا توجد دروس بعد.</p>
+            <div className="p-10 text-center text-muted-foreground text-sm">
+              لا توجد دورات أو دروس مضافة حالياً.
+            </div>
           ) : (
-            <div className="divide-y">
-              {items.map((l) => (
-                <div key={l.id} className="py-3 flex items-center gap-3">
-                  <div className="h-14 w-24 rounded overflow-hidden bg-muted shrink-0 grid place-items-center">
-                    {l.thumbnail_url ? (
-                      <img src={l.thumbnail_url} alt="" className="h-full w-full object-cover" />
-                    ) : (
-                      <PlayCircle className="h-6 w-6 text-muted-foreground" />
-                    )}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-semibold truncate">{l.title}</p>
-                    <p className="text-xs text-muted-foreground truncate">
-                      {l.category ?? "—"}
-                      {l.duration_seconds ? ` · ${Math.round(l.duration_seconds / 60)} د` : ""}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-2 shrink-0">
-                    <div className="flex items-center gap-2">
-                      <Switch checked={l.published} onCheckedChange={() => onTogglePublish(l)} />
-                      <span className="text-xs text-muted-foreground">
-                        {l.published ? "منشور" : "مخفي"}
-                      </span>
+            <div className="grid gap-4 p-6 sm:grid-cols-2 lg:grid-cols-3">
+              {items.map((l: any) => (
+                <div
+                  key={l.id}
+                  className="rounded-2xl border border-border/80 bg-card p-4 shadow-soft space-y-3 flex flex-col justify-between"
+                >
+                  <div className="space-y-3">
+                    <div className="relative aspect-video rounded-xl overflow-hidden bg-slate-900 border border-border/60 group">
+                      {l.thumbnail_url ? (
+                        <img src={l.thumbnail_url} alt="" className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-slate-500">
+                          <Video className="h-8 w-8" />
+                        </div>
+                      )}
+                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        <PlayCircle className="h-10 w-10 text-white" />
+                      </div>
+                      {l.published ? (
+                        <span className="absolute top-2 right-2 bg-emerald-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow">
+                          منشور
+                        </span>
+                      ) : (
+                        <span className="absolute top-2 right-2 bg-amber-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow">
+                          مسودة
+                        </span>
+                      )}
                     </div>
-                    <Button size="icon" variant="ghost" onClick={() => openEdit(l)} title="تعديل">
-                      <Pencil className="h-4 w-4" />
-                    </Button>
-                    <Button size="icon" variant="ghost" onClick={() => onDelete(l)} title="حذف">
-                      <Trash2 className="h-4 w-4 text-destructive" />
+
+                    <div className="space-y-1">
+                      <span className="inline-block text-[11px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded">
+                        {l.category || "عام"}
+                      </span>
+                      <h4 className="font-bold text-base leading-snug line-clamp-2">{l.title}</h4>
+                      {l.description && (
+                        <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
+                          {l.description}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="pt-3 border-t border-border/60 flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-1.5">
+                      <Button size="sm" variant="outline" onClick={() => openEdit(l)} className="h-8 px-2.5 text-xs font-bold gap-1">
+                        <Pencil className="h-3.5 w-3.5 text-primary" />
+                        تعديل
+                      </Button>
+
+                      {l.video_url && (
+                        <Button size="sm" variant="ghost" asChild className="h-8 px-2 text-xs">
+                          <a href={l.video_url} target="_blank" rel="noopener noreferrer" className="gap-1">
+                            <ExternalLink className="h-3.5 w-3.5" />
+                            مشاهدة
+                          </a>
+                        </Button>
+                      )}
+                    </div>
+
+                    <Button size="sm" variant="ghost" onClick={() => onDelete(l)} className="h-8 w-8 p-0 text-rose-500 hover:bg-rose-500/10">
+                      <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
                 </div>
@@ -633,41 +539,41 @@ function AdminLessons() {
         </CardContent>
       </Card>
 
+      {/* Edit Dialog */}
       <Dialog open={!!editing} onOpenChange={(o) => !o && setEditing(null)}>
-        <DialogContent>
+        <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle>تعديل معلومات الدرس</DialogTitle>
+            <DialogTitle className="font-bold text-lg">تعديل تفاصيل الدرس / الدورة</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4">
-            <div className="grid gap-2">
-              <Label>العنوان *</Label>
+          <div className="space-y-4 py-2">
+            <div className="space-y-2">
+              <Label className="text-xs font-bold">العنوان *</Label>
               <Input value={editTitle} onChange={(e) => setEditTitle(e.target.value)} />
             </div>
-            <div className="grid gap-2">
-              <Label>الوصف</Label>
-              <Textarea
-                value={editDescription}
-                onChange={(e) => setEditDescription(e.target.value)}
-                rows={3}
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label>التصنيف</Label>
+
+            <div className="space-y-2">
+              <Label className="text-xs font-bold">التصنيف / اسم الدورة</Label>
               <Input value={editCategory} onChange={(e) => setEditCategory(e.target.value)} />
             </div>
-            <div className="flex items-center gap-2">
+
+            <div className="space-y-2">
+              <Label className="text-xs font-bold">الوصف وروابط الوثائق المصاحبة</Label>
+              <Textarea value={editDescription} onChange={(e) => setEditDescription(e.target.value)} rows={4} />
+            </div>
+
+            <div className="flex items-center justify-between border p-3 rounded-xl">
+              <Label className="text-xs font-bold">نشر الدرس وتفعيله على الموقع</Label>
               <Switch checked={editPublished} onCheckedChange={setEditPublished} />
-              <span className="text-sm text-muted-foreground">
-                {editPublished ? "منشور" : "مخفي"}
-              </span>
             </div>
           </div>
           <DialogFooter>
-            <Button variant="ghost" onClick={() => setEditing(null)} disabled={savingEdit}>
+            <Button variant="ghost" onClick={() => setEditing(null)}>
               إلغاء
             </Button>
-            <Button onClick={onSaveEdit} disabled={savingEdit || !editTitle.trim()}>
-              {savingEdit ? <Loader2 className="h-4 w-4 animate-spin" /> : "حفظ"}
+
+            <Button onClick={onSaveEdit} disabled={savingEdit} className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold gap-2">
+              {savingEdit && <Loader2 className="h-4 w-4 animate-spin" />}
+              حفظ التغييرات
             </Button>
           </DialogFooter>
         </DialogContent>

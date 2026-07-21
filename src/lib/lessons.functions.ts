@@ -28,15 +28,32 @@ type SignedLessonRow = LessonRow & {
 async function signRows(storageClient: SupabaseClient<Database>, rows: LessonRow[]) {
   return Promise.all(
     rows.map(async (r) => {
+      const isExternalVideo =
+        r.video_path && (r.video_path.startsWith("http://") || r.video_path.startsWith("https://"));
+      const isExternalThumb =
+        r.thumbnail_path &&
+        (r.thumbnail_path.startsWith("http://") || r.thumbnail_path.startsWith("https://"));
+
       const [videoRes, thumbRes] = await Promise.all([
-        storageClient.storage.from("lessons").createSignedUrl(r.video_path, SIGN_EXPIRY),
+        isExternalVideo
+          ? Promise.resolve({ data: { signedUrl: r.video_path } })
+          : storageClient.storage
+              .from("lessons")
+              .createSignedUrl(r.video_path, SIGN_EXPIRY)
+              .catch(() => ({ data: { signedUrl: r.video_path } })),
         r.thumbnail_path
-          ? storageClient.storage.from("lessons").createSignedUrl(r.thumbnail_path, SIGN_EXPIRY)
+          ? isExternalThumb
+            ? Promise.resolve({ data: { signedUrl: r.thumbnail_path } })
+            : storageClient.storage
+                .from("lessons")
+                .createSignedUrl(r.thumbnail_path, SIGN_EXPIRY)
+                .catch(() => ({ data: null }))
           : Promise.resolve({ data: null }),
       ]);
+
       return {
         ...r,
-        video_url: videoRes.data?.signedUrl ?? null,
+        video_url: videoRes.data?.signedUrl ?? r.video_path ?? null,
         thumbnail_url: thumbRes?.data?.signedUrl ?? r.thumbnail_url ?? null,
       } satisfies SignedLessonRow;
     }),
