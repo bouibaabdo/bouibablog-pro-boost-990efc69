@@ -52,7 +52,7 @@ function mapCategory(labels = [], title = "") {
   return "تقنية وتطوير الويب";
 }
 
-// Generate Facebook Arabic Post Text
+// Generate Facebook Arabic Post Text (Facebook Algorithm Compliant: Link in First Comment)
 function generateFacebookPostAr(title, excerpt, url, category) {
   const hashtags = generateHashtags(category, title);
   
@@ -62,17 +62,21 @@ function generateFacebookPostAr(title, excerpt, url, category) {
 
 🚀 دليل عملي وسهل للجميع لتطوير مهاراتك وتقنياتك اليوم مع Bouiba Academy!
 
-👇 اقرأ المقال الشامل والتطبيق العملي من هنا:
-🔗 ${url}
+👇 رابط المقال والشرح التطبيقي تجدونه في أول تعليق (Comment 💬) 📌
 
 ${hashtags}`;
+}
+
+// Generate First Comment Link Text (Avoiding FB reach penalty)
+function generateFacebookCommentLink(url) {
+  return `🔗 اقرأ المقال والتطبيقات التوضيحية من هنا:\n${url}`;
 }
 
 // Generate French/English Short Excerpt
 function generateFacebookPostFrEn(title, excerpt, url) {
   return `📌 ${title}
 Discover this practical tech guide on Bouiba Academy:
-👉 ${url}`;
+👉 Link in first comment 💬`;
 }
 
 // Generate Arabic Image Description
@@ -80,7 +84,7 @@ function generateArabicImageDescription(title, category) {
   return `تصميم تقني عصري وأنيق يجسد موضوع "${title}" بنمط 3D داكن مع إضاءة نيون زرقاء وأرجوانية وشاشة برمجية تفاعلية تعكس التكنولوجيا والابتكار.`;
 }
 
-// Generate AI Image Prompt in English for Midjourney / Dall-E / Antigravity Image Generator
+// Generate AI Image Prompt in English
 function generateAiImagePromptEn(title, category) {
   const topicClean = title.replace(/[^\w\s]/gi, "").trim() || "modern AI automation workspace";
   
@@ -178,6 +182,7 @@ function saveCsv(records) {
     "Category",
     "Published_Date",
     "Facebook_Post_AR",
+    "Facebook_Comment_Link",
     "Facebook_Post_FR_EN",
     "Arabic_Image_Description",
     "AI_Image_Prompt_EN",
@@ -193,6 +198,7 @@ function saveCsv(records) {
     escapeCsv(r.category),
     escapeCsv(r.published),
     escapeCsv(r.facebook_post_ar),
+    escapeCsv(r.facebook_comment_link),
     escapeCsv(r.facebook_post_fr_en),
     escapeCsv(r.image_description_ar),
     escapeCsv(r.image_prompt_en),
@@ -206,48 +212,29 @@ function saveCsv(records) {
 // Main Execution
 async function main() {
   console.log("=========================================");
-  console.log("🚀 Bouiba Academy — Facebook Post Automation");
+  console.log("🚀 Bouiba Academy — Facebook Link-in-Comment Post Automation");
   console.log("=========================================\n");
 
   if (!fs.existsSync(OUTPUT_DIR)) {
     fs.mkdirSync(OUTPUT_DIR, { recursive: true });
   }
 
-  // Load existing posts for deduplication
-  let existingRecords = [];
-  const existingIds = new Set();
-
-  if (fs.existsSync(JSON_OUTPUT_PATH)) {
-    try {
-      existingRecords = JSON.parse(fs.readFileSync(JSON_OUTPUT_PATH, "utf-8"));
-      existingRecords.forEach((r) => r.id && existingIds.add(r.id));
-      console.log(`📋 Found ${existingRecords.length} previously processed Facebook posts.`);
-    } catch {
-      existingRecords = [];
-    }
-  }
-
-  console.log("🔍 Extracting published blog posts (Local + Blogger)...");
   const [localPosts, bloggerPosts] = await Promise.all([getLocalPosts(), getBloggerPosts()]);
   const allArticles = [...localPosts, ...bloggerPosts];
 
   console.log(`📦 Retrieved total ${allArticles.length} articles.`);
 
-  const newRecords = [];
-  let addedCount = 0;
+  const records = [];
 
   for (const article of allArticles) {
-    if (existingIds.has(article.id) || existingIds.has(article.slug)) {
-      continue;
-    }
-
     const cat = mapCategory(article.labels, article.title);
     const fbPostAr = generateFacebookPostAr(article.title, article.excerpt, article.url, cat);
+    const fbCommentLink = generateFacebookCommentLink(article.url);
     const fbPostFrEn = generateFacebookPostFrEn(article.title, article.excerpt, article.url);
     const imgDescAr = generateArabicImageDescription(article.title, cat);
     const imgPromptEn = generateAiImagePromptEn(article.title, cat);
 
-    const record = {
+    records.push({
       id: article.slug || article.id,
       title: article.title,
       slug: article.slug,
@@ -258,28 +245,21 @@ async function main() {
       excerpt: article.excerpt,
       thumbnail: article.thumbnail,
       facebook_post_ar: fbPostAr,
+      facebook_comment_link: fbCommentLink,
       facebook_post_fr_en: fbPostFrEn,
       image_description_ar: imgDescAr,
       image_prompt_en: imgPromptEn,
       created_at: new Date().toISOString(),
-    };
-
-    newRecords.push(record);
-    existingIds.add(record.id);
-    addedCount++;
-    console.log(`✨ Processed new article: "${article.title}"`);
+    });
   }
 
-  const finalRecords = [...newRecords, ...existingRecords];
-
   // Save JSON & CSV
-  fs.writeFileSync(JSON_OUTPUT_PATH, JSON.stringify(finalRecords, null, 2), "utf-8");
-  saveCsv(finalRecords);
+  fs.writeFileSync(JSON_OUTPUT_PATH, JSON.stringify(records, null, 2), "utf-8");
+  saveCsv(records);
 
   console.log("\n=========================================");
-  console.log(`🎉 Automation Finished Successfully!`);
-  console.log(`➕ Added ${addedCount} new Facebook posts.`);
-  console.log(`📁 Total saved posts: ${finalRecords.length}`);
+  console.log(`🎉 Updated Facebook Posts (Link in First Comment Compliant)!`);
+  console.log(`📁 Total processed posts: ${records.length}`);
   console.log(`📄 Saved to JSON: ${JSON_OUTPUT_PATH}`);
   console.log(`📊 Saved to CSV: ${CSV_OUTPUT_PATH}`);
   console.log("=========================================\n");

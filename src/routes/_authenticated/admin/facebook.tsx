@@ -121,7 +121,7 @@ function AdminFacebook() {
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold text-slate-300 flex items-center gap-1.5">
-                    <Share2 className="h-3.5 w-3.5 text-sky-400" /> نص بوست فيسبوك (عربي)
+                    <Share2 className="h-3.5 w-3.5 text-sky-400" /> نص بوست فيسبوك (متوافق مع خوارزميات فيسبوك)
                   </span>
                   <Button
                     size="sm"
@@ -135,6 +135,27 @@ function AdminFacebook() {
                 </div>
                 <div className="p-3.5 rounded-xl bg-slate-900 border border-slate-800 text-xs font-sans leading-relaxed text-slate-200 whitespace-pre-line dir-rtl select-all">
                   {p.facebook_post_ar}
+                </div>
+              </div>
+
+              {/* First Comment Link Box */}
+              <div className="space-y-1.5 pt-1">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-emerald-400 flex items-center gap-1.5">
+                    💬 الرابط للتعليق الأول (First Comment Link)
+                  </span>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => copyToClipboard(p.facebook_comment_link || p.url, p.id + "-comment", "post")}
+                    className="h-7 px-2 text-xs font-bold gap-1 text-emerald-400 hover:bg-emerald-500/10"
+                  >
+                    {copiedId === p.id + "-comment" ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5" />}
+                    {copiedId === p.id + "-comment" ? "تم النسخ!" : "نسخ للتعليق"}
+                  </Button>
+                </div>
+                <div className="p-2.5 rounded-lg bg-emerald-950/40 border border-emerald-500/30 text-xs font-mono text-emerald-300 dir-rtl select-all">
+                  {p.facebook_comment_link || `🔗 اقرأ المقال الكامل والتطبيقات التوضيحية من هنا:\n${p.url}`}
                 </div>
               </div>
 
