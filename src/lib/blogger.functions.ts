@@ -64,9 +64,42 @@ function extractSlug(links: RawEntry["link"]): string {
 }
 
 function extractThumbnail(html: string, media?: { url: string }): string | undefined {
-  if (media?.url) return media.url.replace(/\/s\d+(-c)?\//, "/s1600/");
-  const m = html.match(/<img[^>]+src=["']([^"']+)["']/i);
-  return m?.[1];
+  let url: string | undefined = undefined;
+  if (media?.url) {
+    url = media.url;
+  } else {
+    // Look for all img tags and find the first one that is a real post image
+    const imgRegex = /<img\s+[^>]*\bsrc=["']([^"']+)["']/gi;
+    let match;
+    while ((match = imgRegex.exec(html)) !== null) {
+      const candidate = match[1];
+      if (candidate && !candidate.includes("analytics") && !candidate.includes("pixel") && !candidate.endsWith(".gif")) {
+        url = candidate;
+        break;
+      }
+    }
+    // Fallback to first img tag if none of the above matches
+    if (!url) {
+      const fallbackMatch = html.match(/<img\s+[^>]*\bsrc=["']([^"']+)["']/i);
+      url = fallbackMatch?.[1];
+    }
+  }
+
+  if (!url) return undefined;
+
+  // Convert http to https to avoid mixed-content issues
+  if (url.startsWith("http://")) {
+    url = url.replace("http://", "https://");
+  }
+
+  // Normalize blogger image sizes to s1600 (full resolution)
+  if (/googleusercontent\.com|blogspot\.com|blogger\.com/.test(url)) {
+    url = url.replace(/\/s\d+(-c)?\//, "/s1600/")
+             .replace(/\/w\d+-h\d+[^/]*\//, "/s1600/");
+  }
+
+  // Remove any ampersand entity encoding
+  return url.replace(/&amp;/g, "&");
 }
 
 /**

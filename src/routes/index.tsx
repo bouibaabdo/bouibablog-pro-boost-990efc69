@@ -22,6 +22,7 @@ import {
   BarChart3,
   Bot,
   Layers,
+  Clock,
 } from "lucide-react";
 import { getPosts, getLabels, optimizeBloggerImage } from "@/lib/blogger.functions";
 import { SiteHeader } from "@/components/site-header";
@@ -40,6 +41,18 @@ const labelsQueryOptions = queryOptions({
   queryFn: () => getLabels(),
   staleTime: 10 * 60_000,
 });
+
+function formatDate(iso: string) {
+  try {
+    return new Intl.DateTimeFormat("ar-EG-u-nu-latn", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }).format(new Date(iso));
+  } catch {
+    return iso;
+  }
+}
 
 export const Route = createFileRoute("/")({
   loader: async ({ context }) => {
@@ -228,23 +241,62 @@ function HomePage() {
           </div>
         </section>
 
-        {/* Latest Post Announcement Bar */}
+        {/* Latest Post Featured Showcase Banner */}
         {featured && (
-          <div className="container-page pt-10 text-center">
-            <Link
-              to="/posts/$id"
-              params={{ id: featured.slug }}
-              className="inline-flex items-center gap-2.5 rounded-full border border-primary/20 bg-primary/5 hover:bg-primary/10 transition-all px-4 py-2 text-xs md:text-sm font-semibold text-foreground group max-w-full shadow-soft hover:border-primary/40"
-            >
-              <span className="inline-flex items-center gap-1 text-[10px] md:text-xs font-bold text-primary-foreground bg-primary px-2.5 py-0.5 rounded-full shrink-0">
-                <Newspaper className="h-3 w-3" />
-                أحدث مقال
-              </span>
-              <span className="truncate group-hover:text-primary transition-colors text-right ml-1">
-                {featured.title}
-              </span>
-              <ArrowLeft className="h-4 w-4 text-primary shrink-0 transition-transform group-hover:-translate-x-1" />
-            </Link>
+          <div className="container-page pt-12">
+            <div className="relative overflow-hidden rounded-3xl border border-primary/20 bg-card p-1 shadow-soft group hover:border-primary/40 transition-all duration-300">
+              <Link
+                to="/posts/$id"
+                params={{ id: featured.slug }}
+                className="flex flex-col md:flex-row items-center gap-6 p-4 md:p-6"
+              >
+                {/* Image Section */}
+                {featured.thumbnail && (
+                  <div className="w-full md:w-80 h-48 rounded-2xl overflow-hidden bg-surface-muted shrink-0 relative">
+                    <img
+                      src={optimizeBloggerImage(featured.thumbnail, 600, 400)}
+                      alt={featured.title}
+                      loading="eager"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute top-3 right-3 inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1 text-xs font-bold text-primary-foreground shadow">
+                      <Sparkles className="h-3.5 w-3.5" />
+                      أحدث مقال
+                    </div>
+                  </div>
+                )}
+
+                {/* Content Section */}
+                <div className="flex-1 min-w-0 space-y-3 py-2 text-right">
+                  <div className="flex items-center gap-3 text-xs text-muted-foreground font-semibold flex-wrap">
+                    {featured.labels[0] && (
+                      <span className="rounded-md bg-accent px-2.5 py-1 text-primary">
+                        {featured.labels[0]}
+                      </span>
+                    )}
+                    <span>{formatDate(featured.published)}</span>
+                    <span>•</span>
+                    <span className="flex items-center gap-1">
+                      <Clock className="h-3.5 w-3.5" />
+                      {featured.readingMinutes} دقائق
+                    </span>
+                  </div>
+
+                  <h3 className="font-display text-xl md:text-2xl font-black text-foreground group-hover:text-primary transition-colors leading-tight">
+                    {featured.title}
+                  </h3>
+
+                  <p className="text-sm md:text-base text-muted-foreground line-clamp-2 leading-relaxed">
+                    {featured.excerpt}
+                  </p>
+
+                  <div className="inline-flex items-center gap-2 text-sm font-bold text-primary pt-2">
+                    <span>اقرأ المقال بالكامل</span>
+                    <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+                  </div>
+                </div>
+              </Link>
+            </div>
           </div>
         )}
 
