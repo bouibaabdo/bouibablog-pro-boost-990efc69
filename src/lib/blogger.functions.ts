@@ -390,19 +390,70 @@ function parseMarkdownToHtml(md: string): string {
 }
 
 async function loadLocalPosts(): Promise<BloggerPost[]> {
+  const posts: BloggerPost[] = [];
+
+  // 1. Try Vite static glob import (works in all production workers & client/server builds)
+  try {
+    const metaFiles = import.meta.glob<{ default: any }>("/content/posts/*/meta.json", {
+      eager: true,
+    });
+    const mdFiles = import.meta.glob<{ default: string }>("/content/posts/*/post.md", {
+      eager: true,
+      query: "?raw",
+      import: "default",
+    });
+
+    for (const [metaPath, metaObj] of Object.entries(metaFiles)) {
+      try {
+        const meta = (metaObj && (metaObj as any).default) ? (metaObj as any).default : metaObj;
+        const dirName = metaPath.split("/")[3]; // /content/posts/[slug]/meta.json
+        const mdPath = `/content/posts/${dirName}/post.md`;
+        const rawMd = mdFiles[mdPath];
+        const postContent = typeof rawMd === "string" ? rawMd : (rawMd as any)?.default || "";
+
+        const contentHtml = parseMarkdownToHtml(postContent);
+
+        let thumbnail =
+          "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop";
+        if (meta.slug?.includes("ollama") || meta.slug?.includes("n8n")) {
+          thumbnail =
+            "https://images.unsplash.com/photo-1677442136019-21780efad99a?w=800&auto=format&fit=crop";
+        }
+
+        const excerptText = meta.meta_description || meta.excerpt || "";
+        posts.push({
+          id: meta.slug,
+          slug: meta.slug,
+          title: meta.title,
+          published: new Date(meta.created_at || Date.now()).toISOString(),
+          updated: new Date(meta.created_at || Date.now()).toISOString(),
+          author: "Bouiba Academy",
+          labels: Array.from(new Set([meta.category, ...(meta.tags || [])].filter(Boolean))),
+          contentHtml,
+          excerpt: meta.excerpt || meta.meta_description || "",
+          metaDescription: excerptText,
+          thumbnail,
+          url: `https://www.bouibacademy.me/posts/${meta.slug}`,
+          readingMinutes: Math.max(1, Math.round((postContent || "").split(/\s+/).length / 200)),
+        });
+      } catch (err) {
+        console.error(`Error parsing bundled post ${metaPath}:`, err);
+      }
+    }
+  } catch (err) {
+    console.error("Vite glob import error:", err);
+  }
+
+  if (posts.length > 0) return posts;
+
+  // 2. Fallback to fs for Node environment if glob returned nothing
   try {
     const fs = await import("fs/promises");
     const path = await import("path");
     const postsDir = path.join(process.cwd(), "content", "posts");
 
-    try {
-      await fs.access(postsDir);
-    } catch {
-      return [];
-    }
-
+    await fs.access(postsDir);
     const dirs = await fs.readdir(postsDir);
-    const posts: BloggerPost[] = [];
 
     for (const dirName of dirs) {
       const dirPath = path.join(postsDir, dirName);
@@ -415,19 +466,7 @@ async function loadLocalPosts(): Promise<BloggerPost[]> {
       try {
         const metaContent = await fs.readFile(metaPath, "utf-8");
         const postContent = await fs.readFile(postPath, "utf-8");
-
-        const meta = JSON.parse(metaContent) as {
-          title: string;
-          slug: string;
-          excerpt: string;
-          meta_description: string;
-          target_keywords: string[];
-          category: string;
-          tags: string[];
-          created_at: string;
-          language: string;
-        };
-
+        const meta = JSON.parse(metaContent);
         const contentHtml = parseMarkdownToHtml(postContent);
 
         let thumbnail =
@@ -445,7 +484,7 @@ async function loadLocalPosts(): Promise<BloggerPost[]> {
           published: new Date(meta.created_at).toISOString(),
           updated: new Date(meta.created_at).toISOString(),
           author: "Bouiba Academy",
-          labels: Array.from(new Set([meta.category, ...meta.tags])),
+          labels: Array.from(new Set([meta.category, ...(meta.tags || [])].filter(Boolean))),
           contentHtml,
           excerpt: meta.excerpt,
           metaDescription: excerptText,
@@ -457,11 +496,11 @@ async function loadLocalPosts(): Promise<BloggerPost[]> {
         console.error(`Error loading local post in ${dirName}:`, err);
       }
     }
-    return posts;
   } catch (err) {
-    console.error("Error loading local posts:", err);
-    return [];
+    // Ignore fs errors in edge environments
   }
+
+  return posts;
 }
 
 export const getPosts = createServerFn({ method: "GET" })
