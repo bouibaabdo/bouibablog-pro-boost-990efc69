@@ -50,6 +50,30 @@ const SYSTEM: Record<Action, (b: Body) => string> = {
     تأكد من أن الـ JSON منسق بشكل صحيح ويمكن عمل JSON.parse() له بسهولة. لا تضعه داخل وسم \`\`\`json، فقط أعد كائن الـ JSON مباشرة.`,
 };
 
+// Direct Gemini API fallback when Lovable gateway rate limits
+async function geminiDirectFallback(systemPrompt: string, userPrompt: string): Promise<string | null> {
+  const geminiKey = process.env.GEMINI_API_KEY;
+  if (!geminiKey) return null;
+
+  try {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${encodeURIComponent(geminiKey)}`;
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [
+          { role: "user", parts: [{ text: `${systemPrompt}\n\n${userPrompt}` }] }
+        ],
+      }),
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.candidates?.[0]?.content?.parts?.[0]?.text || null;
+  } catch {
+    return null;
+  }
+}
+
 export const Route = createFileRoute("/api/tools/text")({
   server: {
     handlers: {
@@ -68,6 +92,7 @@ export const Route = createFileRoute("/api/tools/text")({
             { status: 413 },
           );
         }
+
         // Enforce admin enable/disable toggle server-side
         try {
           const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -80,47 +105,58 @@ export const Route = createFileRoute("/api/tools/text")({
             return Response.json({ error: "هذه الأداة معطّلة حاليًا." }, { status: 403 });
           }
         } catch {
-          // fail open on lookup errors to avoid breaking the tool
+          // fail open on lookup errors
         }
+
         const key = process.env.LOVABLE_API_KEY;
-        if (!key) return new Response("Missing LOVABLE_API_KEY", { status: 500 });
+        const systemPrompt = SYSTEM[action](body);
 
-        const upstream = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${key}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            model: "google/gemini-3-flash-preview",
-            messages: [
-              { role: "system", content: SYSTEM[action](body) },
-              { role: "user", content: input.trim() },
-            ],
-          }),
-        });
+        if (key) {
+          try {
+            const upstream = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${key}`,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                model: "google/gemini-3-flash-preview",
+                messages: [
+                  { role: "system", content: systemPrompt },
+                  { role: "user", content: input.trim() },
+                ],
+              }),
+            });
 
-        if (!upstream.ok) {
-          const text = await upstream.text().catch(() => "");
-          if (upstream.status === 429) {
-            return Response.json({ error: "تم تجاوز الحد المسموح. حاول لاحقًا." }, { status: 429 });
+            if (upstream.ok) {
+              const data = (await upstream.json()) as {
+                choices?: Array<{ message?: { content?: string } }>;
+              };
+              let text = data.choices?.[0]?.message?.content ?? "";
+              if (action === "roadmap") {
+                text = text.replace(/^```json\s*/i, "").replace(/```$/, "").trim();
+              }
+              return Response.json({ text });
+            }
+          } catch (err: any) {
+            console.warn("[Text Tool] Lovable gateway error:", err.message);
           }
-          if (upstream.status === 402) {
-            return Response.json({ error: "الرصيد غير كافٍ. الرجاء إضافة رصيد." }, { status: 402 });
+        }
+
+        // Try direct Gemini API fallback
+        const fallbackText = await geminiDirectFallback(systemPrompt, input.trim());
+        if (fallbackText) {
+          let text = fallbackText;
+          if (action === "roadmap") {
+            text = text.replace(/^```json\s*/i, "").replace(/```$/, "").trim();
           }
-          return Response.json({ error: text || "فشل الطلب" }, { status: upstream.status });
+          return Response.json({ text });
         }
-        const data = (await upstream.json()) as {
-          choices?: Array<{ message?: { content?: string } }>;
-        };
-        let text = data.choices?.[0]?.message?.content ?? "";
-        if (action === "roadmap") {
-          text = text
-            .replace(/^```json\s*/i, "")
-            .replace(/```$/, "")
-            .trim();
-        }
-        return Response.json({ text });
+
+        return Response.json(
+          { error: "تعذّر معالجة الطلب حالياً بسبب إدخال مفتاح API أو الرصيد. يرجى إعادة المحاولة." },
+          { status: 500 }
+        );
       },
     },
   },
