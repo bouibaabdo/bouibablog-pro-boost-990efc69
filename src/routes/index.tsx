@@ -228,8 +228,28 @@ function HomePage() {
           </div>
         </section>
 
+        {/* Latest Post Announcement Bar */}
+        {featured && (
+          <div className="container-page pt-10 text-center">
+            <Link
+              to="/posts/$id"
+              params={{ id: featured.slug }}
+              className="inline-flex items-center gap-2.5 rounded-full border border-primary/20 bg-primary/5 hover:bg-primary/10 transition-all px-4 py-2 text-xs md:text-sm font-semibold text-foreground group max-w-full shadow-soft hover:border-primary/40"
+            >
+              <span className="inline-flex items-center gap-1 text-[10px] md:text-xs font-bold text-primary-foreground bg-primary px-2.5 py-0.5 rounded-full shrink-0">
+                <Newspaper className="h-3 w-3" />
+                أحدث مقال
+              </span>
+              <span className="truncate group-hover:text-primary transition-colors text-right ml-1">
+                {featured.title}
+              </span>
+              <ArrowLeft className="h-4 w-4 text-primary shrink-0 transition-transform group-hover:-translate-x-1" />
+            </Link>
+          </div>
+        )}
+
         {/* AI TOOLS SHOWCASE — Grid of 6 High-Converting Cards */}
-        <section className="container-page py-12 md:py-20">
+        <section className="container-page py-12 md:py-16">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 md:mb-12">
             <div className="max-w-2xl">
               <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3.5 py-1 text-xs font-extrabold text-primary mb-3">
