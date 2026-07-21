@@ -1,5 +1,6 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -14,6 +15,13 @@ import {
   Newspaper,
   Search,
   ChevronRight,
+  Flame,
+  Zap,
+  Play,
+  Compass,
+  BarChart3,
+  Bot,
+  Layers,
 } from "lucide-react";
 import { getPosts, getLabels, optimizeBloggerImage } from "@/lib/blogger.functions";
 import { SiteHeader } from "@/components/site-header";
@@ -44,9 +52,9 @@ export const Route = createFileRoute("/")({
     return { lcp };
   },
   head: ({ loaderData }) => {
-    const title = "Bouiba Academy — تعلّم AI بالعربية مجاناً";
+    const title = "Bouiba Academy — أكاديميتك الذكية للذكاء الاصطناعي كأنك لم ترها من قبل";
     const desc =
-      "أكاديميتك العربية للذكاء الاصطناعي. نوفر دروساً عملية مجانية، أحدث الأخبار، وأدوات ذكاء اصطناعي تفاعلية مثل توليد الصور وتلخيص النصوص ومسارات التعلم.";
+      "دروس عملية مجانية في الذكاء الاصطناعي والأتمتة، أدوات ذكاء اصطناعي تفاعلية (توليد الصور، تلخيص النصوص، مسارات التعلم)، ونقل مباشر لمباريات كأس العالم 2026.";
     return {
       meta: [
         { title },
@@ -83,273 +91,304 @@ export const Route = createFileRoute("/")({
 const TOOL_CARDS = [
   {
     href: "/tools/image",
-    title: "توليد الصور",
-    desc: "صور احترافية من نص عربي",
+    title: "توليد الصور بالذكاء الاصطناعي",
+    desc: "حوّل أفكارك ونصك العربي إلى صور واحترافية فائقة الدقة بنقرة واحدة.",
     icon: ImageIcon,
-    color: "from-fuchsia-500/15 to-primary-glow/10",
-    badge: "الأكثر جذبًا",
-    cta: "ابدأ التوليد",
+    color: "from-fuchsia-500/20 via-primary/15 to-purple-500/10",
+    badge: "شائع 🔥",
+    cta: "جرّب التوليد الآن",
+  },
+  {
+    href: "/tools/roadmap",
+    title: "مسارات التعلم التفاعلية",
+    desc: "خريطة طريق ذكية وشاملة للدراسة واحتراف البرمجة والذكاء الاصطناعي.",
+    icon: Compass,
+    color: "from-violet-500/20 via-primary/15 to-indigo-500/10",
+    badge: "جديد ✨",
+    cta: "استكشف المسارات",
   },
   {
     href: "/tools/summarize",
-    title: "تلخيص النصوص",
-    desc: "من مقال طويل إلى نقاط",
+    title: "ملخّص المقالات الذكي",
+    desc: "تحويل المقالات الطويلة والمستندات إلى نقاط رئيسية سريعة بدقة.",
     icon: FileText,
-    color: "from-emerald-500/15 to-primary/10",
-    badge: "سريع جدًا",
-    cta: "اختصر المقال",
+    color: "from-emerald-500/20 via-teal-500/15 to-primary/10",
+    badge: "سريع ⚡",
+    cta: "لخّص المقال",
   },
   {
     href: "/tools/translate",
-    title: "المترجم الذكي",
-    desc: "ترجمة دقيقة سياقية",
+    title: "المترجم الذكي الدقيق",
+    desc: "ترجمة سياقية احترافية بين مختلف اللغات مع الحفاظ على المعنى التقني.",
     icon: Languages,
-    color: "from-sky-500/15 to-primary/10",
-    badge: "للإنجليزية",
-    cta: "جرّب الترجمة",
+    color: "from-sky-500/20 via-blue-500/15 to-primary/10",
+    badge: "متعدد اللغات 🌐",
+    cta: "ابدأ الترجمة",
   },
   {
     href: "/tools/ideas",
-    title: "مولّد الأفكار",
-    desc: "أفكار محتوى ومشاريع",
+    title: "مولّد الأفكار والمشاريع",
+    desc: "أفكار محتوى ومشاريع أتمتة مبتكرة تناسب صناع المحتوى والمطورين.",
     icon: Lightbulb,
-    color: "from-amber-500/15 to-primary/10",
-    badge: "للمحتوى",
-    cta: "استخرج أفكارًا",
+    color: "from-amber-500/20 via-orange-500/15 to-primary/10",
+    badge: "إبداعي 🚀",
+    cta: "توليد أفكار",
+  },
+  {
+    href: "/tools/seo",
+    title: "مساعد SEO وتصدر المحركات",
+    desc: "تحليل وتحسين ترتيب موقعك ومقالاتك في محرك بحث جوجل بسهولة.",
+    icon: BarChart3,
+    color: "from-rose-500/20 via-red-500/15 to-primary/10",
+    badge: "احترافي 📊",
+    cta: "حلّل موقعك",
   },
 ] as const;
 
 function HomePage() {
   const { data } = useSuspenseQuery(postsQueryOptions);
   const { data: labels } = useSuspenseQuery(labelsQueryOptions);
+  const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
+
   const posts = data.posts;
   const featured = posts[0];
   const rest = posts.slice(1, 7);
 
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate({ to: "/posts", search: { q: searchQuery.trim() } });
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background text-foreground selection:bg-primary/20 selection:text-primary">
       <SiteHeader />
       <main>
-        {/* HERO — compact on mobile */}
-        <section className="relative hero-bg overflow-hidden border-b border-border/30">
-          <div className="absolute inset-0 mesh-bg opacity-30 pointer-events-none" />
-          <div className="container-page relative py-12 md:py-24 text-center">
-            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/80 backdrop-blur px-3 py-1 text-[11px] md:text-xs font-semibold text-muted-foreground mb-4 shadow-soft">
-              <Sparkles className="h-3.5 w-3.5 text-primary animate-pulse" />
-              أكاديميتك العربية للذكاء الاصطناعي
+        {/* HERO SECTION — Ultra Modern Glassmorphism & High-Energy Glow */}
+        <section className="relative overflow-hidden border-b border-border/40 bg-gradient-to-b from-background via-surface-muted/50 to-background py-16 md:py-28">
+          {/* Decorative Animated Glow Background Orbs */}
+          <div className="absolute -top-24 right-1/4 h-96 w-96 rounded-full bg-primary/15 blur-[120px] pointer-events-none animate-pulse" />
+          <div className="absolute top-1/2 -left-20 h-80 w-80 rounded-full bg-purple-500/15 blur-[100px] pointer-events-none" />
+
+          <div className="container-page relative z-10 text-center">
+            {/* Top Live Badge */}
+            <div className="inline-flex items-center gap-2 rounded-full border border-primary/25 bg-surface/90 backdrop-blur-md px-4 py-1.5 text-xs md:text-sm font-bold text-foreground shadow-soft mb-6 transition-all hover:border-primary/40 hover:scale-105 cursor-default">
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+              </span>
+              <span className="gradient-text font-extrabold">بث مباشر كأس العالم 2026</span>
+              <span className="text-muted-foreground">|</span>
+              <span className="text-muted-foreground">6+ أدوات ذكاء اصطناعي مجانية 100%</span>
             </div>
-            <h1 className="font-display text-3xl sm:text-4xl md:text-6xl font-extrabold leading-tight tracking-tight">
-              تعلّم <span className="gradient-text">الذكاء الاصطناعي</span>
+
+            {/* Main Headline */}
+            <h1 className="font-display text-3xl sm:text-5xl md:text-7xl font-black leading-tight tracking-tight max-w-4xl mx-auto">
+              عصر <span className="gradient-text">الذكاء الاصطناعي</span> والأتمتة
               <br className="hidden sm:block" />
-              <span className="sm:inline"> بالعربية، بطريقة احترافية</span>
+              <span className="text-foreground"> بين يديك بالعربية وباحترافية</span>
             </h1>
-            <p className="mt-4 mx-auto max-w-2xl text-sm md:text-lg text-muted-foreground leading-relaxed">
-              أدوات AI جاهزة، اختبار توصية ذكي، ونقل مباشر لمباريات كأس العالم 2026 — كل شيء في مكان
-              واحد.
+
+            {/* Subtitle */}
+            <p className="mt-6 mx-auto max-w-2xl text-base md:text-xl text-muted-foreground leading-relaxed font-medium">
+              دروس عملية، أدوات AI مجانية للتوليد والتلخيص والترجمة، ومتابعة حية لمباريات كأس العالم 2026 في منصة واحدة.
             </p>
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-              <Link to="/tools" className="btn-premium px-6 py-3 rounded-xl shadow-elegant">
-                <Wand2 className="h-4 w-4" /> أدوات AI
+
+            {/* Instant Search Bar */}
+            <form onSubmit={handleSearchSubmit} className="mt-8 max-w-xl mx-auto relative group">
+              <div className="relative flex items-center rounded-2xl border border-border/80 bg-surface/90 backdrop-blur-xl p-1.5 shadow-elegant transition-all focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20">
+                <Search className="h-5 w-5 text-muted-foreground mr-3 shrink-0" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="ابحث عن مقال، درس، أداة AI، أو موضوع..."
+                  className="w-full bg-transparent px-2 py-2.5 text-sm md:text-base outline-none placeholder:text-muted-foreground"
+                />
+                <button
+                  type="submit"
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground shadow-soft transition-all hover:opacity-90 hover:scale-105 shrink-0"
+                >
+                  <span>بحث</span>
+                  <ArrowLeft className="h-4 w-4" />
+                </button>
+              </div>
+            </form>
+
+            {/* Fast Action CTA Buttons */}
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3 md:gap-4">
+              <Link to="/tools" className="btn-premium px-6 py-3.5 rounded-xl shadow-elegant text-sm font-bold">
+                <Wand2 className="h-4 w-4" /> أدوات AI المجانية
               </Link>
-              <Link
-                to="/quiz"
-                className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-violet-600/10 text-violet-700 dark:bg-violet-500/15 dark:text-violet-300 border border-violet-200/50 dark:border-violet-500/20 px-6 py-3 text-sm font-semibold hover:bg-violet-600/15 dark:hover:bg-violet-500/25 transition-all shadow-soft"
-              >
-                <Sparkles className="h-4 w-4 text-violet-600 dark:text-violet-300" /> اختبار AI
-              </Link>
+
               <Link
                 to="/worldcup"
-                className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-secondary hover:bg-accent/80 text-secondary-foreground border border-border px-6 py-3 text-sm font-semibold transition-all shadow-soft"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-amber-500/10 via-amber-500/15 to-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30 px-6 py-3.5 text-sm font-bold hover:bg-amber-500/20 transition-all shadow-soft"
               >
-                <Trophy className="h-4 w-4 text-amber-500" /> كأس العالم 2026
+                <Trophy className="h-4 w-4 text-amber-500 animate-bounce" /> بث كأس العالم 2026
+              </Link>
+
+              <Link
+                to="/quiz"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-violet-600/10 text-violet-700 dark:bg-violet-500/15 dark:text-violet-300 border border-violet-500/30 px-6 py-3.5 text-sm font-bold hover:bg-violet-600/20 transition-all shadow-soft"
+              >
+                <Sparkles className="h-4 w-4 text-violet-500" /> اختبار التوصية الذكي
               </Link>
             </div>
           </div>
         </section>
 
-        {/* WORLD CUP MATCHES RAIL — top priority on mobile */}
-        <TodayMatchesRail variant="home" max={12} />
+        {/* WORLD CUP MATCHES LIVE STREAM RAIL — TOP PRIORITY */}
+        <section className="bg-surface-muted/40 py-2">
+          <TodayMatchesRail variant="home" max={12} />
+        </section>
 
-        {/* AI TOOLS SHOWCASE */}
-        <section className="container-page py-8 md:py-14">
-          <div className="flex items-end justify-between gap-4 mb-5 md:mb-6">
+        {/* AI TOOLS SHOWCASE — Grid of 6 High-Converting Cards */}
+        <section className="container-page py-12 md:py-20">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 md:mb-12">
             <div className="max-w-2xl">
-              <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/15 bg-primary/5 px-3 py-1 text-[11px] font-semibold text-primary mb-3">
-                <BadgeCheck className="h-3.5 w-3.5" />
-                أدوات مختارة بعناية
+              <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3.5 py-1 text-xs font-extrabold text-primary mb-3">
+                <BadgeCheck className="h-4 w-4" />
+                جناح أدوات الذكاء الاصطناعي
               </div>
-              <h2 className="font-display text-2xl md:text-3xl font-bold">
-                أهم أدوات الذكاء الاصطناعي التي تدفع الزائر للتجربة
+              <h2 className="font-display text-3xl md:text-4xl font-black tracking-tight">
+                أدوات AI تفاعلية ومجانية تجعل عملك أسرع 10x
               </h2>
-              <p className="mt-2 text-sm md:text-base text-muted-foreground leading-relaxed">
-                واجهة واضحة، وصف قصير، ونتيجة مباشرة. الهدف هنا أن يفهم الزائر القيمة خلال ثوانٍ
-                وينقر فورًا.
+              <p className="mt-3 text-sm md:text-lg text-muted-foreground leading-relaxed">
+                استفد فوراً من أحدث تقنيات توليد الصور، تلخيص المقالات، الترجمة الذكية، وإرشادات التعلم بدون تعقيد.
               </p>
             </div>
             <Link
               to="/tools"
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm font-semibold text-foreground shadow-card transition-all hover:border-primary/30 hover:text-primary hover:shadow-elegant shrink-0"
+              className="inline-flex items-center gap-2 rounded-xl border border-border bg-card px-5 py-3 text-sm font-bold text-foreground shadow-card transition-all hover:border-primary/40 hover:text-primary hover:shadow-elegant shrink-0"
             >
-              استعراض الكل
+              <span>استعرض كل الأدوات</span>
               <ChevronRight className="h-4 w-4" />
             </Link>
           </div>
 
-          <div className="grid gap-4 lg:grid-cols-12">
-            <Link
-              to={TOOL_CARDS[0].href}
-              className="group relative overflow-hidden rounded-3xl border border-primary/15 bg-gradient-to-br from-card via-card to-primary/5 p-6 md:p-8 shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-elegant lg:col-span-5"
-            >
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(124,58,237,0.14),transparent_35%),radial-gradient(circle_at_bottom_left,rgba(236,72,153,0.12),transparent_28%)]" />
-              <div className="relative flex h-full flex-col justify-between gap-6">
-                <div className="space-y-4">
-                  <div
-                    className={`inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ${TOOL_CARDS[0].color} text-primary shadow-soft`}
-                  >
-                    <ImageIcon className="h-7 w-7" />
-                  </div>
-                  <div className="space-y-2">
-                    <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-[11px] font-bold text-primary">
-                      {TOOL_CARDS[0].badge}
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {TOOL_CARDS.map((t) => (
+              <Link
+                key={t.href}
+                to={t.href}
+                className="group relative overflow-hidden rounded-3xl border border-border/80 bg-card p-6 md:p-7 shadow-card transition-all duration-300 hover:-translate-y-1.5 hover:shadow-elegant hover:border-primary/40 flex flex-col justify-between"
+              >
+                <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-gradient-to-br ${t.color}`} />
+                <div className="relative space-y-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <div className={`inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ${t.color} text-primary shadow-soft`}>
+                      <t.icon className="h-7 w-7" />
                     </div>
-                    <h3 className="font-display text-2xl md:text-3xl font-extrabold leading-tight">
-                      {TOOL_CARDS[0].title}
+                    <span className="rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-bold text-primary">
+                      {t.badge}
+                    </span>
+                  </div>
+
+                  <div className="space-y-2">
+                    <h3 className="font-display text-xl md:text-2xl font-extrabold text-foreground group-hover:text-primary transition-colors">
+                      {t.title}
                     </h3>
-                    <p className="text-sm md:text-base text-muted-foreground leading-relaxed max-w-md">
-                      {TOOL_CARDS[0].desc}
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      {t.desc}
                     </p>
                   </div>
                 </div>
 
-                <div className="relative flex flex-wrap items-center gap-3">
-                  <span className="inline-flex items-center gap-2 rounded-xl bg-foreground text-background px-4 py-2.5 text-sm font-bold shadow-lg transition-transform group-hover:-translate-y-0.5">
-                    {TOOL_CARDS[0].cta}
-                    <ArrowLeft className="h-4 w-4" />
-                  </span>
-                  <span className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-background/70 px-3 py-2 text-xs font-semibold text-muted-foreground">
-                    <Sparkles className="h-3.5 w-3.5 text-primary" />
-                    من فكرة إلى نتيجة خلال ثوانٍ
-                  </span>
+                <div className="relative mt-6 pt-4 border-t border-border/60 flex items-center justify-between text-sm font-bold text-foreground group-hover:text-primary">
+                  <span>{t.cta}</span>
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
                 </div>
-              </div>
-            </Link>
-
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-2 lg:col-span-7">
-              {TOOL_CARDS.slice(1).map((t) => (
-                <Link
-                  key={t.href}
-                  to={t.href}
-                  className="group relative overflow-hidden rounded-3xl border border-border bg-card p-5 md:p-6 shadow-card transition-all duration-300 hover:shadow-elegant hover:border-primary/25 hover:-translate-y-1"
-                >
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-gradient-to-br from-primary/5 to-transparent" />
-                  <div className="relative flex h-full flex-col gap-4">
-                    <div className="flex items-start justify-between gap-3">
-                      <div
-                        className={`inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br ${t.color} text-primary shadow-soft`}
-                      >
-                        <t.icon className="h-6 w-6" />
-                      </div>
-                      <span className="rounded-full border border-primary/15 bg-primary/5 px-2.5 py-1 text-[10px] font-bold text-primary">
-                        {t.badge}
-                      </span>
-                    </div>
-
-                    <div className="space-y-1">
-                      <h3 className="font-display text-lg font-extrabold text-foreground group-hover:text-primary transition-colors">
-                        {t.title}
-                      </h3>
-                      <p className="text-sm text-muted-foreground leading-relaxed">{t.desc}</p>
-                    </div>
-
-                    <div className="mt-auto inline-flex items-center justify-between rounded-2xl border border-border/70 bg-background/80 px-4 py-3 text-sm font-bold text-foreground transition-all group-hover:border-primary/20 group-hover:text-primary">
-                      <span>{t.cta}</span>
-                      <ArrowRight className="h-4 w-4" />
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
+              </Link>
+            ))}
           </div>
         </section>
 
-        {/* QUIZ CTA */}
-        <section className="container-page py-6 md:py-8">
+        {/* INTERACTIVE AI QUIZ BANNER */}
+        <section className="container-page py-6 md:py-10">
           <Link
             to="/quiz"
-            className="block relative overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-primary/10 via-primary-glow/5 to-transparent p-6 md:p-10 shadow-card hover:shadow-elegant hover:border-primary/20 transition-all duration-300"
+            className="block relative overflow-hidden rounded-3xl border border-primary/30 bg-gradient-to-r from-primary/15 via-purple-500/10 to-primary/10 p-8 md:p-12 shadow-elegant hover:scale-[1.01] transition-all duration-300"
           >
-            <div className="relative flex flex-col md:flex-row md:items-center gap-4 md:gap-6">
-              <div className="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary-glow text-white shadow-lg">
-                <Sparkles className="h-7 w-7 animate-pulse" />
-              </div>
-              <div className="min-w-0 flex-1">
-                <div className="inline-block text-[10px] font-bold text-violet-600 bg-violet-500/10 px-2.5 py-0.5 rounded-full mb-2">
-                  جديد ✨
+            <div className="absolute top-0 right-0 h-full w-1/3 bg-gradient-to-l from-primary/20 to-transparent pointer-events-none" />
+            <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <div className="space-y-3 max-w-2xl">
+                <div className="inline-flex items-center gap-2 rounded-full bg-violet-500/15 border border-violet-500/30 px-3.5 py-1 text-xs font-extrabold text-violet-600 dark:text-violet-300">
+                  <Sparkles className="h-4 w-4 animate-pulse" />
+                  اختبار التوصية الذكي الذاتي
                 </div>
-                <h3 className="font-display text-xl md:text-2xl font-extrabold text-foreground group-hover:text-primary transition-colors">
-                  أي أداة AI مناسبة لك؟
+                <h3 className="font-display text-2xl md:text-4xl font-black text-foreground leading-tight">
+                  لا تعرف أي أداة ذكاء اصطناعي تناسب احتياجك؟
                 </h3>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  6 أسئلة سريعة — نوصي لك بالأداة الأنسب من بين 8 أدوات كبرى.
+                <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+                  أجب عن 5 أسئلة سريعة وسيقوم النظام بتحديد الأداة والمسار التعليمي المناسب لك فوراً 100%!
                 </p>
               </div>
-              <div className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-foreground text-background px-4 py-2.5 text-sm font-bold shrink-0">
-                ابدأ الاختبار <ArrowLeft className="h-4 w-4" />
+
+              <div className="inline-flex items-center justify-center gap-2 rounded-2xl bg-primary px-7 py-4 text-base font-extrabold text-primary-foreground shadow-lg hover:opacity-90 shrink-0">
+                <span>ابدأ الاختبار الآن</span>
+                <ArrowLeft className="h-5 w-5" />
               </div>
             </div>
           </Link>
         </section>
 
-        {/* LATEST POSTS */}
-        <section className="container-page py-8 md:py-12">
-          <div className="flex items-end justify-between mb-5">
+        {/* LATEST POSTS & LESSONS SECTION */}
+        <section className="container-page py-12 md:py-20">
+          <div className="flex items-end justify-between mb-8">
             <div>
-              <h2 className="font-display text-2xl md:text-3xl font-bold flex items-center gap-2">
-                <Newspaper className="h-6 w-6 text-primary" />
-                أحدث المقالات
+              <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3.5 py-1 text-xs font-bold text-primary mb-3">
+                <Newspaper className="h-4 w-4" />
+                المكتبة والدروس المقالية
+              </div>
+              <h2 className="font-display text-3xl md:text-4xl font-black tracking-tight">
+                أحدث المقالات التقنية وشروحات الذكاء الاصطناعي
               </h2>
-              <p className="mt-1 text-sm text-muted-foreground">
-                اقرأ آخر ما نشرناه في عالم الـ AI
-              </p>
             </div>
             <Link
               to="/posts"
-              className="inline-flex items-center gap-1 text-xs md:text-sm font-semibold text-primary hover:underline shrink-0"
+              className="inline-flex items-center gap-1.5 text-sm md:text-base font-bold text-primary hover:underline shrink-0"
             >
-              عرض الكل <ArrowLeft className="h-4 w-4" />
+              <span>جميع المقالات</span>
+              <ArrowLeft className="h-4 w-4" />
             </Link>
           </div>
 
           {featured && (
-            <div className="mb-5 md:mb-6">
+            <div className="mb-8">
               <PostCard post={featured} featured priority />
             </div>
           )}
 
-          <div className="grid gap-4 md:gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {rest.map((p, i) => (
-              // أول مقال في الـ grid = مرئي فوق الطية على الموبايل
               <PostCard key={p.id} post={p} priority={i === 0} />
             ))}
           </div>
         </section>
 
-        {/* CATEGORIES */}
+        {/* CATEGORIES CLOUD & TRUST STATS */}
         {labels.length > 0 && (
           <section className="container-page py-10 md:py-16">
-            <div className="rounded-3xl bg-gradient-to-br from-accent/60 to-surface-muted border border-border p-6 md:p-12 text-center">
-              <h2 className="font-display text-2xl md:text-3xl font-bold">تصفّح حسب التصنيف</h2>
-              <p className="mt-2 text-sm text-muted-foreground">اختر مجال اهتمامك وابدأ رحلتك</p>
-              <div className="mt-5 md:mt-6 flex flex-wrap justify-center gap-2">
-                {labels.slice(0, 14).map((l) => (
+            <div className="rounded-3xl bg-gradient-to-br from-card via-surface-muted to-card border border-border/80 p-8 md:p-14 text-center shadow-card">
+              <h2 className="font-display text-2xl md:text-4xl font-black">استكشف حسب تصنيف الموضوع</h2>
+              <p className="mt-3 text-sm md:text-base text-muted-foreground max-w-xl mx-auto">
+                اختر المجال التقني الذي تود تعلمه واقرأ جميع الدروس والحلول العملية المتعلقة به.
+              </p>
+              <div className="mt-8 flex flex-wrap justify-center gap-2.5">
+                {labels.slice(0, 16).map((l) => (
                   <Link
                     key={l.label}
                     to="/posts"
                     search={{ label: l.label }}
-                    className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm font-medium hover:border-primary hover:text-primary transition-colors shadow-card"
+                    className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-xs md:text-sm font-bold hover:border-primary hover:text-primary hover:scale-105 transition-all shadow-soft"
                   >
-                    {l.label}
-                    <span className="text-[10px] text-muted-foreground">({l.count})</span>
+                    <span>{l.label}</span>
+                    <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] text-primary">
+                      {l.count}
+                    </span>
                   </Link>
                 ))}
               </div>
@@ -357,17 +396,21 @@ function HomePage() {
           </section>
         )}
 
-        {/* Stats footer */}
-        <section className="container-page pb-12">
-          <div className="grid grid-cols-3 gap-4 max-w-xl mx-auto">
+        {/* TRUST STATS FOOTER BAR */}
+        <section className="container-page pb-16">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto border border-border/60 bg-card p-6 md:p-8 rounded-3xl shadow-card text-center">
             {[
-              { n: `${data.total}+`, l: "مقال" },
-              { n: `${labels.length}`, l: "تصنيف" },
-              { n: "يومي", l: "تحديث" },
+              { n: `${data.total}+`, l: "مقال تقني منشور", icon: FileText },
+              { n: "6+", l: "أدوات AI مجانية", icon: Wand2 },
+              { n: "100%", l: "محتوى مجاني بالعربية", icon: BadgeCheck },
+              { n: "2026", l: "بث مباشر كأس العالم", icon: Trophy },
             ].map((s, i) => (
-              <div key={i} className="text-center">
-                <div className="text-2xl md:text-3xl font-extrabold gradient-text">{s.n}</div>
-                <div className="text-[11px] md:text-sm text-muted-foreground mt-1">{s.l}</div>
+              <div key={i} className="space-y-1">
+                <div className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary mb-2">
+                  <s.icon className="h-5 w-5" />
+                </div>
+                <div className="text-2xl md:text-3xl font-black gradient-text">{s.n}</div>
+                <div className="text-xs md:text-sm text-muted-foreground font-semibold">{s.l}</div>
               </div>
             ))}
           </div>
@@ -377,3 +420,4 @@ function HomePage() {
     </div>
   );
 }
+
