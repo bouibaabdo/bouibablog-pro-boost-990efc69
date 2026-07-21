@@ -9,7 +9,11 @@
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "cf:deploy": "npm run build && npx wrangler deploy",
+    "cf:deploy:output": "npm run build && npx wrangler --cwd .output deploy",
+    "cf:preview": "npm run build && npx wrangler dev",
+    "cf:typegen": "npx wrangler types"
   },
   "dependencies": {
     "@fontsource/cairo": "^5.2.7",
@@ -93,6 +97,7 @@
     "prettier": "^3.7.3",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.56.1",
-    "vite": "^8.0.16"
+    "vite": "^8.0.16",
+    "wrangler": "^4.26.0"
   }
 }
