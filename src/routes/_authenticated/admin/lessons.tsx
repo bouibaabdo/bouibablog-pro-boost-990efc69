@@ -16,6 +16,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
+import { YOUTUBE_AI_MASTERY } from "@/lib/course-manifests/youtube-ai-mastery";
 import {
   Loader2,
   Trash2,
@@ -32,6 +33,9 @@ import {
   FileText,
   ExternalLink,
   Sparkles,
+  BookOpen,
+  Layers3,
+  Download,
 } from "lucide-react";
 import {
   Dialog,
@@ -448,6 +452,91 @@ function AdminLessons() {
             )}
           </div>
         </div>
+      </Card>
+
+      {/* Featured Course Modules (#course-modules) */}
+      <Card className="shadow-card border border-border/80">
+        <CardHeader className="py-4 border-b border-border/60 bg-muted/20">
+          <CardTitle className="text-base font-bold flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Layers3 className="h-5 w-5 text-primary" />
+              <span>هيكل ووحدات الدورة الرئيسية (Featured Course Modules — #course-modules)</span>
+            </div>
+            <span className="text-xs font-bold text-emerald-600 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
+              {YOUTUBE_AI_MASTERY.title}
+            </span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-6 space-y-6">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 rounded-2xl bg-surface-muted border border-border/60">
+            <div className="space-y-1">
+              <h3 className="font-bold text-lg">{YOUTUBE_AI_MASTERY.title}</h3>
+              <p className="text-xs text-muted-foreground">{YOUTUBE_AI_MASTERY.subtitle}</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button size="sm" variant="outline" asChild className="gap-1.5 font-semibold text-xs">
+                <a href="/lessons#course-modules" target="_blank" rel="noopener noreferrer">
+                  <ExternalLink className="h-3.5 w-3.5 text-primary" />
+                  معاينة صفحة العرض الحية
+                </a>
+              </Button>
+            </div>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-2">
+            {YOUTUBE_AI_MASTERY.modules.map((mod, idx) => (
+              <div key={mod.title} className="rounded-2xl border border-border/70 p-4 space-y-3 bg-card shadow-soft">
+                <div className="flex items-start gap-2.5">
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary font-bold text-xs">
+                    0{idx + 1}
+                  </span>
+                  <div className="min-w-0">
+                    <h4 className="font-bold text-sm leading-tight">{mod.title}</h4>
+                    <p className="text-xs text-muted-foreground mt-0.5">{mod.summary}</p>
+                  </div>
+                </div>
+
+                <div className="pt-2 border-t border-border/40 space-y-1.5">
+                  {mod.lessons.map((les) => {
+                    const isDoc = /\.(txt|md|pdf)$/i.test(les);
+                    return (
+                      <div key={les} className="flex items-center justify-between text-xs py-1 px-2.5 rounded-lg bg-muted/30">
+                        <span className="flex items-center gap-1.5 truncate">
+                          {isDoc ? <FileText className="h-3.5 w-3.5 text-amber-500" /> : <Video className="h-3.5 w-3.5 text-rose-500" />}
+                          <span className="truncate">{les}</span>
+                        </span>
+                        <span className="text-[10px] text-muted-foreground font-semibold shrink-0">
+                          {isDoc ? "مستند" : "فيديو"}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Resources */}
+          <div className="pt-4 border-t border-border/60">
+            <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3">الوثائق والملفات المرفقة (Course Resources)</h4>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {YOUTUBE_AI_MASTERY.resources.map((res) => (
+                <div key={res.title} className="flex items-center justify-between p-3 rounded-xl border border-border/60 bg-background text-xs">
+                  <div className="space-y-0.5">
+                    <p className="font-bold">{res.title}</p>
+                    <p className="text-[11px] text-muted-foreground">{res.description}</p>
+                  </div>
+                  <Button size="sm" variant="ghost" asChild className="h-7 px-2">
+                    <a href={res.href} download target="_blank" rel="noopener noreferrer" className="gap-1 text-[11px] font-bold">
+                      <Download className="h-3.5 w-3.5 text-primary" />
+                      تنزيل
+                    </a>
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </div>
+        </CardContent>
       </Card>
 
       {/* Courses & Lessons Catalog */}

@@ -103,15 +103,22 @@ function AdminPosts() {
   };
 
   const editPost = (post: any) => {
-    setEditingPostId(post.id);
-    setTitle(post.title || "");
-    setSlug(post.slug || slugify(post.title || ""));
-    setCategory(post.labels?.[0] || "الذكاء الاصطناعي");
-    setTagsInput(post.labels?.join(", ") || "AI, أتمتة");
-    setExcerpt(post.excerpt || "");
-    setThumbnail(post.thumbnail || "");
-    setContentHtml(post.contentHtml || post.excerpt || "");
-    setActiveTab("editor");
+    try {
+      setEditingPostId(post.id || null);
+      setTitle(post.title || "");
+      setSlug(post.slug || slugify(post.title || ""));
+      const labels = Array.isArray(post.labels) ? post.labels : [];
+      setCategory(labels[0] || "الذكاء الاصطناعي");
+      setTagsInput(labels.length > 0 ? labels.join(", ") : "AI, أتمتة");
+      setExcerpt(post.excerpt || "");
+      setThumbnail(post.thumbnail || "");
+      setContentHtml(post.contentHtml || post.excerpt || "");
+      setActiveTab("editor");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch (e) {
+      console.error(e);
+      toast.error("تعذر فتح المقال للتعديل");
+    }
   };
 
   const insertMarkdownSyntax = (prefix: string, suffix: string = "") => {
@@ -271,14 +278,17 @@ function AdminPosts() {
                           تعديل باللوحة
                         </Button>
 
-                        {p.url && (
-                          <Button size="sm" variant="ghost" asChild>
-                            <a href={p.url} target="_blank" rel="noopener noreferrer" className="gap-1">
-                              <Eye className="h-3.5 w-3.5" />
-                              معاينة
-                            </a>
-                          </Button>
-                        )}
+                        <Button size="sm" variant="ghost" asChild>
+                          <a
+                            href={p.url || `/posts/${p.slug || p.id}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="gap-1 text-xs font-semibold"
+                          >
+                            <Eye className="h-3.5 w-3.5 text-sky-500" />
+                            معاينة
+                          </a>
+                        </Button>
                       </div>
                     </div>
                   ))}
