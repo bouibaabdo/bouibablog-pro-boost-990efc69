@@ -219,13 +219,17 @@ function LessonsPage() {
                   <div className="mt-4 grid gap-2">
                     {module.lessons.map((lesson) => {
                       const isDoc = /\.(txt|md|pdf)$/i.test(lesson);
+                      const fileUrl = `/courses/youtube-ai-mastery/${encodeURIComponent(lesson)}`;
                       return (
-                        <div
+                        <a
                           key={lesson}
-                          className="flex items-center justify-between gap-3 rounded-2xl border border-border/60 bg-background/70 px-4 py-3"
+                          href={fileUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center justify-between gap-3 rounded-2xl border border-border/60 bg-background/70 px-4 py-3 transition-all hover:border-primary/40 hover:bg-card hover:shadow-soft group cursor-pointer"
                         >
                           <div className="flex items-center gap-3 min-w-0">
-                            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
                               {isDoc ? (
                                 <FileText className="h-4 w-4" />
                               ) : (
@@ -233,18 +237,18 @@ function LessonsPage() {
                               )}
                             </div>
                             <div className="min-w-0">
-                              <p className="font-medium text-sm truncate">
+                              <p className="font-medium text-sm truncate group-hover:text-primary transition-colors">
                                 {formatLessonLabel(lesson)}
                               </p>
                               <p className="text-[11px] text-muted-foreground">
-                                {isDoc ? "وثيقة مرفقة" : "فيديو تعليمي"}
+                                {isDoc ? "تحميل / عرض الوثيقة المرفقة" : "تشغيل الفيديو التعليمي"}
                               </p>
                             </div>
                           </div>
-                          <span className="text-[10px] font-bold rounded-full bg-accent px-2.5 py-1 text-muted-foreground">
-                            {isDoc ? "DOC" : "VIDEO"}
+                          <span className="text-[10px] font-bold rounded-full bg-primary/10 px-2.5 py-1 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                            {isDoc ? "عرض الملف" : "تشغيل الآن"}
                           </span>
-                        </div>
+                        </a>
                       );
                     })}
                   </div>

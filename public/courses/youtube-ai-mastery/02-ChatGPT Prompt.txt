@@ -1,0 +1,19 @@
+Prompt:
+Create a (length) (platform) video about the topic (detail explanation of video topic). The video
+should include(specifics for video creation e.g. examples, points, storytelling etc.) . The overall mood
+of the video should be(mood e.g. epic, adventurous, sad, educational etc.) The aim of the video is
+(what you want the video to accomplish)
+
+Invideo Prompt
+The voiceover should be a (male/female) (accent) with a (dynamic/fast/slow) pacing and use
+(simple/sophisticated/casual) word style. Add (a lot/medium/a little) stock footage. Add
+(genre/type) music."
+
+Example Prompt
+Create a 8 min YouTube video about the top 10 expensive cities in the world. The video should
+include storytelling on why each city is expensive. The overall mood of the video should be
+adventurous. The aim of the video is to educate the viewer on expensive cities in the world.
+
+Invideo Prompt
+The voiceover should be a male american accent with a (dynamic/fast/slow) pacing and use casual
+word style. Add a lot of stock footage. Add elevator music."
