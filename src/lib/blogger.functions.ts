@@ -307,86 +307,65 @@ function parseMarkdownToHtml(md: string): string {
   if (!md) return "";
   let html = md;
 
-  // Code blocks: ```lang ... ```
+  // 1. Code blocks: ```lang ... ```
   html = html.replace(/```(\w*)\n([\s\S]*?)\n```/g, (_, lang, code) => {
-    return `<pre class="language-${lang}"><code class="language-${lang}">${code.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</code></pre>`;
+    const escaped = code.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    return `\n\n<pre class="language-${lang} bg-muted/80 p-4 rounded-xl overflow-x-auto text-sm my-6 border border-border"><code class="language-${lang}">${escaped}</code></pre>\n\n`;
   });
 
-  // Inline code: `code`
-  html = html.replace(
-    /`([^`]+)`/g,
-    "<code class='bg-muted px-1.5 py-0.5 rounded text-sm'>$1</code>",
-  );
+  // 2. Horizontal Rules: --- or ***
+  html = html.replace(/^(\s*[-*_]\s*){3,}$/gm, "\n\n<hr class=\"my-8 border-border\" />\n\n");
 
-  // Headers: # H1, ## H2, ### H3
-  html = html.replace(
-    /^#\s+(.+)$/gm,
-    "<h1 class='text-3xl font-extrabold my-6 font-display'>$1</h1>",
-  );
-  html = html.replace(
-    /^##\s+(.+)$/gm,
-    "<h2 class='text-2xl font-bold my-5 font-display border-b border-border pb-2'>$1</h2>",
-  );
-  html = html.replace(/^###\s+(.+)$/gm, "<h3 class='text-xl font-bold my-4 font-display'>$1</h3>");
-
-  // Alerts: > [!IMPORTANT] or > [!NOTE]
+  // 3. GitHub style alerts: > [!IMPORTANT]
   html = html.replace(
     /^>\s+\[!(IMPORTANT|WARNING|TIP|NOTE|CAUTION)\]\n([\s\S]*?)(?=\n\n|\n[^>])/gm,
     (_, type, text) => {
       const color =
         type === "IMPORTANT"
-          ? "border-primary bg-primary/5 text-foreground"
-          : "border-amber-500 bg-amber-500/5 text-foreground";
-      return `<div class="border-r-4 ${color} p-4 my-4 rounded-l-md">${text.replace(/^>\s?/gm, "").trim()}</div>`;
-    },
+          ? "border-r-4 border-primary bg-primary/10 text-foreground"
+          : "border-r-4 border-amber-500 bg-amber-500/10 text-foreground";
+      const cleanText = text.replace(/^>\s?/gm, "").trim();
+      return `\n\n<div class="${color} p-4 my-6 rounded-l-xl">${cleanText}</div>\n\n`;
+    }
   );
 
-  // Blockquotes: > quote
-  html = html.replace(
-    /^>\s+(.+)$/gm,
-    "<blockquote class='border-r-4 border-muted p-4 my-4 italic'>$1</blockquote>",
-  );
+  // 4. Blockquotes: > quote
+  html = html.replace(/^>\s+(.+)$/gm, "\n\n<blockquote class=\"border-r-4 border-primary/40 pr-4 py-2 my-4 italic text-muted-foreground bg-accent/20 rounded-l-lg\">$1</blockquote>\n\n");
 
-  // Links: [text](url)
-  html = html.replace(
-    /\[([^\]]+)\]\(([^)]+)\)/g,
-    "<a href='$2' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline font-semibold'>$1</a>",
-  );
+  // 5. Headers: # H1, ## H2, ### H3, #### H4
+  html = html.replace(/^####\s+(.+)$/gm, "\n\n<h4 class=\"text-lg font-bold mt-6 mb-3 font-display text-foreground\">$1</h4>\n\n");
+  html = html.replace(/^###\s+(.+)$/gm, "\n\n<h3 class=\"text-xl font-bold mt-8 mb-4 font-display text-foreground border-r-2 border-primary pr-3\">$1</h3>\n\n");
+  html = html.replace(/^##\s+(.+)$/gm, "\n\n<h2 class=\"text-2xl font-bold mt-10 mb-5 font-display text-foreground border-b border-border/80 pb-2\">$1</h2>\n\n");
+  html = html.replace(/^#\s+(.+)$/gm, "\n\n<h1 class=\"text-3xl md:text-4xl font-extrabold mt-12 mb-6 font-display text-foreground\">$1</h1>\n\n");
 
-  // Unordered lists: - item or * item
-  html = html.replace(/^\s*[-*]\s+(.+)$/gm, "<li class='list-disc mr-6 my-1'>$1</li>");
-  html = html.replace(/(<li class='list-disc mr-6 my-1'>[\s\S]*?<\/li>)/g, (match) => {
-    return `<ul>${match}</ul>`;
-  });
-  html = html.replace(/<\/ul>\s*<ul>/g, "");
-
-  // Ordered lists: 1. item
-  html = html.replace(/^\s*\d+\.\s+(.+)$/gm, "<li class='list-decimal mr-6 my-1'>$1</li>");
-  html = html.replace(/(<li class='list-decimal mr-6 my-1'>[\s\S]*?<\/li>)/g, (match) => {
-    return `<ol>${match}</ol>`;
-  });
-  html = html.replace(/<\/ol>\s*<ol>/g, "");
-
-  // Bold: **text**
-  html = html.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
-
-  // Italic: *text*
+  // 6. Inline elements: bold, italic, code, links
+  html = html.replace(/`([^`]+)`/g, "<code class=\"bg-accent px-1.5 py-0.5 rounded text-sm font-mono text-primary\">$1</code>");
+  html = html.replace(/\*\*([^*]+)\*\*/g, "<strong class=\"font-bold text-foreground\">$1</strong>");
   html = html.replace(/\*([^*]+)\*/g, "<em>$1</em>");
+  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, "<a href=\"$2\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-primary hover:underline font-semibold\">$1</a>");
 
-  // Paragraphs (split by double newlines)
-  const lines = html.split(/\n\n+/);
-  html = lines
-    .map((line) => {
-      line = line.trim();
-      if (!line) return "";
-      if (/^<(h\d|pre|blockquote|div|ul|ol|li)/.test(line)) {
-        return line;
+  // 7. Lists: Unordered (- or *) & Ordered (1.)
+  html = html.replace(/^\s*[-*]\s+(.+)$/gm, "<li class=\"my-1.5 leading-relaxed\">$1</li>");
+  html = html.replace(/^\s*\d+\.\s+(.+)$/gm, "<li class=\"my-1.5 leading-relaxed\">$1</li>");
+
+  // Group adjacent <li> tags
+  html = html.replace(/(<li[\s\S]*?<\/li>\n?)+/g, (match) => {
+    return `\n\n<ul class="list-disc pr-6 my-4 space-y-1 text-muted-foreground">${match}</ul>\n\n`;
+  });
+
+  // 8. Process Paragraphs
+  const blocks = html.split(/\n\n+/);
+  return blocks
+    .map((block) => {
+      const trimmed = block.trim();
+      if (!trimmed) return "";
+      if (/^<(h[1-6]|pre|blockquote|div|ul|ol|hr)/.test(trimmed)) {
+        return trimmed;
       }
-      return `<p class="my-4 leading-relaxed">${line}</p>`;
+      return `<p class="my-4 leading-relaxed text-muted-foreground text-base md:text-lg">${trimmed}</p>`;
     })
+    .filter(Boolean)
     .join("\n");
-
-  return html;
 }
 
 async function loadLocalPosts(): Promise<BloggerPost[]> {
@@ -414,11 +393,11 @@ async function loadLocalPosts(): Promise<BloggerPost[]> {
         const contentHtml = parseMarkdownToHtml(postContent);
 
         let thumbnail =
-          "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop";
-        if (meta.slug?.includes("ollama") || meta.slug?.includes("n8n")) {
-          thumbnail =
-            "https://images.unsplash.com/photo-1677442136019-21780efad99a?w=800&auto=format&fit=crop";
-        }
+          meta.thumbnail ||
+          meta.cover_image ||
+          (meta.slug?.includes("ollama") || meta.slug?.includes("n8n")
+            ? "https://images.unsplash.com/photo-1677442136019-21780efad99a?w=1200&auto=format&fit=crop&q=80"
+            : "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&auto=format&fit=crop&q=80");
 
         const excerptText = meta.meta_description || meta.excerpt || "";
         posts.push({

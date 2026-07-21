@@ -204,9 +204,19 @@ function PostPage() {
 
         {/* Body */}
         <div className="container-page max-w-3xl py-12">
+          {post.thumbnail && (
+            <div className="mb-10 overflow-hidden rounded-2xl border border-border shadow-soft bg-surface-muted aspect-[16/9]">
+              <img
+                src={post.thumbnail}
+                alt={post.title}
+                className="h-full w-full object-cover"
+                loading="eager"
+                fetchPriority="high"
+              />
+            </div>
+          )}
           <div
             className="prose-ar"
-            // Blogger content is trusted (own blog)
             dangerouslySetInnerHTML={{ __html: post.contentHtml }}
           />
 
