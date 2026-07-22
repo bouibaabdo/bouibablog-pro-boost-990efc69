@@ -143,12 +143,15 @@ export const publishPostToFacebookFn = createServerFn({ method: "POST" })
     }
 
     // 3. Add First Comment with Article Link
+    let commentSuccess = false;
     if (post.facebook_comment_link) {
-      const commentTargetId = createdPhotoId || createdPostId;
-      if (commentTargetId) {
+      // Prioritize createdPostId (e.g. 559362324530470_1565955315542502) over createdPhotoId so comment shows on page feed!
+      const targets = [createdPostId, createdPhotoId].filter(Boolean) as string[];
+
+      for (const targetId of targets) {
         try {
-          const commentApiUrl = `https://graph.facebook.com/v19.0/${commentTargetId}/comments`;
-          await fetch(commentApiUrl, {
+          const commentApiUrl = `https://graph.facebook.com/v19.0/${targetId}/comments`;
+          const commentRes = await fetch(commentApiUrl, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -156,8 +159,17 @@ export const publishPostToFacebookFn = createServerFn({ method: "POST" })
               access_token: pageToken,
             }),
           });
-        } catch {
-          // fail open on comment lookup
+          const commentData = await commentRes.json();
+
+          if (commentRes.ok && !commentData.error) {
+            console.log(`[Facebook Server] First comment posted successfully on ${targetId}!`);
+            commentSuccess = true;
+            break;
+          } else {
+            console.warn(`[Facebook Server] Comment warning on ${targetId}:`, commentData.error?.message);
+          }
+        } catch (commentErr: any) {
+          console.warn(`[Facebook Server] Comment error on ${targetId}:`, commentErr.message);
         }
       }
     }
@@ -165,7 +177,10 @@ export const publishPostToFacebookFn = createServerFn({ method: "POST" })
     return {
       success: true,
       postId: createdPostId,
+      commentSuccess,
       postUrl: `https://facebook.com/${createdPostId}`,
-      message: "🎉 تم نشر المنشور بنجاح على صفحة فيسبوك!",
+      message: commentSuccess
+        ? "🎉 تم نشر المنشور والتعليق الأول للرابط بنجاح على فيسبوك!"
+        : "🎉 تم نشر المنشور بنجاح على صفحة فيسبوك!",
     };
   });
