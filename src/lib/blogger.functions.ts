@@ -406,10 +406,10 @@ async function loadLocalPosts(): Promise<BloggerPost[]> {
 
   // 1. Try Vite static glob import (works in all production workers & client/server builds)
   try {
-    const metaFiles = import.meta.glob<{ default: any }>("/content/posts/*/meta.json", {
+    const metaFiles = import.meta.glob<{ default: any }>("../../content/posts/*/meta.json", {
       eager: true,
     });
-    const mdFiles = import.meta.glob<{ default: string }>("/content/posts/*/post.md", {
+    const mdFiles = import.meta.glob<{ default: string }>("../../content/posts/*/post.md", {
       eager: true,
       query: "?raw",
       import: "default",
@@ -418,8 +418,7 @@ async function loadLocalPosts(): Promise<BloggerPost[]> {
     for (const [metaPath, metaObj] of Object.entries(metaFiles)) {
       try {
         const meta = (metaObj && (metaObj as any).default) ? (metaObj as any).default : metaObj;
-        const dirName = metaPath.split("/")[3]; // /content/posts/[slug]/meta.json
-        const mdPath = `/content/posts/${dirName}/post.md`;
+        const mdPath = metaPath.replace("meta.json", "post.md");
         const rawMd = mdFiles[mdPath];
         const postContent = typeof rawMd === "string" ? rawMd : (rawMd as any)?.default || "";
 
@@ -429,8 +428,8 @@ async function loadLocalPosts(): Promise<BloggerPost[]> {
           meta.thumbnail ||
           meta.cover_image ||
           (meta.slug?.includes("ollama") || meta.slug?.includes("n8n")
-            ? "https://images.unsplash.com/photo-1677442136019-21780efad99a?w=1200&auto=format&fit=crop&q=80"
-            : "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&auto=format&fit=crop&q=80");
+            ? "https://www.bouibacademy.me/ollama-n8n-cover.png"
+            : "https://www.bouibacademy.me/n8n-workflows-cover.png");
 
         const excerptText = meta.meta_description || meta.excerpt || "";
         posts.push({
