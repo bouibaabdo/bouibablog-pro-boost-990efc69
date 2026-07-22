@@ -22,6 +22,8 @@ import {
   ShieldCheck,
   Settings2,
   AlertTriangle,
+  Video,
+  Download,
 } from "lucide-react";
 import facebookPostsData from "../../../../content/facebook-posts/facebook-posts.json";
 import { getFacebookSettingsFn, publishPostToFacebookFn } from "@/lib/facebook.functions";
@@ -164,7 +166,7 @@ function AdminFacebook() {
             أداة النشر على فيسبوك (Publisher Studio)
           </h2>
           <p className="text-muted-foreground text-xs sm:text-sm mt-1">
-            انشر المقالات فوراً على صفحتك في فيسبوك من الجوال أو الحاسوب بنقرة واحدة.
+            انشر المقالات وفيديوهات الريلز MP4 فوراً على صفحتك من الجوال أو الحاسوب بنقرة واحدة.
           </p>
         </div>
 
@@ -172,6 +174,12 @@ function AdminFacebook() {
           <Button variant="outline" size="sm" onClick={() => setShowConfig(!showConfig)} className="gap-1.5 font-bold text-xs min-h-[40px] flex-1 sm:flex-initial">
             <Settings2 className="h-4 w-4 text-primary" />
             {showConfig ? "إخفاء الإعدادات" : "إعدادات المفاتيح"}
+          </Button>
+          <Button variant="outline" size="sm" asChild className="gap-2 font-bold text-xs min-h-[40px]">
+            <a href="/facebook-images/reels-ollama-morocco.mp4" download>
+              <Video className="h-4 w-4 text-purple-400" />
+              فيديو Reels MP4 🎬
+            </a>
           </Button>
           <Button variant="outline" size="sm" asChild className="gap-2 font-bold text-xs min-h-[40px]">
             <a href="/content/facebook-posts/facebook-posts.csv" download>
@@ -364,21 +372,35 @@ function AdminFacebook() {
                 </div>
               )}
 
-              {/* AI Image Prompt */}
+              {/* AI Image / Reel Video Box */}
               <div className="space-y-2 pt-2 border-t border-border/40">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold text-purple-400 flex items-center gap-1.5">
-                    <Sparkles className="h-3.5 w-3.5 text-purple-400" /> أمر الصورة (AI Prompt)
+                    <Sparkles className="h-3.5 w-3.5 text-purple-400" /> أمر الصورة والملف (Media Asset)
                   </span>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => copyToClipboard(p.image_prompt_en, p.id, "prompt")}
-                    className="h-8 px-2.5 text-xs font-bold gap-1 text-purple-400 hover:bg-purple-500/10 min-h-[36px]"
-                  >
-                    {copiedPromptId === p.id ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5" />}
-                    {copiedPromptId === p.id ? "تم النسخ!" : "نسخ Prompt"}
-                  </Button>
+                  <div className="flex items-center gap-1">
+                    {p.id === "reel-ollama-morocco" && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        asChild
+                        className="h-8 px-2 text-[11px] font-bold gap-1 border-purple-500/40 bg-purple-500/20 text-purple-200 hover:bg-purple-500/30"
+                      >
+                        <a href="/facebook-images/reels-ollama-morocco.mp4" download>
+                          <Download className="h-3.5 w-3.5" /> تحميل MP4 🎬
+                        </a>
+                      </Button>
+                    )}
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => copyToClipboard(p.image_prompt_en, p.id, "prompt")}
+                      className="h-8 px-2.5 text-xs font-bold gap-1 text-purple-400 hover:bg-purple-500/10 min-h-[36px]"
+                    >
+                      {copiedPromptId === p.id ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5" />}
+                      {copiedPromptId === p.id ? "تم النسخ!" : "نسخ Prompt"}
+                    </Button>
+                  </div>
                 </div>
                 <div className="p-3 rounded-xl bg-slate-950 border border-purple-500/20 text-[11px] font-mono text-purple-200 dir-ltr select-all leading-relaxed break-all">
                   {p.image_prompt_en}
@@ -396,6 +418,15 @@ function AdminFacebook() {
                 {publishingId === p.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
                 نشر الآن على صفحة فيسبوك
               </Button>
+
+              {p.id === "reel-ollama-morocco" && (
+                <Button size="sm" variant="outline" asChild className="h-11 px-3 text-xs min-h-[44px] gap-1.5 border-purple-500/40 text-purple-300 hover:bg-purple-500/10">
+                  <a href="/facebook-images/reels-ollama-morocco.mp4" download>
+                    <Video className="h-4 w-4 text-purple-400" />
+                    تنزيل Reel MP4
+                  </a>
+                </Button>
+              )}
 
               <Button size="sm" variant="ghost" asChild className="h-11 px-3 text-xs min-h-[44px]">
                 <a href={p.url} target="_blank" rel="noopener noreferrer" className="gap-1.5">
