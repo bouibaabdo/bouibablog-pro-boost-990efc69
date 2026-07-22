@@ -7,8 +7,17 @@ const OUTPUT_DIR = path.join(process.cwd(), "content", "facebook-posts");
 const JSON_OUTPUT_PATH = path.join(OUTPUT_DIR, "facebook-posts.json");
 const CSV_OUTPUT_PATH = path.join(OUTPUT_DIR, "facebook-posts.csv");
 
-// Interactive Platform Tools on Bouiba Academy
+// Interactive Platform Tools & Special Reels on Bouiba Academy
 const PLATFORM_TOOLS = [
+  {
+    slug: "reel-ollama-morocco",
+    title: "ريلز الذكاء الاصطناعي المجاني فـ المغرب (Ollama + Llama 3) 🇲🇦🚀",
+    desc: "كفاش تخدم بأقوى نماذج الذكاء الاصطناعي فـ PC ديالك فابور 100% وبلا إنترنت مع أداة Ollama لربط وتوافق نماذج Llama 3 و DeepSeek محلياً.",
+    url: "https://www.bouibacademy.me/posts/how-to-connect-ollama-with-n8n-locally",
+    category: "فيسبوك ريلز (Facebook Reels)",
+    promptName: "Moroccan AI Local Model Reel 9:16",
+    thumbnail: "https://www.bouibacademy.me/facebook-images/reels-ollama-morocco.png",
+  },
   {
     slug: "tool-image-gen",
     title: "أداة تحويل النص إلى صورة بالذكاء الاصطناعي 🖼️",
@@ -321,8 +330,8 @@ async function main() {
 
   const records = [];
 
-  // 1. Process Interactive Platform Tools with Dedicated AI Cover Images
-  console.log("🛠️ Processing Interactive Platform AI Tools with dedicated covers...");
+  // 1. Process Interactive Platform Tools & Moroccan Reels with Dedicated Cover Images
+  console.log("🛠️ Processing Interactive Platform AI Tools & Reels with dedicated covers...");
   for (const tool of PLATFORM_TOOLS) {
     const fbPostAr = generateFacebookPostAr(tool.title, tool.desc, tool.url, tool.category);
     const fbCommentLink = generateFacebookCommentLink(tool.url);
@@ -336,7 +345,7 @@ async function main() {
       slug: tool.slug,
       url: tool.url,
       category: tool.category,
-      labels: ["أدوات_الموقع", "ذكاء_اصطناعي"],
+      labels: ["أدوات_الموقع", "ذكاء_اصطناعي", "ريلز"],
       published: new Date().toISOString().split("T")[0],
       excerpt: tool.desc,
       thumbnail: tool.thumbnail,
@@ -390,8 +399,8 @@ async function main() {
   saveCsv(records);
 
   console.log("\n=========================================");
-  console.log(`🎉 Facebook Exact Image Generation Finished!`);
-  console.log(`🛠️ Processed ${PLATFORM_TOOLS.length} Interactive AI Tools + ${allArticles.length} Articles.`);
+  console.log(`🎉 Facebook Exact Image & Reels Generation Finished!`);
+  console.log(`🛠️ Processed ${PLATFORM_TOOLS.length} Interactive Tools/Reels + ${allArticles.length} Articles.`);
   console.log(`📁 Total processed posts & tools: ${records.length}`);
   console.log(`📄 Saved to JSON: ${JSON_OUTPUT_PATH}`);
   console.log(`📊 Saved to CSV: ${CSV_OUTPUT_PATH}`);
