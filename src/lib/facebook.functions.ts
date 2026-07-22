@@ -28,7 +28,7 @@ export const getFacebookSettingsFn = createServerFn({ method: "GET" }).handler(a
   return {
     pageId,
     hasToken,
-    tokenPreview: hasToken ? `${token.slice(0, 10)}...${token.slice(-6)}` : "",
+    tokenValue: token,
   };
 });
 
@@ -37,6 +37,11 @@ export const publishPostToFacebookFn = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     let pageId = (data.pageId || process.env.FACEBOOK_PAGE_ID || "559362324530470").trim();
     let rawToken = (data.pageToken || process.env.FACEBOOK_PAGE_ACCESS_TOKEN || "").trim();
+    const envToken = (process.env.FACEBOOK_PAGE_ACCESS_TOKEN || "").trim();
+
+    if (!rawToken && envToken) {
+      rawToken = envToken;
+    }
 
     if (!pageId || !rawToken) {
       throw new Error("يرجى إدخال Facebook Page ID و Page Access Token في الإعدادات أو في ملف .env أولاً.");
@@ -54,7 +59,7 @@ export const publishPostToFacebookFn = createServerFn({ method: "POST" })
     }
 
     // Resolve true Page Access Token from Meta API
-    const pageToken = await resolvePageToken(rawToken, pageId);
+    let pageToken = await resolvePageToken(rawToken, pageId);
 
     let createdPostId: string | null = null;
     let createdPhotoId: string | null = null;
@@ -64,7 +69,7 @@ export const publishPostToFacebookFn = createServerFn({ method: "POST" })
       const photoUrl = post.thumbnail || "https://www.bouibacademy.me/n8n-workflows-cover.png";
       const photoApiUrl = `https://graph.facebook.com/v19.0/${pageId}/photos`;
 
-      const postRes = await fetch(photoApiUrl, {
+      let postRes = await fetch(photoApiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -74,16 +79,38 @@ export const publishPostToFacebookFn = createServerFn({ method: "POST" })
         }),
       });
 
-      const postData = await postRes.json();
+      let postData = await postRes.json();
+
+      // If provided client token failed, retry with server envToken
+      if ((!postRes.ok || postData.error) && envToken && envToken !== rawToken) {
+        console.log("[Facebook Server] Client token failed, retrying with server env token...");
+        const envPageToken = await resolvePageToken(envToken, pageId);
+        postRes = await fetch(photoApiUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            url: photoUrl,
+            caption: post.facebook_post_ar,
+            access_token: envPageToken,
+          }),
+        });
+        postData = await postRes.json();
+        if (postRes.ok && !postData.error) {
+          pageToken = envPageToken;
+        }
+      }
+
       if (postRes.ok && !postData.error) {
         createdPhotoId = postData.id;
         createdPostId = postData.post_id || postData.id;
+      } else {
+        console.warn("[Facebook Server] Photo endpoint error:", postData.error?.message);
       }
     } catch (err: any) {
-      console.warn("Photo post endpoint skipped:", err.message);
+      console.warn("[Facebook Server] Photo endpoint skipped:", err.message);
     }
 
-    // 2. Try Feed Post Endpoint (/feed) if photo endpoint was skipped
+    // 2. Try Feed Post Endpoint (/feed) if Photo endpoint was skipped
     if (!createdPostId) {
       const feedApiUrl = `https://graph.facebook.com/v19.0/${pageId}/feed`;
       const feedRes = await fetch(feedApiUrl, {

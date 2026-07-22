@@ -53,7 +53,12 @@ function AdminFacebook() {
     getFacebookSettingsFn()
       .then((res) => {
         if (res.pageId && !savedPageId) setPageId(res.pageId);
-        if (res.hasToken) setHasServerToken(true);
+        if (res.hasToken) {
+          setHasServerToken(true);
+          if (res.tokenValue && !savedToken) {
+            setPageToken(res.tokenValue);
+          }
+        }
       })
       .catch(() => {});
   }, []);
@@ -65,7 +70,7 @@ function AdminFacebook() {
     if (cleanId) localStorage.setItem("fb_page_id", cleanId);
     if (cleanToken) localStorage.setItem("fb_page_token", cleanToken);
 
-    toast.success("تم حفظ إعدادات مفاتيح صفحة فيسبوك في المتصفح بنجاح!");
+    toast.success("تم حفظ إعدادات مفاتيح صفحة فيسبوك بنجاح!");
   };
 
   const posts = (facebookPostsData as any[]) || [];
