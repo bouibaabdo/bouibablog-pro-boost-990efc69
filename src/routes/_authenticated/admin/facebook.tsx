@@ -21,6 +21,7 @@ import {
   MessageSquare,
   ShieldCheck,
   Settings2,
+  AlertTriangle,
 } from "lucide-react";
 import facebookPostsData from "../../../../content/facebook-posts/facebook-posts.json";
 import { getFacebookSettingsFn, publishPostToFacebookFn } from "@/lib/facebook.functions";
@@ -39,6 +40,7 @@ function AdminFacebook() {
   const [pageToken, setPageToken] = useState("");
   const [hasServerToken, setHasServerToken] = useState(false);
   const [publishingId, setPublishingId] = useState<string | null>(null);
+  const [tokenError, setTokenError] = useState(false);
   const [publishedResults, setPublishedResults] = useState<Record<string, string>>({});
   const [showConfig, setShowConfig] = useState(false);
 
@@ -71,7 +73,8 @@ function AdminFacebook() {
     if (cleanId) localStorage.setItem("fb_page_id", cleanId);
     if (cleanToken) localStorage.setItem("fb_page_token", cleanToken);
 
-    toast.success("تم حفظ إعدادات المفاتيح بنجاح!");
+    setTokenError(false);
+    toast.success("تم حفظ مفاتيح التوكن الجديدة بنجاح!");
   };
 
   const posts = (facebookPostsData as any[]) || [];
@@ -124,13 +127,21 @@ function AdminFacebook() {
       });
 
       if (res.success) {
+        setTokenError(false);
         const publishedUrl = res.postUrl || `https://facebook.com/${res.postId}`;
         setPublishedResults((prev) => ({ ...prev, [post.id]: publishedUrl }));
         toast.success(res.message || "🎉 تم النشر بنجاح على فيسبوك!");
       }
     } catch (err: any) {
       console.error(err);
-      toast.error("فشل النشر: " + (err.message || err));
+      const msg = err.message || String(err);
+      if (msg.includes("expired") || msg.includes("Expired") || msg.includes("validate")) {
+        setTokenError(true);
+        setShowConfig(true);
+        toast.error("انتهت صلاحية التوكن! يرجى لصق توكن جديد من Meta Graph API Explorer.");
+      } else {
+        toast.error("فشل النشر: " + msg);
+      }
     } finally {
       setPublishingId(null);
     }
@@ -177,13 +188,34 @@ function AdminFacebook() {
         </div>
       </div>
 
+      {/* Token Expired Banner */}
+      {tokenError && (
+        <Card className="border-2 border-amber-500/50 bg-amber-500/10 p-4 sm:p-6 shadow-card space-y-3">
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <div className="flex items-center gap-2 text-amber-300 font-bold text-sm sm:text-base">
+              <AlertTriangle className="h-5 w-5 text-amber-400 shrink-0" />
+              انتهت صلاحية توكن فيسبوك (Token Expired)
+            </div>
+            <Button size="sm" asChild variant="outline" className="h-9 font-bold text-xs gap-1.5 border-amber-500/50 bg-amber-500/20 hover:bg-amber-500/30 text-amber-100 min-h-[38px]">
+              <a href="https://developers.facebook.com/tools/explorer/" target="_blank" rel="noopener noreferrer">
+                <ExternalLink className="h-3.5 w-3.5" />
+                توليد توكن جديد من Meta Graph Explorer
+              </a>
+            </Button>
+          </div>
+          <p className="text-xs text-amber-200/90 leading-relaxed">
+            انتهت صلاحية التوكن القديم من خوادم فيسبوك. يرجى توليد توكن جديد من الرابط أعلاه، ثم الصقه في حقل <strong>Page Access Token</strong> أدناه واضغط <strong>"حفظ المفاتيح"</strong>.
+          </p>
+        </Card>
+      )}
+
       {/* Facebook Credentials Box */}
-      {(showConfig || !hasServerToken || !pageToken) && (
+      {(showConfig || !hasServerToken || !pageToken || tokenError) && (
         <Card className="border-2 border-primary/30 bg-primary/5 p-4 sm:p-6 shadow-card space-y-4">
           <div className="flex items-center justify-between flex-wrap gap-2">
             <div className="flex items-center gap-2">
               <Key className="h-5 w-5 text-primary shrink-0" />
-              <h3 className="font-bold text-sm sm:text-base">إعدادات الربط على الجوال (Meta API)</h3>
+              <h3 className="font-bold text-sm sm:text-base">إعدادات الربط وتجديد التوكن (Meta API)</h3>
             </div>
             {hasServerToken || pageToken ? (
               <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
@@ -207,7 +239,7 @@ function AdminFacebook() {
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold">Page Access Token</Label>
+              <Label className="text-xs font-bold">Page Access Token (التوكن الجديد)</Label>
               <Input
                 type="password"
                 value={pageToken}
@@ -219,9 +251,15 @@ function AdminFacebook() {
           </div>
 
           <div className="flex items-center justify-between pt-2 flex-wrap gap-2">
-            <p className="text-[11px] text-muted-foreground">
-              يتم النشر بأمان عبر السيرفر دون مشاكل الجوال.
-            </p>
+            <a
+              href="https://developers.facebook.com/tools/explorer/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-sky-400 hover:underline flex items-center gap-1 font-bold"
+            >
+              <ExternalLink className="h-3.5 w-3.5" />
+              رابط الحصول على توكن جديد من Meta
+            </a>
             <Button onClick={saveCredentials} className="gap-2 font-bold text-xs bg-primary hover:opacity-90 min-h-[44px] px-6">
               <Check className="h-4 w-4" />
               حفظ المفاتيح
@@ -308,7 +346,7 @@ function AdminFacebook() {
                 </div>
               </div>
 
-              {/* Inline Published Feedback Banner for Mobile */}
+              {/* Inline Published Feedback Banner */}
               {publishedResults[p.id] && (
                 <div className="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-between gap-2 text-xs text-emerald-300">
                   <span className="font-bold flex items-center gap-1.5">
