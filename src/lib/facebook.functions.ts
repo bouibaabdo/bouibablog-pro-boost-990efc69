@@ -4,6 +4,9 @@ import path from "path";
 
 const JSON_INPUT_PATH = path.join(process.cwd(), "content", "facebook-posts", "facebook-posts.json");
 
+const DEFAULT_PAGE_ID = "559362324530470";
+const DEFAULT_PAGE_TOKEN = "EAANZCxw0Ra20BSBoriWSmG8e68Pf5jjKu9jvKZBhSF2N3UMP9TAs94fWQFeYJPWZAbiPuoGjZBnMZBExYBZCieoh05pjF6lZBYj6Gy002yc2AzcG13adB11NEL32X6VqpJ04ZB9wR8Di9Ig4bRDx3iHETugs7Ch1qCAxnc3sHRrcU4n91QSb313EBDjWnbiWQkWMZAmMLq7ADZChKxRk6TZC2OXfCSrZA4w38D9Hvq7srOOt07UnPiTFIOBfehaY6834VCGTXVkPaz1CAvkP5xSNsXrCZAvrL4pJJ6wZC8SAZDZD";
+
 // Helper to resolve real Page Access Token if User Token is provided
 async function resolvePageToken(token: string, pageId: string): Promise<string> {
   try {
@@ -21,8 +24,8 @@ async function resolvePageToken(token: string, pageId: string): Promise<string> 
 }
 
 export const getFacebookSettingsFn = createServerFn({ method: "GET" }).handler(async () => {
-  const pageId = process.env.FACEBOOK_PAGE_ID || "559362324530470";
-  const token = process.env.FACEBOOK_PAGE_ACCESS_TOKEN || "";
+  const pageId = process.env.FACEBOOK_PAGE_ID || DEFAULT_PAGE_ID;
+  const token = process.env.FACEBOOK_PAGE_ACCESS_TOKEN || DEFAULT_PAGE_TOKEN;
   const hasToken = token.length > 10;
 
   return {
@@ -35,16 +38,16 @@ export const getFacebookSettingsFn = createServerFn({ method: "GET" }).handler(a
 export const publishPostToFacebookFn = createServerFn({ method: "POST" })
   .validator((data: { postId: string; pageId?: string; pageToken?: string }) => data)
   .handler(async ({ data }) => {
-    let pageId = (data.pageId || process.env.FACEBOOK_PAGE_ID || "559362324530470").trim();
-    let rawToken = (data.pageToken || process.env.FACEBOOK_PAGE_ACCESS_TOKEN || "").trim();
-    const envToken = (process.env.FACEBOOK_PAGE_ACCESS_TOKEN || "").trim();
+    let pageId = (data.pageId || process.env.FACEBOOK_PAGE_ID || DEFAULT_PAGE_ID).trim();
+    let rawToken = (data.pageToken || process.env.FACEBOOK_PAGE_ACCESS_TOKEN || DEFAULT_PAGE_TOKEN).trim();
+    const envToken = (process.env.FACEBOOK_PAGE_ACCESS_TOKEN || DEFAULT_PAGE_TOKEN).trim();
 
     if (!rawToken && envToken) {
       rawToken = envToken;
     }
 
     if (!pageId || !rawToken) {
-      throw new Error("يرجى إدخال Facebook Page ID و Page Access Token في الإعدادات أو في ملف .env أولاً.");
+      throw new Error("يرجى إدخال Facebook Page ID و Page Access Token في الإعدادات أولاً.");
     }
 
     if (!fs.existsSync(JSON_INPUT_PATH)) {
@@ -81,9 +84,9 @@ export const publishPostToFacebookFn = createServerFn({ method: "POST" })
 
       let postData = await postRes.json();
 
-      // If provided client token failed, retry with server envToken
+      // If provided client token failed, retry with default page token
       if ((!postRes.ok || postData.error) && envToken && envToken !== rawToken) {
-        console.log("[Facebook Server] Client token failed, retrying with server env token...");
+        console.log("[Facebook Server] Client token failed, retrying with default token...");
         const envPageToken = await resolvePageToken(envToken, pageId);
         postRes = await fetch(photoApiUrl, {
           method: "POST",
