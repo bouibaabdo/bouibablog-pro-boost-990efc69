@@ -93,6 +93,17 @@ function cleanHtmlText(html = "") {
     .trim();
 }
 
+// Extract first image from HTML content
+function extractFirstImageFromHtml(html = "") {
+  const match = html.match(/<img[^>]+src=["']([^"']+)["']/i);
+  if (match && match[1]) {
+    let imgUrl = match[1];
+    imgUrl = imgUrl.replace(/\/s\d+(-c|-r)?\//, "/s1600/");
+    return imgUrl;
+  }
+  return "";
+}
+
 // Generate Moroccan / Arab developer friendly hashtags
 function generateHashtags(category, title) {
   const baseTags = ["#BouibaAcademy", "#Bouiba_Academy", "#أدوات_الذكاء_الاصطناعي", "#تقنية"];
@@ -124,36 +135,36 @@ function mapCategory(labels = [], title = "") {
   return "أدوات وتقنيات";
 }
 
-// Generate Facebook Arabic Post Text (Link ONLY in first comment to avoid FB reach penalty)
+// Generate High-Converting Facebook Arabic Post Text
 function generateFacebookPostAr(title, desc, url, category) {
   const hashtags = generateHashtags(category, title);
 
-  return `🛠️ ${title}
+  return `🚀 ${title}
 
-💡 ${desc.slice(0, 190)}...
+💡 ${desc.slice(0, 185)}...
 
-🚀 جرب هذه الأداة/المقال مجاناً اليوم وطوّر إنتاجيتك بنقرة واحدة مع Bouiba Academy!
+🔥 هل تريد التطبيق واستغلال هذا الدليل العملي مجاناً اليوم؟
 
-👇 رابط الاستخدام والشرح المباشر تجدونه في أول تعليق (Comment 💬) 📌
+👇 رابط الشرح والتجربة المباشرة تجدونه مثبت أول تعليق (Comment 💬) 📌
 
 ${hashtags}`;
 }
 
 // Generate First Comment Link Text
 function generateFacebookCommentLink(url) {
-  return `🔗 رابط التجربة والقراءة المباشرة من هنا:\n${url}`;
+  return `🔗 اقرأ الدليل والتطبيق العملي كاملاً مجاناً من هنا:\n${url}`;
 }
 
 // Generate French/English Short Excerpt
 function generateFacebookPostFrEn(title, desc, url) {
   return `📌 ${title}
-Try this free interactive AI tool on Bouiba Academy:
+Try this free interactive tool on Bouiba Academy:
 👉 Link in first comment 💬`;
 }
 
 // Generate Arabic Image Description
 function generateArabicImageDescription(title, category) {
-  return `تصميم تقني عصري بنمط 3D داكن يعكس أداة "${title}" مع شاشة تفاعلية وإضاءة نيون أرجوانية وزرقاء تعبر عن التكنولوجيا والذكاء الاصطناعي.`;
+  return `تصميم تقني عصري بنمط 3D داكن يعكس موضوع "${title}" مع شاشة تفاعلية وإضاءة نيون أرجوانية وزرقاء تعبر عن التكنولوجيا والذكاء الاصطناعي.`;
 }
 
 // Generate AI Image Prompt in English
@@ -177,9 +188,18 @@ function getLocalPosts() {
       try {
         const meta = JSON.parse(fs.readFileSync(metaPath, "utf-8"));
         let body = meta.excerpt || "";
+        let mdThumb = "";
         if (fs.existsSync(mdPath)) {
-          body = cleanHtmlText(fs.readFileSync(mdPath, "utf-8"));
+          const rawMd = fs.readFileSync(mdPath, "utf-8");
+          body = cleanHtmlText(rawMd);
+          mdThumb = extractFirstImageFromHtml(rawMd);
         }
+
+        let thumb = meta.thumbnail || mdThumb || "";
+        if (thumb.startsWith("/")) {
+          thumb = `https://www.bouibacademy.me${thumb}`;
+        }
+
         posts.push({
           id: meta.slug || d,
           title: meta.title,
@@ -189,7 +209,7 @@ function getLocalPosts() {
           category: meta.category || "تقنية",
           labels: meta.tags || [meta.category || "تقنية"],
           excerpt: meta.excerpt || body.slice(0, 200),
-          thumbnail: meta.thumbnail || "",
+          thumbnail: thumb,
           source: "local",
         });
       } catch (e) {
@@ -221,9 +241,17 @@ async function getBloggerPosts() {
         slug = title.toLowerCase().replace(/[^\w]/g, "-");
       }
 
-      const content = cleanHtmlText(entry.content?.$t || "");
+      const rawHtml = entry.content?.$t || "";
+      const content = cleanHtmlText(rawHtml);
       const excerpt = content.slice(0, 220);
-      const thumbnail = entry.media$thumbnail?.url?.replace(/\/s\d+(-c)?\//, "/s1600/") || "";
+
+      let thumbnail = entry.media$thumbnail?.url?.replace(/\/s\d+(-c|-r)?\//, "/s1600/") || extractFirstImageFromHtml(rawHtml) || "";
+      if (thumbnail.startsWith("//")) {
+        thumbnail = `https:${thumbnail}`;
+      } else if (thumbnail.startsWith("/")) {
+        thumbnail = `https://www.bouibacademy.me${thumbnail}`;
+      }
+
       const labels = entry.category?.map((c) => c.term) || [];
 
       return {
@@ -284,7 +312,7 @@ function saveCsv(records) {
 // Main Execution
 async function main() {
   console.log("=========================================");
-  console.log("🚀 Bouiba Academy — Dedicated Image & Posts Facebook Automation");
+  console.log("🚀 Bouiba Academy — Exact Article Images & Posts Facebook Automation");
   console.log("=========================================\n");
 
   if (!fs.existsSync(OUTPUT_DIR)) {
@@ -362,8 +390,8 @@ async function main() {
   saveCsv(records);
 
   console.log("\n=========================================");
-  console.log(`🎉 Facebook Dedicated Image Generation Finished!`);
-  console.log(`🛠️ Processed ${PLATFORM_TOOLS.length} Interactive AI Tools with unique 3D covers.`);
+  console.log(`🎉 Facebook Exact Image Generation Finished!`);
+  console.log(`🛠️ Processed ${PLATFORM_TOOLS.length} Interactive AI Tools + ${allArticles.length} Articles.`);
   console.log(`📁 Total processed posts & tools: ${records.length}`);
   console.log(`📄 Saved to JSON: ${JSON_OUTPUT_PATH}`);
   console.log(`📊 Saved to CSV: ${CSV_OUTPUT_PATH}`);
