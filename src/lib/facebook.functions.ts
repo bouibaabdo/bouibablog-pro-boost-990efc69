@@ -1,8 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
-import fs from "fs";
-import path from "path";
-
-const JSON_INPUT_PATH = path.join(process.cwd(), "content", "facebook-posts", "facebook-posts.json");
+import facebookPostsData from "../../content/facebook-posts/facebook-posts.json";
 
 const DEFAULT_PAGE_ID = "559362324530470";
 const DEFAULT_PAGE_TOKEN = "EAANZCxw0Ra20BSBoriWSmG8e68Pf5jjKu9jvKZBhSF2N3UMP9TAs94fWQFeYJPWZAbiPuoGjZBnMZBExYBZCieoh05pjF6lZBYj6Gy002yc2AzcG13adB11NEL32X6VqpJ04ZB9wR8Di9Ig4bRDx3iHETugs7Ch1qCAxnc3sHRrcU4n91QSb313EBDjWnbiWQkWMZAmMLq7ADZChKxRk6TZC2OXfCSrZA4w38D9Hvq7srOOt07UnPiTFIOBfehaY6834VCGTXVkPaz1CAvkP5xSNsXrCZAvrL4pJJ6wZC8SAZDZD";
@@ -36,7 +33,20 @@ export const getFacebookSettingsFn = createServerFn({ method: "GET" }).handler(a
 });
 
 export const publishPostToFacebookFn = createServerFn({ method: "POST" })
-  .validator((data: { postId: string; pageId?: string; pageToken?: string }) => data)
+  .validator(
+    (data: {
+      postId?: string;
+      pageId?: string;
+      pageToken?: string;
+      postPayload?: {
+        id?: string;
+        title?: string;
+        facebook_post_ar?: string;
+        facebook_comment_link?: string;
+        thumbnail?: string;
+      };
+    }) => data,
+  )
   .handler(async ({ data }) => {
     let pageId = (data.pageId || process.env.FACEBOOK_PAGE_ID || DEFAULT_PAGE_ID).trim();
     let rawToken = (data.pageToken || process.env.FACEBOOK_PAGE_ACCESS_TOKEN || DEFAULT_PAGE_TOKEN).trim();
@@ -47,18 +57,17 @@ export const publishPostToFacebookFn = createServerFn({ method: "POST" })
     }
 
     if (!pageId || !rawToken) {
-      throw new Error("يرجى إدخال Facebook Page ID و Page Access Token في الإعدادات أولاً.");
+      throw new Error("يرجى إدخال Facebook Page ID و Page Access Token أولاً.");
     }
 
-    if (!fs.existsSync(JSON_INPUT_PATH)) {
-      throw new Error("ملف منشورات فيسبوك غير موجود.");
-    }
+    const posts = (facebookPostsData as any[]) || [];
+    const post =
+      data.postPayload ||
+      posts.find((p) => p.id === data.postId) ||
+      posts[0];
 
-    const posts = JSON.parse(fs.readFileSync(JSON_INPUT_PATH, "utf-8")) as any[];
-    const post = posts.find((p) => p.id === data.postId) || posts[0];
-
-    if (!post) {
-      throw new Error("المنشور المحدد غير موجود.");
+    if (!post || !post.facebook_post_ar) {
+      throw new Error("المنشور المحدد غير موجود أو لا يحتوي على نص.");
     }
 
     // Resolve true Page Access Token from Meta API
@@ -84,7 +93,7 @@ export const publishPostToFacebookFn = createServerFn({ method: "POST" })
 
       let postData = await postRes.json();
 
-      // If provided client token failed, retry with default page token
+      // If provided client token failed, retry with default token
       if ((!postRes.ok || postData.error) && envToken && envToken !== rawToken) {
         console.log("[Facebook Server] Client token failed, retrying with default token...");
         const envPageToken = await resolvePageToken(envToken, pageId);

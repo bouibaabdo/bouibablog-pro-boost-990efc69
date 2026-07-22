@@ -102,6 +102,13 @@ function AdminFacebook() {
           postId: post.id,
           pageId: activePageId || undefined,
           pageToken: activeToken || undefined,
+          postPayload: {
+            id: post.id,
+            title: post.title,
+            facebook_post_ar: post.facebook_post_ar,
+            facebook_comment_link: post.facebook_comment_link,
+            thumbnail: post.thumbnail,
+          },
         },
       });
 
