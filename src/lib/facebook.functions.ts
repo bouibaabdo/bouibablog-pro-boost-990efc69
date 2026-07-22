@@ -2,7 +2,6 @@ import { createServerFn } from "@tanstack/react-start";
 import facebookPostsData from "../../content/facebook-posts/facebook-posts.json";
 
 const DEFAULT_PAGE_ID = "559362324530470";
-const DEFAULT_PAGE_TOKEN = "EAANZCxw0Ra20BSBoriWSmG8e68Pf5jjKu9jvKZBhSF2N3UMP9TAs94fWQFeYJPWZAbiPuoGjZBnMZBExYBZCieoh05pjF6lZBYj6Gy002yc2AzcG13adB11NEL32X6VqpJ04ZB9wR8Di9Ig4bRDx3iHETugs7Ch1qCAxnc3sHRrcU4n91QSb313EBDjWnbiWQkWMZAmMLq7ADZChKxRk6TZC2OXfCSrZA4w38D9Hvq7srOOt07UnPiTFIOBfehaY6834VCGTXVkPaz1CAvkP5xSNsXrCZAvrL4pJJ6wZC8SAZDZD";
 
 // Helper to resolve real Page Access Token if User Token is provided
 async function resolvePageToken(token: string, pageId: string): Promise<string> {
@@ -22,7 +21,7 @@ async function resolvePageToken(token: string, pageId: string): Promise<string> 
 
 export const getFacebookSettingsFn = createServerFn({ method: "GET" }).handler(async () => {
   const pageId = process.env.FACEBOOK_PAGE_ID || DEFAULT_PAGE_ID;
-  const token = process.env.FACEBOOK_PAGE_ACCESS_TOKEN || DEFAULT_PAGE_TOKEN;
+  const token = process.env.FACEBOOK_PAGE_ACCESS_TOKEN || "";
   const hasToken = token.length > 10;
 
   return {
@@ -49,15 +48,10 @@ export const publishPostToFacebookFn = createServerFn({ method: "POST" })
   )
   .handler(async ({ data }) => {
     let pageId = (data.pageId || process.env.FACEBOOK_PAGE_ID || DEFAULT_PAGE_ID).trim();
-    let rawToken = (data.pageToken || process.env.FACEBOOK_PAGE_ACCESS_TOKEN || DEFAULT_PAGE_TOKEN).trim();
-    const envToken = (process.env.FACEBOOK_PAGE_ACCESS_TOKEN || DEFAULT_PAGE_TOKEN).trim();
-
-    if (!rawToken && envToken) {
-      rawToken = envToken;
-    }
+    let rawToken = (data.pageToken || process.env.FACEBOOK_PAGE_ACCESS_TOKEN || "").trim();
 
     if (!pageId || !rawToken) {
-      throw new Error("يرجى إدخال Facebook Page ID و Page Access Token أولاً.");
+      throw new Error("يرجى إدخال Facebook Page Access Token الجديد في حقل التوكن أعلى اللوحة.");
     }
 
     const posts = (facebookPostsData as any[]) || [];
@@ -75,13 +69,19 @@ export const publishPostToFacebookFn = createServerFn({ method: "POST" })
 
     let createdPostId: string | null = null;
     let createdPhotoId: string | null = null;
+    let lastErrorMessage = "";
+
+    // Fix photo URL format
+    let photoUrl = post.thumbnail || "https://www.bouibacademy.me/og-banner.png";
+    if (photoUrl.startsWith("/")) {
+      photoUrl = `https://www.bouibacademy.me${photoUrl}`;
+    }
 
     // 1. Try Photo Post Endpoint (/photos)
     try {
-      const photoUrl = post.thumbnail || "https://www.bouibacademy.me/n8n-workflows-cover.png";
       const photoApiUrl = `https://graph.facebook.com/v19.0/${pageId}/photos`;
 
-      let postRes = await fetch(photoApiUrl, {
+      const postRes = await fetch(photoApiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -91,32 +91,14 @@ export const publishPostToFacebookFn = createServerFn({ method: "POST" })
         }),
       });
 
-      let postData = await postRes.json();
-
-      // If provided client token failed, retry with default token
-      if ((!postRes.ok || postData.error) && envToken && envToken !== rawToken) {
-        console.log("[Facebook Server] Client token failed, retrying with default token...");
-        const envPageToken = await resolvePageToken(envToken, pageId);
-        postRes = await fetch(photoApiUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            url: photoUrl,
-            caption: post.facebook_post_ar,
-            access_token: envPageToken,
-          }),
-        });
-        postData = await postRes.json();
-        if (postRes.ok && !postData.error) {
-          pageToken = envPageToken;
-        }
-      }
+      const postData = await postRes.json();
 
       if (postRes.ok && !postData.error) {
         createdPhotoId = postData.id;
         createdPostId = postData.post_id || postData.id;
       } else {
-        console.warn("[Facebook Server] Photo endpoint error:", postData.error?.message);
+        lastErrorMessage = postData.error?.message || "Photo error";
+        console.warn("[Facebook Server] Photo endpoint error:", lastErrorMessage);
       }
     } catch (err: any) {
       console.warn("[Facebook Server] Photo endpoint skipped:", err.message);
@@ -138,14 +120,17 @@ export const publishPostToFacebookFn = createServerFn({ method: "POST" })
       if (feedRes.ok && !feedData.error) {
         createdPostId = feedData.id;
       } else {
-        throw new Error(feedData.error?.message || "فشل النشر على فيسبوك عبر Meta API");
+        const errorMsg = feedData.error?.message || lastErrorMessage || "فشل النشر على فيسبوك عبر Meta API";
+        if (errorMsg.includes("expired") || errorMsg.includes("Session has expired") || errorMsg.includes("validate")) {
+          throw new Error("انتهت صلاحية توكن فيسبوك (Token Expired). يرجى استخراج توكن جديد من Graph API Explorer ولصقه في حقل الإعدادات أعلى اللوحة.");
+        }
+        throw new Error(errorMsg);
       }
     }
 
     // 3. Add First Comment with Article Link
     let commentSuccess = false;
     if (post.facebook_comment_link) {
-      // Prioritize createdPostId (e.g. 559362324530470_1565955315542502) over createdPhotoId so comment shows on page feed!
       const targets = [createdPostId, createdPhotoId].filter(Boolean) as string[];
 
       for (const targetId of targets) {
@@ -165,11 +150,9 @@ export const publishPostToFacebookFn = createServerFn({ method: "POST" })
             console.log(`[Facebook Server] First comment posted successfully on ${targetId}!`);
             commentSuccess = true;
             break;
-          } else {
-            console.warn(`[Facebook Server] Comment warning on ${targetId}:`, commentData.error?.message);
           }
-        } catch (commentErr: any) {
-          console.warn(`[Facebook Server] Comment error on ${targetId}:`, commentErr.message);
+        } catch {
+          // fail open on comment lookup
         }
       }
     }
