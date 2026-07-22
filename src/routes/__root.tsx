@@ -118,6 +118,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "(function(){var loaded=false;function load(){if(loaded)return;loaded=true;var s=document.createElement('script');s.async=true;s.crossOrigin='anonymous';s.src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6865528919843764';document.head.appendChild(s);}var evts=['scroll','click','touchstart','keydown','mousemove'];evts.forEach(function(e){window.addEventListener(e,load,{once:true,passive:true})});setTimeout(load,4000);})();",
       },
       {
+        src: "https://www.googletagmanager.com/gtag/js?id=G-FBEEEXFLLM",
+        async: true,
+      },
+      {
+        children: `window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-FBEEEXFLLM', { send_page_view: true });`,
+      },
+      {
         type: "application/ld+json",
         children: JSON.stringify({
           "@context": "https://schema.org",
@@ -171,6 +178,14 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && (window as any).gtag) {
+      (window as any).gtag("config", "G-FBEEEXFLLM", {
+        page_path: pathname,
+      });
+    }
+  }, [pathname]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
