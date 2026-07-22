@@ -116,31 +116,32 @@ function mapCategory(labels = [], title = "") {
   return "أدوات وتقنيات";
 }
 
-// Generate Facebook Arabic Post Text for Tools & Articles
+// Generate Facebook Arabic Post Text for Tools & Articles (Direct Link Included)
 function generateFacebookPostAr(title, desc, url, category) {
   const hashtags = generateHashtags(category, title);
-  
+
   return `🛠️ ${title}
 
 💡 ${desc.slice(0, 190)}...
 
 🚀 جرب هذه الأداة/المقال مجاناً اليوم وطوّر إنتاجيتك بنقرة واحدة مع Bouiba Academy!
 
-👇 رابط الاستخدام والتطبيق المباشر تجدونه في أول تعليق (Comment 💬) 📌
+👇 اقرأ واستخدم من هنا مباشرة:
+🔗 ${url}
 
 ${hashtags}`;
 }
 
 // Generate First Comment Link Text
 function generateFacebookCommentLink(url) {
-  return `🔗 جرب واستخدم الأداة/المقال مباشرة من هنا:\n${url}`;
+  return `🔗 رابط التجربة والقراءة المباشرة من هنا:\n${url}`;
 }
 
 // Generate French/English Short Excerpt
 function generateFacebookPostFrEn(title, desc, url) {
   return `📌 ${title}
 Try this free interactive AI tool on Bouiba Academy:
-👉 Direct Link in first comment 💬`;
+👉 ${url}`;
 }
 
 // Generate Arabic Image Description
@@ -151,7 +152,7 @@ function generateArabicImageDescription(title, category) {
 // Generate AI Image Prompt in English
 function generateAiImagePromptEn(titleName) {
   const clean = titleName.replace(/[^\w\s]/gi, "").trim() || "modern AI tool UI workspace";
-  
+
   return `A sleek high-end 3D tech render representing "${clean}". Modern dark glass user interface, glowing neon blue and gold elements, developer desktop workspace, floating AI holographic icons, octane render, 8k resolution, minimalist style, no text --ar 4:5`;
 }
 
