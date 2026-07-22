@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import {
@@ -19,12 +18,12 @@ import {
   Send,
   Loader2,
   Key,
-  Globe,
   MessageSquare,
   ShieldCheck,
   Settings2,
 } from "lucide-react";
 import facebookPostsData from "../../../../content/facebook-posts/facebook-posts.json";
+import { getFacebookSettingsFn, publishPostToFacebookFn } from "@/lib/facebook.functions";
 
 export const Route = createFileRoute("/_authenticated/admin/facebook")({
   component: AdminFacebook,
@@ -35,23 +34,38 @@ function AdminFacebook() {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [copiedPromptId, setCopiedPromptId] = useState<string | null>(null);
 
-  // Facebook Credentials State (Persisted in localStorage)
-  const [pageId, setPageId] = useState("");
+  // Facebook Credentials State (Persisted in localStorage with server fallback)
+  const [pageId, setPageId] = useState("559362324530470");
   const [pageToken, setPageToken] = useState("");
+  const [hasServerToken, setHasServerToken] = useState(false);
   const [publishingId, setPublishingId] = useState<string | null>(null);
   const [showConfig, setShowConfig] = useState(false);
 
   useEffect(() => {
-    const savedPageId = localStorage.getItem("fb_page_id") || "";
-    const savedToken = localStorage.getItem("fb_page_token") || "";
-    setPageId(savedPageId);
-    setPageToken(savedToken);
+    // 1. Check local storage
+    const savedPageId = localStorage.getItem("fb_page_id");
+    const savedToken = localStorage.getItem("fb_page_token");
+
+    if (savedPageId) setPageId(savedPageId);
+    if (savedToken) setPageToken(savedToken);
+
+    // 2. Fetch server environment status
+    getFacebookSettingsFn()
+      .then((res) => {
+        if (res.pageId && !savedPageId) setPageId(res.pageId);
+        if (res.hasToken) setHasServerToken(true);
+      })
+      .catch(() => {});
   }, []);
 
   const saveCredentials = () => {
-    localStorage.setItem("fb_page_id", pageId.trim());
-    localStorage.setItem("fb_page_token", pageToken.trim());
-    toast.success("تم حفظ إعدادات مفاتيح صفحة فيسبوك بنجاح!");
+    const cleanId = pageId.trim();
+    const cleanToken = pageToken.trim();
+
+    if (cleanId) localStorage.setItem("fb_page_id", cleanId);
+    if (cleanToken) localStorage.setItem("fb_page_token", cleanToken);
+
+    toast.success("تم حفظ إعدادات مفاتيح صفحة فيسبوك في المتصفح بنجاح!");
   };
 
   const posts = (facebookPostsData as any[]) || [];
@@ -69,57 +83,33 @@ function AdminFacebook() {
     }
   };
 
-  // Direct Live API Publishing to Facebook Page
+  // Direct Live Server Action Publishing to Facebook Page
   const publishDirectToFacebook = async (post: any) => {
     const activePageId = pageId.trim();
     const activeToken = pageToken.trim();
 
-    if (!activePageId || !activeToken) {
-      setShowConfig(true);
-      toast.error("يرجى إدخال Page ID و Page Access Token أولاً لتفعيل النشر التلقائي.");
-      return;
-    }
-
     try {
       setPublishingId(post.id);
-      toast.info("جاري نشر البوست والصورة على صفحة فيسبوك...");
+      toast.info(`جاري نشر البوست والصورة على صفحة فيسبوك (${post.title})...`);
 
-      // 1. Post Photo & Caption to Page Feed
-      const photoUrl = post.thumbnail || "https://www.bouibacademy.me/n8n-workflows-cover.png";
-      const postApiUrl = `https://graph.facebook.com/v19.0/${activePageId}/photos`;
-
-      const postRes = await fetch(postApiUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          url: photoUrl,
-          caption: post.facebook_post_ar,
-          access_token: activeToken,
-        }),
+      const res = await publishPostToFacebookFn({
+        data: {
+          postId: post.id,
+          pageId: activePageId || undefined,
+          pageToken: activeToken || undefined,
+        },
       });
 
-      const postData = await postRes.json();
-
-      if (!postRes.ok || postData.error) {
-        throw new Error(postData.error?.message || "خطأ في الاتصال بـ Facebook API");
-      }
-
-      const createdPostId = postData.post_id || postData.id;
-
-      // 2. Post First Comment with Article Link
-      if (post.facebook_comment_link && createdPostId) {
-        const commentApiUrl = `https://graph.facebook.com/v19.0/${createdPostId}/comments`;
-        await fetch(commentApiUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            message: post.facebook_comment_link,
-            access_token: activeToken,
-          }),
+      if (res.success) {
+        toast.success(res.message || "🎉 تم نشر البوست بنجاح على فيسبوك!", {
+          action: res.postUrl
+            ? {
+                label: "عرض البوست",
+                onClick: () => window.open(res.postUrl, "_blank"),
+              }
+            : undefined,
         });
       }
-
-      toast.success("🎉 تم نشر البوست والتعليق الأول بنجاح على فيسبوك!");
     } catch (err: any) {
       console.error(err);
       toast.error("فشل النشر على فيسبوك: " + (err.message || err));
@@ -170,20 +160,20 @@ function AdminFacebook() {
       </div>
 
       {/* Facebook API Credentials Box */}
-      {(showConfig || !pageId || !pageToken) && (
+      {(showConfig || !hasServerToken) && (
         <Card className="border-2 border-primary/30 bg-primary/5 p-6 shadow-card space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Key className="h-5 w-5 text-primary" />
               <h3 className="font-bold text-base">إعدادات ربط صفحة فيسبوك (Meta Graph API)</h3>
             </div>
-            {pageId && pageToken ? (
+            {hasServerToken || pageToken ? (
               <span className="inline-flex items-center gap-1 text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
-                <ShieldCheck className="h-3.5 w-3.5" /> مفاتيح الربط محفوظة
+                <ShieldCheck className="h-3.5 w-3.5" /> مفاتيح الربط نشطة ومحفوظة 🟢
               </span>
             ) : (
               <span className="inline-flex items-center gap-1 text-xs font-bold text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-full border border-amber-500/20">
-                يرجى إدخال المفاتيح للتفعيل
+                يرجى حفظ التوكن لتفعيل النشر
               </span>
             )}
           </div>
@@ -194,7 +184,7 @@ function AdminFacebook() {
               <Input
                 value={pageId}
                 onChange={(e) => setPageId(e.target.value)}
-                placeholder="مثال: 104857629..."
+                placeholder="559362324530470"
                 className="dir-ltr text-xs font-mono"
               />
             </div>
@@ -204,7 +194,7 @@ function AdminFacebook() {
                 type="password"
                 value={pageToken}
                 onChange={(e) => setPageToken(e.target.value)}
-                placeholder="EAAXXXXXX..."
+                placeholder="EAANZCxw0Ra20BS..."
                 className="dir-ltr text-xs font-mono"
               />
             </div>
@@ -212,7 +202,7 @@ function AdminFacebook() {
 
           <div className="flex items-center justify-between pt-2">
             <p className="text-xs text-muted-foreground">
-              يتم حفظ التوكن محلياً في متصفحك بأمان لاستخدامه عند النشر التلقائي بنقرة واحدة.
+              يتم استخدام التوكن بأمان من السيرفر لنشر البوست والصورة بنقرة واحدة بدون أي قيود CORS.
             </p>
             <Button onClick={saveCredentials} className="gap-2 font-bold text-xs bg-primary hover:opacity-90">
               <Check className="h-3.5 w-3.5" />
