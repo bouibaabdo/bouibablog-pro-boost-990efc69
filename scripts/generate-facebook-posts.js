@@ -16,6 +16,7 @@ const PLATFORM_TOOLS = [
     url: "https://www.bouibacademy.me/tools/image",
     category: "أدوات الذكاء الاصطناعي (AI Tools)",
     promptName: "Text to Image AI Generator Tool",
+    thumbnail: "https://www.bouibacademy.me/facebook-images/tool-image-gen.png",
   },
   {
     slug: "tool-roadmap-ai",
@@ -24,6 +25,7 @@ const PLATFORM_TOOLS = [
     url: "https://www.bouibacademy.me/tools/roadmap",
     category: "أدوات الذكاء الاصطناعي (AI Tools)",
     promptName: "AI Learning Roadmap Consultant Tool",
+    thumbnail: "https://www.bouibacademy.me/facebook-images/tool-roadmap-ai.png",
   },
   {
     slug: "tool-prompt-architect",
@@ -32,6 +34,7 @@ const PLATFORM_TOOLS = [
     url: "https://www.bouibacademy.me/tools/prompt",
     category: "أدوات الذكاء الاصطناعي (AI Tools)",
     promptName: "Smart Prompt Architect Tool",
+    thumbnail: "https://www.bouibacademy.me/facebook-images/tool-prompt-architect.png",
   },
   {
     slug: "tool-code-assistant",
@@ -40,6 +43,7 @@ const PLATFORM_TOOLS = [
     url: "https://www.bouibacademy.me/tools/code",
     category: "أدوات الذكاء الاصطناعي (AI Tools)",
     promptName: "AI Code Assistant and Debugger Tool",
+    thumbnail: "https://www.bouibacademy.me/facebook-images/tool-code-assistant.png",
   },
   {
     slug: "tool-summarizer-ai",
@@ -48,6 +52,7 @@ const PLATFORM_TOOLS = [
     url: "https://www.bouibacademy.me/tools/summarize",
     category: "أدوات الذكاء الاصطناعي (AI Tools)",
     promptName: "AI Article Summarizer Tool",
+    thumbnail: "https://www.bouibacademy.me/facebook-images/tool-summarizer-ai.png",
   },
   {
     slug: "tool-idea-generator",
@@ -56,6 +61,7 @@ const PLATFORM_TOOLS = [
     url: "https://www.bouibacademy.me/tools/ideas",
     category: "أدوات الذكاء الاصطناعي (AI Tools)",
     promptName: "AI Article Ideas Generator Tool",
+    thumbnail: "https://www.bouibacademy.me/facebook-images/tool-idea-generator.png",
   },
   {
     slug: "tool-translator-ai",
@@ -64,6 +70,7 @@ const PLATFORM_TOOLS = [
     url: "https://www.bouibacademy.me/tools/translate",
     category: "أدوات الذكاء الاصطناعي (AI Tools)",
     promptName: "AI Technical Translator Tool",
+    thumbnail: "https://www.bouibacademy.me/facebook-images/tool-translator-ai.png",
   },
   {
     slug: "tool-seo-assistant",
@@ -72,6 +79,7 @@ const PLATFORM_TOOLS = [
     url: "https://www.bouibacademy.me/tools/seo",
     category: "أدوات الذكاء الاصطناعي (AI Tools)",
     promptName: "Arabic SEO Assistant Tool",
+    thumbnail: "https://www.bouibacademy.me/facebook-images/tool-seo-assistant.png",
   },
 ];
 
@@ -276,7 +284,7 @@ function saveCsv(records) {
 // Main Execution
 async function main() {
   console.log("=========================================");
-  console.log("🚀 Bouiba Academy — Tools & Posts Facebook Automation");
+  console.log("🚀 Bouiba Academy — Dedicated Image & Posts Facebook Automation");
   console.log("=========================================\n");
 
   if (!fs.existsSync(OUTPUT_DIR)) {
@@ -285,8 +293,8 @@ async function main() {
 
   const records = [];
 
-  // 1. Process Interactive Platform Tools
-  console.log("🛠️ Processing Interactive Platform AI Tools...");
+  // 1. Process Interactive Platform Tools with Dedicated AI Cover Images
+  console.log("🛠️ Processing Interactive Platform AI Tools with dedicated covers...");
   for (const tool of PLATFORM_TOOLS) {
     const fbPostAr = generateFacebookPostAr(tool.title, tool.desc, tool.url, tool.category);
     const fbCommentLink = generateFacebookCommentLink(tool.url);
@@ -303,7 +311,7 @@ async function main() {
       labels: ["أدوات_الموقع", "ذكاء_اصطناعي"],
       published: new Date().toISOString().split("T")[0],
       excerpt: tool.desc,
-      thumbnail: "https://www.bouibacademy.me/og-banner.png",
+      thumbnail: tool.thumbnail,
       facebook_post_ar: fbPostAr,
       facebook_comment_link: fbCommentLink,
       facebook_post_fr_en: fbPostFrEn,
@@ -313,7 +321,7 @@ async function main() {
     });
   }
 
-  // 2. Process Blog Articles
+  // 2. Process Blog Articles using Exact Article Thumbnails
   console.log("🔍 Extracting published blog posts (Local + Blogger)...");
   const [localPosts, bloggerPosts] = await Promise.all([getLocalPosts(), getBloggerPosts()]);
   const allArticles = [...localPosts, ...bloggerPosts];
@@ -328,6 +336,8 @@ async function main() {
     const imgDescAr = generateArabicImageDescription(article.title, cat);
     const imgPromptEn = generateAiImagePromptEn(article.title);
 
+    const articleThumb = article.thumbnail || "https://www.bouibacademy.me/og-banner.png";
+
     records.push({
       id: article.slug || article.id,
       title: article.title,
@@ -337,7 +347,7 @@ async function main() {
       labels: article.labels,
       published: article.published,
       excerpt: article.excerpt,
-      thumbnail: article.thumbnail,
+      thumbnail: articleThumb,
       facebook_post_ar: fbPostAr,
       facebook_comment_link: fbCommentLink,
       facebook_post_fr_en: fbPostFrEn,
@@ -352,8 +362,8 @@ async function main() {
   saveCsv(records);
 
   console.log("\n=========================================");
-  console.log(`🎉 Facebook Content Generation Finished!`);
-  console.log(`🛠️ Included ${PLATFORM_TOOLS.length} Interactive AI Tools.`);
+  console.log(`🎉 Facebook Dedicated Image Generation Finished!`);
+  console.log(`🛠️ Processed ${PLATFORM_TOOLS.length} Interactive AI Tools with unique 3D covers.`);
   console.log(`📁 Total processed posts & tools: ${records.length}`);
   console.log(`📄 Saved to JSON: ${JSON_OUTPUT_PATH}`);
   console.log(`📊 Saved to CSV: ${CSV_OUTPUT_PATH}`);
