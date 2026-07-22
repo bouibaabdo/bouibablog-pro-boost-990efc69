@@ -15,7 +15,8 @@
     "cf:preview": "npm run build && npx wrangler dev",
     "cf:typegen": "npx wrangler types",
     "generate-fb": "node scripts/generate-facebook-posts.js",
-    "publish-fb": "node scripts/publish-to-facebook.js"
+    "publish-fb": "node scripts/publish-to-facebook.js",
+    "get-perm-token": "node scripts/generate-permanent-token.js"
   },
   "dependencies": {
     "@fontsource/cairo": "^5.2.7",
