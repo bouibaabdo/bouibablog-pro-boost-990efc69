@@ -116,7 +116,7 @@ function mapCategory(labels = [], title = "") {
   return "أدوات وتقنيات";
 }
 
-// Generate Facebook Arabic Post Text for Tools & Articles (Direct Link Included)
+// Generate Facebook Arabic Post Text (Link ONLY in first comment to avoid FB reach penalty)
 function generateFacebookPostAr(title, desc, url, category) {
   const hashtags = generateHashtags(category, title);
 
@@ -126,8 +126,7 @@ function generateFacebookPostAr(title, desc, url, category) {
 
 🚀 جرب هذه الأداة/المقال مجاناً اليوم وطوّر إنتاجيتك بنقرة واحدة مع Bouiba Academy!
 
-👇 اقرأ واستخدم من هنا مباشرة:
-🔗 ${url}
+👇 رابط الاستخدام والشرح المباشر تجدونه في أول تعليق (Comment 💬) 📌
 
 ${hashtags}`;
 }
@@ -141,7 +140,7 @@ function generateFacebookCommentLink(url) {
 function generateFacebookPostFrEn(title, desc, url) {
   return `📌 ${title}
 Try this free interactive AI tool on Bouiba Academy:
-👉 ${url}`;
+👉 Link in first comment 💬`;
 }
 
 // Generate Arabic Image Description
