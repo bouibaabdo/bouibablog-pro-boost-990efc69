@@ -1,0 +1,25 @@
+{
+  "title": "أتمتة النشر التلقائي على فيسبوك وتليجرام باستخدام n8n و Webhooks",
+  "slug": "automated-social-media-publishing-n8n-webhooks",
+  "excerpt": "دليل عملي لبناء سيناريو أتمتة مجاني 100% لنشر المقالات والتحديثات تلقائياً على صفحة فيسبوك وقناة تليجرام فور نشرها على مدونتك باستخدام n8n.",
+  "meta_description": "شرح خطوة بخطوة لبناء نظام أتمتة النشر التلقائي للمحتوى على شبكات التواصل الاجتماعي باستخدام n8n و Webhooks مع ربط Meta Graph API وتليجرام.",
+  "target_keywords": [
+    "النشر التلقائي فيسبوك n8n",
+    "أتمتة وسائل التواصل الاجتماعي",
+    "n8n facebook telegram automation",
+    "ربط n8n مع فيسبوك",
+    "n8n webhooks social media"
+  ],
+  "thumbnail": "https://www.bouibacademy.me/n8n-workflows-cover.webp",
+  "category": "n8n",
+  "tags": [
+    "n8n",
+    "Facebook API",
+    "Telegram Bot",
+    "Automation",
+    "Webhooks",
+    "Social Media"
+  ],
+  "created_at": "2026-07-23",
+  "language": "ar"
+}

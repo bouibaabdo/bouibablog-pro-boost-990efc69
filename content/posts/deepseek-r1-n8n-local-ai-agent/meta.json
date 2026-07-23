@@ -1,0 +1,25 @@
+{
+  "title": "دليل تشغيل DeepSeek-R1 محلياً وربطه مع n8n لبناء وكيل ذكاء اصطناعي آمن ومجاني 100%",
+  "slug": "deepseek-r1-n8n-local-ai-agent",
+  "excerpt": "تعلم كيفية تشغيل نموذج DeepSeek-R1 محلياً باستخدام Ollama وربطه بـ n8n لبناء وكيل ذكاء اصطناعي ذكي ينفذ المهام التلقائية بحرية كاملة ودون تكاليف APIs.",
+  "meta_description": "دليل عملي بالخطوات والأوامر لتشغيل نموذج DeepSeek-R1 محلياً عبر Ollama وتكامله مع n8n لبناء بوتات وأتمتة ذكية ومحمية على جهازك الخاص.",
+  "target_keywords": [
+    "DeepSeek-R1 محليا",
+    "ربط DeepSeek مع n8n",
+    "Ollama DeepSeek n8n",
+    "وكيل ذكاء اصطناعي محلي",
+    "Local AI agent n8n"
+  ],
+  "thumbnail": "https://www.bouibacademy.me/ollama-n8n-cover.webp",
+  "category": "AI Automation",
+  "tags": [
+    "DeepSeek",
+    "Ollama",
+    "n8n",
+    "AI Agent",
+    "Automation",
+    "Local LLM"
+  ],
+  "created_at": "2026-07-23",
+  "language": "ar"
+}
