@@ -107,8 +107,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
     ],
     links: [
-      // NOTE: main stylesheet is loaded non-blocking in RootShell via preload trick
-      // DO NOT add rel:stylesheet here — it blocks the render
+      { rel: "stylesheet", href: appCss },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
       { rel: "shortcut icon", href: "/favicon.ico", type: "image/x-icon" },
       { rel: "apple-touch-icon", href: "/favicon.png" },
@@ -154,20 +153,7 @@ function RootShell({ children }: { children: ReactNode }) {
   return (
     <html lang="ar" dir="rtl" data-ui-lang="ar">
       <head>
-        {/* 1. Critical CSS inlined — zero render-blocking */}
         <style dangerouslySetInnerHTML={{ __html: criticalCss }} />
-        {/* 2. Full stylesheet: preload → swap to stylesheet after parse */}
-        <link
-          rel="preload"
-          href={appCss}
-          as="style"
-          // @ts-expect-error – onLoad is valid here for the preload swap trick
-          onLoad="this.onload=null;this.rel='stylesheet'"
-        />
-        {/* Fallback for browsers that don't support preload */}
-        <noscript>
-          <link rel="stylesheet" href={appCss} />
-        </noscript>
         <HeadContent />
       </head>
       <body>
