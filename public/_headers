@@ -5,3 +5,20 @@
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
   Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
   X-XSS-Protection: 1; mode=block
+
+# Cache static assets aggressively (1 year) — filenames are hashed by Vite
+/__assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# WebP images — long cache
+/*.webp
+  Cache-Control: public, max-age=2592000, stale-while-revalidate=86400
+  Content-Type: image/webp
+
+# PNG images
+/*.png
+  Cache-Control: public, max-age=2592000, stale-while-revalidate=86400
+
+# Favicon
+/favicon.ico
+  Cache-Control: public, max-age=86400

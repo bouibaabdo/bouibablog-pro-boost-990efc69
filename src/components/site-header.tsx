@@ -172,15 +172,19 @@ export function SiteHeader() {
             className="flex items-center gap-2.5 shrink-0 min-w-0"
             aria-label="Bouiba Academy"
           >
-            <img
-              src={bouibaLogo.url}
-              alt="Bouiba Academy"
-              className="h-8 w-8 sm:h-9 sm:w-9 object-contain"
-              width={38}
-              height={38}
-              fetchPriority="high"
-              decoding="async"
-            />
+            {/* Logo: 96px WebP (2.7 KiB) instead of 816px PNG (397 KiB) */}
+            <picture>
+              <source srcSet="/bouiba-logo-96.webp" type="image/webp" />
+              <img
+                src="/favicon-64.png"
+                alt="Bouiba Academy"
+                className="h-8 w-8 sm:h-9 sm:w-9 object-contain drop-shadow-sm"
+                width={36}
+                height={36}
+                fetchPriority="high"
+                decoding="sync"
+              />
+            </picture>
             <span className="gradient-text font-display text-lg sm:text-xl font-extrabold tracking-tight select-none">
               Bouiba Academy
             </span>

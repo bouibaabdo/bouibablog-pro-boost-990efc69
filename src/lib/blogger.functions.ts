@@ -428,8 +428,8 @@ async function loadLocalPosts(): Promise<BloggerPost[]> {
           meta.thumbnail ||
           meta.cover_image ||
           (meta.slug?.includes("ollama") || meta.slug?.includes("n8n")
-            ? "https://www.bouibacademy.me/ollama-n8n-cover.png"
-            : "https://www.bouibacademy.me/n8n-workflows-cover.png");
+            ? "https://www.bouibacademy.me/ollama-n8n-cover.webp"
+            : "https://www.bouibacademy.me/n8n-workflows-cover.webp");
 
         const excerptText = meta.meta_description || meta.excerpt || "";
         posts.push({
@@ -480,11 +480,11 @@ async function loadLocalPosts(): Promise<BloggerPost[]> {
         const meta = JSON.parse(metaContent);
         const contentHtml = parseMarkdownToHtml(postContent);
 
+        // Use WebP versions of cover images for better performance
         let thumbnail =
-          "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop";
+          "https://www.bouibacademy.me/n8n-workflows-cover.webp";
         if (meta.slug.includes("ollama") || meta.slug.includes("n8n")) {
-          thumbnail =
-            "https://images.unsplash.com/photo-1677442136019-21780efad99a?w=800&auto=format&fit=crop";
+          thumbnail = "https://www.bouibacademy.me/ollama-n8n-cover.webp";
         }
 
         const excerptText = meta.meta_description || meta.excerpt;
