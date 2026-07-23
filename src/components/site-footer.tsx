@@ -30,19 +30,20 @@ export function SiteFooter() {
           <div className="md:col-span-2">
             <Link
               to="/"
-              className="group inline-flex items-center gap-3 mb-3"
+              className="group inline-flex items-center gap-2.5 mb-3"
               aria-label="Bouiba Academy"
             >
-              <div className="logo-mark h-11 w-11 sm:h-12 sm:w-12 shrink-0">
+              <picture>
+                <source srcSet="/bouiba-logo-96.webp" type="image/webp" />
                 <img
-                  src={bouibaLogo.url}
+                  src="/favicon-64.png"
                   alt="Bouiba Academy"
-                  className="h-8 sm:h-9 w-auto object-contain drop-shadow-sm"
+                  className="h-9 w-9 object-contain drop-shadow-sm"
                   width={36}
                   height={36}
                 />
-              </div>
-              <span className="gradient-text font-display text-lg sm:text-xl tracking-tight truncate">
+              </picture>
+              <span className="font-display text-lg sm:text-xl font-extrabold text-foreground tracking-tight">
                 Bouiba Academy
               </span>
             </Link>

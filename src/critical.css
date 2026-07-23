@@ -2,7 +2,7 @@
 /* Fallback fonts matched to Tajawal/Cairo metrics to prevent CLS on swap */
 @font-face{font-family:"Tajawal-fallback";src:local("Segoe UI"),local("Tahoma"),local("Arial");size-adjust:100%;ascent-override:100%;descent-override:47%;line-gap-override:0%}
 @font-face{font-family:"Cairo-fallback";src:local("Segoe UI"),local("Tahoma"),local("Arial");size-adjust:108%;ascent-override:97%;descent-override:35%;line-gap-override:0%}
-:root{--background:oklch(0.99 0.003 272);--foreground:oklch(0.18 0.03 272);--surface:oklch(1 0 0);--primary:oklch(0.55 0.22 272);--primary-foreground:oklch(0.99 0.003 272);--primary-glow:oklch(0.70 0.18 285);--muted-foreground:oklch(0.48 0.02 272);--border:oklch(0.92 0.008 272);--accent:oklch(0.95 0.015 272);--radius:0.75rem}
+:root{--background:oklch(0.99 0.002 90);--foreground:oklch(0.18 0.015 240);--surface:oklch(1 0 0);--primary:oklch(0.48 0.12 185);--primary-foreground:oklch(0.99 0.003 185);--primary-glow:oklch(0.56 0.11 185);--muted-foreground:oklch(0.45 0.015 240);--border:oklch(0.915 0.005 240);--accent:oklch(0.955 0.012 185);--radius:0.75rem}
 *,::before,::after{box-sizing:border-box;border:0 solid var(--border)}
 html{-webkit-text-size-adjust:100%;line-height:1.5;font-family:"Tajawal","Tajawal-fallback",ui-sans-serif,system-ui,sans-serif}
 body{margin:0;background:var(--background);color:var(--foreground);-webkit-font-smoothing:antialiased;font-family:"Tajawal","Tajawal-fallback",ui-sans-serif,system-ui,sans-serif}

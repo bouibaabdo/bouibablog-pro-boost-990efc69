@@ -52,71 +52,64 @@
 :root {
   --radius: 0.75rem;
 
-  /* Modern royal violet-indigo palette — clean and elegant */
-  --background: oklch(0.99 0.003 272);
-  --foreground: oklch(0.18 0.03 272);
+  /* Refined Editorial Deep Teal Palette — MIT Tech Review & HBR Arabic Style */
+  --background: oklch(0.99 0.002 90);           /* Warm soft editorial off-white #FAFAFA */
+  --foreground: oklch(0.18 0.015 240);          /* Dark Slate/Charcoal #0F172A */
 
-  --surface: oklch(1 0 0);
-  --surface-muted: oklch(0.965 0.008 272);
+  --surface: oklch(1 0 0);                     /* Pure White #FFFFFF */
+  --surface-muted: oklch(0.975 0.004 240);      /* Crisp Slate-50 #F8FAFC */
 
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.18 0.03 272);
+  --card-foreground: oklch(0.18 0.015 240);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.18 0.03 272);
+  --popover-foreground: oklch(0.18 0.015 240);
 
-  --primary: oklch(0.55 0.22 272);           /* Modern Violet-Indigo */
-  --primary-foreground: oklch(0.99 0.003 272);
-  --primary-glow: oklch(0.70 0.18 285);
+  --primary: oklch(0.48 0.12 185);              /* Deep Editorial Teal #0D6E6E */
+  --primary-foreground: oklch(0.99 0.003 185);
+  --primary-glow: oklch(0.56 0.11 185);
 
-  --secondary: oklch(0.96 0.01 272);
-  --secondary-foreground: oklch(0.22 0.04 272);
+  --secondary: oklch(0.965 0.006 240);
+  --secondary-foreground: oklch(0.20 0.02 240);
 
-  --muted: oklch(0.96 0.01 272);
-  --muted-foreground: oklch(0.48 0.02 272);
+  --muted: oklch(0.965 0.005 240);
+  --muted-foreground: oklch(0.45 0.015 240);    /* Slate-600 #475569 */
 
-  --accent: oklch(0.95 0.015 272);
-  --accent-foreground: oklch(0.40 0.12 272);
+  --accent: oklch(0.955 0.012 185);             /* Subtle Editorial Teal Tint #F0FDF4 */
+  --accent-foreground: oklch(0.40 0.12 185);
 
-  --destructive: oklch(0.6 0.22 27);
+  --destructive: oklch(0.55 0.20 25);
   --destructive-foreground: oklch(0.99 0 0);
 
-  --border: oklch(0.92 0.008 272);
-  --input: oklch(0.92 0.008 272);
-  --ring: oklch(0.55 0.22 272);
+  --border: oklch(0.915 0.005 240);             /* Crisp neutral border #E2E8F0 */
+  --input: oklch(0.915 0.005 240);
+  --ring: oklch(0.48 0.12 185);
 
-  --gradient-hero: radial-gradient(
-      ellipse 80% 60% at 50% 0%,
-      color-mix(in oklab, var(--primary) 10%, transparent),
-      transparent 70%
-    ),
-    linear-gradient(180deg, var(--background), var(--surface));
+  --gradient-hero: linear-gradient(180deg, var(--background), var(--surface-muted));
   --gradient-primary: linear-gradient(135deg, var(--primary), var(--primary-glow));
-  --gradient-mesh: radial-gradient(at 20% 10%, color-mix(in oklab, var(--primary) 14%, transparent) 0px, transparent 50%),
-    radial-gradient(at 80% 20%, color-mix(in oklab, var(--primary-glow) 15%, transparent) 0px, transparent 50%),
-    radial-gradient(at 40% 90%, color-mix(in oklab, var(--primary) 8%, transparent) 0px, transparent 50%);
+  --gradient-mesh: radial-gradient(at 30% 10%, color-mix(in oklab, var(--primary) 6%, transparent) 0px, transparent 60%);
 }
 
 .dark {
-  --background: oklch(0.12 0.018 272);
-  --foreground: oklch(0.98 0.003 272);
-  --surface: oklch(0.15 0.018 272);
-  --surface-muted: oklch(0.18 0.018 272);
-  --card: oklch(0.15 0.018 272);
-  --card-foreground: oklch(0.98 0.003 272);
-  --popover: oklch(0.15 0.018 272);
-  --popover-foreground: oklch(0.98 0.003 272);
-  --primary: oklch(0.68 0.18 272);
-  --primary-foreground: oklch(0.12 0.018 272);
-  --primary-glow: oklch(0.74 0.14 285);
-  --secondary: oklch(0.18 0.018 272);
+  --background: oklch(0.13 0.015 240);          /* Deep Slate #0F172A */
+  --foreground: oklch(0.98 0.003 240);         /* Bright Off-white #F8FAFC */
+  --surface: oklch(0.16 0.015 240);           /* Slate-850 #1E293B */
+  --surface-muted: oklch(0.19 0.015 240);     /* Slate-800 #334155 */
+  --card: oklch(0.16 0.015 240);
+  --card-foreground: oklch(0.98 0.003 240);
+  --popover: oklch(0.16 0.015 240);
+  --popover-foreground: oklch(0.98 0.003 240);
+  --primary: oklch(0.68 0.14 185);             /* Vivid Teal #14B8A6 */
+  --primary-foreground: oklch(0.12 0.015 240);
+  --primary-glow: oklch(0.72 0.12 185);
+  --secondary: oklch(0.19 0.015 240);
   --secondary-foreground: oklch(0.98 0 0);
-  --muted: oklch(0.18 0.018 272);
-  --muted-foreground: oklch(0.65 0.015 272);
-  --accent: oklch(0.20 0.03 272);
+  --muted: oklch(0.19 0.015 240);
+  --muted-foreground: oklch(0.65 0.015 240);
+  --accent: oklch(0.22 0.03 185);
   --accent-foreground: oklch(0.98 0 0);
-  --border: oklch(1 0 0 / 8%);
+  --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 12%);
-  --ring: oklch(0.68 0.18 272);
+  --ring: oklch(0.68 0.14 185);
 }
 
 @layer base {

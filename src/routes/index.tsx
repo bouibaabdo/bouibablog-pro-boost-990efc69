@@ -1,10 +1,9 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
   ArrowLeft,
   ArrowRight,
-  BadgeCheck,
   Sparkles,
   Trophy,
   Wand2,
@@ -15,24 +14,27 @@ import {
   Newspaper,
   Search,
   ChevronRight,
-  Flame,
-  Zap,
-  Play,
   Compass,
   BarChart3,
-  Bot,
-  Layers,
   Clock,
+  BookOpen,
+  Mail,
+  ShieldCheck,
+  CheckCircle2,
+  Tag,
+  Code2,
+  Send,
 } from "lucide-react";
 import { getPosts, getLabels, optimizeBloggerImage } from "@/lib/blogger.functions";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { PostCard } from "@/components/post-card";
 import { TodayMatchesRail } from "@/components/today-matches-rail";
+import { toast } from "sonner";
 
 const postsQueryOptions = queryOptions({
   queryKey: ["posts", "home"],
-  queryFn: () => getPosts({ data: { max: 9 } }),
+  queryFn: () => getPosts({ data: { max: 12 } }),
   staleTime: 5 * 60_000,
 });
 
@@ -65,9 +67,9 @@ export const Route = createFileRoute("/")({
     return { lcp };
   },
   head: ({ loaderData }) => {
-    const title = "Bouiba Academy — أكاديميتك الذكية للذكاء الاصطناعي كأنك لم ترها من قبل";
+    const title = "Bouiba Academy — أكاديميتك المعرفية للذكاء الاصطناعي والأتمتة التقنية";
     const desc =
-      "دروس عملية مجانية في الذكاء الاصطناعي والأتمتة، أدوات ذكاء اصطناعي تفاعلية (توليد الصور، تلخيص النصوص، مسارات التعلم)، ونقل مباشر لمباريات كأس العالم 2026.";
+      "منصة تقنية عربية مستقلة تقدم شروحات عملية، مراجعات محايدة، أدوات ذكاء اصطناعي تفاعلية مجانية، وأحدث التطورات في الذكاء الاصطناعي والأتمتة.";
     return {
       meta: [
         { title },
@@ -105,56 +107,50 @@ const TOOL_CARDS = [
   {
     href: "/tools/image",
     title: "توليد الصور بالذكاء الاصطناعي",
-    desc: "حوّل أفكارك ونصك العربي إلى صور واحترافية فائقة الدقة بنقرة واحدة.",
+    desc: "تحويل الأوصاف النصية العربية والإنجليزية إلى تصاميم ورسومات عالية الدقة بضغطة زر.",
     icon: ImageIcon,
-    color: "from-fuchsia-500/20 via-primary/15 to-purple-500/10",
-    badge: "شائع 🔥",
-    cta: "جرّب التوليد الآن",
+    badge: "أداة تفاعلية 🖼️",
+    cta: "تجربة التوليد",
   },
   {
     href: "/tools/roadmap",
-    title: "مسارات التعلم التفاعلية",
-    desc: "خريطة طريق ذكية وشاملة للدراسة واحتراف البرمجة والذكاء الاصطناعي.",
+    title: "مستشار مسارات التعلم التفاعلي",
+    desc: "خريطة طريق دراسية وهندسية مخصصة لاحتراف تخصصات البرمجة والذكاء الاصطناعي والأتمتة.",
     icon: Compass,
-    color: "from-violet-500/20 via-primary/15 to-indigo-500/10",
-    badge: "جديد ✨",
-    cta: "استكشف المسارات",
+    badge: "توجيه ذكي 🗺️",
+    cta: "استكشف المسار",
   },
   {
     href: "/tools/summarize",
-    title: "ملخّص المقالات الذكي",
-    desc: "تحويل المقالات الطويلة والمستندات إلى نقاط رئيسية سريعة بدقة.",
+    title: "تلخيص المقالات والوثائق",
+    desc: "استخلاص النقاط الرئيسية والأفكار الجوهرية من المقالات المستندات الطويلة خلال ثوانٍ.",
     icon: FileText,
-    color: "from-emerald-500/20 via-teal-500/15 to-primary/10",
-    badge: "سريع ⚡",
-    cta: "لخّص المقال",
+    badge: "ملخص مكثف 📄",
+    cta: "لخّص النص",
+  },
+  {
+    href: "/tools/code",
+    title: "مساعد البرمجة وشرح الأكواد",
+    desc: "تحليل الأكواد البرمجية، شرح المنطق البرمجي، واكتشاف الثغرات وتصحيح الأخطاء فورياً.",
+    icon: Code2,
+    badge: "تكويد وDebug 💻",
+    cta: "افحص الكود",
   },
   {
     href: "/tools/translate",
-    title: "المترجم الذكي الدقيق",
-    desc: "ترجمة سياقية احترافية بين مختلف اللغات مع الحفاظ على المعنى التقني.",
+    title: "المترجم التقني الاحترافي",
+    desc: "ترجمة دقيقة وطبيعية بين العربية والإنجليزية مع الحفاظ المصطلحات التقنية والهندسية.",
     icon: Languages,
-    color: "from-sky-500/20 via-blue-500/15 to-primary/10",
-    badge: "متعدد اللغات 🌐",
+    badge: "ترجمة دقيقة 🌐",
     cta: "ابدأ الترجمة",
   },
   {
-    href: "/tools/ideas",
-    title: "مولّد الأفكار والمشاريع",
-    desc: "أفكار محتوى ومشاريع أتمتة مبتكرة تناسب صناع المحتوى والمطورين.",
-    icon: Lightbulb,
-    color: "from-amber-500/20 via-orange-500/15 to-primary/10",
-    badge: "إبداعي 🚀",
-    cta: "توليد أفكار",
-  },
-  {
     href: "/tools/seo",
-    title: "مساعد SEO وتصدر المحركات",
-    desc: "تحليل وتحسين ترتيب موقعك ومقالاتك في محرك بحث جوجل بسهولة.",
+    title: "مساعد السيو وتصدر البحث",
+    desc: "صياغة عناوين متوافقة مع محركات البحث، وصف Meta، وكلمات مفتاحية مستهدفة لموقعك.",
     icon: BarChart3,
-    color: "from-rose-500/20 via-red-500/15 to-primary/10",
-    badge: "احترافي 📊",
-    cta: "حلّل موقعك",
+    badge: "تحسين SEO 🔍",
+    cta: "حلّل محتواك",
   },
 ] as const;
 
@@ -162,11 +158,26 @@ function HomePage() {
   const { data } = useSuspenseQuery(postsQueryOptions);
   const { data: labels } = useSuspenseQuery(labelsQueryOptions);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("الكل");
+  const [newsletterEmail, setNewsletterEmail] = useState("");
+  const [newsletterSubscribed, setNewsletterSubscribed] = useState(false);
   const navigate = useNavigate();
 
   const posts = data.posts;
   const featured = posts[0];
-  const rest = posts.slice(1, 7);
+  const secondaryPosts = posts.slice(1, 4);
+
+  // Filter posts based on category selection
+  const filteredPosts = useMemo(() => {
+    if (selectedCategory === "الكل") {
+      return posts.slice(1, 10);
+    }
+    return posts.filter(
+      (p) =>
+        p.labels.some((l) => l.toLowerCase() === selectedCategory.toLowerCase()) ||
+        p.title.toLowerCase().includes(selectedCategory.toLowerCase())
+    );
+  }, [posts, selectedCategory]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -175,102 +186,118 @@ function HomePage() {
     }
   };
 
+  const handleNewsletterSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newsletterEmail.trim() && newsletterEmail.includes("@")) {
+      setNewsletterSubscribed(true);
+      toast.success("شكراً لانضمامك! تم تسجيل بريدك الإلكتروني في النشرة المعرفية بنجاح.");
+    } else {
+      toast.error("يرجى كتابة بريد إلكتروني صحيح.");
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-background text-foreground selection:bg-primary/20 selection:text-primary">
+    <div className="min-h-screen bg-background text-foreground selection:bg-primary/15 selection:text-primary">
       <SiteHeader />
       <main>
-        {/* HERO SECTION — Ultra Modern Glassmorphism & High-Energy Glow */}
-        <section className="relative overflow-hidden border-b border-border/40 bg-gradient-to-b from-background via-surface-muted/50 to-background py-16 md:py-28">
-          {/* Decorative Animated Glow Background Orbs */}
-          <div className="absolute -top-24 right-1/4 h-96 w-96 rounded-full bg-primary/15 blur-[120px] pointer-events-none animate-pulse" />
-          <div className="absolute top-1/2 -left-20 h-80 w-80 rounded-full bg-purple-500/15 blur-[100px] pointer-events-none" />
-
-          <div className="container-page relative z-10 text-center">
-            {/* Top Live Badge */}
-            <div className="inline-flex items-center gap-2 rounded-full border border-primary/25 bg-surface/90 backdrop-blur-md px-4 py-1.5 text-xs md:text-sm font-bold text-foreground shadow-soft mb-6 transition-all hover:border-primary/40 hover:scale-105 cursor-default">
-              <Sparkles className="h-3.5 w-3.5 text-primary animate-pulse" />
-              <span className="gradient-text font-extrabold">منصتك الشاملة لتعلم الأتمتة والذكاء الاصطناعي بالعربية</span>
+        {/* HERO SECTION — Refined Editorial Magazine Style */}
+        <section className="border-b border-border/80 bg-surface-muted/60 py-12 md:py-20">
+          <div className="container-page text-center max-w-4xl mx-auto space-y-6">
+            {/* Editorial Badge */}
+            <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-xs md:text-sm font-semibold text-primary">
+              <ShieldCheck className="h-4 w-4 shrink-0" />
+              <span>منصة تقنية عربية مستقلة • شروحات عملية وأدوات موثوقة</span>
             </div>
 
-            {/* Main Headline */}
-            <h1 className="font-display text-3xl sm:text-5xl md:text-7xl font-black leading-tight tracking-tight max-w-4xl mx-auto">
-              عصر <span className="gradient-text">الذكاء الاصطناعي</span> والأتمتة
-              <br className="hidden sm:block" />
-              <span className="text-foreground"> بين يديك بالعربية وباحترافية</span>
+            {/* Main Editorial Headline */}
+            <h1 className="font-display text-3xl sm:text-5xl md:text-6xl font-black leading-tight tracking-tight text-foreground">
+              المرجع المعرفي العربي <span className="text-primary">للذكاء الاصطناعي</span> والأتمتة التقنية
             </h1>
 
-            {/* Subtitle */}
-            <p className="mt-6 mx-auto max-w-2xl text-base md:text-xl text-muted-foreground leading-relaxed font-medium">
-              دروس عملية مجانية، أدوات AI تفاعلية ومبتكرة للتوليد والتلخيص والترجمة ومسارات التعلم الاحترافية.
+            {/* Editorial Subtitle */}
+            <p className="mx-auto max-w-2xl text-base md:text-lg text-muted-foreground leading-relaxed font-normal">
+              نقدم للمطورين وصناع المحتوى والمهتمين بالتقنية شروحات عملية خطوة بخطوة، مراجعات محايدة للنماذج، وأدوات ذكاء اصطناعي تفاعلية دون تعقيد أو حشو.
             </p>
 
-            {/* Instant Search Bar */}
-            <form onSubmit={handleSearchSubmit} className="mt-8 max-w-xl mx-auto relative group">
-              <div className="relative flex items-center rounded-2xl border border-border/80 bg-surface/90 backdrop-blur-xl p-1.5 shadow-elegant transition-all focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20">
+            {/* Editorial Instant Search Bar */}
+            <form onSubmit={handleSearchSubmit} className="max-w-xl mx-auto pt-2">
+              <div className="relative flex items-center rounded-xl border border-border bg-card p-1.5 shadow-sm transition-all focus-within:border-primary focus-within:ring-1 focus-within:ring-primary/30">
                 <Search className="h-5 w-5 text-muted-foreground mr-3 shrink-0" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="ابحث عن مقال، درس، أداة AI، أو موضوع..."
-                  className="w-full bg-transparent px-2 py-2.5 text-sm md:text-base outline-none placeholder:text-muted-foreground"
+                  placeholder="ابحث عن مقال، أداة AI، أو موضوع تقني..."
+                  className="w-full bg-transparent px-2 py-2 text-sm md:text-base outline-none placeholder:text-muted-foreground"
                 />
                 <button
                   type="submit"
-                  className="inline-flex items-center gap-1.5 rounded-xl bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground shadow-soft transition-all hover:opacity-90 hover:scale-105 shrink-0"
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground transition-all hover:opacity-90 shrink-0"
                 >
                   <span>بحث</span>
                   <ArrowLeft className="h-4 w-4" />
                 </button>
               </div>
+
+              {/* Fast Tag Suggestions */}
+              <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-xs text-muted-foreground">
+                <span className="font-semibold text-foreground/80">المواضيع الشائعة:</span>
+                {[
+                  { label: "Ollama و DeepSeek", query: "Ollama" },
+                  { label: "n8n والأتمتة", query: "n8n" },
+                  { label: "السيو التقني", query: "SEO" },
+                  { label: "أدوات AI المجانية", query: "أدوات" },
+                ].map((t) => (
+                  <Link
+                    key={t.query}
+                    to="/posts"
+                    search={{ q: t.query }}
+                    className="rounded-md bg-surface px-2.5 py-1 border border-border/80 hover:border-primary hover:text-primary transition-colors"
+                  >
+                    {t.label}
+                  </Link>
+                ))}
+              </div>
             </form>
-
-            {/* Fast Action CTA Buttons */}
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-3 md:gap-4">
-              <Link to="/tools" className="btn-premium px-6 py-3.5 rounded-xl shadow-elegant text-sm font-bold">
-                <Wand2 className="h-4 w-4" /> أدوات AI المجانية
-              </Link>
-
-              <Link
-                to="/quiz"
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-violet-600/10 text-violet-700 dark:bg-violet-500/15 dark:text-violet-300 border border-violet-500/30 px-6 py-3.5 text-sm font-bold hover:bg-violet-600/20 transition-all shadow-soft"
-              >
-                <Sparkles className="h-4 w-4 text-violet-500" /> اختبار التوصية الذكي
-              </Link>
-            </div>
           </div>
         </section>
 
-        {/* Latest Post Featured Showcase Banner */}
+        {/* FEATURED COVER STORY (المقال الرئيسي التحريري) */}
         {featured && (
-          <div className="container-page pt-12">
-            <div className="relative overflow-hidden rounded-3xl border border-primary/20 bg-card p-1 shadow-soft group hover:border-primary/40 transition-all duration-300">
+          <section className="container-page py-10 md:py-14 border-b border-border/60">
+            <div className="flex items-center justify-between gap-4 mb-6">
+              <div className="flex items-center gap-2">
+                <span className="inline-block h-2 w-2 rounded-full bg-primary" />
+                <h2 className="font-display text-lg md:text-xl font-bold tracking-tight text-foreground">
+                  تغطية خاصة وموصى بها
+                </h2>
+              </div>
+              <span className="text-xs text-muted-foreground font-medium">مختار من الكادر التحريري</span>
+            </div>
+
+            <div className="rounded-2xl border border-border bg-card overflow-hidden shadow-sm hover:border-primary/40 transition-all duration-300">
               <Link
                 to="/posts/$id"
                 params={{ id: featured.slug }}
-                className="flex flex-col md:flex-row items-center gap-6 p-4 md:p-6"
+                className="grid md:grid-cols-12 items-center gap-6 p-5 md:p-8"
               >
-                {/* Image Section */}
+                {/* Image Showcase */}
                 {featured.thumbnail && (
-                  <div className="w-full md:w-80 h-48 rounded-2xl overflow-hidden bg-surface-muted shrink-0 relative">
+                  <div className="md:col-span-6 lg:col-span-5 h-64 md:h-80 rounded-xl overflow-hidden bg-surface-muted border border-border/60 relative">
                     <img
-                      src={optimizeBloggerImage(featured.thumbnail, 600, 400)}
+                      src={optimizeBloggerImage(featured.thumbnail, 800, 500)}
                       alt={featured.title}
                       loading="eager"
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      className="w-full h-full object-cover transition-transform duration-500 hover:scale-102"
                     />
-                    <div className="absolute top-3 right-3 inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1 text-xs font-bold text-primary-foreground shadow">
-                      <Sparkles className="h-3.5 w-3.5" />
-                      أحدث مقال
-                    </div>
                   </div>
                 )}
 
                 {/* Content Section */}
-                <div className="flex-1 min-w-0 space-y-3 py-2 text-right">
+                <div className="md:col-span-6 lg:col-span-7 space-y-4 py-2 text-right">
                   <div className="flex items-center gap-3 text-xs text-muted-foreground font-semibold flex-wrap">
                     {featured.labels[0] && (
-                      <span className="rounded-md bg-accent px-2.5 py-1 text-primary">
+                      <span className="rounded-md bg-accent px-3 py-1 font-bold text-primary border border-primary/20">
                         {featured.labels[0]}
                       </span>
                     )}
@@ -278,170 +305,223 @@ function HomePage() {
                     <span>•</span>
                     <span className="flex items-center gap-1">
                       <Clock className="h-3.5 w-3.5" />
-                      {featured.readingMinutes} دقائق
+                      {featured.readingMinutes} دقائق قراءة
                     </span>
                   </div>
 
-                  <h3 className="font-display text-xl md:text-2xl font-black text-foreground group-hover:text-primary transition-colors leading-tight">
+                  <h3 className="font-display text-2xl md:text-4xl font-extrabold text-foreground leading-tight hover:text-primary transition-colors">
                     {featured.title}
                   </h3>
 
-                  <p className="text-sm md:text-base text-muted-foreground line-clamp-2 leading-relaxed">
+                  <p className="text-sm md:text-base text-muted-foreground leading-relaxed line-clamp-3">
                     {featured.excerpt}
                   </p>
 
-                  <div className="inline-flex items-center gap-2 text-sm font-bold text-primary pt-2">
-                    <span>اقرأ المقال بالكامل</span>
-                    <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+                  <div className="pt-2 flex items-center justify-between">
+                    <div className="text-xs text-muted-foreground font-semibold">
+                      بواسطة <span className="text-foreground font-bold">{featured.author}</span>
+                    </div>
+                    <div className="inline-flex items-center gap-1.5 text-sm font-bold text-primary">
+                      <span>اقرأ الشرح الكامل</span>
+                      <ArrowLeft className="h-4 w-4" />
+                    </div>
                   </div>
                 </div>
               </Link>
             </div>
-          </div>
+          </section>
         )}
 
-        {/* AI TOOLS SHOWCASE — Grid of 6 High-Converting Cards */}
+        {/* LATEST ARTICLES & TUTORIALS (أحدث الشروحات والمقالات) */}
         <section className="container-page py-12 md:py-16">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 md:mb-12">
-            <div className="max-w-2xl">
-              <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3.5 py-1 text-xs font-extrabold text-primary mb-3">
-                <BadgeCheck className="h-4 w-4" />
-                جناح أدوات الذكاء الاصطناعي
-              </div>
-              <h2 className="font-display text-3xl md:text-4xl font-black tracking-tight">
-                أدوات AI تفاعلية ومجانية تجعل عملك أسرع 10x
-              </h2>
-              <p className="mt-3 text-sm md:text-lg text-muted-foreground leading-relaxed">
-                استفد فوراً من أحدث تقنيات توليد الصور، تلخيص المقالات، الترجمة الذكية، وإرشادات التعلم بدون تعقيد.
-              </p>
-            </div>
-            <Link
-              to="/tools"
-              className="inline-flex items-center gap-2 rounded-xl border border-border bg-card px-5 py-3 text-sm font-bold text-foreground shadow-card transition-all hover:border-primary/40 hover:text-primary hover:shadow-elegant shrink-0"
-            >
-              <span>استعرض كل الأدوات</span>
-              <ChevronRight className="h-4 w-4" />
-            </Link>
-          </div>
-
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {TOOL_CARDS.map((t) => (
-              <Link
-                key={t.href}
-                to={t.href}
-                className="group relative overflow-hidden rounded-3xl border border-border/80 bg-card p-6 md:p-7 shadow-card transition-all duration-300 hover:-translate-y-1.5 hover:shadow-elegant hover:border-primary/40 flex flex-col justify-between"
-              >
-                <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-gradient-to-br ${t.color}`} />
-                <div className="relative space-y-4">
-                  <div className="flex items-center justify-between gap-3">
-                    <div className={`inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ${t.color} text-primary shadow-soft`}>
-                      <t.icon className="h-7 w-7" />
-                    </div>
-                    <span className="rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-bold text-primary">
-                      {t.badge}
-                    </span>
-                  </div>
-
-                  <div className="space-y-2">
-                    <h3 className="font-display text-xl md:text-2xl font-extrabold text-foreground group-hover:text-primary transition-colors">
-                      {t.title}
-                    </h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      {t.desc}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="relative mt-6 pt-4 border-t border-border/60 flex items-center justify-between text-sm font-bold text-foreground group-hover:text-primary">
-                  <span>{t.cta}</span>
-                  <ArrowRight className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
-                </div>
-              </Link>
-            ))}
-          </div>
-        </section>
-
-        {/* INTERACTIVE AI QUIZ BANNER */}
-        <section className="container-page py-6 md:py-10">
-          <Link
-            to="/quiz"
-            className="block relative overflow-hidden rounded-3xl border border-primary/30 bg-gradient-to-r from-primary/15 via-purple-500/10 to-primary/10 p-8 md:p-12 shadow-elegant hover:scale-[1.01] transition-all duration-300"
-          >
-            <div className="absolute top-0 right-0 h-full w-1/3 bg-gradient-to-l from-primary/20 to-transparent pointer-events-none" />
-            <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-              <div className="space-y-3 max-w-2xl">
-                <div className="inline-flex items-center gap-2 rounded-full bg-violet-500/15 border border-violet-500/30 px-3.5 py-1 text-xs font-extrabold text-violet-600 dark:text-violet-300">
-                  <Sparkles className="h-4 w-4 animate-pulse" />
-                  اختبار التوصية الذكي الذاتي
-                </div>
-                <h3 className="font-display text-2xl md:text-4xl font-black text-foreground leading-tight">
-                  لا تعرف أي أداة ذكاء اصطناعي تناسب احتياجك؟
-                </h3>
-                <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-                  أجب عن 5 أسئلة سريعة وسيقوم النظام بتحديد الأداة والمسار التعليمي المناسب لك فوراً 100%!
-                </p>
-              </div>
-
-              <div className="inline-flex items-center justify-center gap-2 rounded-2xl bg-primary px-7 py-4 text-base font-extrabold text-primary-foreground shadow-lg hover:opacity-90 shrink-0">
-                <span>ابدأ الاختبار الآن</span>
-                <ArrowLeft className="h-5 w-5" />
-              </div>
-            </div>
-          </Link>
-        </section>
-
-        {/* LATEST POSTS & LESSONS SECTION */}
-        <section className="container-page py-12 md:py-20">
-          <div className="flex items-end justify-between mb-8">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 border-b border-border/60 pb-4">
             <div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3.5 py-1 text-xs font-bold text-primary mb-3">
+              <div className="flex items-center gap-2 text-xs font-bold text-primary mb-1">
                 <Newspaper className="h-4 w-4" />
-                المكتبة والدروس المقالية
+                <span>المكتبة التحريرية</span>
               </div>
-              <h2 className="font-display text-3xl md:text-4xl font-black tracking-tight">
+              <h2 className="font-display text-2xl md:text-3xl font-black text-foreground">
                 أحدث المقالات التقنية وشروحات الذكاء الاصطناعي
               </h2>
             </div>
+
+            {/* Category Filter Pills */}
+            <div className="flex items-center gap-2 flex-wrap text-xs font-semibold">
+              {["الكل", "AI Automation", "n8n", "Cybersecurity", "SEO", "Developer Tools"].map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setSelectedCategory(cat)}
+                  className={`px-3 py-1.5 rounded-lg border transition-all cursor-pointer ${
+                    selectedCategory === cat
+                      ? "bg-primary text-primary-foreground border-primary font-bold"
+                      : "bg-surface border-border text-muted-foreground hover:border-primary/40 hover:text-foreground"
+                  }`}
+                >
+                  {cat === "AI Automation"
+                    ? "أتمتة AI"
+                    : cat === "Cybersecurity"
+                    ? "الأمن السيبراني"
+                    : cat === "Developer Tools"
+                    ? "أدوات المطورين"
+                    : cat}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Grid of Articles */}
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {filteredPosts.map((p, i) => (
+              <PostCard key={p.id} post={p} priority={i < 3} />
+            ))}
+          </div>
+
+          <div className="mt-10 text-center">
             <Link
               to="/posts"
-              className="inline-flex items-center gap-1.5 text-sm md:text-base font-bold text-primary hover:underline shrink-0"
+              className="inline-flex items-center gap-2 rounded-xl border border-border bg-card px-6 py-3 text-sm font-bold text-foreground shadow-sm hover:border-primary hover:text-primary transition-all"
             >
-              <span>جميع المقالات</span>
+              <span>تصفح أرشيف المقالات الكامل</span>
               <ArrowLeft className="h-4 w-4" />
             </Link>
           </div>
+        </section>
 
-          {featured && (
-            <div className="mb-8">
-              <PostCard post={featured} featured priority />
+        {/* AI TOOLS SECTION — Editorial Clean Interactive Utilities */}
+        <section className="bg-surface-muted/50 border-y border-border/80 py-12 md:py-18">
+          <div className="container-page">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
+              <div className="max-w-2xl space-y-2">
+                <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-bold text-primary">
+                  <Wand2 className="h-3.5 w-3.5" />
+                  <span>حلول وأدوات مجانية تفاعلية</span>
+                </div>
+                <h2 className="font-display text-2xl md:text-3xl font-black text-foreground">
+                  أدوات الذكاء الاصطناعي لزيادة الإنتاجية
+                </h2>
+                <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+                  استخدم تطبيقاتنا الذكية المباشرة لتوليد الصور، تلخيص المقالات، الترجمة التقنية، واستكشاف مسارات التعلم.
+                </p>
+              </div>
+
+              <Link
+                to="/tools"
+                className="inline-flex items-center gap-1.5 text-sm font-bold text-primary hover:underline shrink-0"
+              >
+                <span>جميع الأدوات التفاعلية ({TOOL_CARDS.length})</span>
+                <ArrowLeft className="h-4 w-4" />
+              </Link>
             </div>
-          )}
 
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {rest.map((p, i) => (
-              <PostCard key={p.id} post={p} priority={i === 0} />
-            ))}
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {TOOL_CARDS.map((t) => (
+                <Link
+                  key={t.href}
+                  to={t.href}
+                  className="group rounded-2xl border border-border bg-card p-6 shadow-sm hover:border-primary/50 hover:shadow-md transition-all flex flex-col justify-between"
+                >
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                        <t.icon className="h-6 w-6" />
+                      </div>
+                      <span className="rounded-md border border-border bg-surface-muted px-2.5 py-1 text-[11px] font-semibold text-muted-foreground">
+                        {t.badge}
+                      </span>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <h3 className="font-display text-lg font-extrabold text-foreground group-hover:text-primary transition-colors">
+                        {t.title}
+                      </h3>
+                      <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">
+                        {t.desc}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 pt-4 border-t border-border/60 flex items-center justify-between text-xs font-bold text-primary">
+                    <span>{t.cta}</span>
+                    <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+                  </div>
+                </Link>
+              ))}
+            </div>
           </div>
         </section>
 
-        {/* CATEGORIES CLOUD & TRUST STATS */}
+        {/* HIGH-TRUST NEWSLETTER SUBSCRIPTION BLOCK */}
+        <section className="container-page py-12 md:py-16">
+          <div className="rounded-3xl border border-border bg-card p-8 md:p-12 shadow-sm max-w-4xl mx-auto">
+            <div className="grid md:grid-cols-12 gap-8 items-center">
+              <div className="md:col-span-7 space-y-3 text-right">
+                <div className="inline-flex items-center gap-2 rounded-md bg-accent px-3 py-1 text-xs font-bold text-primary border border-primary/20">
+                  <Mail className="h-3.5 w-3.5" />
+                  <span>النشرة البريدية الأسبوعية</span>
+                </div>
+                <h3 className="font-display text-2xl md:text-3xl font-black text-foreground">
+                  اشترك في موجز الذكاء الاصطناعي والأتمتة
+                </h3>
+                <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">
+                  نرسل لك كل يوم سبت ملخصاً تحريرياً مكثفاً لأهم الشروحات العملية، أدوات AI الجديدة، ومستجدات التقنية بدون إعلانات أو إزعاج.
+                </p>
+              </div>
+
+              <div className="md:col-span-5">
+                {newsletterSubscribed ? (
+                  <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300 text-xs font-bold space-y-1 text-center">
+                    <CheckCircle2 className="h-6 w-6 text-emerald-500 mx-auto mb-1" />
+                    <div>تم تسجيل بريدك الإلكتروني بنجاح!</div>
+                    <div className="font-normal text-[11px] text-muted-foreground">ستصلك النشرة القادمة يوم السبت.</div>
+                  </div>
+                ) : (
+                  <form onSubmit={handleNewsletterSubmit} className="space-y-3">
+                    <div className="space-y-1.5">
+                      <input
+                        type="email"
+                        value={newsletterEmail}
+                        onChange={(e) => setNewsletterEmail(e.target.value)}
+                        placeholder="أدخل بريدك الإلكتروني الشخصي..."
+                        className="w-full rounded-xl border border-border bg-surface px-4 py-3 text-xs md:text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary/20"
+                        required
+                      />
+                    </div>
+                    <button
+                      type="submit"
+                      className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-xs md:text-sm font-bold text-primary-foreground hover:opacity-90 transition-all cursor-pointer shadow-sm"
+                    >
+                      <Send className="h-4 w-4" />
+                      <span>اشترك مجاناً الآن</span>
+                    </button>
+                    <div className="text-[10px] text-muted-foreground text-center">
+                      🔒 نلترم بالخصوصية التامة • يمكنك إلغاء الاشتراك بنقرة واحدة في أي وقت.
+                    </div>
+                  </form>
+                )}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* TOPIC CATEGORIES CLOUD (معرض التصنيفات) */}
         {labels.length > 0 && (
-          <section className="container-page py-10 md:py-16">
-            <div className="rounded-3xl bg-gradient-to-br from-card via-surface-muted to-card border border-border/80 p-8 md:p-14 text-center shadow-card">
-              <h2 className="font-display text-2xl md:text-4xl font-black">استكشف حسب تصنيف الموضوع</h2>
-              <p className="mt-3 text-sm md:text-base text-muted-foreground max-w-xl mx-auto">
-                اختر المجال التقني الذي تود تعلمه واقرأ جميع الدروس والحلول العملية المتعلقة به.
+          <section className="container-page pb-12">
+            <div className="rounded-2xl border border-border/80 bg-surface-muted/40 p-6 md:p-10 text-center">
+              <h3 className="font-display text-lg md:text-xl font-bold mb-2">استكشف المواضيع والتصنيفات المعرفية</h3>
+              <p className="text-xs md:text-sm text-muted-foreground max-w-lg mx-auto mb-6">
+                انقر على التصنيف الذي تود قراءة شروحاته وتطبيقاته العملية:
               </p>
-              <div className="mt-8 flex flex-wrap justify-center gap-2.5">
+              <div className="flex flex-wrap justify-center gap-2">
                 {labels.slice(0, 16).map((l) => (
                   <Link
                     key={l.label}
                     to="/posts"
                     search={{ label: l.label }}
-                    className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-xs md:text-sm font-bold hover:border-primary hover:text-primary hover:scale-105 transition-all shadow-soft"
+                    className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-3.5 py-1.5 text-xs font-semibold hover:border-primary hover:text-primary transition-all shadow-sm"
                   >
+                    <Tag className="h-3 w-3 text-primary" />
                     <span>{l.label}</span>
-                    <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] text-primary">
+                    <span className="rounded bg-surface-muted px-1.5 py-0.5 text-[10px] text-muted-foreground font-mono">
                       {l.count}
                     </span>
                   </Link>
@@ -451,34 +531,14 @@ function HomePage() {
           </section>
         )}
 
-        {/* TRUST STATS FOOTER BAR */}
+        {/* MINIMAL TODAY'S MATCHES DETAILS CARD */}
         <section className="container-page pb-12">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto border border-border/60 bg-card p-6 md:p-8 rounded-3xl shadow-card text-center">
-            {[
-              { n: `${data.total}+`, l: "مقال تقني منشور", icon: FileText },
-              { n: "6+", l: "أدوات AI مجانية", icon: Wand2 },
-              { n: "100%", l: "محتوى مجاني بالعربية", icon: BadgeCheck },
-              { n: "يومي", l: "شروحات وتحديثات", icon: Layers },
-            ].map((s, i) => (
-              <div key={i} className="space-y-1">
-                <div className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary mb-2">
-                  <s.icon className="h-5 w-5" />
-                </div>
-                <div className="text-2xl md:text-3xl font-black gradient-text">{s.n}</div>
-                <div className="text-xs md:text-sm text-muted-foreground font-semibold">{s.l}</div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Minimal Today's Matches details card at the very bottom */}
-        <section className="container-page pb-16">
-          <div className="max-w-xl mx-auto rounded-2xl border border-border bg-card/40 p-4 shadow-soft">
+          <div className="max-w-xl mx-auto rounded-xl border border-border bg-card/60 p-4 shadow-sm">
             <details className="group">
               <summary className="flex items-center justify-between cursor-pointer list-none select-none">
                 <div className="flex items-center gap-2 text-xs font-bold text-muted-foreground">
                   <Trophy className="h-3.5 w-3.5 text-amber-500" />
-                  <span>مباريات اليوم (رياضة)</span>
+                  <span>جدول الرياضة (مباريات اليوم)</span>
                 </div>
                 <span className="text-[10px] text-primary group-open:rotate-180 transition-transform">▼</span>
               </summary>
@@ -493,4 +553,3 @@ function HomePage() {
     </div>
   );
 }
-
