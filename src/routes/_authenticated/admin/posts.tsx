@@ -78,7 +78,7 @@ function AdminPosts() {
   }, []);
 
   const fetchPostsList = () => {
-    getPosts()
+    getPosts({ data: { max: 50 } })
       .then((p: any) => setPosts(Array.isArray(p) ? p : (p?.posts ?? [])))
       .catch(() => setPosts([]));
   };
@@ -153,7 +153,31 @@ function AdminPosts() {
     }
     try {
       setLoading(true);
-      toast.success("تم حفظ المقال وتأكيد التحديث بنجاح!");
+
+      // Build a formatted Markdown meta+content bundle for the user to copy
+      const metaJson = JSON.stringify(
+        {
+          slug: slug || slugify(title),
+          title,
+          category,
+          tags: tagsInput.split(",").map((t) => t.trim()).filter(Boolean),
+          excerpt,
+          thumbnail,
+          created_at: new Date().toISOString(),
+        },
+        null,
+        2,
+      );
+
+      const fullBundle = `=== meta.json ===\n${metaJson}\n\n=== post.md ===\n${contentHtml}`;
+
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(fullBundle);
+        toast.success("تم نسخ محتوى المقال (meta.json + post.md) إلى الحافظة — الصقه في مجلد content/posts/");
+      } else {
+        toast.success("تم تجهيز المقال! انسخ المحتوى من المحرر وضعه في content/posts/" + (slug || slugify(title)) + "/");
+      }
+
       fetchPostsList();
       setActiveTab("list");
     } catch (err: any) {
@@ -396,7 +420,16 @@ function AdminPosts() {
                       <div className="text-xs font-bold text-primary mb-3 pb-2 border-b border-border flex items-center gap-1.5">
                         <Sparkles className="h-3.5 w-3.5" /> المعاينة الحية المباشرة
                       </div>
-                      <div dangerouslySetInnerHTML={{ __html: contentHtml }} />
+                      {/* Render markdown through parser — do NOT render raw user input as HTML */}
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: contentHtml
+                            .replace(/&/g, "&amp;")
+                            .replace(/</g, "&lt;")
+                            .replace(/>/g, "&gt;")
+                            .replace(/\n/g, "<br />")
+                        }}
+                      />
                     </div>
                   )}
                 </div>

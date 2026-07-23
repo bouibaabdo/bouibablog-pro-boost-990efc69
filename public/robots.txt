@@ -1,6 +1,11 @@
 User-agent: *
 Allow: /
 
+# Block admin/authenticated routes from indexing
+Disallow: /admin
+Disallow: /admin/
+
+# Sitemap index
 Sitemap: https://www.bouibacademy.me/sitemap.xml
 Sitemap: https://www.bouibacademy.me/sitemap-pages.xml
 Sitemap: https://www.bouibacademy.me/sitemap-posts.xml

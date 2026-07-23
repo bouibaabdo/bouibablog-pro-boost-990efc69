@@ -1,8 +1,9 @@
 import { createServerFn } from "@tanstack/react-start";
 import facebookPostsData from "../../content/facebook-posts/facebook-posts.json";
 
+// Security: Never hardcode tokens in source. Set FACEBOOK_PAGE_ACCESS_TOKEN in .env / Cloudflare secrets.
 const DEFAULT_PAGE_ID = "559362324530470";
-const DEFAULT_PAGE_TOKEN = "EAANZCxw0Ra20BSBoriWSmG8e68Pf5jjKu9jvKZBhSF2N3UMP9TAs94fWQFeYJPWZAbiPuoGjZBnMZBExYBZCieoh05pjF6lZBYj6Gy002yc2AzcG13adB11NEL32X6VqpJ04ZB9wR8Di9Ig4bRDx3iHETugs7Ch1qCAxnc3sHRrcU4n91QSb313EBDjWnbiWQkWMZAmMLq7ADZChKxRk6TZC2OXfCSrZA4w38D9Hvq7srOOt07UnPiTFIOBfehaY6834VCGTXVkPaz1CAvkP5xSNsXrCZAvrL4pJJ6wZC8SAZDZD";
+const DEFAULT_PAGE_TOKEN = ""; // Must be provided via env or UI — see .env file
 
 // Helper to resolve real Page Access Token if User Token is provided
 async function resolvePageToken(token: string, pageId: string): Promise<string> {
