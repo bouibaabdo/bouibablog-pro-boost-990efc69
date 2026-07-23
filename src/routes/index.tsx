@@ -7,29 +7,29 @@ import {
   Sparkles,
   Trophy,
   Wand2,
-  Lightbulb,
   Image as ImageIcon,
   Languages,
   FileText,
   Newspaper,
   Search,
-  ChevronRight,
   Compass,
   BarChart3,
   Clock,
-  BookOpen,
   Mail,
   ShieldCheck,
   CheckCircle2,
   Tag,
   Code2,
   Send,
+  Layers,
 } from "lucide-react";
 import { getPosts, getLabels, optimizeBloggerImage } from "@/lib/blogger.functions";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { PostCard } from "@/components/post-card";
 import { TodayMatchesRail } from "@/components/today-matches-rail";
+import { Hero3DCanvas } from "@/components/hero-3d-canvas";
+import { Tilt3DCard } from "@/components/interactive-3d-card";
 import { toast } from "sonner";
 
 const postsQueryOptions = queryOptions({
@@ -165,7 +165,6 @@ function HomePage() {
 
   const posts = data.posts;
   const featured = posts[0];
-  const secondaryPosts = posts.slice(1, 4);
 
   // Filter posts based on category selection
   const filteredPosts = useMemo(() => {
@@ -200,11 +199,14 @@ function HomePage() {
     <div className="min-h-screen bg-background text-foreground selection:bg-primary/15 selection:text-primary">
       <SiteHeader />
       <main>
-        {/* HERO SECTION — Refined Editorial Magazine Style */}
-        <section className="border-b border-border/80 bg-surface-muted/60 py-12 md:py-20">
-          <div className="container-page text-center max-w-4xl mx-auto space-y-6">
+        {/* HERO SECTION — Featuring Interactive 3D Neural Canvas Background */}
+        <section className="relative overflow-hidden border-b border-border/80 bg-surface-muted/60 py-14 md:py-24">
+          {/* Interactive 3D Neural Network Canvas */}
+          <Hero3DCanvas />
+
+          <div className="container-page relative z-10 text-center max-w-4xl mx-auto space-y-6">
             {/* Editorial Badge */}
-            <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-xs md:text-sm font-semibold text-primary">
+            <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-card/90 backdrop-blur-md px-4 py-1.5 text-xs md:text-sm font-semibold text-primary shadow-sm">
               <ShieldCheck className="h-4 w-4 shrink-0" />
               <span>منصة تقنية عربية مستقلة • شروحات عملية وأدوات موثوقة</span>
             </div>
@@ -221,7 +223,7 @@ function HomePage() {
 
             {/* Editorial Instant Search Bar */}
             <form onSubmit={handleSearchSubmit} className="max-w-xl mx-auto pt-2">
-              <div className="relative flex items-center rounded-xl border border-border bg-card p-1.5 shadow-sm transition-all focus-within:border-primary focus-within:ring-1 focus-within:ring-primary/30">
+              <div className="relative flex items-center rounded-xl border border-border bg-card/95 backdrop-blur-xl p-1.5 shadow-sm transition-all focus-within:border-primary focus-within:ring-1 focus-within:ring-primary/30">
                 <Search className="h-5 w-5 text-muted-foreground mr-3 shrink-0" />
                 <input
                   type="text"
@@ -252,7 +254,7 @@ function HomePage() {
                     key={t.query}
                     to="/posts"
                     search={{ q: t.query }}
-                    className="rounded-md bg-surface px-2.5 py-1 border border-border/80 hover:border-primary hover:text-primary transition-colors"
+                    className="rounded-md bg-card/90 px-2.5 py-1 border border-border/80 hover:border-primary hover:text-primary transition-colors"
                   >
                     {t.label}
                   </Link>
@@ -262,7 +264,7 @@ function HomePage() {
           </div>
         </section>
 
-        {/* FEATURED COVER STORY (المقال الرئيسي التحريري) */}
+        {/* FEATURED COVER STORY WITH 3D TILT SHOWCASE (المقال الرئيسي التحريري) */}
         {featured && (
           <section className="container-page py-10 md:py-14 border-b border-border/60">
             <div className="flex items-center justify-between gap-4 mb-6">
@@ -272,63 +274,68 @@ function HomePage() {
                   تغطية خاصة وموصى بها
                 </h2>
               </div>
-              <span className="text-xs text-muted-foreground font-medium">مختار من الكادر التحريري</span>
+              <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-semibold">
+                <Layers className="h-3.5 w-3.5 text-primary" />
+                <span>مختار من الكادر التحريري</span>
+              </div>
             </div>
 
-            <div className="rounded-2xl border border-border bg-card overflow-hidden shadow-sm hover:border-primary/40 transition-all duration-300">
-              <Link
-                to="/posts/$id"
-                params={{ id: featured.slug }}
-                className="grid md:grid-cols-12 items-center gap-6 p-5 md:p-8"
-              >
-                {/* Image Showcase */}
-                {featured.thumbnail && (
-                  <div className="md:col-span-6 lg:col-span-5 h-64 md:h-80 rounded-xl overflow-hidden bg-surface-muted border border-border/60 relative">
-                    <img
-                      src={optimizeBloggerImage(featured.thumbnail, 800, 500)}
-                      alt={featured.title}
-                      loading="eager"
-                      className="w-full h-full object-cover transition-transform duration-500 hover:scale-102"
-                    />
-                  </div>
-                )}
+            <Tilt3DCard maxDegree={4} depth={12}>
+              <div className="rounded-2xl border border-border bg-card overflow-hidden shadow-sm hover:border-primary/40 transition-all duration-300">
+                <Link
+                  to="/posts/$id"
+                  params={{ id: featured.slug }}
+                  className="grid md:grid-cols-12 items-center gap-6 p-5 md:p-8"
+                >
+                  {/* Image Showcase */}
+                  {featured.thumbnail && (
+                    <div className="md:col-span-6 lg:col-span-5 h-64 md:h-80 rounded-xl overflow-hidden bg-surface-muted border border-border/60 relative">
+                      <img
+                        src={optimizeBloggerImage(featured.thumbnail, 800, 500)}
+                        alt={featured.title}
+                        loading="eager"
+                        className="w-full h-full object-cover transition-transform duration-500 hover:scale-102"
+                      />
+                    </div>
+                  )}
 
-                {/* Content Section */}
-                <div className="md:col-span-6 lg:col-span-7 space-y-4 py-2 text-right">
-                  <div className="flex items-center gap-3 text-xs text-muted-foreground font-semibold flex-wrap">
-                    {featured.labels[0] && (
-                      <span className="rounded-md bg-accent px-3 py-1 font-bold text-primary border border-primary/20">
-                        {featured.labels[0]}
+                  {/* Content Section */}
+                  <div className="md:col-span-6 lg:col-span-7 space-y-4 py-2 text-right">
+                    <div className="flex items-center gap-3 text-xs text-muted-foreground font-semibold flex-wrap">
+                      {featured.labels[0] && (
+                        <span className="rounded-md bg-accent px-3 py-1 font-bold text-primary border border-primary/20">
+                          {featured.labels[0]}
+                        </span>
+                      )}
+                      <span>{formatDate(featured.published)}</span>
+                      <span>•</span>
+                      <span className="flex items-center gap-1">
+                        <Clock className="h-3.5 w-3.5" />
+                        {featured.readingMinutes} دقائق قراءة
                       </span>
-                    )}
-                    <span>{formatDate(featured.published)}</span>
-                    <span>•</span>
-                    <span className="flex items-center gap-1">
-                      <Clock className="h-3.5 w-3.5" />
-                      {featured.readingMinutes} دقائق قراءة
-                    </span>
-                  </div>
-
-                  <h3 className="font-display text-2xl md:text-4xl font-extrabold text-foreground leading-tight hover:text-primary transition-colors">
-                    {featured.title}
-                  </h3>
-
-                  <p className="text-sm md:text-base text-muted-foreground leading-relaxed line-clamp-3">
-                    {featured.excerpt}
-                  </p>
-
-                  <div className="pt-2 flex items-center justify-between">
-                    <div className="text-xs text-muted-foreground font-semibold">
-                      بواسطة <span className="text-foreground font-bold">{featured.author}</span>
                     </div>
-                    <div className="inline-flex items-center gap-1.5 text-sm font-bold text-primary">
-                      <span>اقرأ الشرح الكامل</span>
-                      <ArrowLeft className="h-4 w-4" />
+
+                    <h3 className="font-display text-2xl md:text-4xl font-extrabold text-foreground leading-tight hover:text-primary transition-colors">
+                      {featured.title}
+                    </h3>
+
+                    <p className="text-sm md:text-base text-muted-foreground leading-relaxed line-clamp-3">
+                      {featured.excerpt}
+                    </p>
+
+                    <div className="pt-2 flex items-center justify-between">
+                      <div className="text-xs text-muted-foreground font-semibold">
+                        بواسطة <span className="text-foreground font-bold">{featured.author}</span>
+                      </div>
+                      <div className="inline-flex items-center gap-1.5 text-sm font-bold text-primary">
+                        <span>اقرأ الشرح الكامل</span>
+                        <ArrowLeft className="h-4 w-4" />
+                      </div>
                     </div>
                   </div>
-                </div>
-              </Link>
-            </div>
+                </Link>
+              </div>
+            </Tilt3DCard>
           </section>
         )}
 
@@ -369,7 +376,7 @@ function HomePage() {
             </div>
           </div>
 
-          {/* Grid of Articles */}
+          {/* Grid of Articles with 3D Tilt Cards */}
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {filteredPosts.map((p, i) => (
               <PostCard key={p.id} post={p} priority={i < 3} />
@@ -387,7 +394,7 @@ function HomePage() {
           </div>
         </section>
 
-        {/* AI TOOLS SECTION — Editorial Clean Interactive Utilities */}
+        {/* AI TOOLS SECTION — Interactive 3D Tilt Cards */}
         <section className="bg-surface-muted/50 border-y border-border/80 py-12 md:py-18">
           <div className="container-page">
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
@@ -400,7 +407,7 @@ function HomePage() {
                   أدوات الذكاء الاصطناعي لزيادة الإنتاجية
                 </h2>
                 <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-                  استخدم تطبيقاتنا الذكية المباشرة لتوليد الصور، تلخيص المقالات، الترجمة التقنية، واستكشاف مسارات التعلم.
+                  استخدم تطبيقاتنا الذكية المباشرة لتوليد الصور، تلخيص الوثائق، الترجمة التقنية، واستكشاف مسارات التعلم.
                 </p>
               </div>
 
@@ -415,36 +422,37 @@ function HomePage() {
 
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {TOOL_CARDS.map((t) => (
-                <Link
-                  key={t.href}
-                  to={t.href}
-                  className="group rounded-2xl border border-border bg-card p-6 shadow-sm hover:border-primary/50 hover:shadow-md transition-all flex flex-col justify-between"
-                >
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between gap-3">
-                      <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                        <t.icon className="h-6 w-6" />
+                <Tilt3DCard key={t.href} maxDegree={6} depth={15}>
+                  <Link
+                    to={t.href}
+                    className="group rounded-2xl border border-border bg-card p-6 shadow-sm hover:border-primary/50 hover:shadow-md transition-all flex flex-col justify-between h-full"
+                  >
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                          <t.icon className="h-6 w-6" />
+                        </div>
+                        <span className="rounded-md border border-border bg-surface-muted px-2.5 py-1 text-[11px] font-semibold text-muted-foreground">
+                          {t.badge}
+                        </span>
                       </div>
-                      <span className="rounded-md border border-border bg-surface-muted px-2.5 py-1 text-[11px] font-semibold text-muted-foreground">
-                        {t.badge}
-                      </span>
+
+                      <div className="space-y-1.5">
+                        <h3 className="font-display text-lg font-extrabold text-foreground group-hover:text-primary transition-colors">
+                          {t.title}
+                        </h3>
+                        <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">
+                          {t.desc}
+                        </p>
+                      </div>
                     </div>
 
-                    <div className="space-y-1.5">
-                      <h3 className="font-display text-lg font-extrabold text-foreground group-hover:text-primary transition-colors">
-                        {t.title}
-                      </h3>
-                      <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">
-                        {t.desc}
-                      </p>
+                    <div className="mt-6 pt-4 border-t border-border/60 flex items-center justify-between text-xs font-bold text-primary">
+                      <span>{t.cta}</span>
+                      <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
                     </div>
-                  </div>
-
-                  <div className="mt-6 pt-4 border-t border-border/60 flex items-center justify-between text-xs font-bold text-primary">
-                    <span>{t.cta}</span>
-                    <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
-                  </div>
-                </Link>
+                  </Link>
+                </Tilt3DCard>
               ))}
             </div>
           </div>
@@ -494,7 +502,7 @@ function HomePage() {
                       <span>اشترك مجاناً الآن</span>
                     </button>
                     <div className="text-[10px] text-muted-foreground text-center">
-                      🔒 نلترم بالخصوصية التامة • يمكنك إلغاء الاشتراك بنقرة واحدة في أي وقت.
+                      🔒 نلتزم بالخصوصية التامة • يمكنك إلغاء الاشتراك بنقرة واحدة في أي وقت.
                     </div>
                   </form>
                 )}
