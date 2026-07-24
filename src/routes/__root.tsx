@@ -13,6 +13,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import criticalCss from "../critical.css?raw";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { RobotBeeOverlay } from "@/components/bee";
 
 function NotFoundComponent() {
   return (
@@ -283,6 +284,7 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <RobotBeeOverlay />
       <Outlet />
     </QueryClientProvider>
   );
