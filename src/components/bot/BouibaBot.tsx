@@ -1,18 +1,46 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { Link } from "@tanstack/react-router";
+import { Link, useRouterState } from "@tanstack/react-router";
 
-// ─── Bot Messages & Knowledge ───────────────────────────────────────────────
-const WELCOME_MESSAGES = [
-  "مرحباً بك في Bouiba Academy 👋 أنا بويبو، مساعدك الذكي! كيف أساعدك اليوم؟",
+// ─── Page-Contextual Quips (shown as floating speech bubbles) ─────────────────
+const PAGE_QUIPS: Record<string, string[]> = {
+  "/": [
+    "🏠 أهلاً بك في الصفحة الرئيسية! استكشف معي المحتوى 🚀",
+    "✨ عندنا مقالات تقنية رائعة — ألا تريد تصفحها؟",
+    "🤖 أنا بويبو! خبير الذكاء الاصطناعي في خدمتك 24/7",
+    "💡 هل جربت أدواتنا الذكية المجانية؟ ستغير حياتك!",
+  ],
+  "/posts": [
+    "📚 ممتاز! أنت في قسم المقالات التقنية!",
+    "🔥 أحدث مقالاتنا عن n8n وOllama وAI محلي!",
+    "📖 اقرأ واستمتع — المعرفة قوة 💪",
+    "🎯 هل تبحث عن موضوع معين؟ اسألني!",
+  ],
+  "/tools": [
+    "🛠️ وووو! أدوات الذكاء الاصطناعي المجانية هنا!",
+    "🖼️ جرّب مولد الصور — سيبهرك النتيجة!",
+    "⚡ كل هذه الأدوات مجانية 100% يا صديقي!",
+    "🤩 مساعد SEO + المترجم + الملخّص... كلها هنا!",
+  ],
+  "/about": [
+    "👋 تعرّف على فريق Bouiba Academy!",
+    "💚 نحن نؤمن أن التكنولوجيا يجب أن تكون بالعربية",
+    "🌟 مهمتنا: جعل AI في متناول الجميع!",
+  ],
+  "/contact": [
+    "📩 يسعدنا سماعك! راسلنا بلا تردد",
+    "💬 لديك سؤال أو اقتراح؟ تواصل معنا الآن!",
+  ],
+};
+
+const IDLE_QUIPS = [
+  "psst... 👀 كليك علي!",
+  "🤔 تحتاج مساعدة؟",
+  "⚡ اسألني أي شيء!",
+  "🎁 عندي معلومات رائعة لك!",
+  "هيا! لا تتردد 🤖✨",
 ];
 
-const QUICK_ACTIONS = [
-  { id: "articles", label: "📚 آخر المقالات", icon: "📚" },
-  { id: "tools", label: "🛠️ أدوات الذكاء الاصطناعي", icon: "🛠️" },
-  { id: "topics", label: "🏷️ تصفح المواضيع", icon: "🏷️" },
-  { id: "about", label: "ℹ️ عن الأكاديمية", icon: "ℹ️" },
-];
-
+// ─── Knowledge Base ───────────────────────────────────────────────────────────
 interface KnowledgeItem {
   keywords: string[];
   answer: string;
@@ -23,526 +51,802 @@ const KNOWLEDGE_BASE: KnowledgeItem[] = [
   {
     keywords: ["مقالات", "آخر", "مقال", "اقرأ", "محتوى", "articles"],
     answer:
-      "📚 **آخر ما نشرناه:**\n• دليل تشغيل DeepSeek-R1 محلياً مع n8n\n• أفضل أدوات الأمن السيبراني مفتوحة المصدر\n• أتمتة النشر على فيسبوك وتيليجرام\n• تحسين PageSpeed إلى 100/100\n• خوادم سحابية مجانية للمطورين\n\nانقر لتصفح جميع المقالات 👇",
-    link: { to: "/posts", label: "جميع المقالات →" },
+      "📚 **آخر ما نشرناه:**\n• دليل تشغيل DeepSeek-R1 محلياً مع n8n\n• أفضل أدوات الأمن السيبراني مفتوحة المصدر\n• أتمتة النشر على فيسبوك وتيليجرام\n• تحسين PageSpeed إلى 100/100\n• خوادم سحابية مجانية للمطورين",
+    link: { to: "/posts", label: "📚 جميع المقالات →" },
   },
   {
     keywords: ["أدوات", "ذكاء", "اصطناعي", "tools", "ai", "tool"],
     answer:
-      "🛠️ **أدواتنا الذكية المجانية:**\n• 🖼️ توليد الصور بالذكاء الاصطناعي\n• 🔍 مساعد SEO\n• 📝 ملخص النصوص الذكي\n• 💡 مولد أفكار المحتوى\n• 🗺️ خريطة طريق التعلم\n• 🌍 مترجم ذكي\n• 🏗️ مهندس الـ Prompts\n\nجرّب كل الأدوات مجاناً! 🚀",
-    link: { to: "/tools", label: "استكشف الأدوات →" },
+      "🛠️ **أدواتنا الذكية المجانية:**\n• 🖼️ توليد الصور بالذكاء الاصطناعي\n• 🔍 مساعد SEO\n• 📝 ملخص النصوص الذكي\n• 💡 مولد أفكار المحتوى\n• 🗺️ خريطة طريق التعلم\n• 🌍 مترجم ذكي\n• 🏗️ مهندس الـ Prompts",
+    link: { to: "/tools", label: "🛠️ استكشف الأدوات →" },
   },
   {
     keywords: ["n8n", "أتمتة", "automation", "workflow"],
     answer:
-      "⚡ **n8n والأتمتة:**\nلدينا دليل شامل لأتمتة المهام اليومية باستخدام n8n:\n• ربط التطبيقات بدون كود\n• أتمتة النشر على السوشيال ميديا\n• بناء وكلاء AI محليين\n• تكامل مع Supabase, Google Sheets وأكثر",
-    link: { to: "/posts", label: "مقالات n8n →" },
+      "⚡ **n8n والأتمتة:**\nدليل شامل لأتمتة مهامك اليومية:\n• ربط التطبيقات بدون كود\n• أتمتة النشر على السوشيال ميديا\n• بناء وكلاء AI محليين\n• تكامل مع Supabase, Google Sheets وأكثر",
+    link: { to: "/posts", label: "⚡ مقالات n8n →" },
   },
   {
-    keywords: ["ollama", "نماذج", "محلي", "local", "llm"],
+    keywords: ["ollama", "نماذج", "محلي", "local", "llm", "deepseek"],
     answer:
-      "🤖 **تشغيل الذكاء الاصطناعي محلياً:**\nنقدم شروحات تفصيلية لتشغيل:\n• Ollama مع نماذج Llama, Mistral, DeepSeek\n• ربط النماذج المحلية مع n8n\n• حماية بياناتك وخصوصيتك 100%\n• مجاناً بالكامل على جهازك!",
-    link: { to: "/posts", label: "اقرأ المقالات →" },
+      "🤖 **تشغيل AI محلياً:**\nشروحات لتشغيل:\n• Ollama مع نماذج Llama, Mistral, DeepSeek\n• ربط النماذج المحلية مع n8n\n• حماية بياناتك 100%\n• مجاناً على جهازك!",
+    link: { to: "/posts", label: "🤖 اقرأ المقالات →" },
   },
   {
-    keywords: ["seo", "سيو", "بحث", "google", "جوجل"],
+    keywords: ["seo", "سيو", "بحث", "google", "جوجل", "pagespeed"],
     answer:
-      "🔍 **تحسين محركات البحث (SEO):**\nندرّس أسرار الظهور في جوجل:\n• تقنيات Core Web Vitals\n• تحسين سرعة الموقع بـ Cloudflare\n• الكلمات المفتاحية والمحتوى العربي\n• Schema Markup وهيكل البيانات",
-    link: { to: "/posts", label: "دروس SEO →" },
+      "🔍 **تحسين محركات البحث:**\n• تقنيات Core Web Vitals\n• تحسين سرعة الموقع بـ Cloudflare\n• الكلمات المفتاحية والمحتوى العربي\n• Schema Markup وهيكل البيانات",
+    link: { to: "/posts", label: "🔍 دروس SEO →" },
   },
   {
-    keywords: ["أمن", "امن", "سيبراني", "اختراق", "هاكر", "cybersecurity", "hack"],
+    keywords: ["أمن", "امن", "سيبراني", "اختراق", "هاكر", "cybersecurity"],
     answer:
-      "🔐 **الأمن السيبراني:**\nنشرنا دليلاً شاملاً لأفضل أدوات:\n• فحص الثغرات الأمنية\n• اختبار الاختراق الأخلاقي\n• حماية المواقع والسيرفرات\n• أدوات مفتوحة المصدر 100%",
-    link: { to: "/posts", label: "مقالات الأمن →" },
+      "🔐 **الأمن السيبراني:**\n• فحص الثغرات الأمنية\n• اختبار الاختراق الأخلاقي\n• حماية المواقع والسيرفرات\n• أدوات مفتوحة المصدر",
+    link: { to: "/posts", label: "🔐 مقالات الأمن →" },
   },
   {
     keywords: ["عن", "من", "أكاديمية", "بويبة", "about", "bouiba"],
     answer:
-      "🌟 **Bouiba Academy:**\nأكاديمية عربية متخصصة في:\n• الذكاء الاصطناعي والأتمتة\n• شروحات تقنية عملية بالعربية\n• أدوات مجانية للمطورين\n• محتوى حصري ومراجعات صادقة\n\nهدفنا: جعل التكنولوجيا في متناول الجميع 💪",
-    link: { to: "/about", label: "تعرف علينا →" },
+      "🌟 **Bouiba Academy:**\nأكاديمية عربية في:\n• الذكاء الاصطناعي والأتمتة\n• شروحات تقنية بالعربية\n• أدوات مجانية للمطورين\n• محتوى حصري ومراجعات صادقة",
+    link: { to: "/about", label: "🌟 تعرف علينا →" },
   },
   {
-    keywords: ["تواصل", "contact", "اتصال", "رسالة"],
-    answer:
-      "📩 **تواصل معنا:**\nيسعدنا التواصل معك!\n• راسلنا عبر صفحة التواصل\n• تابعنا على فيسبوك\n• اشترك في النشرة الأسبوعية للبقاء على اطلاع",
-    link: { to: "/contact", label: "صفحة التواصل →" },
+    keywords: ["تواصل", "contact", "اتصال", "رسالة", "بريد"],
+    answer: "📩 **تواصل معنا:**\nراسلنا لأي سؤال أو اقتراح!\nنحن نحب نسمع منك 💚",
+    link: { to: "/contact", label: "📩 تواصل الآن →" },
   },
 ];
 
-// Fuzzy keyword matcher
 function findAnswer(input: string): KnowledgeItem | null {
   const lower = input.trim().toLowerCase();
   for (const item of KNOWLEDGE_BASE) {
-    if (item.keywords.some((kw) => lower.includes(kw.toLowerCase()))) {
-      return item;
-    }
+    if (item.keywords.some((kw) => lower.includes(kw.toLowerCase()))) return item;
   }
   return null;
 }
 
-// Web Speech API TTS wrapper
+// ─── TTS ─────────────────────────────────────────────────────────────────────
+let speechAllowed = false;
+function enableSpeech() { speechAllowed = true; }
+
 function speak(text: string) {
-  if (typeof window === "undefined" || !window.speechSynthesis) return;
+  if (!speechAllowed || typeof window === "undefined" || !window.speechSynthesis) return;
   window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = "ar-SA";
-  utterance.rate = 0.92;
-  utterance.pitch = 1.05;
-  utterance.volume = 0.88;
-
-  // Try to find an Arabic voice
-  const voices = window.speechSynthesis.getVoices();
-  const arVoice = voices.find(
-    (v) =>
-      v.lang.startsWith("ar") ||
-      v.name.toLowerCase().includes("arabic") ||
-      v.name.toLowerCase().includes("arab"),
+  const utt = new SpeechSynthesisUtterance(
+    text.replace(/[🐝✨🛠️📚🏷️ℹ️🔐⚡🤖🌟📩🔍🏠💡🎁🎯🔥📖🤔👀👋💬💚⚡🖼️🗺️🌍🏗️🎉🤩psst]/g, "")
+        .replace(/\*\*/g, "")
   );
-  if (arVoice) utterance.voice = arVoice;
-
-  window.speechSynthesis.speak(utterance);
+  utt.lang = "ar-SA";
+  utt.rate = 0.95;
+  utt.pitch = 1.1;
+  utt.volume = 0.85;
+  const voices = window.speechSynthesis.getVoices();
+  const arVoice = voices.find((v) => v.lang.startsWith("ar"));
+  if (arVoice) utt.voice = arVoice;
+  window.speechSynthesis.speak(utt);
 }
 
-// ─── Typing Animation ────────────────────────────────────────────────────────
-function useTypingText(text: string, speed = 25, trigger = true) {
-  const [displayed, setDisplayed] = useState("");
-  const [done, setDone] = useState(false);
+// ─── Robot Canvas Renderer ────────────────────────────────────────────────────
+function drawRobot(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  scale: number,
+  talking: boolean,
+  blinking: boolean,
+  wiggle: number,
+  reactionScale: number,
+) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(scale * reactionScale, scale * reactionScale);
+  ctx.rotate(Math.sin(wiggle) * 0.08);
 
-  useEffect(() => {
-    if (!trigger) return;
-    setDisplayed("");
-    setDone(false);
-    let i = 0;
-    const interval = setInterval(() => {
-      i++;
-      setDisplayed(text.slice(0, i));
-      if (i >= text.length) {
-        clearInterval(interval);
-        setDone(true);
-      }
-    }, speed);
-    return () => clearInterval(interval);
-  }, [text, speed, trigger]);
+  const s = 1;
+  const isDark = document.documentElement.classList.contains("dark");
 
-  return { displayed, done };
+  // Shadow glow
+  const glow = ctx.createRadialGradient(0, 10, 2, 0, 10, 45);
+  glow.addColorStop(0, "rgba(13,110,110,0.25)");
+  glow.addColorStop(1, "rgba(0,0,0,0)");
+  ctx.fillStyle = glow;
+  ctx.beginPath();
+  ctx.arc(0, 10, 45, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Body
+  ctx.fillStyle = isDark ? "#1E293B" : "#0F172A";
+  ctx.strokeStyle = "#0D6E6E";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.roundRect(-18 * s, -2 * s, 36 * s, 30 * s, 8 * s);
+  ctx.fill();
+  ctx.stroke();
+
+  // Chest panel
+  const chestG = ctx.createLinearGradient(-13 * s, 5 * s, 13 * s, 5 * s);
+  chestG.addColorStop(0, "#0D6E6E");
+  chestG.addColorStop(1, "#065f5f");
+  ctx.fillStyle = chestG;
+  ctx.beginPath();
+  ctx.roundRect(-13 * s, 5 * s, 26 * s, 16 * s, 5 * s);
+  ctx.fill();
+
+  // Chest LED bars (sound wave when talking)
+  const bars = [[-8, 0], [-4, 0], [0, 0], [4, 0], [8, 0]];
+  bars.forEach(([bx], bi) => {
+    const h = talking ? 3 + Math.random() * 8 : 4;
+    ctx.fillStyle = talking
+      ? bi === 2 ? "#22D3EE" : "#10B981"
+      : "#14B8A6";
+    ctx.beginPath();
+    ctx.roundRect(bx * s - 1.5, (13 - h / 2) * s, 3 * s, h * s, 1.5);
+    ctx.fill();
+  });
+
+  // Arms
+  ctx.fillStyle = isDark ? "#1E293B" : "#0F172A";
+  ctx.strokeStyle = "#334155";
+  ctx.lineWidth = 1.5;
+
+  // Left arm
+  ctx.save();
+  ctx.translate(-22 * s, 10 * s);
+  ctx.rotate(talking ? Math.sin(wiggle * 3) * 0.25 : -0.1);
+  ctx.beginPath();
+  ctx.roundRect(-5 * s, 0, 10 * s, 18 * s, 4 * s);
+  ctx.fill();
+  ctx.stroke();
+  ctx.restore();
+
+  // Right arm
+  ctx.save();
+  ctx.translate(22 * s, 10 * s);
+  ctx.rotate(talking ? Math.sin(wiggle * 3 + 1) * 0.25 : 0.1);
+  ctx.beginPath();
+  ctx.roundRect(-5 * s, 0, 10 * s, 18 * s, 4 * s);
+  ctx.fill();
+  ctx.stroke();
+  ctx.restore();
+
+  // Legs
+  ctx.fillStyle = isDark ? "#0F172A" : "#1E293B";
+  ctx.beginPath();
+  ctx.roundRect(-14 * s, 26 * s, 11 * s, 14 * s, 4 * s);
+  ctx.roundRect(3 * s, 26 * s, 11 * s, 14 * s, 4 * s);
+  ctx.fill();
+
+  // Head
+  const headG = ctx.createLinearGradient(-20 * s, -48 * s, 20 * s, -20 * s);
+  headG.addColorStop(0, isDark ? "#1E293B" : "#0F172A");
+  headG.addColorStop(1, isDark ? "#0F172A" : "#020617");
+  ctx.fillStyle = headG;
+  ctx.strokeStyle = "#0D6E6E";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.roundRect(-20 * s, -50 * s, 40 * s, 36 * s, 10 * s);
+  ctx.fill();
+  ctx.stroke();
+
+  // Antenna
+  ctx.strokeStyle = "#334155";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(0, -50 * s);
+  ctx.lineTo(0, -62 * s);
+  ctx.stroke();
+  ctx.fillStyle = talking ? "#10B981" : "#0D6E6E";
+  ctx.shadowColor = talking ? "#10B981" : "#0D6E6E";
+  ctx.shadowBlur = 8;
+  ctx.beginPath();
+  ctx.arc(0, -65 * s, 4.5 * s, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.shadowBlur = 0;
+
+  // Eyes
+  const eyeColor = blinking ? "#0F172A" : (talking ? "#10B981" : "#06B6D4");
+  const eyeH = blinking ? 2 : 9;
+
+  ctx.fillStyle = eyeColor;
+  ctx.shadowColor = eyeColor;
+  ctx.shadowBlur = 12;
+  ctx.beginPath();
+  ctx.roundRect(-14 * s, -42 * s, 11 * s, eyeH * s, 3 * s);
+  ctx.roundRect(3 * s, -42 * s, 11 * s, eyeH * s, 3 * s);
+  ctx.fill();
+  ctx.shadowBlur = 0;
+
+  // Eye shine
+  if (!blinking) {
+    ctx.fillStyle = "rgba(255,255,255,0.7)";
+    ctx.beginPath();
+    ctx.arc(-10 * s, -39 * s, 2.2 * s, 0, Math.PI * 2);
+    ctx.arc(7 * s, -39 * s, 2.2 * s, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // Mouth
+  ctx.fillStyle = "#1E293B";
+  ctx.beginPath();
+  ctx.roundRect(-12 * s, -26 * s, 24 * s, 6 * s, 3 * s);
+  ctx.fill();
+
+  if (talking) {
+    ctx.fillStyle = "#10B981";
+    ctx.shadowColor = "#10B981";
+    ctx.shadowBlur = 6;
+    // animated bars
+    [-7, -3, 1, 5].forEach((bx, bi) => {
+      const bh = 2 + Math.random() * 3;
+      ctx.fillStyle = bi % 2 === 0 ? "#10B981" : "#22D3EE";
+      ctx.beginPath();
+      ctx.roundRect(bx * s, (-23 - bh / 2) * s, 3.5 * s, bh * s, 1.5);
+      ctx.fill();
+    });
+    ctx.shadowBlur = 0;
+  }
+
+  ctx.restore();
 }
 
-// ─── Message Types ────────────────────────────────────────────────────────────
+// ─── Speech Bubble (DOM overlay) ─────────────────────────────────────────────
+function SpeechBubble({
+  text,
+  x,
+  y,
+  visible,
+}: {
+  text: string;
+  x: number;
+  y: number;
+  visible: boolean;
+}) {
+  return (
+    <div
+      style={{
+        position: "fixed",
+        left: x,
+        top: y,
+        transform: "translate(-50%, -100%)",
+        pointerEvents: "none",
+        zIndex: 9997,
+        transition: "opacity 0.3s, transform 0.3s",
+        opacity: visible ? 1 : 0,
+        transform: visible
+          ? "translate(-50%, -100%) scale(1)"
+          : "translate(-50%, -100%) scale(0.8)",
+      }}
+    >
+      <div
+        className="max-w-[200px] rounded-2xl rounded-bl-none border border-teal-200 bg-white px-3 py-2 text-center text-xs font-medium text-slate-700 shadow-lg dark:border-teal-700 dark:bg-slate-900 dark:text-slate-200"
+        dir="rtl"
+      >
+        {text}
+        {/* Bubble tail */}
+        <div className="absolute -bottom-2 right-4 h-0 w-0 border-l-[8px] border-r-[0px] border-t-[8px] border-l-transparent border-t-white dark:border-t-slate-900" />
+      </div>
+    </div>
+  );
+}
+
+// ─── Chat Panel ───────────────────────────────────────────────────────────────
 interface Message {
   id: string;
   from: "bot" | "user";
   text: string;
   link?: { to: string; label: string };
-  ts: number;
 }
 
-// ─── Animated Robot SVG ─────────────────────────────────────────────────────
-function RobotAvatar({ talking, size = 48 }: { talking?: boolean; size?: number }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 80 80"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-    >
-      {/* Antenna */}
-      <line x1="40" y1="6" x2="40" y2="14" stroke="#0D6E6E" strokeWidth="2.5" strokeLinecap="round" />
-      <circle
-        cx="40"
-        cy="5"
-        r="3.5"
-        fill={talking ? "#10B981" : "#0D6E6E"}
-        style={{ transition: "fill 0.3s" }}
-      >
-        {talking && (
-          <animate attributeName="opacity" values="1;0.3;1" dur="0.6s" repeatCount="indefinite" />
-        )}
-      </circle>
-
-      {/* Head */}
-      <rect x="18" y="14" width="44" height="36" rx="10" fill="#1E293B" />
-      <rect x="20" y="16" width="40" height="32" rx="8" fill="#0F172A" />
-
-      {/* Eyes — Glowing LED */}
-      <rect x="26" y="24" width="10" height="7" rx="3" fill={talking ? "#10B981" : "#06B6D4"}>
-        {talking && (
-          <animate attributeName="fill" values="#10B981;#22D3EE;#10B981" dur="0.4s" repeatCount="indefinite" />
-        )}
-      </rect>
-      <rect x="44" y="24" width="10" height="7" rx="3" fill={talking ? "#10B981" : "#06B6D4"}>
-        {talking && (
-          <animate attributeName="fill" values="#10B981;#22D3EE;#10B981" dur="0.4s" repeatCount="indefinite" />
-        )}
-      </rect>
-
-      {/* Mouth / Speaker grill */}
-      <rect x="27" y="36" width="26" height="4" rx="2" fill="#334155" />
-      {talking && (
-        <>
-          <rect x="30" y="37.2" width="4" height="1.6" rx="1" fill="#10B981">
-            <animate attributeName="height" values="1.6;3.5;1.6" dur="0.3s" repeatCount="indefinite" />
-            <animate attributeName="y" values="37.2;36.4;37.2" dur="0.3s" repeatCount="indefinite" />
-          </rect>
-          <rect x="36" y="37.2" width="4" height="1.6" rx="1" fill="#22D3EE">
-            <animate attributeName="height" values="1.6;2.8;1.6" dur="0.25s" repeatCount="indefinite" />
-            <animate attributeName="y" values="37.2;36.8;37.2" dur="0.25s" repeatCount="indefinite" />
-          </rect>
-          <rect x="42" y="37.2" width="4" height="1.6" rx="1" fill="#10B981">
-            <animate attributeName="height" values="1.6;3.5;1.6" dur="0.35s" repeatCount="indefinite" />
-            <animate attributeName="y" values="37.2;36.4;37.2" dur="0.35s" repeatCount="indefinite" />
-          </rect>
-          <rect x="48" y="37.2" width="4" height="1.6" rx="1" fill="#06B6D4">
-            <animate attributeName="height" values="1.6;2.5;1.6" dur="0.28s" repeatCount="indefinite" />
-            <animate attributeName="y" values="37.2;37;37.2" dur="0.28s" repeatCount="indefinite" />
-          </rect>
-        </>
-      )}
-
-      {/* Body */}
-      <rect x="24" y="52" width="32" height="22" rx="8" fill="#1E293B" />
-      <rect x="26" y="54" width="28" height="18" rx="6" fill="#0F172A" />
-
-      {/* Chest Badge */}
-      <rect x="30" y="58" width="20" height="10" rx="3" fill="#0D6E6E" opacity="0.8" />
-      <text x="40" y="65" textAnchor="middle" fontSize="5" fill="#E0F2FE" fontFamily="system-ui" fontWeight="bold">
-        AI
-      </text>
-
-      {/* Arms */}
-      <rect x="10" y="54" width="12" height="6" rx="3" fill="#1E293B" />
-      <rect x="58" y="54" width="12" height="6" rx="3" fill="#1E293B" />
-      <circle cx="9" cy="57" r="4" fill="#334155" />
-      <circle cx="71" cy="57" r="4" fill="#334155" />
-
-      {/* Legs */}
-      <rect x="28" y="74" width="9" height="5" rx="2.5" fill="#1E293B" />
-      <rect x="43" y="74" width="9" height="5" rx="2.5" fill="#1E293B" />
-    </svg>
-  );
-}
-
-// ─── Markdown-ish Text Renderer ──────────────────────────────────────────────
 function BotText({ text }: { text: string }) {
-  const lines = text.split("\n");
   return (
-    <div className="space-y-1 leading-relaxed">
-      {lines.map((line, i) => {
-        if (line.startsWith("**") && line.endsWith("**")) {
+    <div className="space-y-1">
+      {text.split("\n").map((line, i) => {
+        if (line.startsWith("**") && line.endsWith("**"))
+          return <p key={i} className="font-bold text-teal-600 dark:text-teal-300">{line.slice(2, -2)}</p>;
+        if (line.startsWith("• "))
           return (
-            <p key={i} className="font-bold text-teal-700 dark:text-teal-300">
-              {line.slice(2, -2)}
-            </p>
-          );
-        }
-        if (line.startsWith("• ")) {
-          return (
-            <p key={i} className="flex items-start gap-1.5">
-              <span className="mt-0.5 text-teal-500 shrink-0">•</span>
+            <p key={i} className="flex gap-1.5">
+              <span className="shrink-0 text-teal-500">•</span>
               <span>{line.slice(2)}</span>
             </p>
           );
-        }
-        return (
-          <p key={i} className={line === "" ? "h-2" : ""}>
-            {line}
-          </p>
-        );
+        return <p key={i} className={line === "" ? "h-1.5" : ""}>{line}</p>;
       })}
     </div>
   );
 }
 
-// ─── Main BouibaBot Component ─────────────────────────────────────────────────
+const QUICK_ACTIONS = [
+  { id: "articles", label: "📚 آخر المقالات" },
+  { id: "tools", label: "🛠️ أدوات AI" },
+  { id: "about", label: "🌟 عن الأكاديمية" },
+  { id: "contact", label: "📩 تواصل معنا" },
+];
+
+// ─── Main Component ───────────────────────────────────────────────────────────
 export function BouibaBot() {
-  const [isOpen, setIsOpen] = useState(false);
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+
+  // Canvas + physics
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const posRef = useRef({ x: 0, y: 0 });
+  const velRef = useRef({ x: 0.4, y: 0.3 });
+  const targetRef = useRef({ x: 0, y: 0 });
+  const wiggleRef = useRef(0);
+  const reactionRef = useRef(0); // 0..1 reaction intensity
+  const blinkTimerRef = useRef(0);
+  const blinkRef = useRef(false);
+  const quipTimerRef = useRef(0);
+  const isTalkingRef = useRef(false);
+  const frameRef = useRef(0);
+  const lastTimeRef = useRef(0);
+
+  // Robot screen position for DOM overlays
+  const [botScreenPos, setBotScreenPos] = useState({ x: 80, y: 200 });
+
+  // Speech bubble
+  const [bubble, setBubble] = useState("");
+  const [bubbleVisible, setBubbleVisible] = useState(false);
+
+  // Chat
+  const [chatOpen, setChatOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
-  const [isTalking, setIsTalking] = useState(false);
-  const [showPulse, setShowPulse] = useState(true);
-  const [hasGreeted, setHasGreeted] = useState(false);
+  const [isTalkingState, setIsTalkingState] = useState(false);
   const scrollRef = useRef<HTMLDivElement | null>(null);
-  const inputRef = useRef<HTMLInputElement | null>(null);
 
-  const addBotMessage = useCallback(
-    (text: string, link?: { to: string; label: string }) => {
-      const msg: Message = {
-        id: crypto.randomUUID(),
-        from: "bot",
-        text,
-        link,
-        ts: Date.now(),
-      };
-      setMessages((prev) => [...prev, msg]);
-      setIsTalking(true);
-      speak(text.replace(/[🐝✨🛠️📚🏷️ℹ️🔐⚡🤖🌟📩🔍]/g, "").replace(/\*\*/g, ""));
-      const estimated = Math.max(1200, text.length * 40);
-      setTimeout(() => setIsTalking(false), estimated);
-    },
-    [],
-  );
+  // Has greeted?
+  const hasGreetedRef = useRef(false);
+  const hasVoiceGreetedRef = useRef(false);
 
-  // Greet on first open
-  useEffect(() => {
-    if (isOpen && !hasGreeted) {
-      setHasGreeted(true);
-      setTimeout(() => {
-        addBotMessage(WELCOME_MESSAGES[0]);
-      }, 400);
-    }
-  }, [isOpen, hasGreeted, addBotMessage]);
-
-  // Auto-scroll to bottom
-  useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
-  }, [messages]);
-
-  // Pulse animation on button
-  useEffect(() => {
-    const timer = setTimeout(() => setShowPulse(false), 8000);
-    return () => clearTimeout(timer);
+  // ── Show bubble helper ──────────────────────────────────────────────────────
+  const showBubble = useCallback((text: string, durationMs = 3200) => {
+    setBubble(text);
+    setBubbleVisible(true);
+    speak(text);
+    isTalkingRef.current = true;
+    setIsTalkingState(true);
+    setTimeout(() => {
+      setBubbleVisible(false);
+      isTalkingRef.current = false;
+      setIsTalkingState(false);
+    }, durationMs);
   }, []);
 
-  // Initial welcome greeting with voice after 2s
+  // ── Voice init on first interaction ────────────────────────────────────────
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (typeof window !== "undefined" && window.speechSynthesis) {
-        const voices = window.speechSynthesis.getVoices();
-        const greet = () => {
-          speak("مرحباً بك في بويبة أكاديمي! يسعدني مساعدتك.");
-        };
-        if (voices.length > 0) {
-          greet();
-        } else {
-          window.speechSynthesis.addEventListener("voiceschanged", greet, { once: true });
+    const activate = () => {
+      enableSpeech();
+      if (!hasVoiceGreetedRef.current) {
+        hasVoiceGreetedRef.current = true;
+        setTimeout(() => speak("مرحباً! أنا بويبو، مساعدك الذكي في Bouiba Academy!"), 600);
+      }
+    };
+    window.addEventListener("pointerdown", activate, { once: true });
+    window.addEventListener("keydown", activate, { once: true });
+    return () => {
+      window.removeEventListener("pointerdown", activate);
+      window.removeEventListener("keydown", activate);
+    };
+  }, []);
+
+  // ── Page-aware quip on route change ────────────────────────────────────────
+  useEffect(() => {
+    const quips = PAGE_QUIPS[pathname] ?? PAGE_QUIPS["/"];
+    const q = quips[Math.floor(Math.random() * quips.length)];
+    const timer = setTimeout(() => showBubble(q, 3500), 1200);
+    return () => clearTimeout(timer);
+  }, [pathname, showBubble]);
+
+  // ── Mouse tracking ─────────────────────────────────────────────────────────
+  useEffect(() => {
+    const onMove = (e: PointerEvent) => {
+      targetRef.current = { x: e.clientX, y: e.clientY };
+    };
+    window.addEventListener("pointermove", onMove, { passive: true });
+    return () => window.removeEventListener("pointermove", onMove);
+  }, []);
+
+  // ── Canvas animation loop ──────────────────────────────────────────────────
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let w = (canvas.width = window.innerWidth);
+    let h = (canvas.height = window.innerHeight);
+    const onResize = () => {
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = window.innerHeight;
+    };
+    window.addEventListener("resize", onResize);
+
+    // Init position
+    const isMobile = w < 768;
+    posRef.current = { x: isMobile ? w * 0.15 : w * 0.12, y: h * 0.4 };
+    targetRef.current = { x: w / 2, y: h / 2 };
+    lastTimeRef.current = performance.now();
+
+    const BOT_SIZE = isMobile ? 0.55 : 0.65;
+    const HALF_W = 28 * BOT_SIZE;
+    const HALF_H = 75 * BOT_SIZE;
+    const PADDING = 20;
+
+    const render = (now: number) => {
+      const dt = Math.min((now - lastTimeRef.current) / 1000, 0.05);
+      lastTimeRef.current = now;
+      wiggleRef.current += dt * 2.2;
+
+      // Blink logic
+      blinkTimerRef.current += dt;
+      if (blinkTimerRef.current > 4.0 + Math.random() * 2) {
+        blinkRef.current = true;
+        blinkTimerRef.current = 0;
+        setTimeout(() => { blinkRef.current = false; }, 140);
+      }
+
+      // Idle quip timer
+      quipTimerRef.current += dt;
+      if (quipTimerRef.current > 12 + Math.random() * 10) {
+        quipTimerRef.current = 0;
+        if (!bubbleVisible && !chatOpen) {
+          const q = IDLE_QUIPS[Math.floor(Math.random() * IDLE_QUIPS.length)];
+          showBubble(q, 2800);
         }
       }
-    }, 2000);
-    return () => clearTimeout(timer);
+
+      // Physics: gentle float toward target
+      const tx = targetRef.current.x;
+      const ty = targetRef.current.y;
+      const px = posRef.current.x;
+      const py = posRef.current.y;
+
+      const dx = tx - px;
+      const dy = ty - py;
+      const dist = Math.hypot(dx, dy);
+
+      if (dist > 120) {
+        // Follow cursor gently
+        velRef.current.x += dx * 0.0018;
+        velRef.current.y += dy * 0.0018;
+      } else {
+        // Idle drift when near target
+        velRef.current.x += Math.sin(wiggleRef.current * 0.7) * 0.025;
+        velRef.current.y += Math.cos(wiggleRef.current * 0.5) * 0.018;
+      }
+
+      // Damping
+      velRef.current.x *= 0.94;
+      velRef.current.y *= 0.94;
+
+      // Clamp speed
+      const speed = Math.hypot(velRef.current.x, velRef.current.y);
+      const maxSpeed = chatOpen ? 1.2 : 3.5;
+      if (speed > maxSpeed) {
+        velRef.current.x = (velRef.current.x / speed) * maxSpeed;
+        velRef.current.y = (velRef.current.y / speed) * maxSpeed;
+      }
+
+      posRef.current.x += velRef.current.x;
+      posRef.current.y += velRef.current.y;
+
+      // Bounce off walls
+      if (posRef.current.x - HALF_W < PADDING) {
+        posRef.current.x = PADDING + HALF_W;
+        velRef.current.x = Math.abs(velRef.current.x) * 0.6;
+      }
+      if (posRef.current.x + HALF_W > w - PADDING) {
+        posRef.current.x = w - PADDING - HALF_W;
+        velRef.current.x = -Math.abs(velRef.current.x) * 0.6;
+      }
+      if (posRef.current.y - HALF_H < PADDING + 60) {
+        posRef.current.y = PADDING + 60 + HALF_H;
+        velRef.current.y = Math.abs(velRef.current.y) * 0.6;
+      }
+      if (posRef.current.y + 40 > h - PADDING) {
+        posRef.current.y = h - PADDING - 40;
+        velRef.current.y = -Math.abs(velRef.current.y) * 0.6;
+      }
+
+      // Reaction bounce
+      if (reactionRef.current > 0) {
+        reactionRef.current -= dt * 2;
+        posRef.current.y -= Math.sin(reactionRef.current * Math.PI) * 30 * dt;
+      }
+
+      // Sync DOM overlay position
+      setBotScreenPos({ x: posRef.current.x, y: posRef.current.y - HALF_H - 12 });
+
+      // Render
+      ctx.clearRect(0, 0, w, h);
+      const reactionScale = 1 + Math.max(0, reactionRef.current) * 0.18;
+
+      drawRobot(
+        ctx,
+        posRef.current.x,
+        posRef.current.y,
+        BOT_SIZE,
+        isTalkingRef.current,
+        blinkRef.current,
+        wiggleRef.current,
+        reactionScale,
+      );
+
+      frameRef.current = requestAnimationFrame(render);
+    };
+
+    frameRef.current = requestAnimationFrame(render);
+
+    return () => {
+      cancelAnimationFrame(frameRef.current);
+      window.removeEventListener("resize", onResize);
+    };
+  }, [chatOpen, showBubble]);
+
+  // ── Click detection on canvas ──────────────────────────────────────────────
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const onClick = (e: PointerEvent) => {
+      const dx = e.clientX - posRef.current.x;
+      const dy = e.clientY - posRef.current.y;
+      if (Math.hypot(dx, dy) < 55) {
+        reactionRef.current = 1;
+        velRef.current.y = -3;
+        velRef.current.x = (Math.random() - 0.5) * 4;
+        if (navigator.vibrate) navigator.vibrate([30, 50, 30]);
+
+        if (!chatOpen) {
+          // Open chat on click
+          setChatOpen(true);
+          if (!hasGreetedRef.current) {
+            hasGreetedRef.current = true;
+            setTimeout(() => {
+              addBotMessage("أهلاً وسهلاً! 🤖✨ أنا بويبو، مساعدك الذكي في Bouiba Academy!\nكيف يمكنني مساعدتك اليوم؟");
+            }, 350);
+          }
+        }
+
+        // Fun reaction quip
+        const quips = ["أوووخ! 😄", "هيهي! 🎉", "مرحباً! 👋", "اضحكت عليي 😂", "جاهز لمساعدتك! 💪"];
+        const q = quips[Math.floor(Math.random() * quips.length)];
+        setBubbleVisible(false);
+        setTimeout(() => showBubble(q, 1800), 100);
+      }
+    };
+
+    canvas.addEventListener("pointerdown", onClick as any);
+    return () => canvas.removeEventListener("pointerdown", onClick as any);
+  }, [chatOpen, showBubble]);
+
+  // ── Auto-scroll chat ───────────────────────────────────────────────────────
+  useEffect(() => {
+    if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+  }, [messages]);
+
+  // ── Chat helpers ───────────────────────────────────────────────────────────
+  const addBotMessage = useCallback((text: string, link?: { to: string; label: string }) => {
+    setMessages((prev) => [
+      ...prev,
+      { id: crypto.randomUUID(), from: "bot", text, link },
+    ]);
+    isTalkingRef.current = true;
+    setIsTalkingState(true);
+    speak(text);
+    const dur = Math.max(1500, text.length * 35);
+    setTimeout(() => { isTalkingRef.current = false; setIsTalkingState(false); }, dur);
   }, []);
 
   const handleSend = useCallback(() => {
     const trimmed = input.trim();
     if (!trimmed) return;
-
-    const userMsg: Message = {
-      id: crypto.randomUUID(),
-      from: "user",
-      text: trimmed,
-      ts: Date.now(),
-    };
-    setMessages((prev) => [...prev, userMsg]);
+    setMessages((prev) => [...prev, { id: crypto.randomUUID(), from: "user", text: trimmed }]);
     setInput("");
-
     setTimeout(() => {
       const found = findAnswer(trimmed);
       if (found) {
         addBotMessage(found.answer, found.link);
       } else {
-        addBotMessage(
-          "عذراً لم أجد إجابة محددة 😅 لكن يمكنني مساعدتك في:\n• تصفح المقالات\n• اكتشاف أدوات الذكاء الاصطناعي\n• التعرف على محتوى الأكاديمية\nفقط اسألني!",
-        );
+        addBotMessage("عذراً، لم أفهم جيداً 😅\nلكن يمكنني مساعدتك في المقالات، الأدوات، n8n، SEO، والأمن السيبراني.\nاسألني بطريقة أخرى!");
       }
-    }, 600);
+    }, 500);
   }, [input, addBotMessage]);
 
-  const handleQuickAction = useCallback(
-    (id: string) => {
-      const action = QUICK_ACTIONS.find((a) => a.id === id);
-      if (!action) return;
+  const handleQuick = useCallback((id: string) => {
+    const a = QUICK_ACTIONS.find((x) => x.id === id);
+    if (!a) return;
+    setMessages((prev) => [...prev, { id: crypto.randomUUID(), from: "user", text: a.label }]);
+    setTimeout(() => {
+      const found = findAnswer(a.label);
+      if (found) addBotMessage(found.answer, found.link);
+    }, 400);
+  }, [addBotMessage]);
 
-      const userMsg: Message = {
-        id: crypto.randomUUID(),
-        from: "user",
-        text: action.label,
-        ts: Date.now(),
-      };
-      setMessages((prev) => [...prev, userMsg]);
-
-      setTimeout(() => {
-        const found = findAnswer(action.label);
-        if (found) {
-          addBotMessage(found.answer, found.link);
-        }
-      }, 500);
-    },
-    [addBotMessage],
-  );
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
-    }
+  // ── Chat panel position: near the robot ───────────────────────────────────
+  const isMobileSize = typeof window !== "undefined" && window.innerWidth < 600;
+  const chatPanelStyle: React.CSSProperties = {
+    position: "fixed",
+    zIndex: 9998,
+    bottom: isMobileSize ? 0 : undefined,
+    left: isMobileSize ? 0 : undefined,
+    right: isMobileSize ? 0 : undefined,
+    ...(isMobileSize ? {} : {
+      left: Math.min(posRef.current.x - 165, (typeof window !== "undefined" ? window.innerWidth : 800) - 350),
+      bottom: (typeof window !== "undefined" ? window.innerHeight : 700) - posRef.current.y + 80,
+    }),
   };
 
   return (
-    <div className="fixed bottom-5 left-5 z-[9999] flex flex-col items-start" dir="rtl">
-      {/* ── Chat Panel ── */}
-      <div
-        className={`
-          mb-3 flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl
-          dark:border-slate-700 dark:bg-slate-900
-          transition-all duration-500 ease-in-out
-          ${isOpen
-            ? "opacity-100 scale-100 pointer-events-auto"
-            : "opacity-0 scale-90 pointer-events-none h-0"}
-        `}
-        style={{ width: "min(360px, calc(100vw - 24px))", maxHeight: isOpen ? "520px" : "0px" }}
-      >
-        {/* Header */}
-        <div className="flex items-center gap-3 bg-gradient-to-l from-teal-700 to-teal-600 px-4 py-3">
-          <RobotAvatar talking={isTalking} size={36} />
-          <div className="flex-1 min-w-0">
-            <p className="font-bold text-white text-sm leading-tight">بويبو</p>
-            <p className="text-teal-200 text-xs">
-              {isTalking ? "🔊 يتحدث..." : "🟢 متصل"}
-            </p>
-          </div>
-          <button
-            onClick={() => setIsOpen(false)}
-            className="rounded-full p-1.5 text-teal-100 hover:bg-teal-800 transition-colors"
-            aria-label="إغلاق"
-          >
-            <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <path d="M18 6 6 18M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
+    <>
+      {/* ── Floating Canvas Robot ── */}
+      <canvas
+        ref={canvasRef}
+        className="fixed inset-0 z-[9996] cursor-pointer"
+        style={{ pointerEvents: "none" }}
+        aria-label="مساعد بويبو — انقر للتفاعل"
+      />
 
-        {/* Messages */}
+      {/* Invisible click catcher over robot */}
+      <div
+        className="fixed z-[9997]"
+        style={{
+          left: posRef.current.x - 55,
+          top: posRef.current.y - 75,
+          width: 110,
+          height: 120,
+          cursor: "pointer",
+          borderRadius: "50%",
+        }}
+        onClick={() => {
+          reactionRef.current = 1;
+          velRef.current.y = -2.5;
+          if (!chatOpen) {
+            setChatOpen(true);
+            if (!hasGreetedRef.current) {
+              hasGreetedRef.current = true;
+              setTimeout(() => addBotMessage("أهلاً! 🤖✨ أنا بويبو — مساعدك الذكي!\nكيف يمكنني مساعدتك اليوم؟"), 350);
+            }
+          }
+          const q = ["مرحباً 👋", "هيهي 😄", "جاهز! 💪"][Math.floor(Math.random() * 3)];
+          setTimeout(() => showBubble(q, 1600), 100);
+        }}
+        aria-label="افتح بويبو المساعد"
+        role="button"
+        tabIndex={0}
+      />
+
+      {/* ── Speech Bubble ── */}
+      <SpeechBubble text={bubble} x={botScreenPos.x} y={botScreenPos.y} visible={bubbleVisible && !chatOpen} />
+
+      {/* ── Chat Panel ── */}
+      {chatOpen && (
         <div
-          ref={scrollRef}
-          className="flex-1 overflow-y-auto p-3 space-y-3 bg-slate-50 dark:bg-slate-950"
-          style={{ minHeight: "220px", maxHeight: "310px" }}
+          style={chatPanelStyle}
+          className="flex w-full max-w-[340px] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl dark:border-slate-700 dark:bg-slate-900"
+          dir="rtl"
         >
-          {messages.length === 0 && (
-            <div className="text-center py-6 text-slate-400 dark:text-slate-600 text-sm">
-              <RobotAvatar size={52} />
-              <p className="mt-2">اسألني أي شيء عن الأكاديمية...</p>
+          {/* Header */}
+          <div className="flex items-center gap-2.5 bg-gradient-to-l from-teal-700 to-teal-600 px-4 py-3">
+            <div className="relative">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/10">
+                <span className="text-xl">🤖</span>
+              </div>
+              {isTalkingState && (
+                <span className="absolute -top-0.5 -right-0.5 flex h-3 w-3 items-center justify-center rounded-full bg-green-400 border-2 border-teal-700">
+                  <span className="h-1.5 w-1.5 animate-ping rounded-full bg-white" />
+                </span>
+              )}
+            </div>
+            <div className="flex-1">
+              <p className="font-bold text-white text-sm">بويبو 🤖</p>
+              <p className="text-xs text-teal-200">{isTalkingState ? "🔊 يتحدث..." : "🟢 متصل دائماً"}</p>
+            </div>
+            <button
+              onClick={() => setChatOpen(false)}
+              className="rounded-full p-1.5 text-teal-100 hover:bg-teal-800 transition-colors"
+            >
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                <path d="M18 6 6 18M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Messages */}
+          <div
+            ref={scrollRef}
+            className="flex-1 space-y-3 overflow-y-auto bg-slate-50 p-3 dark:bg-slate-950"
+            style={{ minHeight: 200, maxHeight: 300 }}
+          >
+            {messages.length === 0 && (
+              <div className="py-4 text-center text-slate-400 text-xs dark:text-slate-600">
+                <p className="text-3xl mb-2">🤖</p>
+                <p>اسألني أي شيء عن الأكاديمية!</p>
+              </div>
+            )}
+            {messages.map((msg) => (
+              <div
+                key={msg.id}
+                className={`flex items-end gap-2 ${msg.from === "user" ? "justify-start" : "justify-end"}`}
+              >
+                {msg.from === "bot" && <span className="shrink-0 text-base mb-0.5">🤖</span>}
+                <div
+                  className={`max-w-[84%] rounded-2xl px-3.5 py-2 text-xs leading-relaxed ${
+                    msg.from === "user"
+                      ? "rounded-br-none bg-teal-600 text-white"
+                      : "rounded-bl-none border border-slate-100 bg-white text-slate-800 shadow-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                  }`}
+                >
+                  {msg.from === "bot" ? (
+                    <>
+                      <BotText text={msg.text} />
+                      {msg.link && (
+                        <Link
+                          to={msg.link.to as any}
+                          className="mt-2 inline-flex items-center gap-1 rounded-lg border border-teal-200 bg-teal-50 px-3 py-1.5 text-xs font-semibold text-teal-700 transition-colors hover:bg-teal-100 dark:border-teal-700 dark:bg-teal-900/30 dark:text-teal-300"
+                          onClick={() => setChatOpen(false)}
+                        >
+                          {msg.link.label}
+                        </Link>
+                      )}
+                    </>
+                  ) : (
+                    <p>{msg.text}</p>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Quick Actions */}
+          {messages.length <= 1 && (
+            <div className="flex flex-wrap gap-1.5 border-t border-slate-100 bg-white px-3 py-2 dark:border-slate-800 dark:bg-slate-900">
+              {QUICK_ACTIONS.map((a) => (
+                <button
+                  key={a.id}
+                  onClick={() => handleQuick(a.id)}
+                  className="rounded-full border border-teal-200 bg-teal-50 px-3 py-1 text-xs font-medium text-teal-700 transition-colors hover:bg-teal-100 dark:border-teal-700 dark:bg-teal-900/20 dark:text-teal-300"
+                >
+                  {a.label}
+                </button>
+              ))}
             </div>
           )}
 
-          {messages.map((msg) => (
-            <div
-              key={msg.id}
-              className={`flex ${msg.from === "user" ? "justify-start" : "justify-end"} items-end gap-2`}
+          {/* Input */}
+          <div className="flex items-center gap-2 border-t border-slate-100 bg-white px-3 py-2.5 dark:border-slate-800 dark:bg-slate-900">
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSend()}
+              placeholder="اسألني أي شيء..."
+              className="flex-1 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-400 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+              dir="rtl"
+            />
+            <button
+              onClick={handleSend}
+              disabled={!input.trim()}
+              className="rounded-xl bg-teal-600 p-2 text-white transition-all hover:bg-teal-700 disabled:cursor-not-allowed disabled:opacity-40 active:scale-95"
             >
-              {msg.from === "bot" && (
-                <div className="shrink-0 mb-1">
-                  <RobotAvatar size={24} talking={isTalking && msg.ts === messages.at(-1)?.ts} />
-                </div>
-              )}
-              <div
-                className={`
-                  max-w-[82%] rounded-2xl px-3.5 py-2.5 text-xs leading-relaxed
-                  ${msg.from === "user"
-                    ? "bg-teal-600 text-white rounded-br-none"
-                    : "bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 border border-slate-100 dark:border-slate-700 rounded-bl-none shadow-sm"
-                  }
-                `}
-              >
-                {msg.from === "bot" ? (
-                  <>
-                    <BotText text={msg.text} />
-                    {msg.link && (
-                      <Link
-                        to={msg.link.to as any}
-                        className="mt-2 inline-flex items-center gap-1 rounded-lg bg-teal-50 dark:bg-teal-900/30 border border-teal-200 dark:border-teal-700 px-3 py-1.5 text-xs font-semibold text-teal-700 dark:text-teal-300 hover:bg-teal-100 transition-colors"
-                        onClick={() => setIsOpen(false)}
-                      >
-                        {msg.link.label}
-                      </Link>
-                    )}
-                  </>
-                ) : (
-                  <p>{msg.text}</p>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Quick Actions — only show if no messages yet */}
-        {messages.length <= 1 && (
-          <div className="px-3 py-2 flex flex-wrap gap-1.5 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900">
-            {QUICK_ACTIONS.map((action) => (
-              <button
-                key={action.id}
-                onClick={() => handleQuickAction(action.id)}
-                className="rounded-full border border-teal-200 dark:border-teal-700 bg-teal-50 dark:bg-teal-900/20 px-3 py-1 text-xs font-medium text-teal-700 dark:text-teal-300 hover:bg-teal-100 dark:hover:bg-teal-800/40 transition-colors"
-              >
-                {action.label}
-              </button>
-            ))}
+              <svg className="h-4 w-4 rotate-180" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                <path d="M22 2 11 13M22 2 15 22 11 13 2 9l20-7z" />
+              </svg>
+            </button>
           </div>
-        )}
-
-        {/* Input Area */}
-        <div className="flex items-center gap-2 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-2.5">
-          <input
-            ref={inputRef}
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="اسألني عن المحتوى..."
-            className="flex-1 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2 text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-400 transition-all"
-            aria-label="رسالتك"
-            dir="rtl"
-          />
-          <button
-            onClick={handleSend}
-            disabled={!input.trim()}
-            className="rounded-xl bg-teal-600 p-2 text-white hover:bg-teal-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-95"
-            aria-label="إرسال"
-          >
-            <svg className="h-4 w-4 rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <path d="M22 2 11 13M22 2 15 22 11 13 2 9l20-7z" />
-            </svg>
-          </button>
         </div>
-      </div>
+      )}
 
-      {/* ── FAB Button ── */}
-      <button
-        onClick={() => setIsOpen((prev) => !prev)}
-        className={`
-          relative flex items-center gap-2.5 rounded-2xl shadow-2xl
-          transition-all duration-300 active:scale-95
-          ${isOpen
-            ? "bg-slate-700 dark:bg-slate-800 px-3.5 py-2.5"
-            : "bg-gradient-to-br from-teal-600 to-teal-800 px-4 py-3 hover:from-teal-500 hover:to-teal-700"}
-        `}
-        aria-label={isOpen ? "إغلاق بويبو" : "فتح المساعد الذكي"}
-      >
-        {/* Pulse rings */}
-        {showPulse && !isOpen && (
-          <>
-            <span className="absolute inset-0 rounded-2xl bg-teal-400 animate-ping opacity-30" />
-            <span className="absolute inset-0 rounded-2xl bg-teal-500 animate-pulse opacity-20" />
-          </>
-        )}
-
-        <RobotAvatar talking={isTalking && !isOpen} size={32} />
-
-        {!isOpen && (
-          <span className="text-white text-xs font-bold whitespace-nowrap">
-            بويبو 🤖
-          </span>
-        )}
-
-        {/* Talking Indicator on FAB */}
-        {isTalking && !isOpen && (
-          <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-green-500 border-2 border-white">
-            <span className="h-2 w-2 rounded-full bg-white animate-pulse" />
-          </span>
-        )}
-      </button>
-    </div>
+      {/* ── Collapsed FAB hint (when chat closed and no bubble) ── */}
+      {!chatOpen && !bubbleVisible && (
+        <div
+          className="fixed bottom-5 left-5 z-[9997] rounded-full border border-teal-200 bg-white/90 px-3 py-1.5 text-xs font-medium text-teal-700 shadow-md backdrop-blur-sm dark:border-teal-700 dark:bg-slate-900/90 dark:text-teal-300"
+          style={{ pointerEvents: "none" }}
+        >
+          انقر على بويبو 🤖
+        </div>
+      )}
+    </>
   );
 }
