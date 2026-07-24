@@ -2,13 +2,37 @@ import { useEffect, useRef } from "react";
 import { useBeeController } from "./useBeeController";
 import { BEE_CONFIG } from "./config";
 
-interface RobotBeeCanvasProps {
+interface RealBeeCanvasProps {
   isReducedMotion: boolean;
 }
 
-export function RobotBeeCanvas({ isReducedMotion }: RobotBeeCanvasProps) {
+interface Particle {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  size: number;
+  alpha: number;
+  color: string;
+}
+
+interface FloatingBadge {
+  x: number;
+  y: number;
+  text: string;
+  alpha: number;
+}
+
+export function RobotBeeCanvas({ isReducedMotion }: RealBeeCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const { updatePhysics } = useBeeController({ isReducedMotion });
+
+  // Reaction State Tracking
+  const reactionTimerRef = useRef<number>(0);
+  const reactionSpinRef = useRef<number>(0);
+  const particlesRef = useRef<Particle[]>([]);
+  const badgeRef = useRef<FloatingBadge | null>(null);
+  const beeScreenPosRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -26,6 +50,54 @@ export function RobotBeeCanvas({ isReducedMotion }: RobotBeeCanvasProps) {
     };
     window.addEventListener("resize", handleResize);
 
+    // Touch & Click Detection on Bee
+    const handlePointerDown = (e: PointerEvent) => {
+      const clickX = e.clientX;
+      const clickY = e.clientY;
+      const beeX = beeScreenPosRef.current.x;
+      const beeY = beeScreenPosRef.current.y;
+
+      const dist = Math.hypot(clickX - beeX, clickY - beeY);
+
+      // Touch radius threshold (80px around bee)
+      if (dist < 85) {
+        // Trigger Touch Reaction!
+        reactionTimerRef.current = 1.0; // 1 second active reaction
+        if (typeof window !== "undefined" && navigator.vibrate) {
+          navigator.vibrate([40, 60, 40]);
+        }
+
+        // Spawn Pollen Sparkle Particles
+        const colors = ["#FBBF24", "#F59E0B", "#FDE047", "#10B981", "#38BDF8"];
+        const newParticles: Particle[] = [];
+        for (let i = 0; i < 18; i++) {
+          const angle = (Math.PI * 2 * i) / 18 + Math.random() * 0.5;
+          const speed = Math.random() * 4 + 2;
+          newParticles.push({
+            x: beeX,
+            y: beeY,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed - 1,
+            size: Math.random() * 4 + 2,
+            alpha: 1,
+            color: colors[Math.floor(Math.random() * colors.length)],
+          });
+        }
+        particlesRef.current = newParticles;
+
+        // Spawn Floating Heart/Sparkle Badge
+        const badges = ["🐝✨", "💛", "✨", "🍯", "⚡"];
+        badgeRef.current = {
+          x: beeX,
+          y: beeY - 30,
+          text: badges[Math.floor(Math.random() * badges.length)],
+          alpha: 1,
+        };
+      }
+    };
+
+    window.addEventListener("pointerdown", handlePointerDown, { passive: true });
+
     let lastTime = performance.now();
 
     const render = (now: number) => {
@@ -35,190 +107,267 @@ export function RobotBeeCanvas({ isReducedMotion }: RobotBeeCanvasProps) {
 
       ctx.clearRect(0, 0, width, height);
 
-      // Get physics & motion state from 3D controller
+      // Get physics & motion state
       const { position, rotation, isMobile } = updatePhysics(delta, clockTime);
 
       const isDark = document.documentElement.classList.contains("dark");
       const scaleBase = isMobile ? BEE_CONFIG.beeScaleMobile : BEE_CONFIG.beeScaleDesktop;
-      // Enhanced Mobile Responsive Scaling: Ensures the Robot Bee is bold, clear & prominent on small screens
       const responsiveFactor = isMobile ? Math.max(0.9, width / 420) : width / 1200;
       const scaleMultiplier = scaleBase * responsiveFactor;
 
       // Convert world position ([-3, 3]) to canvas screen coordinates
-      const centerX = width / 2 + position[0] * (width / (isMobile ? 4.5 : 6));
-      const centerY = height / 2 - position[1] * (height / (isMobile ? 3.5 : 4));
+      let centerX = width / 2 + position[0] * (width / (isMobile ? 4.5 : 6));
+      let centerY = height / 2 - position[1] * (height / (isMobile ? 3.5 : 4));
 
-      const pitch = rotation[0];
-      const yaw = rotation[1];
+      // Handle Active Touch Reaction Animations
+      let reactionBounceY = 0;
+      let reactionFlapMultiplier = 1;
+
+      if (reactionTimerRef.current > 0) {
+        reactionTimerRef.current -= delta;
+        reactionSpinRef.current += delta * 12; // Happy 360 spin
+        reactionBounceY = Math.sin((1 - reactionTimerRef.current) * Math.PI) * -35;
+        reactionFlapMultiplier = 2.5; // Double wing speed
+      } else {
+        reactionSpinRef.current = 0;
+      }
+
+      centerY += reactionBounceY;
+      beeScreenPosRef.current = { x: centerX, y: centerY };
+
       const roll = rotation[2];
 
       ctx.save();
       ctx.translate(centerX, centerY);
       ctx.scale(scaleMultiplier, scaleMultiplier);
-      ctx.rotate(roll * 0.4);
+      ctx.rotate(roll * 0.4 + reactionSpinRef.current);
 
-      // ── 1. GLOWING JET THRUSTER TRAIL (Back) ──
-      const thrusterGlow = ctx.createRadialGradient(0, 45, 2, 0, 45, 28);
-      thrusterGlow.addColorStop(0, "rgba(20, 184, 166, 0.9)");
-      thrusterGlow.addColorStop(0.5, "rgba(56, 189, 248, 0.5)");
-      thrusterGlow.addColorStop(1, "rgba(0, 0, 0, 0)");
+      // ── 1. NATURAL HONEY GLOW AURA ──
+      const honeyGlow = ctx.createRadialGradient(0, 0, 5, 0, 0, 45);
+      honeyGlow.addColorStop(0, "rgba(251, 191, 36, 0.4)");
+      honeyGlow.addColorStop(0.6, "rgba(245, 158, 11, 0.15)");
+      honeyGlow.addColorStop(1, "rgba(0, 0, 0, 0)");
 
-      ctx.fillStyle = thrusterGlow;
+      ctx.fillStyle = honeyGlow;
       ctx.beginPath();
-      ctx.arc(0, 45, 28, 0, Math.PI * 2);
+      ctx.arc(0, 0, 45, 0, Math.PI * 2);
       ctx.fill();
 
-      // ── 2. FIBER-OPTIC ROBOT WINGS (Animated Flapping) ──
+      // ── 2. REALISTIC TRANSLUCENT HONEYBEE WINGS (Natural Flapping) ──
       const flapAngle = isReducedMotion
         ? 0.2
-        : Math.sin(clockTime * BEE_CONFIG.flapSpeed) * BEE_CONFIG.flapAmplitude;
+        : Math.sin(clockTime * BEE_CONFIG.flapSpeed * reactionFlapMultiplier) * BEE_CONFIG.flapAmplitude;
 
-      // Left Robot Wing
+      // Left Front & Hind Wings
       ctx.save();
-      ctx.translate(-15, -10);
-      ctx.rotate(-0.4 - flapAngle);
+      ctx.translate(-12, -8);
+      ctx.rotate(-0.35 - flapAngle);
       const leftWingGrad = ctx.createLinearGradient(-35, -35, 0, 0);
-      leftWingGrad.addColorStop(0, "rgba(224, 242, 254, 0.85)");
-      leftWingGrad.addColorStop(0.5, "rgba(20, 184, 166, 0.6)");
-      leftWingGrad.addColorStop(1, "rgba(14, 165, 233, 0.2)");
+      leftWingGrad.addColorStop(0, "rgba(254, 243, 199, 0.85)");
+      leftWingGrad.addColorStop(0.6, "rgba(251, 191, 36, 0.45)");
+      leftWingGrad.addColorStop(1, "rgba(255, 255, 255, 0.2)");
 
       ctx.fillStyle = leftWingGrad;
-      ctx.strokeStyle = isDark ? "rgba(255, 255, 255, 0.7)" : "rgba(13, 110, 110, 0.8)";
-      ctx.lineWidth = 1.8;
+      ctx.strokeStyle = isDark ? "rgba(251, 191, 36, 0.7)" : "rgba(180, 83, 9, 0.6)";
+      ctx.lineWidth = 1.4;
+
+      // Front Wing
       ctx.beginPath();
-      ctx.ellipse(-25, -25, 30, 12, -Math.PI / 4, 0, Math.PI * 2);
+      ctx.ellipse(-26, -26, 32, 13, -Math.PI / 4, 0, Math.PI * 2);
       ctx.fill();
       ctx.stroke();
 
-      // Internal wing circuit lines
+      // Wing Vein Lines
       ctx.beginPath();
       ctx.moveTo(-10, -10);
-      ctx.lineTo(-35, -32);
-      ctx.strokeStyle = "rgba(20, 184, 166, 0.7)";
-      ctx.lineWidth = 1;
+      ctx.lineTo(-38, -34);
+      ctx.moveTo(-18, -18);
+      ctx.lineTo(-30, -38);
+      ctx.strokeStyle = "rgba(180, 83, 9, 0.4)";
+      ctx.lineWidth = 0.9;
       ctx.stroke();
       ctx.restore();
 
-      // Right Robot Wing
+      // Right Front & Hind Wings
       ctx.save();
-      ctx.translate(15, -10);
-      ctx.rotate(0.4 + flapAngle);
+      ctx.translate(12, -8);
+      ctx.rotate(0.35 + flapAngle);
       const rightWingGrad = ctx.createLinearGradient(35, -35, 0, 0);
-      rightWingGrad.addColorStop(0, "rgba(224, 242, 254, 0.85)");
-      rightWingGrad.addColorStop(0.5, "rgba(20, 184, 166, 0.6)");
-      rightWingGrad.addColorStop(1, "rgba(14, 165, 233, 0.2)");
+      rightWingGrad.addColorStop(0, "rgba(254, 243, 199, 0.85)");
+      rightWingGrad.addColorStop(0.6, "rgba(251, 191, 36, 0.45)");
+      rightWingGrad.addColorStop(1, "rgba(255, 255, 255, 0.2)");
 
       ctx.fillStyle = rightWingGrad;
-      ctx.strokeStyle = isDark ? "rgba(255, 255, 255, 0.7)" : "rgba(13, 110, 110, 0.8)";
-      ctx.lineWidth = 1.8;
+      ctx.strokeStyle = isDark ? "rgba(251, 191, 36, 0.7)" : "rgba(180, 83, 9, 0.6)";
+      ctx.lineWidth = 1.4;
+
+      // Front Wing
       ctx.beginPath();
-      ctx.ellipse(25, -25, 30, 12, Math.PI / 4, 0, Math.PI * 2);
+      ctx.ellipse(26, -26, 32, 13, Math.PI / 4, 0, Math.PI * 2);
       ctx.fill();
       ctx.stroke();
 
-      // Internal wing circuit lines
+      // Wing Vein Lines
       ctx.beginPath();
       ctx.moveTo(10, -10);
-      ctx.lineTo(35, -32);
-      ctx.strokeStyle = "rgba(20, 184, 166, 0.7)";
-      ctx.lineWidth = 1;
+      ctx.lineTo(38, -34);
+      ctx.moveTo(18, -18);
+      ctx.lineTo(30, -38);
+      ctx.strokeStyle = "rgba(180, 83, 9, 0.4)";
+      ctx.lineWidth = 0.9;
       ctx.stroke();
       ctx.restore();
 
-      // ── 3. METALLIC ROBOT BEE BODY (Abdomen & Armor Rings) ──
-      // Gold & Charcoal Striped Metallic Capsule Body
-      const bodyGrad = ctx.createLinearGradient(-22, 0, 22, 0);
+      // ── 3. ORGANIC HONEYBEE ABDOMEN (Natural Fluffy Golden Stripes) ──
+      const bodyGrad = ctx.createLinearGradient(-24, 0, 24, 0);
       bodyGrad.addColorStop(0, "#D97706");
-      bodyGrad.addColorStop(0.3, "#F59E0B");
-      bodyGrad.addColorStop(0.7, "#FBBF24");
+      bodyGrad.addColorStop(0.2, "#F59E0B");
+      bodyGrad.addColorStop(0.5, "#FBBF24");
+      bodyGrad.addColorStop(0.8, "#F59E0B");
       bodyGrad.addColorStop(1, "#B45309");
 
       ctx.fillStyle = bodyGrad;
       ctx.beginPath();
-      ctx.ellipse(0, 12, 22, 32, 0, 0, Math.PI * 2);
+      ctx.ellipse(0, 14, 23, 34, 0, 0, Math.PI * 2);
       ctx.fill();
       ctx.strokeStyle = "#78350F";
-      ctx.lineWidth = 1.5;
-      ctx.stroke();
-
-      // Carbon Fiber / Titanium Armor Stripes
-      ctx.fillStyle = "#1E293B";
-      ctx.fillRect(-20, 2, 40, 7);
-      ctx.fillRect(-18, 16, 36, 7);
-      ctx.fillRect(-14, 29, 28, 6);
-
-      // Stinger Metal Needle
-      ctx.fillStyle = "#0F172A";
-      ctx.beginPath();
-      ctx.moveTo(-4, 42);
-      ctx.lineTo(4, 42);
-      ctx.lineTo(0, 54);
-      ctx.closePath();
-      ctx.fill();
-
-      // ── 4. CHROME ROBOT HEAD & GLOWING LED VISOR ──
-      const headGrad = ctx.createRadialGradient(-4, -26, 2, 0, -24, 18);
-      headGrad.addColorStop(0, "#FFFFFF");
-      headGrad.addColorStop(0.4, "#94A3B8");
-      headGrad.addColorStop(1, "#1E293B");
-
-      ctx.fillStyle = headGrad;
-      ctx.beginPath();
-      ctx.arc(0, -22, 18, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.strokeStyle = "#475569";
       ctx.lineWidth = 1.2;
       ctx.stroke();
 
-      // Cyber Glowing LED Visor (Cyan/Teal)
-      ctx.fillStyle = "#06B6D4";
-      ctx.shadowColor = "#22D3EE";
-      ctx.shadowBlur = 10;
+      // Fluffy Black Stripes
+      ctx.fillStyle = "#271C19";
       ctx.beginPath();
-      ctx.ellipse(0, -23, 13, 6, 0, 0, Math.PI * 2);
+      ctx.ellipse(0, 4, 22.5, 5.5, 0, 0, Math.PI * 2);
       ctx.fill();
-      ctx.shadowBlur = 0; // Reset shadow
-
-      // Visor Eye Glow Reflection
-      ctx.fillStyle = "#E0F2FE";
       ctx.beginPath();
-      ctx.arc(-4, -24, 2.5, 0, Math.PI * 2);
-      ctx.arc(4, -24, 2.5, 0, Math.PI * 2);
+      ctx.ellipse(0, 18, 20.5, 5.5, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.ellipse(0, 31, 15.5, 4.5, 0, 0, Math.PI * 2);
       ctx.fill();
 
-      // Robot Antennae with Glowing Tips
-      ctx.strokeStyle = "#334155";
-      ctx.lineWidth = 2;
+      // Organic Soft Fur Texture Dots
+      ctx.fillStyle = "#FDE047";
+      for (let i = -16; i <= 16; i += 8) {
+        ctx.beginPath();
+        ctx.arc(i, 11, 1.2, 0, Math.PI * 2);
+        ctx.arc(i + 4, 25, 1.2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Natural Stinger Tip
+      ctx.fillStyle = "#1E1B18";
+      ctx.beginPath();
+      ctx.moveTo(-3.5, 44);
+      ctx.lineTo(3.5, 44);
+      ctx.lineTo(0, 55);
+      ctx.closePath();
+      ctx.fill();
+
+      // ── 4. FUZZY THORAX & CUTE COMPOUND EYES ──
+      // Thorax
+      const thoraxGrad = ctx.createRadialGradient(0, -10, 2, 0, -10, 18);
+      thoraxGrad.addColorStop(0, "#F59E0B");
+      thoraxGrad.addColorStop(0.6, "#D97706");
+      thoraxGrad.addColorStop(1, "#451A03");
+
+      ctx.fillStyle = thoraxGrad;
+      ctx.beginPath();
+      ctx.arc(0, -10, 17, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Head
+      const headGrad = ctx.createRadialGradient(-3, -25, 2, 0, -23, 16);
+      headGrad.addColorStop(0, "#78350F");
+      headGrad.addColorStop(0.7, "#291603");
+      headGrad.addColorStop(1, "#0F172A");
+
+      ctx.fillStyle = headGrad;
+      ctx.beginPath();
+      ctx.arc(0, -23, 15, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Cute Big Organic Compound Eyes
+      ctx.fillStyle = "#090D16";
+      ctx.beginPath();
+      ctx.ellipse(-8, -25, 5.5, 7.5, -0.2, 0, Math.PI * 2);
+      ctx.ellipse(8, -25, 5.5, 7.5, 0.2, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Eye White Specular Reflection Spots
+      ctx.fillStyle = "#FFFFFF";
+      ctx.beginPath();
+      ctx.arc(-9.5, -27, 2, 0, Math.PI * 2);
+      ctx.arc(6.5, -27, 2, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Natural Curved Antennae
+      ctx.strokeStyle = "#291603";
+      ctx.lineWidth = 2.2;
+      ctx.lineCap = "round";
 
       // Left Antenna
       ctx.beginPath();
-      ctx.moveTo(-6, -38);
-      ctx.lineTo(-14, -50);
+      ctx.moveTo(-5, -34);
+      ctx.quadraticCurveTo(-14, -44, -18, -48);
       ctx.stroke();
 
-      ctx.fillStyle = "#14B8A6";
-      ctx.shadowColor = "#14B8A6";
-      ctx.shadowBlur = 8;
+      ctx.fillStyle = "#D97706";
       ctx.beginPath();
-      ctx.arc(-14, -50, 3, 0, Math.PI * 2);
+      ctx.arc(-18, -48, 2.2, 0, Math.PI * 2);
       ctx.fill();
-      ctx.shadowBlur = 0;
 
       // Right Antenna
       ctx.beginPath();
-      ctx.moveTo(6, -38);
-      ctx.lineTo(14, -50);
+      ctx.moveTo(5, -34);
+      ctx.quadraticCurveTo(14, -44, 18, -48);
       ctx.stroke();
 
-      ctx.fillStyle = "#14B8A6";
-      ctx.shadowColor = "#14B8A6";
-      ctx.shadowBlur = 8;
+      ctx.fillStyle = "#D97706";
       ctx.beginPath();
-      ctx.arc(14, -50, 3, 0, Math.PI * 2);
+      ctx.arc(18, -48, 2.2, 0, Math.PI * 2);
       ctx.fill();
-      ctx.shadowBlur = 0;
 
       ctx.restore();
+
+      // ── 5. POLLEN SPARKLE PARTICLES BURST ──
+      const particles = particlesRef.current;
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.alpha -= delta * 1.2;
+
+        if (p.alpha <= 0) {
+          particles.splice(i, 1);
+          continue;
+        }
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = Math.max(0, p.alpha);
+        ctx.fill();
+        ctx.globalAlpha = 1.0;
+      }
+
+      // ── 6. FLOATING EMOJI BADGE REACTION ──
+      const badge = badgeRef.current;
+      if (badge) {
+        badge.y -= delta * 30;
+        badge.alpha -= delta * 1.1;
+
+        if (badge.alpha <= 0) {
+          badgeRef.current = null;
+        } else {
+          ctx.save();
+          ctx.font = "bold 22px system-ui, sans-serif";
+          ctx.textAlign = "center";
+          ctx.globalAlpha = Math.max(0, badge.alpha);
+          ctx.fillText(badge.text, badge.x, badge.y);
+          ctx.restore();
+        }
+      }
 
       animFrameId = requestAnimationFrame(render);
     };
@@ -228,13 +377,14 @@ export function RobotBeeCanvas({ isReducedMotion }: RobotBeeCanvasProps) {
     return () => {
       cancelAnimationFrame(animFrameId);
       window.removeEventListener("resize", handleResize);
+      window.removeEventListener("pointerdown", handlePointerDown);
     };
   }, [isReducedMotion, updatePhysics]);
 
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 pointer-events-none z-50 overflow-hidden select-none"
+      className="fixed inset-0 pointer-events-none z-50 overflow-hidden select-none cursor-pointer"
       aria-hidden="true"
     />
   );
