@@ -40,11 +40,13 @@ export function RobotBeeCanvas({ isReducedMotion }: RobotBeeCanvasProps) {
 
       const isDark = document.documentElement.classList.contains("dark");
       const scaleBase = isMobile ? BEE_CONFIG.beeScaleMobile : BEE_CONFIG.beeScaleDesktop;
-      const scaleMultiplier = scaleBase * (width / 1200);
+      // Enhanced Mobile Responsive Scaling: Ensures the Robot Bee is bold, clear & prominent on small screens
+      const responsiveFactor = isMobile ? Math.max(0.9, width / 420) : width / 1200;
+      const scaleMultiplier = scaleBase * responsiveFactor;
 
       // Convert world position ([-3, 3]) to canvas screen coordinates
-      const centerX = width / 2 + position[0] * (width / 6);
-      const centerY = height / 2 - position[1] * (height / 4);
+      const centerX = width / 2 + position[0] * (width / (isMobile ? 4.5 : 6));
+      const centerY = height / 2 - position[1] * (height / (isMobile ? 3.5 : 4));
 
       const pitch = rotation[0];
       const yaw = rotation[1];

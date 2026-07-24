@@ -1,14 +1,14 @@
 export const BEE_CONFIG = {
-  // Scales
-  beeScaleDesktop: 0.38,
-  beeScaleMobile: 0.24,
+  // Scales — Prominent, cute & attractive on mobile and desktop
+  beeScaleDesktop: 0.55,
+  beeScaleMobile: 0.48,
 
   // Motion & Damping
-  damping: 0.08,
-  followStrength: 1.2,
-  bankStrength: 1.4,
-  pitchStrength: 0.8,
-  mobileMotionMultiplier: 0.55,
+  damping: 0.09,
+  followStrength: 1.3,
+  bankStrength: 1.5,
+  pitchStrength: 0.9,
+  mobileMotionMultiplier: 0.75,
 
   // Idle Animation
   idleAmplitudeX: 0.4,
