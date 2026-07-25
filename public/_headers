@@ -34,3 +34,87 @@
 # robots.txt — short cache
 /robots.txt
   Cache-Control: public, max-age=3600
+
+
+# Explicit long cache for static images
+/bouiba-logo-48.webp
+  Cache-Control: public, max-age=31536000, immutable
+
+/bouiba-logo-96.webp
+  Cache-Control: public, max-age=31536000, immutable
+
+/claude-sonnet-prompt-engineering-cover.png
+  Cache-Control: public, max-age=31536000, immutable
+
+/claude-sonnet-prompt-engineering-cover.webp
+  Cache-Control: public, max-age=31536000, immutable
+
+/cybersecurity-tools-cover.png
+  Cache-Control: public, max-age=31536000, immutable
+
+/cybersecurity-tools-cover.webp
+  Cache-Control: public, max-age=31536000, immutable
+
+/deepseek-r1-n8n-cover.png
+  Cache-Control: public, max-age=31536000, immutable
+
+/deepseek-r1-n8n-cover.webp
+  Cache-Control: public, max-age=31536000, immutable
+
+/docker-developer-guide-cover.png
+  Cache-Control: public, max-age=31536000, immutable
+
+/docker-developer-guide-cover.webp
+  Cache-Control: public, max-age=31536000, immutable
+
+/favicon-64.png
+  Cache-Control: public, max-age=31536000, immutable
+
+/favicon.png
+  Cache-Control: public, max-age=31536000, immutable
+
+/favicon.webp
+  Cache-Control: public, max-age=31536000, immutable
+
+/free-cloud-servers-cover.png
+  Cache-Control: public, max-age=31536000, immutable
+
+/free-cloud-servers-cover.webp
+  Cache-Control: public, max-age=31536000, immutable
+
+/n8n-workflows-cover.png
+  Cache-Control: public, max-age=31536000, immutable
+
+/n8n-workflows-cover.webp
+  Cache-Control: public, max-age=31536000, immutable
+
+/og-banner.png
+  Cache-Control: public, max-age=31536000, immutable
+
+/og-banner.webp
+  Cache-Control: public, max-age=31536000, immutable
+
+/ollama-n8n-cover.png
+  Cache-Control: public, max-age=31536000, immutable
+
+/ollama-n8n-cover.webp
+  Cache-Control: public, max-age=31536000, immutable
+
+/social-media-n8n-cover.png
+  Cache-Control: public, max-age=31536000, immutable
+
+/social-media-n8n-cover.webp
+  Cache-Control: public, max-age=31536000, immutable
+
+/supabase-postgres-n8n-cover.png
+  Cache-Control: public, max-age=31536000, immutable
+
+/supabase-postgres-n8n-cover.webp
+  Cache-Control: public, max-age=31536000, immutable
+
+/tech-seo-cloudflare-cover.png
+  Cache-Control: public, max-age=31536000, immutable
+
+/tech-seo-cloudflare-cover.webp
+  Cache-Control: public, max-age=31536000, immutable
+
