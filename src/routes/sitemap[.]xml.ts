@@ -7,21 +7,17 @@ export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {
       GET: async () => {
-        const today = new Date().toISOString().split("T")[0];
         const sitemaps = [
-          { loc: `${BASE_URL}/sitemap-pages.xml`, lastmod: today },
-          { loc: `${BASE_URL}/sitemap-posts.xml`, lastmod: today },
-          { loc: `${BASE_URL}/sitemap-categories.xml`, lastmod: today },
-          { loc: `${BASE_URL}/sitemap-videos.xml`, lastmod: today },
-          { loc: `${BASE_URL}/sitemap-tools.xml`, lastmod: today },
-          { loc: `${BASE_URL}/sitemap-worldcup.xml`, lastmod: today },
+          `${BASE_URL}/sitemap-pages.xml`,
+          `${BASE_URL}/sitemap-posts.xml`,
+          `${BASE_URL}/sitemap-categories.xml`,
+          `${BASE_URL}/sitemap-videos.xml`,
+          `${BASE_URL}/sitemap-tools.xml`,
+          `${BASE_URL}/sitemap-worldcup.xml`,
         ];
 
         const body = sitemaps
-          .map(
-            (s) =>
-              `  <sitemap>\n    <loc>${s.loc}</loc>\n    <lastmod>${s.lastmod}</lastmod>\n  </sitemap>`,
-          )
+          .map((loc) => `  <sitemap>\n    <loc>${loc}</loc>\n  </sitemap>`)
           .join("\n");
 
         const xml = [
