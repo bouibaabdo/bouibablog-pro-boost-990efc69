@@ -23,8 +23,24 @@ import { supabase } from "@/integrations/supabase/client";
 import { AI_DIRECTORY_TOOLS, CATEGORIES_MAP, type AIDirectoryTool } from "@/lib/ai-directory-data";
 
 export const Route = createFileRoute("/tools/")({
+  head: () => ({
+    ...buildSeo({
+      path: "/tools",
+      title: "أدوات الذكاء الاصطناعي المجانية بالعربية | Bouiba Academy",
+      description:
+        "مجموعة أدوات ذكاء اصطناعي مجانية بالعربية: توليد الصور، التلخيص، الترجمة، الأكواد، الأفكار، خرائط التعلم ومساعد SEO.",
+      keywords: [
+        "أدوات الذكاء الاصطناعي",
+        "أدوات AI مجانية",
+        "توليد الصور بالذكاء الاصطناعي",
+        "تلخيص النصوص",
+        "ترجمة بالذكاء الاصطناعي",
+      ],
+    }),
+  }),
   component: ToolsIndex,
 });
+
 
 const TOOLS: Array<{
   to: string;
