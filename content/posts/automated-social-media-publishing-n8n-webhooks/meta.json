@@ -10,7 +10,7 @@
     "ربط n8n مع فيسبوك",
     "n8n webhooks social media"
   ],
-  "thumbnail": "https://www.bouibacademy.me/n8n-workflows-cover.webp",
+  "thumbnail": "https://www.bouibacademy.me/social-media-n8n-cover.png",
   "category": "n8n",
   "tags": [
     "n8n",
@@ -20,6 +20,6 @@
     "Webhooks",
     "Social Media"
   ],
-  "created_at": "2026-07-23",
+  "created_at": "2026-07-25",
   "language": "ar"
 }

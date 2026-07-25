@@ -1,0 +1,25 @@
+{
+  "title": "دليل ربط قاعدة بيانات Supabase PostgreSQL مع n8n وإدارتها بالذكاء الاصطناعي",
+  "slug": "supabase-postgres-database-n8n-guide",
+  "excerpt": "شرح عملي لربط قاعدة البيانات السحابية المجانية Supabase مع منصة n8n لإجراء الاستعلامات والتخزين التلقائي وبناء وكلاء AI يستعلمون الجداول دون كود.",
+  "meta_description": "دليل خطوات ربط Supabase PostgreSQL مع n8n: تهيئة الـ Connection Strings، إجراء مفاتيح الـ API، وحفظ وتحديث البيانات تلقائياً بذكاء واحترافية.",
+  "target_keywords": [
+    "ربط Supabase مع n8n",
+    "Supabase PostgreSQL tutorial",
+    "n8n database automation",
+    "أتمتة قواعد البيانات Supabase",
+    "n8n Postgres node"
+  ],
+  "thumbnail": "https://www.bouibacademy.me/supabase-postgres-n8n-cover.png",
+  "category": "AI Automation",
+  "tags": [
+    "Supabase",
+    "PostgreSQL",
+    "n8n",
+    "Database",
+    "Automation",
+    "AI Agent"
+  ],
+  "created_at": "2026-07-26",
+  "language": "ar"
+}

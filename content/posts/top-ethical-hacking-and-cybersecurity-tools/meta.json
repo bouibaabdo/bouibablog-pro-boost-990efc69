@@ -10,7 +10,7 @@
     "فحص الثغرات والمواقع",
     "Pentesting open source"
   ],
-  "thumbnail": "https://www.bouibacademy.me/n8n-workflows-cover.webp",
+  "thumbnail": "https://www.bouibacademy.me/cybersecurity-tools-cover.png",
   "category": "Cybersecurity",
   "tags": [
     "Cybersecurity",
@@ -20,6 +20,6 @@
     "Burp Suite",
     "Pentesting"
   ],
-  "created_at": "2026-07-23",
+  "created_at": "2026-07-25",
   "language": "ar"
 }

@@ -1,0 +1,25 @@
+{
+  "title": "دليل احتراف هندسة البرومبت لنموذج Claude 3.5 Sonnet للحصول على نتائج برمجية مبهرة",
+  "slug": "claude-3-5-sonnet-prompt-engineering-guide",
+  "excerpt": "تعلم تقنيات وأسرار كتابة الأوامر (Prompt Engineering) لنموذج Claude 3.5 Sonnet للحصول على كود برمجية عالي الجودة وتحليل دقيق وتصاميم متطورة.",
+  "meta_description": "دليل شامل لأفضل ممارسات وتقنيات Prompt Engineering لنموذج Claude 3.5 Sonnet من Anthropic: استخدام XML tags، التفكير المرحلي، وأمثلة توجيهية عمليّة لعام 2026.",
+  "target_keywords": [
+    "Claude 3.5 Sonnet prompt engineering",
+    "هندسة البرومبت Claude 3.5",
+    "كتابة الأوامر للذكاء الاصطناعي",
+    "Claude Sonnet coding prompts",
+    "Anthropic Claude prompt tutorial"
+  ],
+  "thumbnail": "https://www.bouibacademy.me/claude-sonnet-prompt-engineering-cover.png",
+  "category": "AI Tools",
+  "tags": [
+    "Claude 3.5 Sonnet",
+    "Anthropic",
+    "Prompt Engineering",
+    "AI Coding",
+    "ChatGPT",
+    "AI Tools"
+  ],
+  "created_at": "2026-07-26",
+  "language": "ar"
+}

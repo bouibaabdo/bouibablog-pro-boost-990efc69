@@ -10,7 +10,7 @@
     "وكيل ذكاء اصطناعي محلي",
     "Local AI agent n8n"
   ],
-  "thumbnail": "https://www.bouibacademy.me/ollama-n8n-cover.webp",
+  "thumbnail": "https://www.bouibacademy.me/deepseek-r1-n8n-cover.png",
   "category": "AI Automation",
   "tags": [
     "DeepSeek",
@@ -20,6 +20,6 @@
     "Automation",
     "Local LLM"
   ],
-  "created_at": "2026-07-23",
+  "created_at": "2026-07-25",
   "language": "ar"
 }
