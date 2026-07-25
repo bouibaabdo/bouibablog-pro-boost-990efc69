@@ -21,6 +21,7 @@ import { useEffect, useState, useMemo } from "react";
 import type { LucideIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { AI_DIRECTORY_TOOLS, CATEGORIES_MAP, type AIDirectoryTool } from "@/lib/ai-directory-data";
+import { buildSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/tools/")({
   head: () => ({
