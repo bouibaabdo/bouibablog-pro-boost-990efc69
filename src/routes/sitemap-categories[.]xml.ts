@@ -8,7 +8,6 @@ export const Route = createFileRoute("/sitemap-categories.xml")({
     handlers: {
       GET: async () => {
         const result = await getPosts({ data: { max: 500 } });
-        const today = new Date().toISOString().split("T")[0];
 
         const uniqueLabels = new Set<string>();
         for (const post of result.posts) {
@@ -21,7 +20,6 @@ export const Route = createFileRoute("/sitemap-categories.xml")({
 
         const entries: SitemapEntry[] = Array.from(uniqueLabels).map((label) => ({
           path: `/posts?label=${encodeURIComponent(label)}`,
-          lastmod: today,
           changefreq: "weekly",
           priority: "0.7",
         }));

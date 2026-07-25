@@ -6,11 +6,9 @@ export const Route = createFileRoute("/sitemap-worldcup.xml")({
   server: {
     handlers: {
       GET: async () => {
-        const today = new Date().toISOString().split("T")[0];
         const entries: SitemapEntry[] = [
           {
             path: "/worldcup",
-            lastmod: today,
             changefreq: "hourly",
             priority: "0.9",
           },
