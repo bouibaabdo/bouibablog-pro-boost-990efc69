@@ -7,6 +7,7 @@ import { z } from "zod";
 type AdminContext = {
   supabase: SupabaseClient<Database>;
   userId: string;
+  claims?: { email?: string; user_metadata?: { email?: string } } | null;
 };
 
 const ADMIN_EMAILS = [

@@ -307,7 +307,6 @@ function SpeechBubble({
         position: "fixed",
         left: x,
         top: y,
-        transform: "translate(-50%, -100%)",
         pointerEvents: "none",
         zIndex: 9997,
         transition: "opacity 0.3s, transform 0.3s",
