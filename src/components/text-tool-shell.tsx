@@ -3,7 +3,18 @@ import { Link } from "@tanstack/react-router";
 import { Loader2, Copy, Check, ArrowRight, type LucideIcon } from "lucide-react";
 
 type Props = {
-  action: "summarize" | "ideas" | "translate" | "seo" | "prompt" | "code";
+  action:
+    | "summarize"
+    | "ideas"
+    | "translate"
+    | "seo"
+    | "prompt"
+    | "code"
+    | "cv"
+    | "email"
+    | "social"
+    | "rewrite"
+    | "study";
   title: string;
   description: string;
   icon: LucideIcon;
