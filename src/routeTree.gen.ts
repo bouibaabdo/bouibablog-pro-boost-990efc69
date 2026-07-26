@@ -39,11 +39,16 @@ import { Route as ToolsIndexRouteImport } from './routes/tools.index'
 import { Route as PostsIndexRouteImport } from './routes/posts.index'
 import { Route as ToolsTranslateRouteImport } from './routes/tools.translate'
 import { Route as ToolsSummarizeRouteImport } from './routes/tools.summarize'
+import { Route as ToolsStudyRouteImport } from './routes/tools.study'
+import { Route as ToolsSocialRouteImport } from './routes/tools.social'
 import { Route as ToolsSeoRouteImport } from './routes/tools.seo'
 import { Route as ToolsRoadmapRouteImport } from './routes/tools.roadmap'
+import { Route as ToolsRewriteRouteImport } from './routes/tools.rewrite'
 import { Route as ToolsPromptRouteImport } from './routes/tools.prompt'
 import { Route as ToolsImageRouteImport } from './routes/tools.image'
 import { Route as ToolsIdeasRouteImport } from './routes/tools.ideas'
+import { Route as ToolsEmailRouteImport } from './routes/tools.email'
+import { Route as ToolsCvRouteImport } from './routes/tools.cv'
 import { Route as ToolsCodeRouteImport } from './routes/tools.code'
 import { Route as PostsIdRouteImport } from './routes/posts.$id'
 import { Route as AuthenticatedFavoritesRouteImport } from './routes/_authenticated/favorites'
@@ -208,6 +213,16 @@ const ToolsSummarizeRoute = ToolsSummarizeRouteImport.update({
   path: '/summarize',
   getParentRoute: () => ToolsRoute,
 } as any)
+const ToolsStudyRoute = ToolsStudyRouteImport.update({
+  id: '/study',
+  path: '/study',
+  getParentRoute: () => ToolsRoute,
+} as any)
+const ToolsSocialRoute = ToolsSocialRouteImport.update({
+  id: '/social',
+  path: '/social',
+  getParentRoute: () => ToolsRoute,
+} as any)
 const ToolsSeoRoute = ToolsSeoRouteImport.update({
   id: '/seo',
   path: '/seo',
@@ -216,6 +231,11 @@ const ToolsSeoRoute = ToolsSeoRouteImport.update({
 const ToolsRoadmapRoute = ToolsRoadmapRouteImport.update({
   id: '/roadmap',
   path: '/roadmap',
+  getParentRoute: () => ToolsRoute,
+} as any)
+const ToolsRewriteRoute = ToolsRewriteRouteImport.update({
+  id: '/rewrite',
+  path: '/rewrite',
   getParentRoute: () => ToolsRoute,
 } as any)
 const ToolsPromptRoute = ToolsPromptRouteImport.update({
@@ -231,6 +251,16 @@ const ToolsImageRoute = ToolsImageRouteImport.update({
 const ToolsIdeasRoute = ToolsIdeasRouteImport.update({
   id: '/ideas',
   path: '/ideas',
+  getParentRoute: () => ToolsRoute,
+} as any)
+const ToolsEmailRoute = ToolsEmailRouteImport.update({
+  id: '/email',
+  path: '/email',
+  getParentRoute: () => ToolsRoute,
+} as any)
+const ToolsCvRoute = ToolsCvRouteImport.update({
+  id: '/cv',
+  path: '/cv',
   getParentRoute: () => ToolsRoute,
 } as any)
 const ToolsCodeRoute = ToolsCodeRouteImport.update({
@@ -339,11 +369,16 @@ export interface FileRoutesByFullPath {
   '/favorites': typeof AuthenticatedFavoritesRoute
   '/posts/$id': typeof PostsIdRoute
   '/tools/code': typeof ToolsCodeRoute
+  '/tools/cv': typeof ToolsCvRoute
+  '/tools/email': typeof ToolsEmailRoute
   '/tools/ideas': typeof ToolsIdeasRoute
   '/tools/image': typeof ToolsImageRoute
   '/tools/prompt': typeof ToolsPromptRoute
+  '/tools/rewrite': typeof ToolsRewriteRoute
   '/tools/roadmap': typeof ToolsRoadmapRoute
   '/tools/seo': typeof ToolsSeoRoute
+  '/tools/social': typeof ToolsSocialRoute
+  '/tools/study': typeof ToolsStudyRoute
   '/tools/summarize': typeof ToolsSummarizeRoute
   '/tools/translate': typeof ToolsTranslateRoute
   '/posts/': typeof PostsIndexRoute
@@ -387,11 +422,16 @@ export interface FileRoutesByTo {
   '/favorites': typeof AuthenticatedFavoritesRoute
   '/posts/$id': typeof PostsIdRoute
   '/tools/code': typeof ToolsCodeRoute
+  '/tools/cv': typeof ToolsCvRoute
+  '/tools/email': typeof ToolsEmailRoute
   '/tools/ideas': typeof ToolsIdeasRoute
   '/tools/image': typeof ToolsImageRoute
   '/tools/prompt': typeof ToolsPromptRoute
+  '/tools/rewrite': typeof ToolsRewriteRoute
   '/tools/roadmap': typeof ToolsRoadmapRoute
   '/tools/seo': typeof ToolsSeoRoute
+  '/tools/social': typeof ToolsSocialRoute
+  '/tools/study': typeof ToolsStudyRoute
   '/tools/summarize': typeof ToolsSummarizeRoute
   '/tools/translate': typeof ToolsTranslateRoute
   '/posts': typeof PostsIndexRoute
@@ -439,11 +479,16 @@ export interface FileRoutesById {
   '/_authenticated/favorites': typeof AuthenticatedFavoritesRoute
   '/posts/$id': typeof PostsIdRoute
   '/tools/code': typeof ToolsCodeRoute
+  '/tools/cv': typeof ToolsCvRoute
+  '/tools/email': typeof ToolsEmailRoute
   '/tools/ideas': typeof ToolsIdeasRoute
   '/tools/image': typeof ToolsImageRoute
   '/tools/prompt': typeof ToolsPromptRoute
+  '/tools/rewrite': typeof ToolsRewriteRoute
   '/tools/roadmap': typeof ToolsRoadmapRoute
   '/tools/seo': typeof ToolsSeoRoute
+  '/tools/social': typeof ToolsSocialRoute
+  '/tools/study': typeof ToolsStudyRoute
   '/tools/summarize': typeof ToolsSummarizeRoute
   '/tools/translate': typeof ToolsTranslateRoute
   '/posts/': typeof PostsIndexRoute
@@ -491,11 +536,16 @@ export interface FileRouteTypes {
     | '/favorites'
     | '/posts/$id'
     | '/tools/code'
+    | '/tools/cv'
+    | '/tools/email'
     | '/tools/ideas'
     | '/tools/image'
     | '/tools/prompt'
+    | '/tools/rewrite'
     | '/tools/roadmap'
     | '/tools/seo'
+    | '/tools/social'
+    | '/tools/study'
     | '/tools/summarize'
     | '/tools/translate'
     | '/posts/'
@@ -539,11 +589,16 @@ export interface FileRouteTypes {
     | '/favorites'
     | '/posts/$id'
     | '/tools/code'
+    | '/tools/cv'
+    | '/tools/email'
     | '/tools/ideas'
     | '/tools/image'
     | '/tools/prompt'
+    | '/tools/rewrite'
     | '/tools/roadmap'
     | '/tools/seo'
+    | '/tools/social'
+    | '/tools/study'
     | '/tools/summarize'
     | '/tools/translate'
     | '/posts'
@@ -590,11 +645,16 @@ export interface FileRouteTypes {
     | '/_authenticated/favorites'
     | '/posts/$id'
     | '/tools/code'
+    | '/tools/cv'
+    | '/tools/email'
     | '/tools/ideas'
     | '/tools/image'
     | '/tools/prompt'
+    | '/tools/rewrite'
     | '/tools/roadmap'
     | '/tools/seo'
+    | '/tools/social'
+    | '/tools/study'
     | '/tools/summarize'
     | '/tools/translate'
     | '/posts/'
@@ -857,6 +917,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ToolsSummarizeRouteImport
       parentRoute: typeof ToolsRoute
     }
+    '/tools/study': {
+      id: '/tools/study'
+      path: '/study'
+      fullPath: '/tools/study'
+      preLoaderRoute: typeof ToolsStudyRouteImport
+      parentRoute: typeof ToolsRoute
+    }
+    '/tools/social': {
+      id: '/tools/social'
+      path: '/social'
+      fullPath: '/tools/social'
+      preLoaderRoute: typeof ToolsSocialRouteImport
+      parentRoute: typeof ToolsRoute
+    }
     '/tools/seo': {
       id: '/tools/seo'
       path: '/seo'
@@ -869,6 +943,13 @@ declare module '@tanstack/react-router' {
       path: '/roadmap'
       fullPath: '/tools/roadmap'
       preLoaderRoute: typeof ToolsRoadmapRouteImport
+      parentRoute: typeof ToolsRoute
+    }
+    '/tools/rewrite': {
+      id: '/tools/rewrite'
+      path: '/rewrite'
+      fullPath: '/tools/rewrite'
+      preLoaderRoute: typeof ToolsRewriteRouteImport
       parentRoute: typeof ToolsRoute
     }
     '/tools/prompt': {
@@ -890,6 +971,20 @@ declare module '@tanstack/react-router' {
       path: '/ideas'
       fullPath: '/tools/ideas'
       preLoaderRoute: typeof ToolsIdeasRouteImport
+      parentRoute: typeof ToolsRoute
+    }
+    '/tools/email': {
+      id: '/tools/email'
+      path: '/email'
+      fullPath: '/tools/email'
+      preLoaderRoute: typeof ToolsEmailRouteImport
+      parentRoute: typeof ToolsRoute
+    }
+    '/tools/cv': {
+      id: '/tools/cv'
+      path: '/cv'
+      fullPath: '/tools/cv'
+      preLoaderRoute: typeof ToolsCvRouteImport
       parentRoute: typeof ToolsRoute
     }
     '/tools/code': {
@@ -1034,11 +1129,16 @@ const AuthenticatedRouteRouteWithChildren =
 
 interface ToolsRouteChildren {
   ToolsCodeRoute: typeof ToolsCodeRoute
+  ToolsCvRoute: typeof ToolsCvRoute
+  ToolsEmailRoute: typeof ToolsEmailRoute
   ToolsIdeasRoute: typeof ToolsIdeasRoute
   ToolsImageRoute: typeof ToolsImageRoute
   ToolsPromptRoute: typeof ToolsPromptRoute
+  ToolsRewriteRoute: typeof ToolsRewriteRoute
   ToolsRoadmapRoute: typeof ToolsRoadmapRoute
   ToolsSeoRoute: typeof ToolsSeoRoute
+  ToolsSocialRoute: typeof ToolsSocialRoute
+  ToolsStudyRoute: typeof ToolsStudyRoute
   ToolsSummarizeRoute: typeof ToolsSummarizeRoute
   ToolsTranslateRoute: typeof ToolsTranslateRoute
   ToolsIndexRoute: typeof ToolsIndexRoute
@@ -1046,11 +1146,16 @@ interface ToolsRouteChildren {
 
 const ToolsRouteChildren: ToolsRouteChildren = {
   ToolsCodeRoute: ToolsCodeRoute,
+  ToolsCvRoute: ToolsCvRoute,
+  ToolsEmailRoute: ToolsEmailRoute,
   ToolsIdeasRoute: ToolsIdeasRoute,
   ToolsImageRoute: ToolsImageRoute,
   ToolsPromptRoute: ToolsPromptRoute,
+  ToolsRewriteRoute: ToolsRewriteRoute,
   ToolsRoadmapRoute: ToolsRoadmapRoute,
   ToolsSeoRoute: ToolsSeoRoute,
+  ToolsSocialRoute: ToolsSocialRoute,
+  ToolsStudyRoute: ToolsStudyRoute,
   ToolsSummarizeRoute: ToolsSummarizeRoute,
   ToolsTranslateRoute: ToolsTranslateRoute,
   ToolsIndexRoute: ToolsIndexRoute,
