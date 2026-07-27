@@ -93,6 +93,7 @@ export const publishPostToFacebookFn = createServerFn({ method: "POST" })
           body: JSON.stringify({
             url: photoUrl,
             caption: post.facebook_post_ar,
+            published: true,
             access_token: activeToken,
           }),
         });
@@ -119,6 +120,7 @@ export const publishPostToFacebookFn = createServerFn({ method: "POST" })
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             message: post.facebook_post_ar,
+            published: true,
             access_token: activeToken,
           }),
         });
