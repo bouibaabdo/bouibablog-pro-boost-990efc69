@@ -1,0 +1,25 @@
+{
+  "title": "تشغيل الذكاء الاصطناعي دون إنترنت: كيف جعل تسريع العتاد المحلي ومكتبات Quantization الـ AI صفراً في التكلفة وآمناً 100%",
+  "slug": "local-llm-privacy-hardware-acceleration-2026",
+  "excerpt": "تقييم تقني متقدم لكيفية تشغيل النماذج اللغوية الضخمة (Offline LLMs) على الأجهزة الشخصية والسيرفرات الخاصة بأعلى أداء وبدون أي اتصال خارجي.",
+  "meta_description": "أحدث أخبار وتقنيات الذكاء الاصطناعي المحلي 2026: كيف تعمل تقنيات Quantization (GGUF/EXL2)، تسريع كروت الشاشة والمعالجات، وحماية الخصوصية المطلقة.",
+  "target_keywords": [
+    "تشغيل الذكاء الاصطناعي بدون إنترنت",
+    "Offline LLM local AI tutorial",
+    "حماية خصوصية البيانات الذكاء الاصطناعي",
+    "تقنيات Quantization GGUF Ollama",
+    "Local AI hardware acceleration"
+  ],
+  "thumbnail": "https://www.bouibacademy.me/local-llm-hardware-acceleration-cover.png",
+  "category": "AI News",
+  "tags": [
+    "Local AI",
+    "Privacy",
+    "Ollama",
+    "Quantization",
+    "GGUF",
+    "Hardware"
+  ],
+  "created_at": "2026-07-27",
+  "language": "ar"
+}
