@@ -1,0 +1,25 @@
+{
+  "title": "بناء نظام RAG محلي للاستعلام عن المستندات باستخدام LangChain و Ollama",
+  "slug": "building-rag-system-langchain-ollama",
+  "excerpt": "تعلم كيفية بناء نظام استرجاع المعلومات وتوليد الإجابات (RAG) محلياً 100% للاستعلام عن مستندات PDF والوثائق الخاصة باستخدام LangChain و Ollama.",
+  "meta_description": "دليل عملي شامل لبناء نظام RAG محلي باستخدام LangChain و Ollama و ChromaDB: تحويل النصوص إلى Vector Embeddings والبحث السيمانتك بدون APIs مدفوعة.",
+  "target_keywords": [
+    "بناء نظام RAG محلي",
+    "LangChain Ollama RAG tutorial",
+    "الاستعلام عن ملفات PDF بالذكاء الاصطناعي",
+    "Local RAG LangChain Python",
+    "ChromaDB Ollama embedding"
+  ],
+  "thumbnail": "https://www.bouibacademy.me/rag-system-ollama-cover.png",
+  "category": "AI Automation",
+  "tags": [
+    "RAG",
+    "LangChain",
+    "Ollama",
+    "Vector Database",
+    "Python",
+    "Local AI"
+  ],
+  "created_at": "2026-07-27",
+  "language": "ar"
+}

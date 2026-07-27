@@ -1,0 +1,25 @@
+{
+  "title": "دليل الشامل لشرح ثغرات OWASP Top 10 وكيفية حماية موقعك منها لعام 2026",
+  "slug": "owasp-top-10-security-vulnerabilities-guide",
+  "excerpt": "استعرض الدليل العملي لأخطر 10 ثغرات أمنية في تطبيقات الويب وفق تصنيف OWASP Top 10، مع شرح كيفية اكتشافها وتأمين كودك وموقعك بأسلوب احترافي.",
+  "meta_description": "دليل شامل لأبرز ثغرات OWASP Top 10: حقن الكود SQL Injection، ثغرة Broken Access Control، ثغرات XSS، وكيفية حماية تطبيقات الويب والسيرفرات من الاختراق.",
+  "target_keywords": [
+    "شرح ثغرات OWASP Top 10",
+    "OWASP Top 10 tutorial arabic",
+    "حماية المواقع من الثغرات الأمنية",
+    "ثغرة SQL Injection و XSS",
+    "الأمن السيبراني للمطورين"
+  ],
+  "thumbnail": "https://www.bouibacademy.me/owasp-security-vulnerabilities-cover.png",
+  "category": "Cybersecurity",
+  "tags": [
+    "Cybersecurity",
+    "OWASP",
+    "Security",
+    "Ethical Hacking",
+    "SQL Injection",
+    "XSS"
+  ],
+  "created_at": "2026-07-27",
+  "language": "ar"
+}

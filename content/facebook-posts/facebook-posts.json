@@ -1,10 +1,55 @@
 [
   {
+    "id": "building-rag-system-langchain-ollama",
+    "title": "بناء نظام RAG محلي للاستعلام عن المستندات باستخدام LangChain و Ollama",
+    "facebook_post_ar": "📌 بناء نظام RAG محلي للاستعلام عن المستندات باستخدام LangChain و Ollama\n\n💡 تعلم كيفية بناء نظام استرجاع المعلومات وتوليد الإجابات (RAG) محلياً 100% للاستعلام عن مستندات PDF والوثائق الخاصة باستخدام LangChain و Ollama.\n\n🔥 أهم النقاط والفوائد العملية:\n• شرح عملي بالخطوات والصور 💻\n• حماية الخصوصية ومجاني 100% 🔒\n• روابط تنفيدية وأكواد جاهزة الاستخدام 🚀\n\n👇 رابط الشرح الكامل والأدوات في أول تعليق:\n🔗 https://www.bouibacademy.me/posts/building-rag-system-langchain-ollama\n\n#BouibaAcademy #Bouiba_Academy #أدوات_الذكاء_الاصطناعي #تقنية #الذكاء_الاصطناعي #AI",
+    "facebook_comment_link": "https://www.bouibacademy.me/posts/building-rag-system-langchain-ollama",
+    "thumbnail": "https://www.bouibacademy.me/rag-system-ollama-cover.png",
+    "category": "AI Automation",
+    "created_at": "2026-07-27"
+  },
+  {
+    "id": "google-cloud-run-free-tier-deployment",
+    "title": "نشر تطبيقات Web و APIs مجاناً على Google Cloud Run ببروتوكول HTTPS تلقائي",
+    "facebook_post_ar": "📌 نشر تطبيقات Web و APIs مجاناً على Google Cloud Run ببروتوكول HTTPS تلقائي\n\n💡 دليل خطوة بخطوة لنشر حاويات Docker وتطبيقات Node.js و Python مجاناً على منصة Google Cloud Run بدون إدارة سيرفرات مع نطاق وشهادة أمان تلقائية.\n\n🔥 أهم النقاط والفوائد العملية:\n• شرح عملي بالخطوات والصور 💻\n• حماية الخصوصية ومجاني 100% 🔒\n• روابط تنفيدية وأكواد جاهزة الاستخدام 🚀\n\n👇 رابط الشرح الكامل والأدوات في أول تعليق:\n🔗 https://www.bouibacademy.me/posts/google-cloud-run-free-tier-deployment\n\n#BouibaAcademy #Bouiba_Academy #أدوات_الذكاء_الاصطناعي #تقنية",
+    "facebook_comment_link": "https://www.bouibacademy.me/posts/google-cloud-run-free-tier-deployment",
+    "thumbnail": "https://www.bouibacademy.me/google-cloud-run-deployment-cover.png",
+    "category": "Developer Tools",
+    "created_at": "2026-07-27"
+  },
+  {
+    "id": "make-vs-n8n-automation-comparison-2026",
+    "title": "مقارنة شاملة بين n8n و Make (Integromat): أيهما أفضل لأتمتة أعمالك في 2026؟",
+    "facebook_post_ar": "📌 مقارنة شاملة بين n8n و Make (Integromat): أيهما أفضل لأتمتة أعمالك في 2026؟\n\n💡 مقارنة تقنية مفصلة بين منصتي الأتمتة الأشهر n8n و Make من حيث التكلفة، سهولة الاستخدام، استضافة الخادم الذاتي، والدمج مع الذكاء الاصطناعي.\n\n🔥 أهم النقاط والفوائد العملية:\n• شرح عملي بالخطوات والصور 💻\n• حماية الخصوصية ومجاني 100% 🔒\n• روابط تنفيدية وأكواد جاهزة الاستخدام 🚀\n\n👇 رابط الشرح الكامل والأدوات في أول تعليق:\n🔗 https://www.bouibacademy.me/posts/make-vs-n8n-automation-comparison-2026\n\n#BouibaAcademy #Bouiba_Academy #أدوات_الذكاء_الاصطناعي #تقنية #أتمتة #Automation #n8n",
+    "facebook_comment_link": "https://www.bouibacademy.me/posts/make-vs-n8n-automation-comparison-2026",
+    "thumbnail": "https://www.bouibacademy.me/make-vs-n8n-comparison-cover.png",
+    "category": "n8n",
+    "created_at": "2026-07-27"
+  },
+  {
+    "id": "owasp-top-10-security-vulnerabilities-guide",
+    "title": "دليل الشامل لشرح ثغرات OWASP Top 10 وكيفية حماية موقعك منها لعام 2026",
+    "facebook_post_ar": "📌 دليل الشامل لشرح ثغرات OWASP Top 10 وكيفية حماية موقعك منها لعام 2026\n\n💡 استعرض الدليل العملي لأخطر 10 ثغرات أمنية في تطبيقات الويب وفق تصنيف OWASP Top 10، مع شرح كيفية اكتشافها وتأمين كودك وموقعك بأسلوب احترافي.\n\n🔥 أهم النقاط والفوائد العملية:\n• شرح عملي بالخطوات والصور 💻\n• حماية الخصوصية ومجاني 100% 🔒\n• روابط تنفيدية وأكواد جاهزة الاستخدام 🚀\n\n👇 رابط الشرح الكامل والأدوات في أول تعليق:\n🔗 https://www.bouibacademy.me/posts/owasp-top-10-security-vulnerabilities-guide\n\n#BouibaAcademy #Bouiba_Academy #أدوات_الذكاء_الاصطناعي #تقنية",
+    "facebook_comment_link": "https://www.bouibacademy.me/posts/owasp-top-10-security-vulnerabilities-guide",
+    "thumbnail": "https://www.bouibacademy.me/owasp-security-vulnerabilities-cover.png",
+    "category": "Cybersecurity",
+    "created_at": "2026-07-27"
+  },
+  {
+    "id": "structured-data-schema-org-seo-guide",
+    "title": "دليل إضافة البيانات المنظمة Schema.org لتحسين ظهور موقعك في نتائج البحث والغواصات الإخبارية",
+    "facebook_post_ar": "📌 دليل إضافة البيانات المنظمة Schema.org لتحسين ظهور موقعك في نتائج البحث والغواصات الإخبارية\n\n💡 تعلم كيفية إضافة أكواد Schema.org JSON-LD لموقعك لرفع نسبة النقر (CTR) والظهور في المقتطفات المميزة (Rich Snippets) والإجابات الذكية على جوجل.\n\n🔥 أهم النقاط والفوائد العملية:\n• شرح عملي بالخطوات والصور 💻\n• حماية الخصوصية ومجاني 100% 🔒\n• روابط تنفيدية وأكواد جاهزة الاستخدام 🚀\n\n👇 رابط الشرح الكامل والأدوات في أول تعليق:\n🔗 https://www.bouibacademy.me/posts/structured-data-schema-org-seo-guide\n\n#BouibaAcademy #Bouiba_Academy #أدوات_الذكاء_الاصطناعي #تقنية #سيو #SEO",
+    "facebook_comment_link": "https://www.bouibacademy.me/posts/structured-data-schema-org-seo-guide",
+    "thumbnail": "https://www.bouibacademy.me/schema-org-seo-cover.png",
+    "category": "SEO",
+    "created_at": "2026-07-27"
+  },
+  {
     "id": "claude-3-5-sonnet-prompt-engineering-guide",
     "title": "دليل احتراف هندسة البرومبت لنموذج Claude 3.5 Sonnet للحصول على نتائج برمجية مبهرة",
     "facebook_post_ar": "📌 دليل احتراف هندسة البرومبت لنموذج Claude 3.5 Sonnet للحصول على نتائج برمجية مبهرة\n\n💡 تعلم تقنيات وأسرار كتابة الأوامر (Prompt Engineering) لنموذج Claude 3.5 Sonnet للحصول على كود برمجية عالي الجودة وتحليل دقيق وتصاميم متطورة.\n\n🔥 أهم النقاط والفوائد العملية:\n• شرح عملي بالخطوات والصور 💻\n• حماية الخصوصية ومجاني 100% 🔒\n• روابط تنفيدية وأكواد جاهزة الاستخدام 🚀\n\n👇 رابط الشرح الكامل والأدوات في أول تعليق:\n🔗 https://www.bouibacademy.me/posts/claude-3-5-sonnet-prompt-engineering-guide\n\n#BouibaAcademy #Bouiba_Academy #أدوات_الذكاء_الاصطناعي #تقنية #الذكاء_الاصطناعي #AI",
     "facebook_comment_link": "https://www.bouibacademy.me/posts/claude-3-5-sonnet-prompt-engineering-guide",
-    "thumbnail": "https://www.bouibacademy.me/claude-sonnet-prompt-engineering-cover.png",
+    "thumbnail": "https://www.bouibacademy.me/claude-sonnet-prompt-engineering-cover.webp",
     "category": "AI Tools",
     "created_at": "2026-07-26"
   },
@@ -13,7 +58,7 @@
     "title": "دليل استخدام Docker للمطورين: من الصفر إلى إطلاق التطبيقات في حاويات سحابية",
     "facebook_post_ar": "📌 دليل استخدام Docker للمطورين: من الصفر إلى إطلاق التطبيقات في حاويات سحابية\n\n💡 تعلم أساسيات Docker وكيفية تحزيم تطبيقات البرمجة وقواعد البيانات في حاويات خفيفة ومستقلة وإطلاقها على السيرفرات السحابية بدون مشاكل توافق.\n\n🔥 أهم النقاط والفوائد العملية:\n• شرح عملي بالخطوات والصور 💻\n• حماية الخصوصية ومجاني 100% 🔒\n• روابط تنفيدية وأكواد جاهزة الاستخدام 🚀\n\n👇 رابط الشرح الكامل والأدوات في أول تعليق:\n🔗 https://www.bouibacademy.me/posts/docker-containers-for-developers-guide\n\n#BouibaAcademy #Bouiba_Academy #أدوات_الذكاء_الاصطناعي #تقنية",
     "facebook_comment_link": "https://www.bouibacademy.me/posts/docker-containers-for-developers-guide",
-    "thumbnail": "https://www.bouibacademy.me/docker-developer-guide-cover.png",
+    "thumbnail": "https://www.bouibacademy.me/docker-developer-guide-cover.webp",
     "category": "Developer Tools",
     "created_at": "2026-07-26"
   },
@@ -22,7 +67,7 @@
     "title": "دليل ربط قاعدة بيانات Supabase PostgreSQL مع n8n وإدارتها بالذكاء الاصطناعي",
     "facebook_post_ar": "📌 دليل ربط قاعدة بيانات Supabase PostgreSQL مع n8n وإدارتها بالذكاء الاصطناعي\n\n💡 شرح عملي لربط قاعدة البيانات السحابية المجانية Supabase مع منصة n8n لإجراء الاستعلامات والتخزين التلقائي وبناء وكلاء AI يستعلمون الجداول دون كود.\n\n🔥 أهم النقاط والفوائد العملية:\n• شرح عملي بالخطوات والصور 💻\n• حماية الخصوصية ومجاني 100% 🔒\n• روابط تنفيدية وأكواد جاهزة الاستخدام 🚀\n\n👇 رابط الشرح الكامل والأدوات في أول تعليق:\n🔗 https://www.bouibacademy.me/posts/supabase-postgres-database-n8n-guide\n\n#BouibaAcademy #Bouiba_Academy #أدوات_الذكاء_الاصطناعي #تقنية #الذكاء_الاصطناعي #AI #أتمتة #Automation #n8n",
     "facebook_comment_link": "https://www.bouibacademy.me/posts/supabase-postgres-database-n8n-guide",
-    "thumbnail": "https://www.bouibacademy.me/supabase-postgres-n8n-cover.png",
+    "thumbnail": "https://www.bouibacademy.me/supabase-postgres-n8n-cover.webp",
     "category": "AI Automation",
     "created_at": "2026-07-26"
   },
@@ -31,7 +76,7 @@
     "title": "أتمتة النشر التلقائي على فيسبوك وتليجرام باستخدام n8n و Webhooks",
     "facebook_post_ar": "📌 أتمتة النشر التلقائي على فيسبوك وتليجرام باستخدام n8n و Webhooks\n\n💡 دليل عملي لبناء سيناريو أتمتة مجاني 100% لنشر المقالات والتحديثات تلقائياً على صفحة فيسبوك وقناة تليجرام فور نشرها على مدونتك باستخدام n8n.\n\n🔥 أهم النقاط والفوائد العملية:\n• شرح عملي بالخطوات والصور 💻\n• حماية الخصوصية ومجاني 100% 🔒\n• روابط تنفيدية وأكواد جاهزة الاستخدام 🚀\n\n👇 رابط الشرح الكامل والأدوات في أول تعليق:\n🔗 https://www.bouibacademy.me/posts/automated-social-media-publishing-n8n-webhooks\n\n#BouibaAcademy #Bouiba_Academy #أدوات_الذكاء_الاصطناعي #تقنية #أتمتة #Automation #n8n",
     "facebook_comment_link": "https://www.bouibacademy.me/posts/automated-social-media-publishing-n8n-webhooks",
-    "thumbnail": "https://www.bouibacademy.me/social-media-n8n-cover.png",
+    "thumbnail": "https://www.bouibacademy.me/social-media-n8n-cover.webp",
     "category": "n8n",
     "created_at": "2026-07-25"
   },
@@ -40,7 +85,7 @@
     "title": "دليل تشغيل DeepSeek-R1 محلياً وربطه مع n8n لبناء وكيل ذكاء اصطناعي آمن ومجاني 100%",
     "facebook_post_ar": "📌 دليل تشغيل DeepSeek-R1 محلياً وربطه مع n8n لبناء وكيل ذكاء اصطناعي آمن ومجاني 100%\n\n💡 تعلم كيفية تشغيل نموذج DeepSeek-R1 محلياً باستخدام Ollama وربطه بـ n8n لبناء وكيل ذكاء اصطناعي ذكي ينفذ المهام التلقائية بحرية كاملة ودون تكاليف APIs.\n\n🔥 أهم النقاط والفوائد العملية:\n• شرح عملي بالخطوات والصور 💻\n• حماية الخصوصية ومجاني 100% 🔒\n• روابط تنفيدية وأكواد جاهزة الاستخدام 🚀\n\n👇 رابط الشرح الكامل والأدوات في أول تعليق:\n🔗 https://www.bouibacademy.me/posts/deepseek-r1-n8n-local-ai-agent\n\n#BouibaAcademy #Bouiba_Academy #أدوات_الذكاء_الاصطناعي #تقنية #الذكاء_الاصطناعي #AI #أتمتة #Automation #n8n",
     "facebook_comment_link": "https://www.bouibacademy.me/posts/deepseek-r1-n8n-local-ai-agent",
-    "thumbnail": "https://www.bouibacademy.me/deepseek-r1-n8n-cover.png",
+    "thumbnail": "https://www.bouibacademy.me/deepseek-r1-n8n-cover.webp",
     "category": "AI Automation",
     "created_at": "2026-07-25"
   },
@@ -49,7 +94,7 @@
     "title": "دليل الحصول على سيرفرات سحابية وأدوات مطورين مدفوعة مجاناً لعام 2026",
     "facebook_post_ar": "📌 دليل الحصول على سيرفرات سحابية وأدوات مطورين مدفوعة مجاناً لعام 2026\n\n💡 دليل محين يستعرض أفضل الطرق القانونية للحصول على خوادم سحابية (Free VPS)، استضافات مجانية، وحزم أدوات تطوير برمجية مدفوعة بآلاف الدولارات مجاناً.\n\n🔥 أهم النقاط والفوائد العملية:\n• شرح عملي بالخطوات والصور 💻\n• حماية الخصوصية ومجاني 100% 🔒\n• روابط تنفيدية وأكواد جاهزة الاستخدام 🚀\n\n👇 رابط الشرح الكامل والأدوات في أول تعليق:\n🔗 https://www.bouibacademy.me/posts/free-cloud-servers-and-developer-tools-guide\n\n#BouibaAcademy #Bouiba_Academy #أدوات_الذكاء_الاصطناعي #تقنية",
     "facebook_comment_link": "https://www.bouibacademy.me/posts/free-cloud-servers-and-developer-tools-guide",
-    "thumbnail": "https://www.bouibacademy.me/free-cloud-servers-cover.png",
+    "thumbnail": "https://www.bouibacademy.me/free-cloud-servers-cover.webp",
     "category": "Developer Tools",
     "created_at": "2026-07-25"
   },
@@ -58,7 +103,7 @@
     "title": "دليل تحسين أداء وسرعة المواقع إلى 100/100 على PageSpeed باستخدام Cloudflare",
     "facebook_post_ar": "📌 دليل تحسين أداء وسرعة المواقع إلى 100/100 على PageSpeed باستخدام Cloudflare\n\n💡 تعلم كيفية رفع تقييم موقعك على Google PageSpeed Insights وتسريع تحميل الصور والملفات وتخفيض LCP و FCP باستخدام إعدادات Cloudflare المحترفة.\n\n🔥 أهم النقاط والفوائد العملية:\n• شرح عملي بالخطوات والصور 💻\n• حماية الخصوصية ومجاني 100% 🔒\n• روابط تنفيدية وأكواد جاهزة الاستخدام 🚀\n\n👇 رابط الشرح الكامل والأدوات في أول تعليق:\n🔗 https://www.bouibacademy.me/posts/tech-seo-pagespeed-cloudflare-optimization\n\n#BouibaAcademy #Bouiba_Academy #أدوات_الذكاء_الاصطناعي #تقنية #سيو #SEO",
     "facebook_comment_link": "https://www.bouibacademy.me/posts/tech-seo-pagespeed-cloudflare-optimization",
-    "thumbnail": "https://www.bouibacademy.me/tech-seo-cloudflare-cover.png",
+    "thumbnail": "https://www.bouibacademy.me/tech-seo-cloudflare-cover.webp",
     "category": "SEO",
     "created_at": "2026-07-25"
   },
@@ -67,7 +112,7 @@
     "title": "أفضل 5 أدوات مفتوحة المصدر لفحص الثغرات والأمن السيبراني لعام 2026",
     "facebook_post_ar": "📌 أفضل 5 أدوات مفتوحة المصدر لفحص الثغرات والأمن السيبراني لعام 2026\n\n💡 استعرض أفضل 5 أدوات احترافية ومجانية لفحص الثغرات واختبار الاختراق الأخلاقي (Penetration Testing) وتأمين السيرفرات والمواقع بأسلوب عملي ودقيق.\n\n🔥 أهم النقاط والفوائد العملية:\n• شرح عملي بالخطوات والصور 💻\n• حماية الخصوصية ومجاني 100% 🔒\n• روابط تنفيدية وأكواد جاهزة الاستخدام 🚀\n\n👇 رابط الشرح الكامل والأدوات في أول تعليق:\n🔗 https://www.bouibacademy.me/posts/top-ethical-hacking-and-cybersecurity-tools\n\n#BouibaAcademy #Bouiba_Academy #أدوات_الذكاء_الاصطناعي #تقنية",
     "facebook_comment_link": "https://www.bouibacademy.me/posts/top-ethical-hacking-and-cybersecurity-tools",
-    "thumbnail": "https://www.bouibacademy.me/cybersecurity-tools-cover.png",
+    "thumbnail": "https://www.bouibacademy.me/cybersecurity-tools-cover.webp",
     "category": "Cybersecurity",
     "created_at": "2026-07-25"
   },
@@ -76,7 +121,7 @@
     "title": "أفضل سيناريوهات n8n للمبتدئين: دليل عملي لبناء أتمتة المهام والذكاء الاصطناعي",
     "facebook_post_ar": "📌 أفضل سيناريوهات n8n للمبتدئين: دليل عملي لبناء أتمتة المهام والذكاء الاصطناعي\n\n💡 دليل عملي مخصص للمبتدئين يشرح أفضل 5 سيناريوهات أتمتة باستخدام منصة n8n، وكيفية ربط الخدمات والذكاء الاصطناعي لإنشاء تدفقات عمل احترافية.\n\n🔥 أهم النقاط والفوائد العملية:\n• شرح عملي بالخطوات والصور 💻\n• حماية الخصوصية ومجاني 100% 🔒\n• روابط تنفيدية وأكواد جاهزة الاستخدام 🚀\n\n👇 رابط الشرح الكامل والأدوات في أول تعليق:\n🔗 https://www.bouibacademy.me/posts/best-n8n-workflows-for-beginners\n\n#BouibaAcademy #Bouiba_Academy #أدوات_الذكاء_الاصطناعي #تقنية #الذكاء_الاصطناعي #AI #أتمتة #Automation #n8n",
     "facebook_comment_link": "https://www.bouibacademy.me/posts/best-n8n-workflows-for-beginners",
-    "thumbnail": "https://www.bouibacademy.me/n8n-workflows-cover.png",
+    "thumbnail": "https://www.bouibacademy.me/n8n-workflows-cover.webp",
     "category": "n8n",
     "created_at": "2026-07-21"
   },
@@ -94,7 +139,7 @@
     "title": "كيفية ربط Ollama مع n8n لبناء أتمتة محلية بالذكاء الاصطناعي",
     "facebook_post_ar": "📌 كيفية ربط Ollama مع n8n لبناء أتمتة محلية بالذكاء الاصطناعي\n\n💡 دليل عملي شامل لربط Ollama مع n8n على نفس جهازك المحلي لبناء سير عمل أتمتة ذكي وآمن بالكامل ومجاني دون الحاجة لـ APIs مدفوعة.\n\n🔥 أهم النقاط والفوائد العملية:\n• شرح عملي بالخطوات والصور 💻\n• حماية الخصوصية ومجاني 100% 🔒\n• روابط تنفيدية وأكواد جاهزة الاستخدام 🚀\n\n👇 رابط الشرح الكامل والأدوات في أول تعليق:\n🔗 https://www.bouibacademy.me/posts/how-to-connect-ollama-with-n8n-locally\n\n#BouibaAcademy #Bouiba_Academy #أدوات_الذكاء_الاصطناعي #تقنية #الذكاء_الاصطناعي #AI #أتمتة #Automation #n8n",
     "facebook_comment_link": "https://www.bouibacademy.me/posts/how-to-connect-ollama-with-n8n-locally",
-    "thumbnail": "https://www.bouibacademy.me/ollama-n8n-cover.png",
+    "thumbnail": "https://www.bouibacademy.me/ollama-n8n-cover.webp",
     "category": "AI Automation",
     "created_at": "2026-07-17"
   },
