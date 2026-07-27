@@ -139,8 +139,8 @@ function AdminPublisherStudio() {
           postPayload: {
             id: post.id,
             title: post.title,
-            facebook_post_ar: post.facebook?.post_text,
-            facebook_comment_link: post.url,
+            facebook_post_ar: post.facebook?.post_text || post.facebook_post_ar || post.title,
+            facebook_comment_link: post.facebook?.comment_link || post.facebook_comment_link || post.url,
             thumbnail: post.thumbnail,
           },
         },
