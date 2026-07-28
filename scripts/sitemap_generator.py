@@ -12,6 +12,8 @@ import time
 from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
+sys.stdout.reconfigure(encoding="utf-8")
+
 BASE_URL = "https://www.bouibacademy.me"
 NS = {"ns": "http://www.sitemaps.org/schemas/sitemap/0.9"}
 

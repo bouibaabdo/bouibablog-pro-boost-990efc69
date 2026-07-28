@@ -35,7 +35,8 @@ export const Route = createFileRoute("/_authenticated/admin/facebook")({
   component: AdminPublisherStudio,
 });
 
-type PlatformTab = "all" | "facebook" | "telegram" | "linkedin" | "twitter" | "pinterest" | "reddit";
+type PlatformTab =
+  "all" | "facebook" | "telegram" | "linkedin" | "twitter" | "pinterest" | "reddit";
 
 function AdminPublisherStudio() {
   const [activeTab, setActiveTab] = useState<PlatformTab>("all");
@@ -54,7 +55,7 @@ function AdminPublisherStudio() {
   const [publishingId, setPublishingId] = useState<string | null>(null);
   const [publishingTelegramId, setPublishingTelegramId] = useState<string | null>(null);
   const [publishingWebhookId, setPublishingWebhookId] = useState<string | null>(null);
-  
+
   const [tokenError, setTokenError] = useState(false);
   const [publishedResults, setPublishedResults] = useState<Record<string, string>>({});
   const [telegramResults, setTelegramResults] = useState<Record<string, string>>({});
@@ -140,7 +141,8 @@ function AdminPublisherStudio() {
             id: post.id,
             title: post.title,
             facebook_post_ar: post.facebook?.post_text || post.facebook_post_ar || post.title,
-            facebook_comment_link: post.facebook?.comment_link || post.facebook_comment_link || post.url,
+            facebook_comment_link:
+              post.facebook?.comment_link || post.facebook_comment_link || post.url,
             thumbnail: post.thumbnail,
           },
         },
@@ -229,7 +231,7 @@ function AdminPublisherStudio() {
       p.title?.toLowerCase().includes(search.toLowerCase()) ||
       p.category?.toLowerCase().includes(search.toLowerCase()) ||
       p.facebook?.post_text?.toLowerCase().includes(search.toLowerCase()) ||
-      p.telegram?.post_markdown?.toLowerCase().includes(search.toLowerCase())
+      p.telegram?.post_markdown?.toLowerCase().includes(search.toLowerCase()),
   );
 
   return (
@@ -242,7 +244,8 @@ function AdminPublisherStudio() {
             مركز النشر الشامل لجميع المنصات (Omni-Channel Publisher)
           </h2>
           <p className="text-muted-foreground text-xs sm:text-sm mt-1">
-            أنشئ، وانشر، وشارك المقالات والأدوات بنقرة واحدة عبر فيسبوك، تليجرام، لينكد إن، إكس (تويتر)، بينتريست وريديت!
+            أنشئ، وانشر، وشارك المقالات والأدوات بنقرة واحدة عبر فيسبوك، تليجرام، لينكد إن، إكس
+            (تويتر)، بينتريست وريديت!
           </p>
         </div>
 
@@ -256,13 +259,23 @@ function AdminPublisherStudio() {
             <Settings2 className="h-4 w-4 text-primary" />
             {showConfig ? "إخفاء الإعدادات" : "مفاتيح المنصات والـ APIs"}
           </Button>
-          <Button variant="outline" size="sm" asChild className="gap-2 font-bold text-xs min-h-[40px]">
+          <Button
+            variant="outline"
+            size="sm"
+            asChild
+            className="gap-2 font-bold text-xs min-h-[40px]"
+          >
             <a href="/content/omni-social-posts/omni-posts.csv" download>
               <FileSpreadsheet className="h-4 w-4 text-emerald-500" />
               تنزيل CSV الشامل
             </a>
           </Button>
-          <Button variant="outline" size="sm" asChild className="gap-2 font-bold text-xs min-h-[40px]">
+          <Button
+            variant="outline"
+            size="sm"
+            asChild
+            className="gap-2 font-bold text-xs min-h-[40px]"
+          >
             <a href="/content/omni-social-posts/omni-posts.json" download>
               <FileCode className="h-4 w-4 text-amber-500" />
               JSON
@@ -337,14 +350,18 @@ function AdminPublisherStudio() {
           <div className="flex items-center justify-between flex-wrap gap-2">
             <div className="flex items-center gap-2">
               <Key className="h-5 w-5 text-primary shrink-0" />
-              <h3 className="font-bold text-sm sm:text-base">إعدادات الربط المباشر والـ APIs لجميع المنصات</h3>
+              <h3 className="font-bold text-sm sm:text-base">
+                إعدادات الربط المباشر والـ APIs لجميع المنصات
+              </h3>
             </div>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {/* Facebook Settings */}
             <div className="space-y-2 border p-3.5 rounded-xl bg-card">
-              <Label className="text-xs font-bold text-sky-400">🔵 Facebook Page ID & Access Token</Label>
+              <Label className="text-xs font-bold text-sky-400">
+                🔵 Facebook Page ID & Access Token
+              </Label>
               <Input
                 value={pageId}
                 onChange={(e) => setPageId(e.target.value)}
@@ -362,7 +379,9 @@ function AdminPublisherStudio() {
 
             {/* Telegram Settings */}
             <div className="space-y-2 border p-3.5 rounded-xl bg-card">
-              <Label className="text-xs font-bold text-sky-400">✈️ Telegram Bot Token & Channel Chat ID</Label>
+              <Label className="text-xs font-bold text-sky-400">
+                ✈️ Telegram Bot Token & Channel Chat ID
+              </Label>
               <Input
                 type="password"
                 value={telegramToken}
@@ -380,7 +399,9 @@ function AdminPublisherStudio() {
 
             {/* Webhook Automation Settings */}
             <div className="space-y-2 border p-3.5 rounded-xl bg-card col-span-full lg:col-span-1">
-              <Label className="text-xs font-bold text-emerald-400">⚡ Webhook URL (n8n / Zapier / Make)</Label>
+              <Label className="text-xs font-bold text-emerald-400">
+                ⚡ Webhook URL (n8n / Zapier / Make)
+              </Label>
               <Input
                 value={webhookUrl}
                 onChange={(e) => setWebhookUrl(e.target.value)}
@@ -394,7 +415,10 @@ function AdminPublisherStudio() {
           </div>
 
           <div className="flex items-center justify-end pt-2">
-            <Button onClick={saveCredentials} className="gap-2 font-bold text-xs bg-primary hover:opacity-90 min-h-[44px] px-6">
+            <Button
+              onClick={saveCredentials}
+              className="gap-2 font-bold text-xs bg-primary hover:opacity-90 min-h-[44px] px-6"
+            >
               <Check className="h-4 w-4" />
               حفظ كل المفاتيح
             </Button>
@@ -415,7 +439,8 @@ function AdminPublisherStudio() {
           />
         </div>
         <div className="text-xs text-muted-foreground font-bold">
-          عرض <span className="text-primary font-black">{filteredPosts.length}</span> من إجمالي {posts.length} منشور
+          عرض <span className="text-primary font-black">{filteredPosts.length}</span> من إجمالي{" "}
+          {posts.length} منشور
         </div>
       </div>
 
@@ -430,17 +455,26 @@ function AdminPublisherStudio() {
           const isRedActive = activeTab === "all" || activeTab === "reddit";
 
           return (
-            <Card key={p.id} className="shadow-card border border-border/80 flex flex-col justify-between overflow-hidden group">
+            <Card
+              key={p.id}
+              className="shadow-card border border-border/80 flex flex-col justify-between overflow-hidden group"
+            >
               <CardHeader className="py-4 border-b border-border/60 bg-muted/20">
                 <div className="flex items-start justify-between gap-3">
                   <div className="space-y-1 min-w-0">
                     <span className="inline-block text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded border border-primary/20">
                       {p.category}
                     </span>
-                    <CardTitle className="text-sm sm:text-base font-bold leading-tight line-clamp-2">{p.title}</CardTitle>
+                    <CardTitle className="text-sm sm:text-base font-bold leading-tight line-clamp-2">
+                      {p.title}
+                    </CardTitle>
                   </div>
                   {p.thumbnail && (
-                    <img src={p.thumbnail} alt="" className="w-14 h-12 rounded object-cover border shrink-0 bg-muted" />
+                    <img
+                      src={p.thumbnail}
+                      alt=""
+                      className="w-14 h-12 rounded object-cover border shrink-0 bg-muted"
+                    />
                   )}
                 </div>
               </CardHeader>
@@ -457,14 +491,29 @@ function AdminPublisherStudio() {
                         <Button
                           size="sm"
                           variant="ghost"
-                          onClick={() => copyToClipboard(p.facebook.post_text, p.id + "-fb", "post")}
+                          onClick={() =>
+                            copyToClipboard(p.facebook.post_text, p.id + "-fb", "post")
+                          }
                           className="h-8 px-2.5 text-xs font-bold gap-1 text-sky-400 hover:bg-sky-500/10 min-h-[36px]"
                         >
-                          {copiedId === p.id + "-fb" ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5" />}
+                          {copiedId === p.id + "-fb" ? (
+                            <Check className="h-3.5 w-3.5 text-emerald-400" />
+                          ) : (
+                            <Copy className="h-3.5 w-3.5" />
+                          )}
                           {copiedId === p.id + "-fb" ? "تم النسخ!" : "نسخ النص"}
                         </Button>
-                        <Button size="sm" variant="outline" asChild className="h-8 text-[11px] font-bold border-sky-500/30 text-sky-300">
-                          <a href={p.facebook.direct_share_url} target="_blank" rel="noopener noreferrer">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          asChild
+                          className="h-8 text-[11px] font-bold border-sky-500/30 text-sky-300"
+                        >
+                          <a
+                            href={p.facebook.direct_share_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
                             <ExternalLink className="h-3 w-3 ml-1" /> مشاركة
                           </a>
                         </Button>
@@ -487,14 +536,29 @@ function AdminPublisherStudio() {
                         <Button
                           size="sm"
                           variant="ghost"
-                          onClick={() => copyToClipboard(p.telegram.post_markdown, p.id + "-tg", "post")}
+                          onClick={() =>
+                            copyToClipboard(p.telegram.post_markdown, p.id + "-tg", "post")
+                          }
                           className="h-8 px-2.5 text-xs font-bold gap-1 text-sky-300 hover:bg-sky-500/10 min-h-[36px]"
                         >
-                          {copiedId === p.id + "-tg" ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5" />}
+                          {copiedId === p.id + "-tg" ? (
+                            <Check className="h-3.5 w-3.5 text-emerald-400" />
+                          ) : (
+                            <Copy className="h-3.5 w-3.5" />
+                          )}
                           {copiedId === p.id + "-tg" ? "تم النسخ!" : "نسخ Telegram"}
                         </Button>
-                        <Button size="sm" variant="outline" asChild className="h-8 text-[11px] font-bold border-sky-400/30 text-sky-300">
-                          <a href={p.telegram.direct_share_url} target="_blank" rel="noopener noreferrer">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          asChild
+                          className="h-8 text-[11px] font-bold border-sky-400/30 text-sky-300"
+                        >
+                          <a
+                            href={p.telegram.direct_share_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
                             <SendHorizontal className="h-3 w-3 ml-1" /> إرسال
                           </a>
                         </Button>
@@ -517,14 +581,29 @@ function AdminPublisherStudio() {
                         <Button
                           size="sm"
                           variant="ghost"
-                          onClick={() => copyToClipboard(p.linkedin.post_text, p.id + "-li", "post")}
+                          onClick={() =>
+                            copyToClipboard(p.linkedin.post_text, p.id + "-li", "post")
+                          }
                           className="h-8 px-2.5 text-xs font-bold gap-1 text-blue-400 hover:bg-blue-500/10 min-h-[36px]"
                         >
-                          {copiedId === p.id + "-li" ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5" />}
+                          {copiedId === p.id + "-li" ? (
+                            <Check className="h-3.5 w-3.5 text-emerald-400" />
+                          ) : (
+                            <Copy className="h-3.5 w-3.5" />
+                          )}
                           {copiedId === p.id + "-li" ? "تم النسخ!" : "نسخ LinkedIn"}
                         </Button>
-                        <Button size="sm" variant="outline" asChild className="h-8 text-[11px] font-bold border-blue-500/30 text-blue-300">
-                          <a href={p.linkedin.direct_share_url} target="_blank" rel="noopener noreferrer">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          asChild
+                          className="h-8 text-[11px] font-bold border-blue-500/30 text-blue-300"
+                        >
+                          <a
+                            href={p.linkedin.direct_share_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
                             <ExternalLink className="h-3 w-3 ml-1" /> نشر على LinkedIn
                           </a>
                         </Button>
@@ -547,14 +626,33 @@ function AdminPublisherStudio() {
                         <Button
                           size="sm"
                           variant="ghost"
-                          onClick={() => copyToClipboard(`${p.twitter.tweet_1}\n\n${p.twitter.tweet_2}`, p.id + "-tw", "post")}
+                          onClick={() =>
+                            copyToClipboard(
+                              `${p.twitter.tweet_1}\n\n${p.twitter.tweet_2}`,
+                              p.id + "-tw",
+                              "post",
+                            )
+                          }
                           className="h-8 px-2.5 text-xs font-bold gap-1 text-slate-200 hover:bg-slate-500/10 min-h-[36px]"
                         >
-                          {copiedId === p.id + "-tw" ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5" />}
+                          {copiedId === p.id + "-tw" ? (
+                            <Check className="h-3.5 w-3.5 text-emerald-400" />
+                          ) : (
+                            <Copy className="h-3.5 w-3.5" />
+                          )}
                           {copiedId === p.id + "-tw" ? "تم النسخ!" : "نسخ Tweet"}
                         </Button>
-                        <Button size="sm" variant="outline" asChild className="h-8 text-[11px] font-bold border-slate-700 text-slate-200">
-                          <a href={p.twitter.direct_share_url} target="_blank" rel="noopener noreferrer">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          asChild
+                          className="h-8 text-[11px] font-bold border-slate-700 text-slate-200"
+                        >
+                          <a
+                            href={p.twitter.direct_share_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
                             <ExternalLink className="h-3 w-3 ml-1" /> تغريد الان
                           </a>
                         </Button>
@@ -575,8 +673,17 @@ function AdminPublisherStudio() {
                       <span className="text-xs font-bold text-rose-400 flex items-center gap-1.5">
                         📌 بينتريست (Pinterest Pin)
                       </span>
-                      <Button size="sm" variant="outline" asChild className="h-8 text-[11px] font-bold border-rose-500/30 text-rose-300">
-                        <a href={p.pinterest.direct_share_url} target="_blank" rel="noopener noreferrer">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        asChild
+                        className="h-8 text-[11px] font-bold border-rose-500/30 text-rose-300"
+                      >
+                        <a
+                          href={p.pinterest.direct_share_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
                           <ExternalLink className="h-3 w-3 ml-1" /> إنشاء Pin
                         </a>
                       </Button>
@@ -594,7 +701,12 @@ function AdminPublisherStudio() {
                     <span className="font-bold flex items-center gap-1.5">
                       <ShieldCheck className="h-4 w-4 text-emerald-400" /> تم النشر على فيسبوك!
                     </span>
-                    <a href={publishedResults[p.id]} target="_blank" rel="noopener noreferrer" className="font-bold underline text-sky-400">
+                    <a
+                      href={publishedResults[p.id]}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-bold underline text-sky-400"
+                    >
                       مشاهدة ↗
                     </a>
                   </div>
@@ -603,7 +715,8 @@ function AdminPublisherStudio() {
                 {telegramResults[p.id] && (
                   <div className="p-3 rounded-lg bg-sky-500/10 border border-sky-500/30 flex items-center justify-between gap-2 text-xs text-sky-300">
                     <span className="font-bold flex items-center gap-1.5">
-                      <SendHorizontal className="h-4 w-4 text-sky-400" /> تم النشر على تليجرام! ({telegramResults[p.id]})
+                      <SendHorizontal className="h-4 w-4 text-sky-400" /> تم النشر على تليجرام! (
+                      {telegramResults[p.id]})
                     </span>
                   </div>
                 )}
@@ -618,7 +731,11 @@ function AdminPublisherStudio() {
                     size="sm"
                     className="gap-1.5 font-bold bg-sky-600 hover:bg-sky-700 text-white min-h-[40px]"
                   >
-                    {publishingId === p.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+                    {publishingId === p.id ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Send className="h-4 w-4" />
+                    )}
                     نشر على فيسبوك
                   </Button>
 
@@ -629,7 +746,11 @@ function AdminPublisherStudio() {
                     variant="secondary"
                     className="gap-1.5 font-bold bg-sky-500/20 text-sky-300 hover:bg-sky-500/30 border border-sky-500/30 min-h-[40px]"
                   >
-                    {publishingTelegramId === p.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <SendHorizontal className="h-4 w-4" />}
+                    {publishingTelegramId === p.id ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <SendHorizontal className="h-4 w-4" />
+                    )}
                     نشر على تليجرام
                   </Button>
 
@@ -641,13 +762,22 @@ function AdminPublisherStudio() {
                       variant="outline"
                       className="gap-1.5 font-bold border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/10 min-h-[40px]"
                     >
-                      {publishingWebhookId === p.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4 text-emerald-400" />}
+                      {publishingWebhookId === p.id ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Sparkles className="h-4 w-4 text-emerald-400" />
+                      )}
                       أتمتة شاملة n8n
                     </Button>
                   )}
                 </div>
 
-                <Button size="sm" variant="ghost" asChild className="h-10 px-3 text-xs min-h-[40px]">
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  asChild
+                  className="h-10 px-3 text-xs min-h-[40px]"
+                >
                   <a href={p.url} target="_blank" rel="noopener noreferrer" className="gap-1.5">
                     <ExternalLink className="h-4 w-4" /> المقال
                   </a>

@@ -684,7 +684,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   {
     name: "Napkin AI",
     arabicName: "نابكين",
-    description: "يحوّل النص المكتوب إلى رسوم بيانية وإنفوجرافيك احترافي تلقائيًا للعروض والمقالات.",
+    description:
+      "يحوّل النص المكتوب إلى رسوم بيانية وإنفوجرافيك احترافي تلقائيًا للعروض والمقالات.",
     category: "design",
     tags: ["إنفوجرافيك", "رسوم توضيحية", "عروض"],
     pricing: "freemium",
@@ -714,7 +715,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   {
     name: "HeyGen",
     arabicName: "هاي جين",
-    description: "إنشاء فيديوهات بمقدّم افتراضي ودبلجة تلقائية بأكثر من 40 لغة مع مزامنة حركة الشفاه.",
+    description:
+      "إنشاء فيديوهات بمقدّم افتراضي ودبلجة تلقائية بأكثر من 40 لغة مع مزامنة حركة الشفاه.",
     category: "video",
     tags: ["أفاتار", "دبلجة", "فيديو تسويقي"],
     pricing: "freemium",
@@ -724,7 +726,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   {
     name: "CapCut",
     arabicName: "كاب كات",
-    description: "محرر فيديو مجاني بأدوات ذكاء اصطناعي للترجمة التلقائية وإزالة الخلفية والمونتاج السريع.",
+    description:
+      "محرر فيديو مجاني بأدوات ذكاء اصطناعي للترجمة التلقائية وإزالة الخلفية والمونتاج السريع.",
     category: "video",
     tags: ["مونتاج", "ترجمة تلقائية", "ريلز"],
     pricing: "freemium",
@@ -774,7 +777,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   {
     name: "Notion AI",
     arabicName: "نوشن ذكاء اصطناعي",
-    description: "مساعد مدمج في Notion لتنظيم الملاحظات وتلخيص الاجتماعات وكتابة المحتوى وإدارة المهام.",
+    description:
+      "مساعد مدمج في Notion لتنظيم الملاحظات وتلخيص الاجتماعات وكتابة المحتوى وإدارة المهام.",
     category: "productivity",
     tags: ["ملاحظات", "إدارة مهام", "تلخيص"],
     pricing: "freemium",
@@ -794,7 +798,8 @@ export const AI_DIRECTORY_TOOLS: AIDirectoryTool[] = [
   {
     name: "Tammam",
     arabicName: "تمّام",
-    description: "مدقق إملائي ونحوي عربي ذكي يصحح النصوص ويحسّن أسلوبها مع مراعاة قواعد اللغة العربية.",
+    description:
+      "مدقق إملائي ونحوي عربي ذكي يصحح النصوص ويحسّن أسلوبها مع مراعاة قواعد اللغة العربية.",
     category: "arabic",
     tags: ["تدقيق إملائي", "نحو عربي", "تحرير"],
     pricing: "freemium",

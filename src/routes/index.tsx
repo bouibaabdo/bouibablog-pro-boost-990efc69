@@ -67,7 +67,7 @@ export const Route = createFileRoute("/")({
     return { lcp };
   },
   head: ({ loaderData }) => {
-    const title = "Bouiba Academy — أكاديميتك المعرفية للذكاء الاصطناعي والأتمتة التقنية";
+    const title = "Bouiba Academy — الذكاء الاصطناعي والأتمتة";
     const desc =
       "منصة تقنية عربية مستقلة تقدم شروحات عملية، مراجعات محايدة، أدوات ذكاء اصطناعي تفاعلية مجانية، وأحدث التطورات في الذكاء الاصطناعي والأتمتة.";
     return {
@@ -174,7 +174,7 @@ function HomePage() {
     return posts.filter(
       (p) =>
         p.labels.some((l) => l.toLowerCase() === selectedCategory.toLowerCase()) ||
-        p.title.toLowerCase().includes(selectedCategory.toLowerCase())
+        p.title.toLowerCase().includes(selectedCategory.toLowerCase()),
     );
   }, [posts, selectedCategory]);
 
@@ -213,12 +213,14 @@ function HomePage() {
 
             {/* Main Editorial Headline */}
             <h1 className="font-display text-3xl sm:text-5xl md:text-6xl font-black leading-tight tracking-tight text-foreground">
-              المرجع المعرفي العربي <span className="text-primary">للذكاء الاصطناعي</span> والأتمتة التقنية
+              المرجع المعرفي العربي <span className="text-primary">للذكاء الاصطناعي</span> والأتمتة
+              التقنية
             </h1>
 
             {/* Editorial Subtitle */}
             <p className="mx-auto max-w-2xl text-base md:text-lg text-muted-foreground leading-relaxed font-normal">
-              نقدم للمطورين وصناع المحتوى والمهتمين بالتقنية شروحات عملية خطوة بخطوة، مراجعات محايدة للنماذج، وأدوات ذكاء اصطناعي تفاعلية دون تعقيد أو حشو.
+              نقدم للمطورين وصناع المحتوى والمهتمين بالتقنية شروحات عملية خطوة بخطوة، مراجعات محايدة
+              للنماذج، وأدوات ذكاء اصطناعي تفاعلية دون تعقيد أو حشو.
             </p>
 
             {/* Editorial Instant Search Bar */}
@@ -354,25 +356,27 @@ function HomePage() {
 
             {/* Category Filter Pills */}
             <div className="flex items-center gap-2 flex-wrap text-xs font-semibold">
-              {["الكل", "AI Automation", "n8n", "Cybersecurity", "SEO", "Developer Tools"].map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => setSelectedCategory(cat)}
-                  className={`px-3 py-1.5 rounded-lg border transition-all cursor-pointer ${
-                    selectedCategory === cat
-                      ? "bg-primary text-primary-foreground border-primary font-bold"
-                      : "bg-surface border-border text-muted-foreground hover:border-primary/40 hover:text-foreground"
-                  }`}
-                >
-                  {cat === "AI Automation"
-                    ? "أتمتة AI"
-                    : cat === "Cybersecurity"
-                    ? "الأمن السيبراني"
-                    : cat === "Developer Tools"
-                    ? "أدوات المطورين"
-                    : cat}
-                </button>
-              ))}
+              {["الكل", "AI Automation", "n8n", "Cybersecurity", "SEO", "Developer Tools"].map(
+                (cat) => (
+                  <button
+                    key={cat}
+                    onClick={() => setSelectedCategory(cat)}
+                    className={`px-3 py-1.5 rounded-lg border transition-all cursor-pointer ${
+                      selectedCategory === cat
+                        ? "bg-primary text-primary-foreground border-primary font-bold"
+                        : "bg-surface border-border text-muted-foreground hover:border-primary/40 hover:text-foreground"
+                    }`}
+                  >
+                    {cat === "AI Automation"
+                      ? "أتمتة AI"
+                      : cat === "Cybersecurity"
+                        ? "الأمن السيبراني"
+                        : cat === "Developer Tools"
+                          ? "أدوات المطورين"
+                          : cat}
+                  </button>
+                ),
+              )}
             </div>
           </div>
 
@@ -407,7 +411,8 @@ function HomePage() {
                   أدوات الذكاء الاصطناعي لزيادة الإنتاجية
                 </h2>
                 <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-                  استخدم تطبيقاتنا الذكية المباشرة لتوليد الصور، تلخيص الوثائق، الترجمة التقنية، واستكشاف مسارات التعلم.
+                  استخدم تطبيقاتنا الذكية المباشرة لتوليد الصور، تلخيص الوثائق، الترجمة التقنية،
+                  واستكشاف مسارات التعلم.
                 </p>
               </div>
 
@@ -471,7 +476,8 @@ function HomePage() {
                   اشترك في موجز الذكاء الاصطناعي والأتمتة
                 </h3>
                 <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">
-                  نرسل لك كل يوم سبت ملخصاً تحريرياً مكثفاً لأهم الشروحات العملية، أدوات AI الجديدة، ومستجدات التقنية بدون إعلانات أو إزعاج.
+                  نرسل لك كل يوم سبت ملخصاً تحريرياً مكثفاً لأهم الشروحات العملية، أدوات AI الجديدة،
+                  ومستجدات التقنية بدون إعلانات أو إزعاج.
                 </p>
               </div>
 
@@ -480,7 +486,9 @@ function HomePage() {
                   <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300 text-xs font-bold space-y-1 text-center">
                     <CheckCircle2 className="h-6 w-6 text-emerald-500 mx-auto mb-1" />
                     <div>تم تسجيل بريدك الإلكتروني بنجاح!</div>
-                    <div className="font-normal text-[11px] text-muted-foreground">ستصلك النشرة القادمة يوم السبت.</div>
+                    <div className="font-normal text-[11px] text-muted-foreground">
+                      ستصلك النشرة القادمة يوم السبت.
+                    </div>
                   </div>
                 ) : (
                   <form onSubmit={handleNewsletterSubmit} className="space-y-3">
@@ -515,7 +523,9 @@ function HomePage() {
         {labels.length > 0 && (
           <section className="container-page pb-12">
             <div className="rounded-2xl border border-border/80 bg-surface-muted/40 p-6 md:p-10 text-center">
-              <h3 className="font-display text-lg md:text-xl font-bold mb-2">استكشف المواضيع والتصنيفات المعرفية</h3>
+              <h3 className="font-display text-lg md:text-xl font-bold mb-2">
+                استكشف المواضيع والتصنيفات المعرفية
+              </h3>
               <p className="text-xs md:text-sm text-muted-foreground max-w-lg mx-auto mb-6">
                 انقر على التصنيف الذي تود قراءة شروحاته وتطبيقاته العملية:
               </p>
@@ -548,7 +558,9 @@ function HomePage() {
                   <Trophy className="h-3.5 w-3.5 text-amber-500" />
                   <span>جدول الرياضة (مباريات اليوم)</span>
                 </div>
-                <span className="text-[10px] text-primary group-open:rotate-180 transition-transform">▼</span>
+                <span className="text-[10px] text-primary group-open:rotate-180 transition-transform">
+                  ▼
+                </span>
               </summary>
               <div className="mt-3 pt-3 border-t border-border/40">
                 <TodayMatchesRail variant="article" max={4} />

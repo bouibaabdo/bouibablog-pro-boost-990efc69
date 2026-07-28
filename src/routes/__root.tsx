@@ -269,9 +269,9 @@ function RootComponent() {
     const timer = window.setTimeout(run, 600);
     const observer = content
       ? new MutationObserver(() => {
-        window.clearTimeout(timer);
-        window.setTimeout(run, 150);
-      })
+          window.clearTimeout(timer);
+          window.setTimeout(run, 150);
+        })
       : null;
 
     if (content) observer?.observe(content, { childList: true, subtree: true });

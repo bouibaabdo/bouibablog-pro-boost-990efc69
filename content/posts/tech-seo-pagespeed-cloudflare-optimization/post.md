@@ -10,9 +10,9 @@
 
 للوصول إلى السرعة القصوى، يجب التركيز على قياسات محددة:
 
-* **LCP (Largest Contentful Paint):** وقت ظهور أكبر عنصر مرئي (مثل صورة المقال الرئيسية أو العنون). يجب أن يكون أقل من **2.5 ثانية**.
-* **INP (Interaction to Next Paint):** سرعة استجابة الصفحة عند التفاعل والضغط. يجب أن تكون أقل من **200ms**.
-* **CLS (Cumulative Layout Shift):** مدى استقرار عناصر الصفحة وعدم تحركها أثناء التحميل. يجب أن تكون **أقل من 0.1**.
+- **LCP (Largest Contentful Paint):** وقت ظهور أكبر عنصر مرئي (مثل صورة المقال الرئيسية أو العنون). يجب أن يكون أقل من **2.5 ثانية**.
+- **INP (Interaction to Next Paint):** سرعة استجابة الصفحة عند التفاعل والضغط. يجب أن تكون أقل من **200ms**.
+- **CLS (Cumulative Layout Shift):** مدى استقرار عناصر الصفحة وعدم تحركها أثناء التحميل. يجب أن تكون **أقل من 0.1**.
 
 ---
 
@@ -21,12 +21,20 @@
 تُشكل الصور الكبيرة والواردة بصيغة PNG أو JPG السبب الأول لبطء التحميل وتأخير LCP.
 
 ### الخطوات العملية للحل:
+
 1. **التحويل إلى WebP:** تنخفض أحجام الصور بنسبة **80% إلى 90%** دون أي خسارة ملحوظة في الجودة.
 2. **استخدام عنصر `<picture>` مع أبعاد محددة:**
    ```html
    <picture>
      <source srcset="/images/banner.webp" type="image/webp" />
-     <img src="/images/banner.png" alt="وصف الصورة" width="800" height="450" loading="eager" fetchpriority="high" />
+     <img
+       src="/images/banner.png"
+       alt="وصف الصورة"
+       width="800"
+       height="450"
+       loading="eager"
+       fetchpriority="high"
+     />
    </picture>
    ```
 3. **إضافة `width` و `height` صريحة:** لمنع حدوث التزحزح المفاجئ (CLS).
@@ -39,12 +47,12 @@
 
 ### الإعدادات المثالية في Cloudflare Cache Rules:
 
-* **مسارات الصور (`/*.webp`, `/*.png`):**
-  * `Cache Level`: Cache Everything
-  * `Edge Cache TTL`: 1 Month
-  * `Browser Cache TTL`: 1 Month
-* **الملفات المكبوسة (`/assets/*`):**
-  * `Browser Cache TTL`: 1 Year (Immutable)
+- **مسارات الصور (`/*.webp`, `/*.png`):**
+  - `Cache Level`: Cache Everything
+  - `Edge Cache TTL`: 1 Month
+  - `Browser Cache TTL`: 1 Month
+- **الملفات المكبوسة (`/assets/*`):**
+  - `Browser Cache TTL`: 1 Year (Immutable)
 
 ---
 
@@ -53,18 +61,25 @@
 يؤدي تحميل ملفات CSS و JavaScript الضخمة في أعلى الصفحة إلى حجب عرض الصفحة (Render-Blocking) وتأخير الـ FCP.
 
 ### الحلول:
-* **تضمين Critical CSS:** دمج التنسيقات الأساسية للجزء العلوي من الصفحة (Above-the-fold) داخل عنصر `<style>` في `<head>`.
-* **تحميل باقي CSS غير المحجب:**
+
+- **تضمين Critical CSS:** دمج التنسيقات الأساسية للجزء العلوي من الصفحة (Above-the-fold) داخل عنصر `<style>` في `<head>`.
+- **تحميل باقي CSS غير المحجب:**
   ```html
-  <link rel="preload" href="/assets/styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+  <link
+    rel="preload"
+    href="/assets/styles.css"
+    as="style"
+    onload="this.onload=null;this.rel='stylesheet'"
+  />
   ```
-* **إضافة `defer` أو `async` لملفات الجافاسكربت.**
+- **إضافة `defer` أو `async` لملفات الجافاسكربت.**
 
 ---
 
 ## 5. تفعيل الضغط المتقدم Brotly & Auto Minify
 
 داخل لوحة تحكم Cloudflare تحت قسم **Speed Optimization**:
+
 1. فعّل خيار **Brotli** لضغط النصوص بشكل أكثر كفاءة من Gzip التقليدي.
 2. فعّل خيار **Early Hints (103)** لتنبيه المتصفح بالموارد المطلوب تحميلها قبل اكتمال الاستجابة.
 3. تفقد خيار **Rocket Loader** لجافاسكربت مع التأكد من عدم تعارضه مع النصوص التفاعلية.
@@ -74,12 +89,15 @@
 ## أسئلة شائعة (FAQ)
 
 ### هل تؤثر الإعلانات (Google AdSense) على نتيجة PageSpeed؟
+
 نعم، قد تتسبب سكريبتات الإعلانات التفاعلية في تخفيض التقييم بنسبة معينة، لكن تفعيل التحميل المتأخر (Lazy Loading) وتحديد أبعاد أماكن الإعلانات يمنع تدهور الأداء ويحافظ على سرعة فائقة.
 
 ### كم يستغرق ظهور التحديثات بعد تعديل إعدادات Cloudflare؟
+
 تحدث التغيرات فوراً على السيرفر، لكن يجب مسح ذاكرة التخزين المؤقت (Purge Cache) في Cloudflare واختبار الموقع في متصفح خفي بعد التحديث.
 
 ### هل تحسين سرعة الموقع يزيد من أرباح وزوار الموقع؟
+
 بالتأكيد، تُظهر الدراسات أن تقليل زمن التحميل وثانية واحدة يزيد من نسبة بقاء الزائر وزيادة النقاط التفاعلية ومعدل التحويل بنسبة تجاوز 20%.
 
 ---

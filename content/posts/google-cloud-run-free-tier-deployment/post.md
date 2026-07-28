@@ -9,6 +9,7 @@
 ## مميزات المستوى المجاني (Google Cloud Run Free Tier)
 
 يوفر Google Cloud شهرياً وحسابات مجانية متجددة تتضمن:
+
 - **2 مليون طلب مجاني** شهرياً.
 - **360,000 ثانية من ذاكرة vCPU-seconds** مجاناً.
 - **180,000 GiB-seconds من الذاكرة العشوائية (RAM)**.
@@ -19,13 +20,16 @@
 ## خطوات النشر باستخدام Google Cloud CLI
 
 ### 1. تثبيت وتهيئة gcloud CLI
+
 قم بتنزيل أداة [Google Cloud SDK](https://cloud.google.com/sdk) وتوثيق حسابك بالأمر:
+
 ```bash
 gcloud auth login
 gcloud config set project YOUR_PROJECT_ID
 ```
 
 ### 2. بناء ونشر التطبيق بأمر واحد
+
 من داخل مجلد مشروعك الذي يحتوي على `Dockerfile`:
 
 ```bash
@@ -37,6 +41,7 @@ gcloud run deploy my-web-app \
 ```
 
 سيقوم Google Cloud Run تلقائياً بـ:
+
 1. قراءة الـ Dockerfile وبناء الصورة عبر Cloud Build.
 2. رفع الصورة إلى Artifact Registry.
 3. تشغيل الخدمة وإعادة رابط HTTPS مباشر لتطبيقك!
@@ -52,7 +57,9 @@ gcloud run deploy my-web-app \
 ## الأسئلة الشائعة (FAQ)
 
 ### ماذا يحدث إذا لم يتلق التطبيق أي زيارات؟
+
 يقوم Google Cloud Run بتقليص الحاوية إلى **0** (Scale to Zero)، مما يعني عدم استهلاك أي موارد وعدم فرض أي تكاليف مالية على الإطلاق أثناء فترات الخمول.
 
 ### هل يمكن ربط دومين مخصص (Custom Domain)؟
+
 نعم بالتأكيد، يمكنك إضافة دومينك الخاص من قسم **Custom Domains** في Cloud Console مع توفير شهادة SSL مجانية وتلقائية من جوجل.

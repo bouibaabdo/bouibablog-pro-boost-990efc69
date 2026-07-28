@@ -10,13 +10,14 @@ type AdminContext = {
   claims?: { email?: string; user_metadata?: { email?: string } } | null;
 };
 
-const ADMIN_EMAILS = [
-  "abouiba93@gmail.com",
-  "bouibaacademy@gmail.com",
-];
+const ADMIN_EMAILS = ["abouiba93@gmail.com", "bouibaacademy@gmail.com"];
 
 async function assertAdmin(context: AdminContext) {
-  const email = (context.claims?.email || (context.claims as any)?.user_metadata?.email || "").toLowerCase();
+  const email = (
+    context.claims?.email ||
+    (context.claims as any)?.user_metadata?.email ||
+    ""
+  ).toLowerCase();
   if (ADMIN_EMAILS.includes(email)) {
     return;
   }
@@ -30,7 +31,11 @@ async function assertAdmin(context: AdminContext) {
 export const checkIsAdmin = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const email = (context.claims?.email || (context.claims as any)?.user_metadata?.email || "").toLowerCase();
+    const email = (
+      context.claims?.email ||
+      (context.claims as any)?.user_metadata?.email ||
+      ""
+    ).toLowerCase();
     if (ADMIN_EMAILS.includes(email)) {
       return { isAdmin: true };
     }

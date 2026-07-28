@@ -73,7 +73,12 @@ function extractThumbnail(html: string, media?: { url: string }): string | undef
     let match;
     while ((match = imgRegex.exec(html)) !== null) {
       const candidate = match[1];
-      if (candidate && !candidate.includes("analytics") && !candidate.includes("pixel") && !candidate.endsWith(".gif")) {
+      if (
+        candidate &&
+        !candidate.includes("analytics") &&
+        !candidate.includes("pixel") &&
+        !candidate.endsWith(".gif")
+      ) {
         url = candidate;
         break;
       }
@@ -94,8 +99,7 @@ function extractThumbnail(html: string, media?: { url: string }): string | undef
 
   // Normalize blogger image sizes to s1600 (full resolution)
   if (/googleusercontent\.com|blogspot\.com|blogger\.com/.test(url)) {
-    url = url.replace(/\/s\d+(-c)?\//, "/s1600/")
-             .replace(/\/w\d+-h\d+[^/]*\//, "/s1600/");
+    url = url.replace(/\/s\d+(-c)?\//, "/s1600/").replace(/\/w\d+-h\d+[^/]*\//, "/s1600/");
   }
 
   // Remove any ampersand entity encoding
@@ -347,7 +351,7 @@ function parseMarkdownToHtml(md: string): string {
   });
 
   // 2. Horizontal Rules: --- or ***
-  html = html.replace(/^(\s*[-*_]\s*){3,}$/gm, "\n\n<hr class=\"my-8 border-border\" />\n\n");
+  html = html.replace(/^(\s*[-*_]\s*){3,}$/gm, '\n\n<hr class="my-8 border-border" />\n\n');
 
   // 3. GitHub style alerts: > [!IMPORTANT]
   html = html.replace(
@@ -359,27 +363,48 @@ function parseMarkdownToHtml(md: string): string {
           : "border-r-4 border-amber-500 bg-amber-500/10 text-foreground";
       const cleanText = text.replace(/^>\s?/gm, "").trim();
       return `\n\n<div class="${color} p-4 my-6 rounded-l-xl">${cleanText}</div>\n\n`;
-    }
+    },
   );
 
   // 4. Blockquotes: > quote
-  html = html.replace(/^>\s+(.+)$/gm, "\n\n<blockquote class=\"border-r-4 border-primary/40 pr-4 py-2 my-4 italic text-muted-foreground bg-accent/20 rounded-l-lg\">$1</blockquote>\n\n");
+  html = html.replace(
+    /^>\s+(.+)$/gm,
+    '\n\n<blockquote class="border-r-4 border-primary/40 pr-4 py-2 my-4 italic text-muted-foreground bg-accent/20 rounded-l-lg">$1</blockquote>\n\n',
+  );
 
   // 5. Headers: # H1, ## H2, ### H3, #### H4
-  html = html.replace(/^####\s+(.+)$/gm, "\n\n<h4 class=\"text-lg font-bold mt-6 mb-3 font-display text-foreground\">$1</h4>\n\n");
-  html = html.replace(/^###\s+(.+)$/gm, "\n\n<h3 class=\"text-xl font-bold mt-8 mb-4 font-display text-foreground border-r-2 border-primary pr-3\">$1</h3>\n\n");
-  html = html.replace(/^##\s+(.+)$/gm, "\n\n<h2 class=\"text-2xl font-bold mt-10 mb-5 font-display text-foreground border-b border-border/80 pb-2\">$1</h2>\n\n");
-  html = html.replace(/^#\s+(.+)$/gm, "\n\n<h1 class=\"text-3xl md:text-4xl font-extrabold mt-12 mb-6 font-display text-foreground\">$1</h1>\n\n");
+  html = html.replace(
+    /^####\s+(.+)$/gm,
+    '\n\n<h4 class="text-lg font-bold mt-6 mb-3 font-display text-foreground">$1</h4>\n\n',
+  );
+  html = html.replace(
+    /^###\s+(.+)$/gm,
+    '\n\n<h3 class="text-xl font-bold mt-8 mb-4 font-display text-foreground border-r-2 border-primary pr-3">$1</h3>\n\n',
+  );
+  html = html.replace(
+    /^##\s+(.+)$/gm,
+    '\n\n<h2 class="text-2xl font-bold mt-10 mb-5 font-display text-foreground border-b border-border/80 pb-2">$1</h2>\n\n',
+  );
+  html = html.replace(
+    /^#\s+(.+)$/gm,
+    '\n\n<h1 class="text-3xl md:text-4xl font-extrabold mt-12 mb-6 font-display text-foreground">$1</h1>\n\n',
+  );
 
   // 6. Inline elements: bold, italic, code, links
-  html = html.replace(/`([^`]+)`/g, "<code class=\"bg-accent px-1.5 py-0.5 rounded text-sm font-mono text-primary\">$1</code>");
-  html = html.replace(/\*\*([^*]+)\*\*/g, "<strong class=\"font-bold text-foreground\">$1</strong>");
+  html = html.replace(
+    /`([^`]+)`/g,
+    '<code class="bg-accent px-1.5 py-0.5 rounded text-sm font-mono text-primary">$1</code>',
+  );
+  html = html.replace(/\*\*([^*]+)\*\*/g, '<strong class="font-bold text-foreground">$1</strong>');
   html = html.replace(/\*([^*]+)\*/g, "<em>$1</em>");
-  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, "<a href=\"$2\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-primary hover:underline font-semibold\">$1</a>");
+  html = html.replace(
+    /\[([^\]]+)\]\(([^)]+)\)/g,
+    '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline font-semibold">$1</a>',
+  );
 
   // 7. Lists: Unordered (- or *) & Ordered (1.)
-  html = html.replace(/^\s*[-*]\s+(.+)$/gm, "<li class=\"my-1.5 leading-relaxed\">$1</li>");
-  html = html.replace(/^\s*\d+\.\s+(.+)$/gm, "<li class=\"my-1.5 leading-relaxed\">$1</li>");
+  html = html.replace(/^\s*[-*]\s+(.+)$/gm, '<li class="my-1.5 leading-relaxed">$1</li>');
+  html = html.replace(/^\s*\d+\.\s+(.+)$/gm, '<li class="my-1.5 leading-relaxed">$1</li>');
 
   // Group adjacent <li> tags
   html = html.replace(/(<li[\s\S]*?<\/li>\n?)+/g, (match) => {
@@ -417,7 +442,7 @@ async function loadLocalPosts(): Promise<BloggerPost[]> {
 
     for (const [metaPath, metaObj] of Object.entries(metaFiles)) {
       try {
-        const meta = (metaObj && (metaObj as any).default) ? (metaObj as any).default : metaObj;
+        const meta = metaObj && (metaObj as any).default ? (metaObj as any).default : metaObj;
         const mdPath = metaPath.replace("meta.json", "post.md");
         const rawMd = mdFiles[mdPath];
         const postContent = typeof rawMd === "string" ? rawMd : (rawMd as any)?.default || "";
@@ -481,8 +506,7 @@ async function loadLocalPosts(): Promise<BloggerPost[]> {
         const contentHtml = parseMarkdownToHtml(postContent);
 
         // Use WebP versions of cover images for better performance
-        let thumbnail =
-          "https://www.bouibacademy.me/n8n-workflows-cover.webp";
+        let thumbnail = "https://www.bouibacademy.me/n8n-workflows-cover.webp";
         if (meta.slug.includes("ollama") || meta.slug.includes("n8n")) {
           thumbnail = "https://www.bouibacademy.me/ollama-n8n-cover.webp";
         }

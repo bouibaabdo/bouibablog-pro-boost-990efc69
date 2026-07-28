@@ -50,7 +50,7 @@ export const publishPostToFacebookFn = createServerFn({ method: "POST" })
   )
   .handler(async ({ data }) => {
     let pageId = (data.pageId || process.env.FACEBOOK_PAGE_ID || DEFAULT_PAGE_ID).trim();
-    
+
     // Priority order for token: 1. Server env token (most reliable) -> 2. Client passed token
     const envToken = (process.env.FACEBOOK_PAGE_ACCESS_TOKEN || "").trim();
     let rawToken = envToken || (data.pageToken || "").trim();
@@ -60,10 +60,7 @@ export const publishPostToFacebookFn = createServerFn({ method: "POST" })
     }
 
     const posts = (facebookPostsData as any[]) || [];
-    const post =
-      data.postPayload ||
-      posts.find((p) => p.id === data.postId) ||
-      posts[0];
+    const post = data.postPayload || posts.find((p) => p.id === data.postId) || posts[0];
 
     if (!post || !post.facebook_post_ar) {
       throw new Error("المنشور المحدد غير موجود أو لا يحتوي على نص.");
@@ -153,8 +150,14 @@ export const publishPostToFacebookFn = createServerFn({ method: "POST" })
     }
 
     if (!success || !createdPostId) {
-      if (lastErrorMessage.includes("expired") || lastErrorMessage.includes("Session has expired") || lastErrorMessage.includes("validate")) {
-        throw new Error("انتهت صلاحية توكن فيسبوك (Token Expired). يرجى لصق توكن جديد من Meta Graph Explorer.");
+      if (
+        lastErrorMessage.includes("expired") ||
+        lastErrorMessage.includes("Session has expired") ||
+        lastErrorMessage.includes("validate")
+      ) {
+        throw new Error(
+          "انتهت صلاحية توكن فيسبوك (Token Expired). يرجى لصق توكن جديد من Meta Graph Explorer.",
+        );
       }
       throw new Error(lastErrorMessage || "فشل النشر على صفحة فيسبوك عبر Meta API.");
     }

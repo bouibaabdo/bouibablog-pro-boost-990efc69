@@ -244,7 +244,9 @@ function AdminLessons() {
       let tPath: string | null = null;
       if (thumbBlob) {
         tPath = `thumbs/${base}.jpg`;
-        await supabase.storage.from("lessons").upload(tPath, thumbBlob, { contentType: "image/jpeg", upsert: true });
+        await supabase.storage
+          .from("lessons")
+          .upload(tPath, thumbBlob, { contentType: "image/jpeg", upsert: true });
       }
 
       await createLesson({
@@ -437,7 +439,11 @@ function AdminLessons() {
                 disabled={publishing}
                 className="gap-2 font-bold bg-rose-600 hover:bg-rose-700 text-white"
               >
-                {publishing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
+                {publishing ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Plus className="h-4 w-4" />
+                )}
                 نشر دورة YouTube فوراً
               </Button>
             ) : (
@@ -446,7 +452,11 @@ function AdminLessons() {
                 disabled={uploading}
                 className="gap-2 font-bold bg-emerald-600 hover:bg-emerald-700 text-white"
               >
-                {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+                {uploading ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Upload className="h-4 w-4" />
+                )}
                 رفع ونشر الدرس
               </Button>
             )}
@@ -485,7 +495,10 @@ function AdminLessons() {
 
           <div className="grid gap-4 md:grid-cols-2">
             {YOUTUBE_AI_MASTERY.modules.map((mod, idx) => (
-              <div key={mod.title} className="rounded-2xl border border-border/70 p-4 space-y-3 bg-card shadow-soft">
+              <div
+                key={mod.title}
+                className="rounded-2xl border border-border/70 p-4 space-y-3 bg-card shadow-soft"
+              >
                 <div className="flex items-start gap-2.5">
                   <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary font-bold text-xs">
                     0{idx + 1}
@@ -500,9 +513,16 @@ function AdminLessons() {
                   {mod.lessons.map((les) => {
                     const isDoc = /\.(txt|md|pdf)$/i.test(les);
                     return (
-                      <div key={les} className="flex items-center justify-between text-xs py-1 px-2.5 rounded-lg bg-muted/30">
+                      <div
+                        key={les}
+                        className="flex items-center justify-between text-xs py-1 px-2.5 rounded-lg bg-muted/30"
+                      >
                         <span className="flex items-center gap-1.5 truncate">
-                          {isDoc ? <FileText className="h-3.5 w-3.5 text-amber-500" /> : <Video className="h-3.5 w-3.5 text-rose-500" />}
+                          {isDoc ? (
+                            <FileText className="h-3.5 w-3.5 text-amber-500" />
+                          ) : (
+                            <Video className="h-3.5 w-3.5 text-rose-500" />
+                          )}
                           <span className="truncate">{les}</span>
                         </span>
                         <span className="text-[10px] text-muted-foreground font-semibold shrink-0">
@@ -518,16 +538,27 @@ function AdminLessons() {
 
           {/* Resources */}
           <div className="pt-4 border-t border-border/60">
-            <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3">الوثائق والملفات المرفقة (Course Resources)</h4>
+            <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3">
+              الوثائق والملفات المرفقة (Course Resources)
+            </h4>
             <div className="grid gap-3 sm:grid-cols-2">
               {YOUTUBE_AI_MASTERY.resources.map((res) => (
-                <div key={res.title} className="flex items-center justify-between p-3 rounded-xl border border-border/60 bg-background text-xs">
+                <div
+                  key={res.title}
+                  className="flex items-center justify-between p-3 rounded-xl border border-border/60 bg-background text-xs"
+                >
                   <div className="space-y-0.5">
                     <p className="font-bold">{res.title}</p>
                     <p className="text-[11px] text-muted-foreground">{res.description}</p>
                   </div>
                   <Button size="sm" variant="ghost" asChild className="h-7 px-2">
-                    <a href={res.href} download target="_blank" rel="noopener noreferrer" className="gap-1 text-[11px] font-bold">
+                    <a
+                      href={res.href}
+                      download
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="gap-1 text-[11px] font-bold"
+                    >
                       <Download className="h-3.5 w-3.5 text-primary" />
                       تنزيل
                     </a>
@@ -544,7 +575,9 @@ function AdminLessons() {
         <CardHeader className="py-4 border-b border-border/60">
           <CardTitle className="text-base font-bold flex items-center justify-between">
             <span>سجل الدورات والدروس المتاحة ({items?.length ?? 0})</span>
-            <span className="text-xs text-muted-foreground font-normal">يتم تحديث الجلسات فورياً</span>
+            <span className="text-xs text-muted-foreground font-normal">
+              يتم تحديث الجلسات فورياً
+            </span>
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
@@ -602,14 +635,24 @@ function AdminLessons() {
 
                   <div className="pt-3 border-t border-border/60 flex items-center justify-between gap-2">
                     <div className="flex items-center gap-1.5">
-                      <Button size="sm" variant="outline" onClick={() => openEdit(l)} className="h-8 px-2.5 text-xs font-bold gap-1">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => openEdit(l)}
+                        className="h-8 px-2.5 text-xs font-bold gap-1"
+                      >
                         <Pencil className="h-3.5 w-3.5 text-primary" />
                         تعديل
                       </Button>
 
                       {l.video_url && (
                         <Button size="sm" variant="ghost" asChild className="h-8 px-2 text-xs">
-                          <a href={l.video_url} target="_blank" rel="noopener noreferrer" className="gap-1">
+                          <a
+                            href={l.video_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="gap-1"
+                          >
                             <ExternalLink className="h-3.5 w-3.5" />
                             مشاهدة
                           </a>
@@ -617,7 +660,12 @@ function AdminLessons() {
                       )}
                     </div>
 
-                    <Button size="sm" variant="ghost" onClick={() => onDelete(l)} className="h-8 w-8 p-0 text-rose-500 hover:bg-rose-500/10">
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => onDelete(l)}
+                      className="h-8 w-8 p-0 text-rose-500 hover:bg-rose-500/10"
+                    >
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
@@ -647,7 +695,11 @@ function AdminLessons() {
 
             <div className="space-y-2">
               <Label className="text-xs font-bold">الوصف وروابط الوثائق المصاحبة</Label>
-              <Textarea value={editDescription} onChange={(e) => setEditDescription(e.target.value)} rows={4} />
+              <Textarea
+                value={editDescription}
+                onChange={(e) => setEditDescription(e.target.value)}
+                rows={4}
+              />
             </div>
 
             <div className="flex items-center justify-between border p-3 rounded-xl">
@@ -660,7 +712,11 @@ function AdminLessons() {
               إلغاء
             </Button>
 
-            <Button onClick={onSaveEdit} disabled={savingEdit} className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold gap-2">
+            <Button
+              onClick={onSaveEdit}
+              disabled={savingEdit}
+              className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold gap-2"
+            >
               {savingEdit && <Loader2 className="h-4 w-4 animate-spin" />}
               حفظ التغييرات
             </Button>

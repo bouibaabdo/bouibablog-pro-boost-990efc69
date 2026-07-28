@@ -12,14 +12,7 @@
   ],
   "thumbnail": "https://www.bouibacademy.me/schema-org-seo-cover.png",
   "category": "SEO",
-  "tags": [
-    "SEO",
-    "Schema.org",
-    "JSON-LD",
-    "Rich Snippets",
-    "Google Search",
-    "Technical SEO"
-  ],
+  "tags": ["SEO", "Schema.org", "JSON-LD", "Rich Snippets", "Google Search", "Technical SEO"],
   "created_at": "2026-07-27",
   "language": "ar"
 }

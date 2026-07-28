@@ -73,7 +73,10 @@ const SYSTEM: Record<Action, (b: Body) => string> = {
 };
 
 // Direct Gemini API fallback when Lovable gateway rate limits
-async function geminiDirectFallback(systemPrompt: string, userPrompt: string): Promise<string | null> {
+async function geminiDirectFallback(
+  systemPrompt: string,
+  userPrompt: string,
+): Promise<string | null> {
   const geminiKey = process.env.GEMINI_API_KEY;
   if (!geminiKey) return null;
 
@@ -83,9 +86,7 @@ async function geminiDirectFallback(systemPrompt: string, userPrompt: string): P
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        contents: [
-          { role: "user", parts: [{ text: `${systemPrompt}\n\n${userPrompt}` }] }
-        ],
+        contents: [{ role: "user", parts: [{ text: `${systemPrompt}\n\n${userPrompt}` }] }],
       }),
     });
     if (!res.ok) return null;
@@ -156,7 +157,10 @@ export const Route = createFileRoute("/api/tools/text")({
               };
               let text = data.choices?.[0]?.message?.content ?? "";
               if (action === "roadmap") {
-                text = text.replace(/^```json\s*/i, "").replace(/```$/, "").trim();
+                text = text
+                  .replace(/^```json\s*/i, "")
+                  .replace(/```$/, "")
+                  .trim();
               }
               return Response.json({ text });
             }
@@ -170,14 +174,19 @@ export const Route = createFileRoute("/api/tools/text")({
         if (fallbackText) {
           let text = fallbackText;
           if (action === "roadmap") {
-            text = text.replace(/^```json\s*/i, "").replace(/```$/, "").trim();
+            text = text
+              .replace(/^```json\s*/i, "")
+              .replace(/```$/, "")
+              .trim();
           }
           return Response.json({ text });
         }
 
         return Response.json(
-          { error: "تعذّر معالجة الطلب حالياً بسبب إدخال مفتاح API أو الرصيد. يرجى إعادة المحاولة." },
-          { status: 500 }
+          {
+            error: "تعذّر معالجة الطلب حالياً بسبب إدخال مفتاح API أو الرصيد. يرجى إعادة المحاولة.",
+          },
+          { status: 500 },
         );
       },
     },

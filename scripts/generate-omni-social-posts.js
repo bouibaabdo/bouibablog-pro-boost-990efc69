@@ -1,7 +1,8 @@
 import fs from "fs";
 import path from "path";
 
-const BLOGGER_FEED_URL = "https://academybouiba.blogspot.com/feeds/posts/default?alt=json&max-results=500";
+const BLOGGER_FEED_URL =
+  "https://academybouiba.blogspot.com/feeds/posts/default?alt=json&max-results=500";
 const LOCAL_POSTS_DIR = path.join(process.cwd(), "content", "posts");
 const OUTPUT_DIR = path.join(process.cwd(), "content", "omni-social-posts");
 const JSON_OUTPUT_PATH = path.join(OUTPUT_DIR, "omni-posts.json");
@@ -26,7 +27,7 @@ function cleanHtmlText(html = "") {
 // Generate platform-tailored hashtags
 function generateHashtags(category, title, platform = "facebook") {
   const text = (category + " " + title).toLowerCase();
-  
+
   if (platform === "x") {
     const tags = ["#BouibaAcademy", "#AI", "#Tech"];
     if (text.includes("n8n") || text.includes("أتمتة")) tags.push("#Automation", "#n8n");
@@ -37,9 +38,16 @@ function generateHashtags(category, title, platform = "facebook") {
   }
 
   if (platform === "linkedin") {
-    const tags = ["#BouibaAcademy", "#ArtificialIntelligence", "#SoftwareEngineering", "#TechTrends"];
-    if (text.includes("n8n") || text.includes("أتمتة")) tags.push("#Automation", "#NoCode", "#DevOps");
-    if (text.includes("seo") || text.includes("سيو")) tags.push("#SearchEngineOptimization", "#WebPerformance");
+    const tags = [
+      "#BouibaAcademy",
+      "#ArtificialIntelligence",
+      "#SoftwareEngineering",
+      "#TechTrends",
+    ];
+    if (text.includes("n8n") || text.includes("أتمتة"))
+      tags.push("#Automation", "#NoCode", "#DevOps");
+    if (text.includes("seo") || text.includes("سيو"))
+      tags.push("#SearchEngineOptimization", "#WebPerformance");
     if (text.includes("ollama") || text.includes("deepseek")) tags.push("#MachineLearning", "#LLM");
     if (text.includes("أمن") || text.includes("cyber")) tags.push("#CyberSecurity", "#InfoSec");
     return tags.join(" ");
@@ -47,9 +55,12 @@ function generateHashtags(category, title, platform = "facebook") {
 
   // Standard Facebook / Telegram hashtags
   const baseTags = ["#BouibaAcademy", "#Bouiba_Academy", "#أدوات_الذكاء_الاصطناعي", "#تقنية"];
-  if (text.includes("ai") || text.includes("ذكاء") || text.includes("ollama")) baseTags.push("#الذكاء_الاصطناعي", "#AI");
-  if (text.includes("n8n") || text.includes("أتمتة")) baseTags.push("#أتمتة", "#Automation", "#n8n");
-  if (text.includes("برمجة") || text.includes("code") || text.includes("vps")) baseTags.push("#برمجة", "#تطوير_المواقع");
+  if (text.includes("ai") || text.includes("ذكاء") || text.includes("ollama"))
+    baseTags.push("#الذكاء_الاصطناعي", "#AI");
+  if (text.includes("n8n") || text.includes("أتمتة"))
+    baseTags.push("#أتمتة", "#Automation", "#n8n");
+  if (text.includes("برمجة") || text.includes("code") || text.includes("vps"))
+    baseTags.push("#برمجة", "#تطوير_المواقع");
   if (text.includes("seo") || text.includes("سيو")) baseTags.push("#سيو", "#SEO");
   return Array.from(new Set(baseTags)).join(" ");
 }
@@ -150,7 +161,7 @@ ${linkedInTags}`;
     url,
     thumbnail,
     created_at: item.created_at || new Date().toISOString().split("T")[0],
-    
+
     // Multi-Platform Tailored Texts
     facebook: {
       post_text: facebook_post,
@@ -229,7 +240,7 @@ async function main() {
         const title = entry.title?.$t || "";
         const rawContent = entry.content?.$t || entry.summary?.$t || "";
         const cleanDesc = cleanHtmlText(rawContent).slice(0, 180);
-        
+
         let link = entry.link?.find((l) => l.rel === "alternate")?.href || "";
         if (!link) continue;
 
@@ -255,7 +266,8 @@ async function main() {
             url: link,
             thumbnail,
             category: "مقالات تقنية",
-            created_at: entry.published?.$t?.split("T")[0] || new Date().toISOString().split("T")[0],
+            created_at:
+              entry.published?.$t?.split("T")[0] || new Date().toISOString().split("T")[0],
           });
           allOmniItems.push(pkg);
         }
@@ -284,7 +296,8 @@ async function main() {
   fs.writeFileSync(LEGACY_FB_JSON, JSON.stringify(legacyFbList, null, 2), "utf-8");
 
   // Save CSV
-  let csv = "ID,Title,Category,URL,Thumbnail,Facebook_Post,Twitter_Post,LinkedIn_Post,Telegram_Markdown,Pinterest_Title,Pinterest_Desc\n";
+  let csv =
+    "ID,Title,Category,URL,Thumbnail,Facebook_Post,Twitter_Post,LinkedIn_Post,Telegram_Markdown,Pinterest_Title,Pinterest_Desc\n";
   for (const item of allOmniItems) {
     const esc = (txt = "") => `"${String(txt).replace(/"/g, '""')}"`;
     csv += `${esc(item.id)},${esc(item.title)},${esc(item.category)},${esc(item.url)},${esc(item.thumbnail)},${esc(item.facebook.post_text)},${esc(item.twitter.tweet_1)},${esc(item.linkedin.post_text)},${esc(item.telegram.post_markdown)},${esc(item.pinterest.title)},${esc(item.pinterest.description)}\n`;

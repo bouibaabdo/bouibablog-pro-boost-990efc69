@@ -74,7 +74,10 @@ function AdminLayout() {
     exact ? pathname === url : pathname === url || pathname.startsWith(url + "/");
 
   return (
-    <div className="min-h-screen flex bg-slate-950 text-slate-100 selection:bg-primary/30" dir="rtl">
+    <div
+      className="min-h-screen flex bg-slate-950 text-slate-100 selection:bg-primary/30"
+      dir="rtl"
+    >
       {/* WordPress / Enterprise Dark Sidebar */}
       <aside className="w-64 bg-slate-900 border-l border-slate-800 flex flex-col justify-between shrink-0 select-none hidden md:flex">
         <div>
@@ -113,7 +116,9 @@ function AdminLayout() {
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <Icon className={`h-4 w-4 ${active ? "text-primary-foreground" : "text-slate-400"}`} />
+                    <Icon
+                      className={`h-4 w-4 ${active ? "text-primary-foreground" : "text-slate-400"}`}
+                    />
                     <span>{item.title}</span>
                   </div>
                   {active && <ChevronLeft className="h-4 w-4 opacity-80" />}

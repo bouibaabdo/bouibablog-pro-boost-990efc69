@@ -31,7 +31,12 @@ const TOOL_ITEMS_AR: NavDropdownItem[] = [
     description: "خريطة طريق تفاعلية للدراسة",
     badge: "جديد ✨",
   },
-  { label: "مولّد السيرة الذاتية", to: "/tools/cv", description: "CV احترافي في ثوانٍ", badge: "جديد ✨" },
+  {
+    label: "مولّد السيرة الذاتية",
+    to: "/tools/cv",
+    description: "CV احترافي في ثوانٍ",
+    badge: "جديد ✨",
+  },
   { label: "المساعد الدراسي", to: "/tools/study", description: "شرح وبطاقات مراجعة واختبار" },
   { label: "إعادة الصياغة والتدقيق", to: "/tools/rewrite", description: "تحرير وتصحيح لغوي" },
   { label: "منشورات السوشيال ميديا", to: "/tools/social", description: "منشورات وهاشتاغات جاهزة" },
@@ -50,9 +55,18 @@ const TOOL_ITEMS_EN: NavDropdownItem[] = [
     description: "Interactive study roadmaps",
     badge: "New ✨",
   },
-  { label: "Resume Builder", to: "/tools/cv", description: "Professional CV in seconds", badge: "New ✨" },
+  {
+    label: "Resume Builder",
+    to: "/tools/cv",
+    description: "Professional CV in seconds",
+    badge: "New ✨",
+  },
   { label: "Study Assistant", to: "/tools/study", description: "Explanations, flashcards & quiz" },
-  { label: "Rewrite & Proofread", to: "/tools/rewrite", description: "Cleaner, correct Arabic text" },
+  {
+    label: "Rewrite & Proofread",
+    to: "/tools/rewrite",
+    description: "Cleaner, correct Arabic text",
+  },
   { label: "Social Media Posts", to: "/tools/social", description: "Posts, reels & hashtags" },
   { label: "Email Writer", to: "/tools/email", description: "Ready-to-send professional emails" },
   { label: "Text to Image", to: "/tools/image", description: "Generate AI images from prompts" },
@@ -413,8 +427,6 @@ export function SiteHeader() {
                   <HelpCircle className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
                   <span>{lang === "en" ? "AI Quiz" : "اختبار AI"}</span>
                 </Link>
-
-
 
                 <Link
                   to="/about"

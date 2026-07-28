@@ -2,7 +2,9 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const PAGE_ID = process.env.FACEBOOK_PAGE_ID || "559362324530470";
-const RAW_TOKEN = process.env.FACEBOOK_PAGE_ACCESS_TOKEN || "EAANZCxw0Ra20BSBoriWSmG8e68Pf5jjKu9jvKZBhSF2N3UMP9TAs94fWQFeYJPWZAbiPuoGjZBnMZBExYBZCieoh05pjF6lZBYj6Gy002yc2AzcG13adB11NEL32X6VqpJ04ZB9wR8Di9Ig4bRDx3iHETugs7Ch1qCAxnc3sHRrcU4n91QSb313EBDjWnbiWQkWMZAmMLq7ADZChKxRk6TZC2OXfCSrZA4w38D9Hvq7srOOt07UnPiTFIOBfehaY6834VCGTXVkPaz1CAvkP5xSNsXrCZAvrL4pJJ6wZC8SAZDZD";
+const RAW_TOKEN =
+  process.env.FACEBOOK_PAGE_ACCESS_TOKEN ||
+  "EAANZCxw0Ra20BSBoriWSmG8e68Pf5jjKu9jvKZBhSF2N3UMP9TAs94fWQFeYJPWZAbiPuoGjZBnMZBExYBZCieoh05pjF6lZBYj6Gy002yc2AzcG13adB11NEL32X6VqpJ04ZB9wR8Di9Ig4bRDx3iHETugs7Ch1qCAxnc3sHRrcU4n91QSb313EBDjWnbiWQkWMZAmMLq7ADZChKxRk6TZC2OXfCSrZA4w38D9Hvq7srOOt07UnPiTFIOBfehaY6834VCGTXVkPaz1CAvkP5xSNsXrCZAvrL4pJJ6wZC8SAZDZD";
 
 const REEL_CAPTION = `🚀 كفاش تخدم بأقوى نماذج الذكاء الاصطناعي فـ PC ديالك فابور 100% وبلا إنترنت؟ 🇲🇦✨
 
@@ -110,10 +112,15 @@ async function main() {
 
         const commentData = await commentRes.json();
         if (commentRes.ok && !commentData.error) {
-          console.log(`✅ First comment posted successfully on target ${targetId}! Comment ID: ${commentData.id}`);
+          console.log(
+            `✅ First comment posted successfully on target ${targetId}! Comment ID: ${commentData.id}`,
+          );
           break;
         } else {
-          console.warn(`⚠️ First comment notice on ${targetId}:`, commentData.error?.message || JSON.stringify(commentData));
+          console.warn(
+            `⚠️ First comment notice on ${targetId}:`,
+            commentData.error?.message || JSON.stringify(commentData),
+          );
         }
       } catch (cErr) {
         console.warn(`⚠️ Comment failed on ${targetId}:`, cErr.message);

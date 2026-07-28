@@ -43,8 +43,8 @@ export function useBeeController({ isReducedMotion }: BeeControllerOptions) {
       triggerActivity();
 
       const mult = isMobileRef.current ? BEE_CONFIG.mobileMotionMultiplier : 1;
-      const normX = ((e.clientX / window.innerWidth) - 0.5) * 2;
-      const normY = -((e.clientY / window.innerHeight) - 0.5) * 2;
+      const normX = (e.clientX / window.innerWidth - 0.5) * 2;
+      const normY = -(e.clientY / window.innerHeight - 0.5) * 2;
 
       let targetX = normX * BEE_CONFIG.edgeMarginX * mult;
       let targetY = normY * BEE_CONFIG.edgeMarginY * mult;
@@ -133,8 +133,14 @@ export function useBeeController({ isReducedMotion }: BeeControllerOptions) {
     }
 
     if (stateRef.current === "edgeAvoidance") {
-      targetPos[0] = Math.max(-BEE_CONFIG.edgeMarginX, Math.min(BEE_CONFIG.edgeMarginX, targetPos[0]));
-      targetPos[1] = Math.max(-BEE_CONFIG.edgeMarginY, Math.min(BEE_CONFIG.edgeMarginY, targetPos[1]));
+      targetPos[0] = Math.max(
+        -BEE_CONFIG.edgeMarginX,
+        Math.min(BEE_CONFIG.edgeMarginX, targetPos[0]),
+      );
+      targetPos[1] = Math.max(
+        -BEE_CONFIG.edgeMarginY,
+        Math.min(BEE_CONFIG.edgeMarginY, targetPos[1]),
+      );
       stateRef.current = "reEnter";
     } else if (stateRef.current === "reEnter") {
       stateRef.current = "idle";
@@ -143,7 +149,8 @@ export function useBeeController({ isReducedMotion }: BeeControllerOptions) {
     // Add gentle 3D hover drift during idle
     if (stateRef.current === "idle") {
       const floatX = Math.sin(clockTime * BEE_CONFIG.idleFrequency) * BEE_CONFIG.idleAmplitudeX;
-      const floatY = Math.cos(clockTime * BEE_CONFIG.idleFrequency * 1.3) * BEE_CONFIG.idleAmplitudeY;
+      const floatY =
+        Math.cos(clockTime * BEE_CONFIG.idleFrequency * 1.3) * BEE_CONFIG.idleAmplitudeY;
       targetPos[0] += floatX * 0.01;
       targetPos[1] += floatY * 0.01;
     }

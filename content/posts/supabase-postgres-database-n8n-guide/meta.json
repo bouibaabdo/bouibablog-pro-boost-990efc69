@@ -12,14 +12,7 @@
   ],
   "thumbnail": "https://www.bouibacademy.me/supabase-postgres-n8n-cover.webp",
   "category": "AI Automation",
-  "tags": [
-    "Supabase",
-    "PostgreSQL",
-    "n8n",
-    "Database",
-    "Automation",
-    "AI Agent"
-  ],
+  "tags": ["Supabase", "PostgreSQL", "n8n", "Database", "Automation", "AI Agent"],
   "created_at": "2026-07-26",
   "language": "ar"
 }

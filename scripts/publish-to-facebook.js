@@ -12,7 +12,10 @@ if (fs.existsSync(envPath)) {
       if (eqIdx > 0) {
         const key = trimmed.slice(0, eqIdx).trim();
         let val = trimmed.slice(eqIdx + 1).trim();
-        if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+        if (
+          (val.startsWith('"') && val.endsWith('"')) ||
+          (val.startsWith("'") && val.endsWith("'"))
+        ) {
           val = val.slice(1, -1);
         }
         if (!process.env[key]) {
@@ -23,7 +26,12 @@ if (fs.existsSync(envPath)) {
   }
 }
 
-const JSON_INPUT_PATH = path.join(process.cwd(), "content", "facebook-posts", "facebook-posts.json");
+const JSON_INPUT_PATH = path.join(
+  process.cwd(),
+  "content",
+  "facebook-posts",
+  "facebook-posts.json",
+);
 const PAGE_ID = process.env.FACEBOOK_PAGE_ID || "559362324530470";
 let PAGE_ACCESS_TOKEN = process.env.FACEBOOK_PAGE_ACCESS_TOKEN || "";
 
@@ -45,7 +53,9 @@ async function resolvePageToken(token, pageId) {
 
 async function publishPostToFacebook(post) {
   if (!PAGE_ID || !PAGE_ACCESS_TOKEN) {
-    console.error("❌ Error: FACEBOOK_PAGE_ID and FACEBOOK_PAGE_ACCESS_TOKEN environment variables are required.");
+    console.error(
+      "❌ Error: FACEBOOK_PAGE_ID and FACEBOOK_PAGE_ACCESS_TOKEN environment variables are required.",
+    );
     return false;
   }
 
@@ -79,7 +89,10 @@ async function publishPostToFacebook(post) {
       createdPostId = postData.post_id || postData.id;
       console.log(`✅ Photo post published successfully! Facebook Post ID: ${createdPostId}`);
     } else {
-      console.warn(`⚠️ Photo endpoint skipped:`, postData.error?.message || "Trying feed endpoint...");
+      console.warn(
+        `⚠️ Photo endpoint skipped:`,
+        postData.error?.message || "Trying feed endpoint...",
+      );
     }
   } catch (err) {
     console.warn(`⚠️ Photo endpoint failed:`, err.message);

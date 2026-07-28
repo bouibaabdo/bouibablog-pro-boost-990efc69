@@ -12,14 +12,7 @@
   ],
   "thumbnail": "https://www.bouibacademy.me/social-media-n8n-cover.webp",
   "category": "n8n",
-  "tags": [
-    "n8n",
-    "Facebook API",
-    "Telegram Bot",
-    "Automation",
-    "Webhooks",
-    "Social Media"
-  ],
+  "tags": ["n8n", "Facebook API", "Telegram Bot", "Automation", "Webhooks", "Social Media"],
   "created_at": "2026-07-25",
   "language": "ar"
 }

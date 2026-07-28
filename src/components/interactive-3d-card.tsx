@@ -7,12 +7,7 @@ interface Tilt3DProps {
   depth?: number;
 }
 
-export function Tilt3DCard({
-  children,
-  className = "",
-  maxDegree = 8,
-  depth = 15,
-}: Tilt3DProps) {
+export function Tilt3DCard({ children, className = "", maxDegree = 8, depth = 15 }: Tilt3DProps) {
   const cardRef = useRef<HTMLDivElement | null>(null);
   const [style, setStyle] = useState<React.CSSProperties>({
     transform: "perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)",

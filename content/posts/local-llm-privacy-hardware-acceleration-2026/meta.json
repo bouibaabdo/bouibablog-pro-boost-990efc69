@@ -12,14 +12,7 @@
   ],
   "thumbnail": "https://www.bouibacademy.me/local-llm-hardware-acceleration-cover.png",
   "category": "AI News",
-  "tags": [
-    "Local AI",
-    "Privacy",
-    "Ollama",
-    "Quantization",
-    "GGUF",
-    "Hardware"
-  ],
+  "tags": ["Local AI", "Privacy", "Ollama", "Quantization", "GGUF", "Hardware"],
   "created_at": "2026-07-27",
   "language": "ar"
 }

@@ -47,7 +47,6 @@ export const Route = createFileRoute("/tools/")({
   component: ToolsIndex,
 });
 
-
 const TOOLS: Array<{
   to: string;
   icon: LucideIcon;

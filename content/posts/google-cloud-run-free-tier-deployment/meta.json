@@ -12,14 +12,7 @@
   ],
   "thumbnail": "https://www.bouibacademy.me/google-cloud-run-deployment-cover.png",
   "category": "Developer Tools",
-  "tags": [
-    "Google Cloud",
-    "Cloud Run",
-    "Docker",
-    "Serverless",
-    "Free Hosting",
-    "DevOps"
-  ],
+  "tags": ["Google Cloud", "Cloud Run", "Docker", "Serverless", "Free Hosting", "DevOps"],
   "created_at": "2026-07-27",
   "language": "ar"
 }

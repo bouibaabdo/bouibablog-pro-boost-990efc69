@@ -115,13 +115,7 @@ export const publishToTelegramFn = createServerFn({ method: "POST" })
 
 // 3. Webhook Multi-Platform Trigger (Triggers n8n / Zapier / Make automation for all social channels)
 export const triggerMultiPlatformWebhookFn = createServerFn({ method: "POST" })
-  .validator(
-    (data: {
-      webhookUrl: string;
-      postId: string;
-      targetPlatforms?: string[];
-    }) => data,
-  )
+  .validator((data: { webhookUrl: string; postId: string; targetPlatforms?: string[] }) => data)
   .handler(async ({ data }) => {
     if (!data.webhookUrl) {
       throw new Error("يرجى إدخال رابط الـ Webhook الخاص بأتمتة n8n أو Make.");
@@ -140,7 +134,14 @@ export const triggerMultiPlatformWebhookFn = createServerFn({ method: "POST" })
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           event: "omni_publish_request",
-          platforms: data.targetPlatforms || ["facebook", "twitter", "linkedin", "telegram", "pinterest", "reddit"],
+          platforms: data.targetPlatforms || [
+            "facebook",
+            "twitter",
+            "linkedin",
+            "telegram",
+            "pinterest",
+            "reddit",
+          ],
           post,
           timestamp: new Date().toISOString(),
         }),

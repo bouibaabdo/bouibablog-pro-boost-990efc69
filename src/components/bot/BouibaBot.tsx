@@ -26,10 +26,7 @@ const PAGE_QUIPS: Record<string, string[]> = {
     "💚 نحن نؤمن أن التكنولوجيا يجب أن تكون بالعربية",
     "🌟 مهمتنا: جعل AI في متناول الجميع!",
   ],
-  "/contact": [
-    "📩 يسعدنا سماعك! راسلنا بلا تردد",
-    "💬 لديك سؤال أو اقتراح؟ تواصل معنا الآن!",
-  ],
+  "/contact": ["📩 يسعدنا سماعك! راسلنا بلا تردد", "💬 لديك سؤال أو اقتراح؟ تواصل معنا الآن!"],
 };
 
 const IDLE_QUIPS = [
@@ -107,14 +104,17 @@ function findAnswer(input: string): KnowledgeItem | null {
 
 // ─── TTS ─────────────────────────────────────────────────────────────────────
 let speechAllowed = false;
-function enableSpeech() { speechAllowed = true; }
+function enableSpeech() {
+  speechAllowed = true;
+}
 
 function speak(text: string) {
   if (!speechAllowed || typeof window === "undefined" || !window.speechSynthesis) return;
   window.speechSynthesis.cancel();
   const utt = new SpeechSynthesisUtterance(
-    text.replace(/[🐝✨🛠️📚🏷️ℹ️🔐⚡🤖🌟📩🔍🏠💡🎁🎯🔥📖🤔👀👋💬💚⚡🖼️🗺️🌍🏗️🎉🤩psst]/g, "")
-        .replace(/\*\*/g, "")
+    text
+      .replace(/[🐝✨🛠️📚🏷️ℹ️🔐⚡🤖🌟📩🔍🏠💡🎁🎯🔥📖🤔👀👋💬💚⚡🖼️🗺️🌍🏗️🎉🤩psst]/g, "")
+      .replace(/\*\*/g, ""),
   );
   utt.lang = "ar-SA";
   utt.rate = 0.95;
@@ -173,12 +173,16 @@ function drawRobot(
   ctx.fill();
 
   // Chest LED bars (sound wave when talking)
-  const bars = [[-8, 0], [-4, 0], [0, 0], [4, 0], [8, 0]];
+  const bars = [
+    [-8, 0],
+    [-4, 0],
+    [0, 0],
+    [4, 0],
+    [8, 0],
+  ];
   bars.forEach(([bx], bi) => {
     const h = talking ? 3 + Math.random() * 8 : 4;
-    ctx.fillStyle = talking
-      ? bi === 2 ? "#22D3EE" : "#10B981"
-      : "#14B8A6";
+    ctx.fillStyle = talking ? (bi === 2 ? "#22D3EE" : "#10B981") : "#14B8A6";
     ctx.beginPath();
     ctx.roundRect(bx * s - 1.5, (13 - h / 2) * s, 3 * s, h * s, 1.5);
     ctx.fill();
@@ -244,7 +248,7 @@ function drawRobot(
   ctx.shadowBlur = 0;
 
   // Eyes
-  const eyeColor = blinking ? "#0F172A" : (talking ? "#10B981" : "#06B6D4");
+  const eyeColor = blinking ? "#0F172A" : talking ? "#10B981" : "#06B6D4";
   const eyeH = blinking ? 2 : 9;
 
   ctx.fillStyle = eyeColor;
@@ -341,7 +345,11 @@ function BotText({ text }: { text: string }) {
     <div className="space-y-1">
       {text.split("\n").map((line, i) => {
         if (line.startsWith("**") && line.endsWith("**"))
-          return <p key={i} className="font-bold text-teal-600 dark:text-teal-300">{line.slice(2, -2)}</p>;
+          return (
+            <p key={i} className="font-bold text-teal-600 dark:text-teal-300">
+              {line.slice(2, -2)}
+            </p>
+          );
         if (line.startsWith("• "))
           return (
             <p key={i} className="flex gap-1.5">
@@ -349,7 +357,11 @@ function BotText({ text }: { text: string }) {
               <span>{line.slice(2)}</span>
             </p>
           );
-        return <p key={i} className={line === "" ? "h-1.5" : ""}>{line}</p>;
+        return (
+          <p key={i} className={line === "" ? "h-1.5" : ""}>
+            {line}
+          </p>
+        );
       })}
     </div>
   );
@@ -482,7 +494,9 @@ export function BouibaBot() {
       if (blinkTimerRef.current > 4.0 + Math.random() * 2) {
         blinkRef.current = true;
         blinkTimerRef.current = 0;
-        setTimeout(() => { blinkRef.current = false; }, 140);
+        setTimeout(() => {
+          blinkRef.current = false;
+        }, 140);
       }
 
       // Idle quip timer
@@ -603,7 +617,9 @@ export function BouibaBot() {
           if (!hasGreetedRef.current) {
             hasGreetedRef.current = true;
             setTimeout(() => {
-              addBotMessage("أهلاً وسهلاً! 🤖✨ أنا بويبو، مساعدك الذكي في Bouiba Academy!\nكيف يمكنني مساعدتك اليوم؟");
+              addBotMessage(
+                "أهلاً وسهلاً! 🤖✨ أنا بويبو، مساعدك الذكي في Bouiba Academy!\nكيف يمكنني مساعدتك اليوم؟",
+              );
             }, 350);
           }
         }
@@ -627,15 +643,15 @@ export function BouibaBot() {
 
   // ── Chat helpers ───────────────────────────────────────────────────────────
   const addBotMessage = useCallback((text: string, link?: { to: string; label: string }) => {
-    setMessages((prev) => [
-      ...prev,
-      { id: crypto.randomUUID(), from: "bot", text, link },
-    ]);
+    setMessages((prev) => [...prev, { id: crypto.randomUUID(), from: "bot", text, link }]);
     isTalkingRef.current = true;
     setIsTalkingState(true);
     speak(text);
     const dur = Math.max(1500, text.length * 35);
-    setTimeout(() => { isTalkingRef.current = false; setIsTalkingState(false); }, dur);
+    setTimeout(() => {
+      isTalkingRef.current = false;
+      setIsTalkingState(false);
+    }, dur);
   }, []);
 
   const handleSend = useCallback(() => {
@@ -648,20 +664,25 @@ export function BouibaBot() {
       if (found) {
         addBotMessage(found.answer, found.link);
       } else {
-        addBotMessage("عذراً، لم أفهم جيداً 😅\nلكن يمكنني مساعدتك في المقالات، الأدوات، n8n، SEO، والأمن السيبراني.\nاسألني بطريقة أخرى!");
+        addBotMessage(
+          "عذراً، لم أفهم جيداً 😅\nلكن يمكنني مساعدتك في المقالات، الأدوات، n8n، SEO، والأمن السيبراني.\nاسألني بطريقة أخرى!",
+        );
       }
     }, 500);
   }, [input, addBotMessage]);
 
-  const handleQuick = useCallback((id: string) => {
-    const a = QUICK_ACTIONS.find((x) => x.id === id);
-    if (!a) return;
-    setMessages((prev) => [...prev, { id: crypto.randomUUID(), from: "user", text: a.label }]);
-    setTimeout(() => {
-      const found = findAnswer(a.label);
-      if (found) addBotMessage(found.answer, found.link);
-    }, 400);
-  }, [addBotMessage]);
+  const handleQuick = useCallback(
+    (id: string) => {
+      const a = QUICK_ACTIONS.find((x) => x.id === id);
+      if (!a) return;
+      setMessages((prev) => [...prev, { id: crypto.randomUUID(), from: "user", text: a.label }]);
+      setTimeout(() => {
+        const found = findAnswer(a.label);
+        if (found) addBotMessage(found.answer, found.link);
+      }, 400);
+    },
+    [addBotMessage],
+  );
 
   // ── Chat panel position: near the robot ───────────────────────────────────
   const isMobileSize = typeof window !== "undefined" && window.innerWidth < 600;
@@ -671,10 +692,16 @@ export function BouibaBot() {
     bottom: isMobileSize ? 0 : undefined,
     left: isMobileSize ? 0 : undefined,
     right: isMobileSize ? 0 : undefined,
-    ...(isMobileSize ? {} : {
-      left: Math.min(posRef.current.x - 165, (typeof window !== "undefined" ? window.innerWidth : 800) - 350),
-      bottom: (typeof window !== "undefined" ? window.innerHeight : 700) - posRef.current.y + 80,
-    }),
+    ...(isMobileSize
+      ? {}
+      : {
+          left: Math.min(
+            posRef.current.x - 165,
+            (typeof window !== "undefined" ? window.innerWidth : 800) - 350,
+          ),
+          bottom:
+            (typeof window !== "undefined" ? window.innerHeight : 700) - posRef.current.y + 80,
+        }),
   };
 
   return (
@@ -705,7 +732,11 @@ export function BouibaBot() {
             setChatOpen(true);
             if (!hasGreetedRef.current) {
               hasGreetedRef.current = true;
-              setTimeout(() => addBotMessage("أهلاً! 🤖✨ أنا بويبو — مساعدك الذكي!\nكيف يمكنني مساعدتك اليوم؟"), 350);
+              setTimeout(
+                () =>
+                  addBotMessage("أهلاً! 🤖✨ أنا بويبو — مساعدك الذكي!\nكيف يمكنني مساعدتك اليوم؟"),
+                350,
+              );
             }
           }
           const q = ["مرحباً 👋", "هيهي 😄", "جاهز! 💪"][Math.floor(Math.random() * 3)];
@@ -717,7 +748,12 @@ export function BouibaBot() {
       />
 
       {/* ── Speech Bubble ── */}
-      <SpeechBubble text={bubble} x={botScreenPos.x} y={botScreenPos.y} visible={bubbleVisible && !chatOpen} />
+      <SpeechBubble
+        text={bubble}
+        x={botScreenPos.x}
+        y={botScreenPos.y}
+        visible={bubbleVisible && !chatOpen}
+      />
 
       {/* ── Chat Panel ── */}
       {chatOpen && (
@@ -740,13 +776,21 @@ export function BouibaBot() {
             </div>
             <div className="flex-1">
               <p className="font-bold text-white text-sm">بويبو 🤖</p>
-              <p className="text-xs text-teal-200">{isTalkingState ? "🔊 يتحدث..." : "🟢 متصل دائماً"}</p>
+              <p className="text-xs text-teal-200">
+                {isTalkingState ? "🔊 يتحدث..." : "🟢 متصل دائماً"}
+              </p>
             </div>
             <button
               onClick={() => setChatOpen(false)}
               className="rounded-full p-1.5 text-teal-100 hover:bg-teal-800 transition-colors"
             >
-              <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+              <svg
+                className="h-4 w-4"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                viewBox="0 0 24 24"
+              >
                 <path d="M18 6 6 18M6 6l12 12" />
               </svg>
             </button>
@@ -829,7 +873,13 @@ export function BouibaBot() {
               disabled={!input.trim()}
               className="rounded-xl bg-teal-600 p-2 text-white transition-all hover:bg-teal-700 disabled:cursor-not-allowed disabled:opacity-40 active:scale-95"
             >
-              <svg className="h-4 w-4 rotate-180" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+              <svg
+                className="h-4 w-4 rotate-180"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                viewBox="0 0 24 24"
+              >
                 <path d="M22 2 11 13M22 2 15 22 11 13 2 9l20-7z" />
               </svg>
             </button>

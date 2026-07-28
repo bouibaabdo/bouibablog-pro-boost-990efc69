@@ -25,36 +25,83 @@ type SignedLessonRow = LessonRow & {
   thumbnail_url: string | null;
 };
 
+async function resolveGCSOrSupabaseUrl(
+  storageClient: SupabaseClient<Database>,
+  bucketName: string,
+  path: string | null | undefined,
+): Promise<string | null> {
+  if (!path) return null;
+
+  // 1. External HTTP/HTTPS URLs
+  if (path.startsWith("http://") || path.startsWith("https://")) {
+    return path;
+  }
+
+  // 2. Google Cloud Storage (GCS) URLs: gcs://bucket-name/object-path
+  if (path.startsWith("gcs://")) {
+    const match = path.match(/^gcs:\/\/([^\/]+)\/(.+)$/);
+    if (match) {
+      const [_, gcsBucket, objectPath] = match;
+      const clientEmail = process.env.GCS_CLIENT_EMAIL;
+      const privateKey = process.env.GCS_PRIVATE_KEY;
+
+      if (!clientEmail || !privateKey) {
+        // Fallback to CDN or public URL
+        const cdnDomain = process.env.GCS_CDN_DOMAIN;
+        return cdnDomain
+          ? `https://${cdnDomain}/${objectPath}`
+          : `https://storage.googleapis.com/${gcsBucket}/${objectPath}`;
+      }
+
+      try {
+        const { Storage } = await import("@google-cloud/storage");
+        const storage = new Storage({
+          credentials: {
+            client_email: clientEmail,
+            private_key: privateKey.replace(/\\n/g, "\n"),
+          },
+        });
+        const [url] = await storage
+          .bucket(gcsBucket)
+          .file(objectPath)
+          .getSignedUrl({
+            version: "v4",
+            action: "read",
+            expires: Date.now() + SIGN_EXPIRY * 1000,
+          });
+        return url;
+      } catch (err) {
+        console.warn("GCS URL sign failed, falling back to public url:", err);
+        return `https://storage.googleapis.com/${gcsBucket}/${objectPath}`;
+      }
+    }
+  }
+
+  // 3. Supabase Storage URLs
+  try {
+    const res = await storageClient.storage
+      .from(bucketName)
+      .createSignedUrl(path, SIGN_EXPIRY)
+      .catch(() => ({ data: { signedUrl: path } }));
+    return res.data?.signedUrl ?? path;
+  } catch (err) {
+    console.warn(`Supabase Storage sign failed for bucket ${bucketName}:`, err);
+    return path;
+  }
+}
+
 async function signRows(storageClient: SupabaseClient<Database>, rows: LessonRow[]) {
   return Promise.all(
     rows.map(async (r) => {
-      const isExternalVideo =
-        r.video_path && (r.video_path.startsWith("http://") || r.video_path.startsWith("https://"));
-      const isExternalThumb =
-        r.thumbnail_path &&
-        (r.thumbnail_path.startsWith("http://") || r.thumbnail_path.startsWith("https://"));
-
-      const [videoRes, thumbRes] = await Promise.all([
-        isExternalVideo
-          ? Promise.resolve({ data: { signedUrl: r.video_path } })
-          : storageClient.storage
-              .from("lessons")
-              .createSignedUrl(r.video_path, SIGN_EXPIRY)
-              .catch(() => ({ data: { signedUrl: r.video_path } })),
-        r.thumbnail_path
-          ? isExternalThumb
-            ? Promise.resolve({ data: { signedUrl: r.thumbnail_path } })
-            : storageClient.storage
-                .from("lessons")
-                .createSignedUrl(r.thumbnail_path, SIGN_EXPIRY)
-                .catch(() => ({ data: null }))
-          : Promise.resolve({ data: null }),
+      const [videoUrl, thumbnailUrl] = await Promise.all([
+        resolveGCSOrSupabaseUrl(storageClient, "lessons", r.video_path),
+        resolveGCSOrSupabaseUrl(storageClient, "lessons", r.thumbnail_path),
       ]);
 
       return {
         ...r,
-        video_url: videoRes.data?.signedUrl ?? r.video_path ?? null,
-        thumbnail_url: thumbRes?.data?.signedUrl ?? r.thumbnail_url ?? null,
+        video_url: videoUrl ?? r.video_path ?? null,
+        thumbnail_url: thumbnailUrl ?? r.thumbnail_url ?? null,
       } satisfies SignedLessonRow;
     }),
   );
@@ -173,9 +220,13 @@ export const deleteLesson = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     await assertAdmin(context);
-    const paths = [data.video_path];
-    if (data.thumbnail_path) paths.push(data.thumbnail_path);
-    await context.supabase.storage.from("lessons").remove(paths);
+    const paths = [data.video_path, data.thumbnail_path].filter(
+      (p): p is string =>
+        !!p && !p.startsWith("gcs://") && !p.startsWith("http://") && !p.startsWith("https://"),
+    );
+    if (paths.length > 0) {
+      await context.supabase.storage.from("lessons").remove(paths);
+    }
     const { error } = await context.supabase.from("lessons").delete().eq("id", data.id);
     if (error) throw error;
     return { ok: true };

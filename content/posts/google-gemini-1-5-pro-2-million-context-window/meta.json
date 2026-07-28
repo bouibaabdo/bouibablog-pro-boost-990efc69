@@ -12,14 +12,7 @@
   ],
   "thumbnail": "https://www.bouibacademy.me/google-gemini-2m-context-cover.png",
   "category": "AI News",
-  "tags": [
-    "Google",
-    "Gemini",
-    "AI News",
-    "Large Context Window",
-    "Multimodal",
-    "Developer Tools"
-  ],
+  "tags": ["Google", "Gemini", "AI News", "Large Context Window", "Multimodal", "Developer Tools"],
   "created_at": "2026-07-27",
   "language": "ar"
 }

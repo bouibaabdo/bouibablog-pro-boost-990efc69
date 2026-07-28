@@ -31,9 +31,7 @@ export function PostCard({
 
   return (
     <Tilt3DCard maxDegree={5} depth={10} className={featured ? "md:col-span-2 md:row-span-2" : ""}>
-      <article
-        className="group relative overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all duration-300 hover:border-primary/40 hover:shadow-md h-full flex flex-col justify-between"
-      >
+      <article className="group relative overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all duration-300 hover:border-primary/40 hover:shadow-md h-full flex flex-col justify-between">
         <Link to="/posts/$id" params={{ id: post.slug }} className="block flex-1 flex flex-col">
           {post.thumbnail && (
             <div

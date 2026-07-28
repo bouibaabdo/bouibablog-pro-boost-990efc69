@@ -98,7 +98,9 @@ function AdminPosts() {
     setTagsInput("AI, أتمتة, دروس");
     setExcerpt("");
     setThumbnail("");
-    setContentHtml(`# اكتب عنوان المقال الفرعي هنا\n\nاكتب محتوى المقال التعليمي باللغة العربية مع تفاصيل عملية ونقاط واضحة.`);
+    setContentHtml(
+      `# اكتب عنوان المقال الفرعي هنا\n\nاكتب محتوى المقال التعليمي باللغة العربية مع تفاصيل عملية ونقاط واضحة.`,
+    );
     setActiveTab("editor");
   };
 
@@ -132,7 +134,9 @@ function AdminPosts() {
       setUploadingImage(true);
       const ext = file.name.split(".").pop() || "png";
       const fileName = `post-covers/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-      const { error } = await supabase.storage.from("lessons").upload(fileName, file, { upsert: true });
+      const { error } = await supabase.storage
+        .from("lessons")
+        .upload(fileName, file, { upsert: true });
       if (error) throw error;
       const { data } = supabase.storage.from("lessons").getPublicUrl(fileName);
       if (data?.publicUrl) {
@@ -160,7 +164,10 @@ function AdminPosts() {
           slug: slug || slugify(title),
           title,
           category,
-          tags: tagsInput.split(",").map((t) => t.trim()).filter(Boolean),
+          tags: tagsInput
+            .split(",")
+            .map((t) => t.trim())
+            .filter(Boolean),
           excerpt,
           thumbnail,
           created_at: new Date().toISOString(),
@@ -173,9 +180,15 @@ function AdminPosts() {
 
       if (navigator.clipboard?.writeText) {
         await navigator.clipboard.writeText(fullBundle);
-        toast.success("تم نسخ محتوى المقال (meta.json + post.md) إلى الحافظة — الصقه في مجلد content/posts/");
+        toast.success(
+          "تم نسخ محتوى المقال (meta.json + post.md) إلى الحافظة — الصقه في مجلد content/posts/",
+        );
       } else {
-        toast.success("تم تجهيز المقال! انسخ المحتوى من المحرر وضعه في content/posts/" + (slug || slugify(title)) + "/");
+        toast.success(
+          "تم تجهيز المقال! انسخ المحتوى من المحرر وضعه في content/posts/" +
+            (slug || slugify(title)) +
+            "/",
+        );
       }
 
       fetchPostsList();
@@ -191,7 +204,7 @@ function AdminPosts() {
     (p) =>
       p.title?.toLowerCase().includes(search.toLowerCase()) ||
       p.slug?.toLowerCase().includes(search.toLowerCase()) ||
-      p.labels?.some((l: string) => l.toLowerCase().includes(search.toLowerCase()))
+      p.labels?.some((l: string) => l.toLowerCase().includes(search.toLowerCase())),
   );
 
   return (
@@ -216,7 +229,12 @@ function AdminPosts() {
                 مقال جديد (New Post)
               </Button>
               <Button asChild variant="outline">
-                <a href="https://www.blogger.com/" target="_blank" rel="noopener noreferrer" className="gap-2">
+                <a
+                  href="https://www.blogger.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="gap-2"
+                >
                   <ExternalLink className="h-4 w-4 text-amber-500" />
                   Blogger Dashboard
                 </a>
@@ -227,8 +245,16 @@ function AdminPosts() {
               <Button variant="ghost" onClick={() => setActiveTab("list")} className="gap-1.5">
                 <ArrowRight className="h-4 w-4" /> العودة للقائمة
               </Button>
-              <Button onClick={savePost} disabled={loading} className="gap-2 font-bold bg-emerald-600 hover:bg-emerald-700 text-white">
-                {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
+              <Button
+                onClick={savePost}
+                disabled={loading}
+                className="gap-2 font-bold bg-emerald-600 hover:bg-emerald-700 text-white"
+              >
+                {loading ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Check className="h-4 w-4" />
+                )}
                 حفظ ونشر المقال
               </Button>
             </>
@@ -254,14 +280,18 @@ function AdminPosts() {
             <CardHeader className="py-4">
               <CardTitle className="text-base font-bold flex items-center justify-between">
                 <span>سجل المقالات ({filteredPosts.length})</span>
-                <span className="text-xs text-muted-foreground font-normal">مزامنة فورية مع السيرفر</span>
+                <span className="text-xs text-muted-foreground font-normal">
+                  مزامنة فورية مع السيرفر
+                </span>
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0">
               {posts === null ? (
                 <div className="p-8 text-center">
                   <Loader2 className="h-6 w-6 animate-spin text-primary mx-auto mb-2" />
-                  <span className="text-sm text-muted-foreground">جاري تحميل قائمة المقالات...</span>
+                  <span className="text-sm text-muted-foreground">
+                    جاري تحميل قائمة المقالات...
+                  </span>
                 </div>
               ) : filteredPosts.length === 0 ? (
                 <div className="p-8 text-center text-muted-foreground text-sm">
@@ -270,7 +300,10 @@ function AdminPosts() {
               ) : (
                 <div className="divide-y divide-border/60">
                   {filteredPosts.map((p: any) => (
-                    <div key={p.id} className="p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-muted/40 transition-colors">
+                    <div
+                      key={p.id}
+                      className="p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-muted/40 transition-colors"
+                    >
                       <div className="flex items-start gap-3.5 min-w-0">
                         {p.thumbnail ? (
                           <img
@@ -285,7 +318,9 @@ function AdminPosts() {
                         )}
 
                         <div className="space-y-1 min-w-0">
-                          <h4 className="font-bold text-sm md:text-base leading-tight truncate">{p.title}</h4>
+                          <h4 className="font-bold text-sm md:text-base leading-tight truncate">
+                            {p.title}
+                          </h4>
                           <div className="flex items-center gap-3 text-xs text-muted-foreground flex-wrap">
                             <span className="rounded bg-primary/10 text-primary px-2 py-0.5 font-semibold">
                               {p.labels?.[0] || "عام"}
@@ -297,7 +332,12 @@ function AdminPosts() {
                       </div>
 
                       <div className="flex items-center gap-2 shrink-0">
-                        <Button size="sm" variant="outline" onClick={() => editPost(p)} className="gap-1.5 font-semibold">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => editPost(p)}
+                          className="gap-1.5 font-semibold"
+                        >
                           <Pencil className="h-3.5 w-3.5 text-primary" />
                           تعديل باللوحة
                         </Button>
@@ -338,9 +378,13 @@ function AdminPosts() {
               </div>
 
               <div>
-                <Label className="text-xs font-semibold text-muted-foreground mb-1 block">رابط المقال الصديق (SEO URL Slug)</Label>
+                <Label className="text-xs font-semibold text-muted-foreground mb-1 block">
+                  رابط المقال الصديق (SEO URL Slug)
+                </Label>
                 <div className="flex items-center rounded-md border border-border bg-muted/30 px-3 py-2 text-xs font-mono">
-                  <span className="text-muted-foreground dir-ltr">https://www.bouibacademy.me/posts/</span>
+                  <span className="text-muted-foreground dir-ltr">
+                    https://www.bouibacademy.me/posts/
+                  </span>
                   <input
                     type="text"
                     value={slug}
@@ -384,27 +428,59 @@ function AdminPosts() {
                 </div>
 
                 <div className="flex items-center gap-1 flex-wrap bg-muted/40 p-2 rounded-t-xl border border-border border-b-0 text-xs">
-                  <Button size="sm" variant="ghost" className="h-8 w-8 p-0" onClick={() => insertMarkdownSyntax("## ")}>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-8 w-8 p-0"
+                    onClick={() => insertMarkdownSyntax("## ")}
+                  >
                     <Heading className="h-4 w-4" />
                   </Button>
-                  <Button size="sm" variant="ghost" className="h-8 w-8 p-0" onClick={() => insertMarkdownSyntax("**", "**")}>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-8 w-8 p-0"
+                    onClick={() => insertMarkdownSyntax("**", "**")}
+                  >
                     <Bold className="h-4 w-4" />
                   </Button>
-                  <Button size="sm" variant="ghost" className="h-8 w-8 p-0" onClick={() => insertMarkdownSyntax("*", "*")}>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-8 w-8 p-0"
+                    onClick={() => insertMarkdownSyntax("*", "*")}
+                  >
                     <Italic className="h-4 w-4" />
                   </Button>
-                  <Button size="sm" variant="ghost" className="h-8 w-8 p-0" onClick={() => insertMarkdownSyntax("```javascript\n", "\n```")}>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-8 w-8 p-0"
+                    onClick={() => insertMarkdownSyntax("```javascript\n", "\n```")}
+                  >
                     <Code className="h-4 w-4" />
                   </Button>
-                  <Button size="sm" variant="ghost" className="h-8 w-8 p-0" onClick={() => insertMarkdownSyntax("- ")}>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-8 w-8 p-0"
+                    onClick={() => insertMarkdownSyntax("- ")}
+                  >
                     <List className="h-4 w-4" />
                   </Button>
-                  <Button size="sm" variant="ghost" className="h-8 w-8 p-0" onClick={() => insertMarkdownSyntax("> ")}>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-8 w-8 p-0"
+                    onClick={() => insertMarkdownSyntax("> ")}
+                  >
                     <Quote className="h-4 w-4" />
                   </Button>
                 </div>
 
-                <div className={`grid gap-4 ${previewMode === "split" ? "md:grid-cols-2" : "grid-cols-1"}`}>
+                <div
+                  className={`grid gap-4 ${previewMode === "split" ? "md:grid-cols-2" : "grid-cols-1"}`}
+                >
                   {previewMode !== "preview" && (
                     <Textarea
                       value={contentHtml}
@@ -427,7 +503,7 @@ function AdminPosts() {
                             .replace(/&/g, "&amp;")
                             .replace(/</g, "&lt;")
                             .replace(/>/g, "&gt;")
-                            .replace(/\n/g, "<br />")
+                            .replace(/\n/g, "<br />"),
                         }}
                       />
                     </div>
@@ -440,7 +516,9 @@ function AdminPosts() {
           {/* Sidebar Settings (Featured Image, Category, Excerpt) */}
           <div className="space-y-6 lg:col-span-4">
             <Card className="p-5 space-y-4 shadow-card">
-              <h3 className="font-bold text-sm border-b border-border/60 pb-2">إعدادات النشر والغلاف</h3>
+              <h3 className="font-bold text-sm border-b border-border/60 pb-2">
+                إعدادات النشر والغلاف
+              </h3>
 
               {/* Cover Image */}
               <div className="space-y-2">
@@ -460,9 +538,19 @@ function AdminPosts() {
                     <ImageIcon className="h-8 w-8 text-muted-foreground mx-auto" />
                     <p className="text-xs text-muted-foreground">اختر صورة غلاف المقال</p>
                     <label className="inline-flex items-center gap-1.5 text-xs font-bold bg-primary text-primary-foreground px-3 py-1.5 rounded-lg cursor-pointer hover:opacity-90">
-                      {uploadingImage ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Upload className="h-3.5 w-3.5" />}
+                      {uploadingImage ? (
+                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                      ) : (
+                        <Upload className="h-3.5 w-3.5" />
+                      )}
                       رفع صورة جديدة
-                      <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} disabled={uploadingImage} />
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handleImageUpload}
+                        disabled={uploadingImage}
+                      />
                     </label>
                   </div>
                 )}
@@ -499,7 +587,9 @@ function AdminPosts() {
 
               {/* Excerpt */}
               <div>
-                <Label className="text-xs font-bold mb-1.5 block">ملخص المقال (Excerpt / SEO Meta Description)</Label>
+                <Label className="text-xs font-bold mb-1.5 block">
+                  ملخص المقال (Excerpt / SEO Meta Description)
+                </Label>
                 <Textarea
                   value={excerpt}
                   onChange={(e) => setExcerpt(e.target.value)}
@@ -510,8 +600,16 @@ function AdminPosts() {
               </div>
 
               <div className="pt-2">
-                <Button onClick={savePost} disabled={loading} className="w-full font-bold bg-emerald-600 hover:bg-emerald-700 text-white gap-2">
-                  {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
+                <Button
+                  onClick={savePost}
+                  disabled={loading}
+                  className="w-full font-bold bg-emerald-600 hover:bg-emerald-700 text-white gap-2"
+                >
+                  {loading ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Check className="h-4 w-4" />
+                  )}
                   حفظ المقال ونشره
                 </Button>
               </div>

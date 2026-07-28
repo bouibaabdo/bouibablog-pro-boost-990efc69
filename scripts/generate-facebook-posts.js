@@ -1,7 +1,8 @@
 import fs from "fs";
 import path from "path";
 
-const BLOGGER_FEED_URL = "https://academybouiba.blogspot.com/feeds/posts/default?alt=json&max-results=500";
+const BLOGGER_FEED_URL =
+  "https://academybouiba.blogspot.com/feeds/posts/default?alt=json&max-results=500";
 const LOCAL_POSTS_DIR = path.join(process.cwd(), "content", "posts");
 const OUTPUT_DIR = path.join(process.cwd(), "content", "facebook-posts");
 const JSON_OUTPUT_PATH = path.join(OUTPUT_DIR, "facebook-posts.json");
@@ -118,13 +119,28 @@ function generateHashtags(category, title) {
   const baseTags = ["#BouibaAcademy", "#Bouiba_Academy", "#أدوات_الذكاء_الاصطناعي", "#تقنية"];
   const text = (category + " " + title).toLowerCase();
 
-  if (text.includes("ai") || text.includes("ذكاء") || text.includes("ollama") || text.includes("صورة")) {
+  if (
+    text.includes("ai") ||
+    text.includes("ذكاء") ||
+    text.includes("ollama") ||
+    text.includes("صورة")
+  ) {
     baseTags.push("#الذكاء_الاصطناعي", "#AI", "#ArtificialIntelligence");
   }
-  if (text.includes("n8n") || text.includes("أتمتة") || text.includes("automation") || text.includes("make")) {
+  if (
+    text.includes("n8n") ||
+    text.includes("أتمتة") ||
+    text.includes("automation") ||
+    text.includes("make")
+  ) {
     baseTags.push("#أتمتة", "#Automation", "#n8n", "#NoCode");
   }
-  if (text.includes("code") || text.includes("كود") || text.includes("برمجة") || text.includes("تطوير")) {
+  if (
+    text.includes("code") ||
+    text.includes("كود") ||
+    text.includes("برمجة") ||
+    text.includes("تطوير")
+  ) {
     baseTags.push("#برمجة", "#WebDev", "#تكوين_تقني");
   }
   if (text.includes("seo") || text.includes("سيو")) {
@@ -137,10 +153,13 @@ function generateHashtags(category, title) {
 // Determine Category
 function mapCategory(labels = [], title = "") {
   const combined = (labels.join(" ") + " " + title).toLowerCase();
-  if (combined.includes("n8n") || combined.includes("أتمتة") || combined.includes("automation")) return "أتمتة الذكاء الاصطناعي (AI Automation)";
-  if (combined.includes("ollama") || combined.includes("ai") || combined.includes("ذكاء")) return "الذكاء الاصطناعي (Artificial Intelligence)";
+  if (combined.includes("n8n") || combined.includes("أتمتة") || combined.includes("automation"))
+    return "أتمتة الذكاء الاصطناعي (AI Automation)";
+  if (combined.includes("ollama") || combined.includes("ai") || combined.includes("ذكاء"))
+    return "الذكاء الاصطناعي (Artificial Intelligence)";
   if (combined.includes("seo") || combined.includes("سيو")) return "SEO وتقنيات البحث";
-  if (combined.includes("تطبيقات") || combined.includes("أندرويد") || combined.includes("آيفون")) return "تطبيقات وأجهزة ذكية";
+  if (combined.includes("تطبيقات") || combined.includes("أندرويد") || combined.includes("آيفون"))
+    return "تطبيقات وأجهزة ذكية";
   return "أدوات وتقنيات";
 }
 
@@ -254,7 +273,10 @@ async function getBloggerPosts() {
       const content = cleanHtmlText(rawHtml);
       const excerpt = content.slice(0, 220);
 
-      let thumbnail = entry.media$thumbnail?.url?.replace(/\/s\d+(-c|-r)?\//, "/s1600/") || extractFirstImageFromHtml(rawHtml) || "";
+      let thumbnail =
+        entry.media$thumbnail?.url?.replace(/\/s\d+(-c|-r)?\//, "/s1600/") ||
+        extractFirstImageFromHtml(rawHtml) ||
+        "";
       if (thumbnail.startsWith("//")) {
         thumbnail = `https:${thumbnail}`;
       } else if (thumbnail.startsWith("/")) {
@@ -400,7 +422,9 @@ async function main() {
 
   console.log("\n=========================================");
   console.log(`🎉 Facebook Exact Image & Reels Generation Finished!`);
-  console.log(`🛠️ Processed ${PLATFORM_TOOLS.length} Interactive Tools/Reels + ${allArticles.length} Articles.`);
+  console.log(
+    `🛠️ Processed ${PLATFORM_TOOLS.length} Interactive Tools/Reels + ${allArticles.length} Articles.`,
+  );
   console.log(`📁 Total processed posts & tools: ${records.length}`);
   console.log(`📄 Saved to JSON: ${JSON_OUTPUT_PATH}`);
   console.log(`📊 Saved to CSV: ${CSV_OUTPUT_PATH}`);

@@ -12,14 +12,7 @@
   ],
   "thumbnail": "https://www.bouibacademy.me/make-vs-n8n-comparison-cover.png",
   "category": "n8n",
-  "tags": [
-    "n8n",
-    "Make",
-    "Integromat",
-    "Automation",
-    "NoCode",
-    "Self-Hosting"
-  ],
+  "tags": ["n8n", "Make", "Integromat", "Automation", "NoCode", "Self-Hosting"],
   "created_at": "2026-07-27",
   "language": "ar"
 }

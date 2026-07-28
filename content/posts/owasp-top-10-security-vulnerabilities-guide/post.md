@@ -11,18 +11,20 @@
 تتصدر هذه الثغرة المرتبة الأولى عالمياً، وتحدث عندما يتمكن المستخدم من الوصول إلى بيانات أو إجراء عمليات غير مصرح له بها (مثل قراءة بيانات مستخدم آخر بمجرد تغيير الـ ID في الرابط).
 
 ### الكود غير الآمن:
+
 ```javascript
 // ❌ خطأ: عدم التحقق من ملكية البيانات
-app.get('/user/profile', async (req, res) => {
+app.get("/user/profile", async (req, res) => {
   const user = await db.getUserById(req.query.id);
   res.json(user);
 });
 ```
 
 ### الحل الآمن:
+
 ```javascript
 // ✅ صحيح: الاعتماد على الهوية الموثوقة من التوكن (JWT / Session)
-app.get('/user/profile', authenticateToken, async (req, res) => {
+app.get("/user/profile", authenticateToken, async (req, res) => {
   const user = await db.getUserById(req.user.id);
   res.json(user);
 });
@@ -35,15 +37,17 @@ app.get('/user/profile', authenticateToken, async (req, res) => {
 تحدث ثغرات الـ Injection عند إرسال بيانات غير مفحوصة من المستخدم إلى خادم قاعدة البيانات أو التيرمينال، مما يسمح للهجمات بتنفيذ أوامر SQL خبيثة لسرقة البيانات أو حذفها.
 
 ### الكود غير الآمن:
+
 ```sql
 -- ❌ خطأ: دمج المدخلات مباشرة في الاستعلام
 SELECT * FROM users WHERE username = 'admin' AND password = '' OR '1'='1';
 ```
 
 ### الحل الآمن:
+
 ```javascript
 // ✅ صحيح: استخدام الاستعلامات المجهزة (Parameterized Queries)
-const query = 'SELECT * FROM users WHERE username = $1 AND password = $2';
+const query = "SELECT * FROM users WHERE username = $1 AND password = $2";
 const result = await db.query(query, [username, password]);
 ```
 
@@ -54,6 +58,7 @@ const result = await db.query(query, [username, password]);
 تحدث عند سماح الموقع بإدخال نصوص تحتوي على كود JavaScript خبيث وتخزينها أو طباعتها للمستخدمين الآخرين دون تنقية (Sanitization)، مما يؤدي لسرقة جلسات الدخول (Cookies).
 
 ### الحل الوقائي:
+
 - استخدام مكتبات التنقية مثل `DOMPurify`.
 - تفعيل مروّسات الأمان مثل **Content Security Policy (CSP)**.
 - استخدام أطر العمل الحديثة مثل React التي تقوم بعمل Escape تلقائي للمدخلات.
@@ -71,7 +76,9 @@ const result = await db.query(query, [username, password]);
 ## الأسئلة الشائعة (FAQ)
 
 ### كم مرة يتم تحديث قائمة OWASP Top 10؟
+
 يتم مراجعة وتحديث القائمة كل 3 إلى 4 سنوات بناءً على البيانات والتجميعات الأمنية المقدمة من آلاف شركات الأمن السيبراني حول العالم.
 
 ### هل يكفي استخدام جدار نارية (WAF) لحماية الموقع من الثغرات؟
+
 جدار الحماية مثل Cloudflare WAF يمثل طبقة دفاع أولى ممتازة، ولكن يجب دائماً كتابة كود برمجي آمن (Secure Coding) لضمان الحماية الكاملة.

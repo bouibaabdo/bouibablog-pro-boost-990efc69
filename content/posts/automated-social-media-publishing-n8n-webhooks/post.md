@@ -19,8 +19,8 @@
 
 في منصة n8n، أنشئ Workflow جديداً واختر أحد المحفزات التالية:
 
-* **RSS Feed Trigger:** يراقب مدونتك كل 15 دقيقة ويجلب أي مقال جديد.
-* **Webhook Trigger:** يتلقى إشعاراً فورياً من موقعك عند الضغط على زر "نشر المقال".
+- **RSS Feed Trigger:** يراقب مدونتك كل 15 دقيقة ويجلب أي مقال جديد.
+- **Webhook Trigger:** يتلقى إشعاراً فورياً من موقعك عند الضغط على زر "نشر المقال".
 
 ---
 
@@ -43,7 +43,7 @@ return {
   facebookPostText,
   commentLink,
   url,
-  title
+  title,
 };
 ```
 
@@ -53,22 +53,25 @@ return {
 
 1. أضف عقدة **HTTP Request Node** في n8n.
 2. اعبط الإعدادات كالتالي:
-   * **Method:** `POST`
-   * **URL:** `https://graph.facebook.com/v19.0/YOUR_PAGE_ID/feed`
-   * **Body Parameters:**
-     * `message`: `={{ $json.facebookPostText }}`
-     * `access_token`: `YOUR_PAGE_ACCESS_TOKEN`
+   - **Method:** `POST`
+   - **URL:** `https://graph.facebook.com/v19.0/YOUR_PAGE_ID/feed`
+   - **Body Parameters:**
+     - `message`: `={{ $json.facebookPostText }}`
+     - `access_token`: `YOUR_PAGE_ACCESS_TOKEN`
 
 ### إضافة الرابط في التعليق الأول تلقائياً:
+
 أضف عقدة HTTP Request ثانية مرتبطة بالعقدة الأولى للنشر في التعليق:
-* **URL:** `https://graph.facebook.com/v19.0/{{ $json.id }}/comments`
-* **Body:** `message={{ $json.commentLink }}`
+
+- **URL:** `https://graph.facebook.com/v19.0/{{ $json.id }}/comments`
+- **Body:** `message={{ $json.commentLink }}`
 
 ---
 
 ## الخطوة الرابعة: الربط مع بوت تليجرام
 
 أضف عقدة **Telegram Node** في n8n:
+
 1. اختر الإجراء **Send Message**.
 2. اختر الحساب المغذى بـ **Bot Token**.
 3. ضع الـ **Chat ID** الخاص بقناتك أو مجموعتك.
@@ -78,21 +81,24 @@ return {
 
 ## فوائد هذا السيناريو لنمو مدونتك
 
-* **توفير 10+ ساعات أسبوعياً** كانت تضيع في النسخ واللصق اليدوي.
-* **زيادة التفاعل والحفاظ على الخوارزميات:** يعشق فيسبوك المنشورات التي تضع الرابط الخارجي في أول تعليق لتفادي تقليل النطاق (Reach Penalty).
-* **نشر متزامن وفوري:** يضمن وصول مقالك لجمهورك في لحظة صدوره.
+- **توفير 10+ ساعات أسبوعياً** كانت تضيع في النسخ واللصق اليدوي.
+- **زيادة التفاعل والحفاظ على الخوارزميات:** يعشق فيسبوك المنشورات التي تضع الرابط الخارجي في أول تعليق لتفادي تقليل النطاق (Reach Penalty).
+- **نشر متزامن وفوري:** يضمن وصول مقالك لجمهورك في لحظة صدوره.
 
 ---
 
 ## أسئلة شائعة (FAQ)
 
 ### هل يتطلب الأمر مهارات برمجية عالية؟
+
 لا، n8n منصة تعتمد على السحب والإفلات (No-Code/Low-Code)، والكود البسيط الموضح أعلاه جاهز للاستخدام المباشر.
 
 ### ماذا يحدث إذا انتهت صلاحية توكن فيسبوك؟
+
 ينبغي استخدام **Page Access Token دائم (Never-Expiring Token)** يتم توليده عبر خطوتين من Meta Developer Console لتجنب انقطاع النشر.
 
 ### هل يمكن أتمتة منصات أخرى مثل X (تويتر سابقاً) أو LinkedIn؟
+
 نعم بالكامل، تتوفر عقد جاهزة في n8n لربط LinkedIn و X و Discord بنفس الطريقة.
 
 ---

@@ -3,6 +3,8 @@
 .env.local
 .env.*.local
 .env.production
+gcp-key.json
+
 
 # Logs
 logs

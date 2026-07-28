@@ -156,7 +156,8 @@ export function RobotBeeCanvas({ isReducedMotion }: RealBeeCanvasProps) {
       // ── 2. REALISTIC TRANSLUCENT HONEYBEE WINGS (Natural Flapping) ──
       const flapAngle = isReducedMotion
         ? 0.2
-        : Math.sin(clockTime * BEE_CONFIG.flapSpeed * reactionFlapMultiplier) * BEE_CONFIG.flapAmplitude;
+        : Math.sin(clockTime * BEE_CONFIG.flapSpeed * reactionFlapMultiplier) *
+          BEE_CONFIG.flapAmplitude;
 
       // Left Front & Hind Wings
       ctx.save();

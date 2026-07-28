@@ -93,8 +93,11 @@ export const Route = createFileRoute("/api/tools/image")({
                     (p.inline_data as { mime_type?: string })?.mime_type ??
                     "image/png";
                   return new Response(
-                    JSON.stringify({ dataUrl: `data:${mime};base64,${inline.data}`, provider: "gemini" }),
-                    { headers: { "Content-Type": "application/json" } }
+                    JSON.stringify({
+                      dataUrl: `data:${mime};base64,${inline.data}`,
+                      provider: "gemini",
+                    }),
+                    { headers: { "Content-Type": "application/json" } },
                   );
                 }
               }
@@ -109,17 +112,18 @@ export const Route = createFileRoute("/api/tools/image")({
 
         // Seamless High-Quality Fallback Engine (Pollinations AI)
         try {
-          console.log("[Image Tool] Switching seamlessly to fallback high-speed AI image engine...");
-          const dataUrl = await generateFallbackImage(prompt);
-          return new Response(
-            JSON.stringify({ dataUrl, provider: "pollinations" }),
-            { headers: { "Content-Type": "application/json" } }
+          console.log(
+            "[Image Tool] Switching seamlessly to fallback high-speed AI image engine...",
           );
+          const dataUrl = await generateFallbackImage(prompt);
+          return new Response(JSON.stringify({ dataUrl, provider: "pollinations" }), {
+            headers: { "Content-Type": "application/json" },
+          });
         } catch (fallbackErr: any) {
           console.error("[Image Tool] Fallback engine error:", fallbackErr.message);
           return new Response(
             JSON.stringify({ error: "تعذّر توليد الصورة حالياً. يرجى المحاولة مرة أخرى لاحقاً." }),
-            { status: 502, headers: { "Content-Type": "application/json" } }
+            { status: 502, headers: { "Content-Type": "application/json" } },
           );
         }
       },
