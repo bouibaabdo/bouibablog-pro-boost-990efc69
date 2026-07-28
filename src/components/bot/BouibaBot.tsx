@@ -140,155 +140,129 @@ function drawRobot(
   ctx.save();
   ctx.translate(x, y);
   ctx.scale(scale * reactionScale, scale * reactionScale);
-  ctx.rotate(Math.sin(wiggle) * 0.08);
+  ctx.rotate(Math.sin(wiggle) * 0.06);
 
-  const s = 1;
+  const s = 1.1; // Slightly larger for better detail
   const isDark = document.documentElement.classList.contains("dark");
 
-  // Shadow glow
-  const glow = ctx.createRadialGradient(0, 10, 2, 0, 10, 45);
-  glow.addColorStop(0, "rgba(13,110,110,0.25)");
-  glow.addColorStop(1, "rgba(0,0,0,0)");
-  ctx.fillStyle = glow;
+  // 1. Futuristic thruster/propulsion glow underneath
+  const glowY = 18 * s;
+  const glowRadius = talking ? (18 + Math.sin(wiggle * 5) * 4) * s : 14 * s;
+  const engineGlow = ctx.createRadialGradient(0, glowY, 1, 0, glowY, glowRadius);
+  engineGlow.addColorStop(0, isDark ? "rgba(6, 182, 212, 0.5)" : "rgba(13, 148, 136, 0.4)");
+  engineGlow.addColorStop(1, "rgba(0,0,0,0)");
+  ctx.fillStyle = engineGlow;
   ctx.beginPath();
-  ctx.arc(0, 10, 45, 0, Math.PI * 2);
+  ctx.arc(0, glowY, glowRadius, 0, Math.PI * 2);
   ctx.fill();
 
-  // Body
-  ctx.fillStyle = isDark ? "#1E293B" : "#0F172A";
-  ctx.strokeStyle = "#0D6E6E";
-  ctx.lineWidth = 2;
+  // 2. Hovering main body (spherical cybernetic shell)
+  const bodyG = ctx.createLinearGradient(-26 * s, -26 * s, 26 * s, 26 * s);
+  bodyG.addColorStop(0, isDark ? "#1E293B" : "#FFFFFF");
+  bodyG.addColorStop(1, isDark ? "#0F172A" : "#E2E8F0");
+  ctx.fillStyle = bodyG;
+  ctx.strokeStyle = isDark ? "#06B6D4" : "#0D9488";
+  ctx.lineWidth = 2.5;
+  ctx.shadowColor = isDark ? "#06B6D4" : "#0D9488";
+  ctx.shadowBlur = talking ? 10 : 4;
   ctx.beginPath();
-  ctx.roundRect(-18 * s, -2 * s, 36 * s, 30 * s, 8 * s);
+  ctx.arc(0, -10 * s, 26 * s, 0, Math.PI * 2);
   ctx.fill();
   ctx.stroke();
+  ctx.shadowBlur = 0;
 
-  // Chest panel
-  const chestG = ctx.createLinearGradient(-13 * s, 5 * s, 13 * s, 5 * s);
-  chestG.addColorStop(0, "#0D6E6E");
-  chestG.addColorStop(1, "#065f5f");
-  ctx.fillStyle = chestG;
-  ctx.beginPath();
-  ctx.roundRect(-13 * s, 5 * s, 26 * s, 16 * s, 5 * s);
-  ctx.fill();
+  // 3. Floating side magnetic pod wings
+  const wingOffset = Math.sin(wiggle * 3.5) * 2;
+  ctx.fillStyle = isDark ? "#334155" : "#F1F5F9";
+  ctx.strokeStyle = isDark ? "#22D3EE" : "#14B8A6";
+  ctx.lineWidth = 2;
 
-  // Chest LED bars (sound wave when talking)
-  const bars = [
-    [-8, 0],
-    [-4, 0],
-    [0, 0],
-    [4, 0],
-    [8, 0],
-  ];
-  bars.forEach(([bx], bi) => {
-    const h = talking ? 3 + Math.random() * 8 : 4;
-    ctx.fillStyle = talking ? (bi === 2 ? "#22D3EE" : "#10B981") : "#14B8A6";
-    ctx.beginPath();
-    ctx.roundRect(bx * s - 1.5, (13 - h / 2) * s, 3 * s, h * s, 1.5);
-    ctx.fill();
-  });
-
-  // Arms
-  ctx.fillStyle = isDark ? "#1E293B" : "#0F172A";
-  ctx.strokeStyle = "#334155";
-  ctx.lineWidth = 1.5;
-
-  // Left arm
+  // Left wing
   ctx.save();
-  ctx.translate(-22 * s, 10 * s);
-  ctx.rotate(talking ? Math.sin(wiggle * 3) * 0.25 : -0.1);
+  ctx.translate(-35 * s - wingOffset, -10 * s);
   ctx.beginPath();
-  ctx.roundRect(-5 * s, 0, 10 * s, 18 * s, 4 * s);
+  ctx.ellipse(0, 0, 4.5 * s, 11 * s, -0.1, 0, Math.PI * 2);
   ctx.fill();
   ctx.stroke();
   ctx.restore();
 
-  // Right arm
+  // Right wing
   ctx.save();
-  ctx.translate(22 * s, 10 * s);
-  ctx.rotate(talking ? Math.sin(wiggle * 3 + 1) * 0.25 : 0.1);
+  ctx.translate(35 * s + wingOffset, -10 * s);
   ctx.beginPath();
-  ctx.roundRect(-5 * s, 0, 10 * s, 18 * s, 4 * s);
+  ctx.ellipse(0, 0, 4.5 * s, 11 * s, 0.1, 0, Math.PI * 2);
   ctx.fill();
   ctx.stroke();
   ctx.restore();
 
-  // Legs
-  ctx.fillStyle = isDark ? "#0F172A" : "#1E293B";
-  ctx.beginPath();
-  ctx.roundRect(-14 * s, 26 * s, 11 * s, 14 * s, 4 * s);
-  ctx.roundRect(3 * s, 26 * s, 11 * s, 14 * s, 4 * s);
-  ctx.fill();
-
-  // Head
-  const headG = ctx.createLinearGradient(-20 * s, -48 * s, 20 * s, -20 * s);
-  headG.addColorStop(0, isDark ? "#1E293B" : "#0F172A");
-  headG.addColorStop(1, isDark ? "#0F172A" : "#020617");
-  ctx.fillStyle = headG;
-  ctx.strokeStyle = "#0D6E6E";
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.roundRect(-20 * s, -50 * s, 40 * s, 36 * s, 10 * s);
-  ctx.fill();
-  ctx.stroke();
-
-  // Antenna
-  ctx.strokeStyle = "#334155";
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.moveTo(0, -50 * s);
-  ctx.lineTo(0, -62 * s);
-  ctx.stroke();
-  ctx.fillStyle = talking ? "#10B981" : "#0D6E6E";
-  ctx.shadowColor = talking ? "#10B981" : "#0D6E6E";
+  // 4. Glowing halo / Holographic signal ring floating above head
+  ctx.save();
+  ctx.translate(0, -42 * s + Math.sin(wiggle * 2.5) * 2);
+  ctx.strokeStyle = isDark ? "rgba(6, 182, 212, 0.7)" : "rgba(13, 148, 136, 0.6)";
+  ctx.lineWidth = 2.5;
+  ctx.shadowColor = isDark ? "#06B6D4" : "#0D9488";
   ctx.shadowBlur = 8;
   ctx.beginPath();
-  ctx.arc(0, -65 * s, 4.5 * s, 0, Math.PI * 2);
+  ctx.ellipse(0, 0, 16 * s, 4.5 * s, 0, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.restore();
+
+  // 5. Glossy dark screen visor (faceplate)
+  ctx.fillStyle = "#090D16";
+  ctx.beginPath();
+  ctx.ellipse(0, -10 * s, 19 * s, 13 * s, 0, 0, Math.PI * 2);
   ctx.fill();
-  ctx.shadowBlur = 0;
+  ctx.strokeStyle = isDark ? "rgba(6, 182, 212, 0.4)" : "rgba(13, 148, 136, 0.3)";
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
 
-  // Eyes
-  const eyeColor = blinking ? "#0F172A" : talking ? "#10B981" : "#06B6D4";
-  const eyeH = blinking ? 2 : 9;
-
+  // 6. Interactive expressive cyber-eyes
+  const eyeColor = blinking ? "#090D16" : talking ? "#00F2FE" : "#06B6D4";
   ctx.fillStyle = eyeColor;
   ctx.shadowColor = eyeColor;
-  ctx.shadowBlur = 12;
-  ctx.beginPath();
-  ctx.roundRect(-14 * s, -42 * s, 11 * s, eyeH * s, 3 * s);
-  ctx.roundRect(3 * s, -42 * s, 11 * s, eyeH * s, 3 * s);
-  ctx.fill();
-  ctx.shadowBlur = 0;
+  ctx.shadowBlur = blinking ? 0 : 12;
 
-  // Eye shine
-  if (!blinking) {
-    ctx.fillStyle = "rgba(255,255,255,0.7)";
+  if (blinking) {
+    // Slits for blinking
+    ctx.strokeStyle = isDark ? "#06B6D4" : "#0D9488";
+    ctx.lineWidth = 2.5 * s;
+    ctx.lineCap = "round";
     ctx.beginPath();
-    ctx.arc(-10 * s, -39 * s, 2.2 * s, 0, Math.PI * 2);
-    ctx.arc(7 * s, -39 * s, 2.2 * s, 0, Math.PI * 2);
+    ctx.moveTo(-11 * s, -10 * s);
+    ctx.lineTo(-5 * s, -10 * s);
+    ctx.moveTo(5 * s, -10 * s);
+    ctx.lineTo(11 * s, -10 * s);
+    ctx.stroke();
+  } else if (talking) {
+    // Happy/talking smiling arcs
+    ctx.strokeStyle = "#00F2FE";
+    ctx.lineWidth = 3 * s;
+    ctx.lineCap = "round";
+    
+    // Left eye arc
+    ctx.beginPath();
+    ctx.arc(-8 * s, -8 * s, 4 * s, Math.PI, 0);
+    ctx.stroke();
+    
+    // Right eye arc
+    ctx.beginPath();
+    ctx.arc(8 * s, -8 * s, 4 * s, Math.PI, 0);
+    ctx.stroke();
+  } else {
+    // Round neon glowing eyes
+    ctx.beginPath();
+    ctx.arc(-8 * s, -10 * s, 4 * s, 0, Math.PI * 2);
+    ctx.arc(8 * s, -10 * s, 4 * s, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Expressive high-tech eye shines
+    ctx.fillStyle = "rgba(255, 255, 255, 0.95)";
+    ctx.beginPath();
+    ctx.arc(-9.5 * s, -11.5 * s, 1.2 * s, 0, Math.PI * 2);
+    ctx.arc(6.5 * s, -11.5 * s, 1.2 * s, 0, Math.PI * 2);
     ctx.fill();
   }
-
-  // Mouth
-  ctx.fillStyle = "#1E293B";
-  ctx.beginPath();
-  ctx.roundRect(-12 * s, -26 * s, 24 * s, 6 * s, 3 * s);
-  ctx.fill();
-
-  if (talking) {
-    ctx.fillStyle = "#10B981";
-    ctx.shadowColor = "#10B981";
-    ctx.shadowBlur = 6;
-    // animated bars
-    [-7, -3, 1, 5].forEach((bx, bi) => {
-      const bh = 2 + Math.random() * 3;
-      ctx.fillStyle = bi % 2 === 0 ? "#10B981" : "#22D3EE";
-      ctx.beginPath();
-      ctx.roundRect(bx * s, (-23 - bh / 2) * s, 3.5 * s, bh * s, 1.5);
-      ctx.fill();
-    });
-    ctx.shadowBlur = 0;
-  }
+  ctx.shadowBlur = 0;
 
   ctx.restore();
 }
@@ -510,8 +484,15 @@ export function BouibaBot() {
       }
 
       // Physics: gentle float toward target
-      const tx = targetRef.current.x;
-      const ty = targetRef.current.y;
+      let tx = targetRef.current.x;
+      let ty = targetRef.current.y;
+
+      if (chatOpen) {
+        // When chat is open, hover next to the chat box (which is fixed at bottom-left)
+        tx = isMobile ? w * 0.15 : 180;
+        ty = isMobile ? h * 0.35 : h - 450;
+      }
+
       const px = posRef.current.x;
       const py = posRef.current.y;
 
@@ -684,24 +665,14 @@ export function BouibaBot() {
     [addBotMessage],
   );
 
-  // ── Chat panel position: near the robot ───────────────────────────────────
+  // ── Chat panel position: fixed bottom-left corner (standard professional placement) ─────────
   const isMobileSize = typeof window !== "undefined" && window.innerWidth < 600;
   const chatPanelStyle: React.CSSProperties = {
     position: "fixed",
     zIndex: 9998,
-    bottom: isMobileSize ? 0 : undefined,
-    left: isMobileSize ? 0 : undefined,
+    bottom: isMobileSize ? 0 : "85px",
+    left: isMobileSize ? 0 : "24px",
     right: isMobileSize ? 0 : undefined,
-    ...(isMobileSize
-      ? {}
-      : {
-          left: Math.min(
-            posRef.current.x - 165,
-            (typeof window !== "undefined" ? window.innerWidth : 800) - 350,
-          ),
-          bottom:
-            (typeof window !== "undefined" ? window.innerHeight : 700) - posRef.current.y + 80,
-        }),
   };
 
   return (
@@ -759,33 +730,33 @@ export function BouibaBot() {
       {chatOpen && (
         <div
           style={chatPanelStyle}
-          className="flex w-full max-w-[340px] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl dark:border-slate-700 dark:bg-slate-900"
+          className="flex w-full max-w-[300px] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl dark:border-slate-700 dark:bg-slate-900"
           dir="rtl"
         >
           {/* Header */}
-          <div className="flex items-center gap-2.5 bg-gradient-to-l from-teal-700 to-teal-600 px-4 py-3">
+          <div className="flex items-center gap-2 bg-gradient-to-l from-teal-700 to-teal-600 px-3.5 py-2.5">
             <div className="relative">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/10">
-                <span className="text-xl">🤖</span>
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-white/10">
+                <span className="text-lg">🤖</span>
               </div>
               {isTalkingState && (
-                <span className="absolute -top-0.5 -right-0.5 flex h-3 w-3 items-center justify-center rounded-full bg-green-400 border-2 border-teal-700">
+                <span className="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5 items-center justify-center rounded-full bg-green-400 border-2 border-teal-700">
                   <span className="h-1.5 w-1.5 animate-ping rounded-full bg-white" />
                 </span>
               )}
             </div>
             <div className="flex-1">
-              <p className="font-bold text-white text-sm">بويبو 🤖</p>
-              <p className="text-xs text-teal-200">
+              <p className="font-bold text-white text-xs">بويبو 🤖</p>
+              <p className="text-[10px] text-teal-200">
                 {isTalkingState ? "🔊 يتحدث..." : "🟢 متصل دائماً"}
               </p>
             </div>
             <button
               onClick={() => setChatOpen(false)}
-              className="rounded-full p-1.5 text-teal-100 hover:bg-teal-800 transition-colors"
+              className="rounded-full p-1 text-teal-100 hover:bg-teal-800 transition-colors"
             >
               <svg
-                className="h-4 w-4"
+                className="h-3.5 w-3.5"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="2.5"
@@ -799,8 +770,8 @@ export function BouibaBot() {
           {/* Messages */}
           <div
             ref={scrollRef}
-            className="flex-1 space-y-3 overflow-y-auto bg-slate-50 p-3 dark:bg-slate-950"
-            style={{ minHeight: 200, maxHeight: 300 }}
+            className="flex-1 space-y-2.5 overflow-y-auto bg-slate-50 p-2.5 dark:bg-slate-950"
+            style={{ minHeight: 140, maxHeight: 220 }}
           >
             {messages.length === 0 && (
               <div className="py-4 text-center text-slate-400 text-xs dark:text-slate-600">
