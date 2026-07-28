@@ -605,6 +605,64 @@ export const getPosts = createServerFn({ method: "GET" })
     };
   });
 
+async function signPostVideos(contentHtml: string): Promise<string> {
+  if (!contentHtml) return contentHtml;
+
+  const supabaseUrlRegex = /https:\/\/jqcyfrwexjlnxcekngzb\.supabase\.co\/storage\/v1\/object\/public\/lessons\/([^"'\s>]+)/g;
+  const gcsUrlRegex = /gcs:\/\/([^\/]+)\/([^"'\s>]+)/g;
+
+  let newHtml = contentHtml;
+
+  try {
+    const { createClient } = await import("@supabase/supabase-js");
+    const { resolveGCSOrSupabaseUrl } = await import("@/lib/lessons.functions");
+    
+    const key = process.env.SUPABASE_PUBLISHABLE_KEY;
+    const url = process.env.SUPABASE_URL;
+
+    if (!key || !url) return contentHtml;
+
+    const supabase = createClient(url, key, {
+      auth: { persistSession: false },
+    });
+
+    // 1. Resolve Supabase URLs
+    const supabaseMatches = Array.from(contentHtml.matchAll(supabaseUrlRegex));
+    for (const match of supabaseMatches) {
+      const fullUrl = match[0];
+      const fileName = match[1];
+      try {
+        const signedUrl = await resolveGCSOrSupabaseUrl(supabase, "lessons", fileName);
+        if (signedUrl) {
+          newHtml = newHtml.replace(fullUrl, signedUrl);
+        }
+      } catch (e) {
+        console.warn("Error signing supabase url in post content:", e);
+      }
+    }
+
+    // 2. Resolve GCS URLs
+    const gcsMatches = Array.from(contentHtml.matchAll(gcsUrlRegex));
+    for (const match of gcsMatches) {
+      const fullUrl = match[0];
+      const bucket = match[1];
+      const objectPath = match[2];
+      try {
+        const signedUrl = await resolveGCSOrSupabaseUrl(supabase, "lessons", `gcs://${bucket}/${objectPath}`);
+        if (signedUrl) {
+          newHtml = newHtml.replace(fullUrl, signedUrl);
+        }
+      } catch (e) {
+        console.warn("Error signing GCS url in post content:", e);
+      }
+    }
+  } catch (e) {
+    console.error("Failed to sign post videos:", e);
+  }
+
+  return newHtml;
+}
+
 export const getPost = createServerFn({ method: "GET" })
   .validator((d: { id: string }) => d)
   .handler(async ({ data }) => {
@@ -623,7 +681,11 @@ export const getPost = createServerFn({ method: "GET" })
     );
 
     if (found) {
-      return found;
+      const signedContentHtml = await signPostVideos(found.contentHtml);
+      return {
+        ...found,
+        contentHtml: signedContentHtml,
+      };
     }
 
     // 3. Fallback: if not found in the combined list, do direct lookup
@@ -638,7 +700,12 @@ export const getPost = createServerFn({ method: "GET" })
       const post = transformEntry(json.entry);
       const year = new Date(post.published).getFullYear();
       if (year < 2024 || isExcludedPost(post.slug, post.id)) return null;
-      return assignPrettySlugs([post])[0];
+      const prettyPost = assignPrettySlugs([post])[0];
+      const signedContentHtml = await signPostVideos(prettyPost.contentHtml);
+      return {
+        ...prettyPost,
+        contentHtml: signedContentHtml,
+      };
     }
 
     return null;

@@ -25,7 +25,7 @@ type SignedLessonRow = LessonRow & {
   thumbnail_url: string | null;
 };
 
-async function resolveGCSOrSupabaseUrl(
+export async function resolveGCSOrSupabaseUrl(
   storageClient: SupabaseClient<Database>,
   bucketName: string,
   path: string | null | undefined,
