@@ -44,9 +44,9 @@
 
 ## فيديو التطبيق والتنفيذ المباشر
 
-تابع في الفيديو التالي الشرح التفصيلي لخطوات ربط DeepSeek R1 داخل n8n وتشغيل العقد البرمجية:
+تابع في الفيديو التالي الشرح التفصيلي لخطوات ربط DeepSeek R1 داخل n8n وبناء الشات بوت الذكي:
 
-@[youtube](https://www.youtube.com/watch?v=bZXv-yYd3wM)
+@[youtube](https://www.youtube.com/watch?v=Es6r8bJbY0E)
 
 ---
 

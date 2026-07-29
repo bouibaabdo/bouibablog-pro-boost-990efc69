@@ -26,7 +26,7 @@
 
 شاهد الفيديو التالي للاطلاع على كيفية تحليل المجموعات الضخمة من البيانات والكود عبر جوجل AI Studio:
 
-@[youtube](https://www.youtube.com/watch?v=1K5S9iTjPFE)
+@[youtube](https://www.youtube.com/watch?v=N6J6aQ4Wp5Y)
 
 ---
 
