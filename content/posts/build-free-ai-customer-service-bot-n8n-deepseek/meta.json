@@ -1,0 +1,18 @@
+{
+  "title": "كيفية بناء بوت خدمة عملاء ذكي ومجاني بالكامل باستخدام n8n وDeepSeek R1",
+  "slug": "build-free-ai-customer-service-bot-n8n-deepseek",
+  "excerpt": "دليل خطوة بخطوة لبناء وكيل أتمتة ذكي لخدمة العملاء يتفاعل مع استفسارات الواتساب والتليجرام مجاناً باستخدام n8n ونموذج DeepSeek R1.",
+  "meta_description": "تعلم كيفية إنشاء بوت خدمة عملاء بالذكاء الاصطناعي مجاناً باستخدام n8n وDeepSeek R1. خطوة بخطوة وبدون تكاليف استضافة أو اشتراكات شهرية.",
+  "target_keywords": [
+    "بوت خدمة عملاء مجاني",
+    "n8n AI automation",
+    "DeepSeek R1 agent",
+    "أتمتة خدمة العملاء",
+    "n8n chatbot webhook"
+  ],
+  "thumbnail": "https://images.unsplash.com/photo-1531746790731-6c087fecd65a?w=1200&auto=format&fit=crop&q=80",
+  "category": "AI Automation",
+  "tags": ["n8n", "DeepSeek", "AI Agent", "Automation", "Chatbot", "Customer Support"],
+  "created_at": "2026-07-29",
+  "language": "ar"
+}

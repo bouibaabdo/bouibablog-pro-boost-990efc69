@@ -344,16 +344,56 @@ function parseMarkdownToHtml(md: string): string {
   if (!md) return "";
   let html = md;
 
-  // 1. Code blocks: ```lang ... ```
+  // 1. Video embeds (YouTube syntax or video syntax)
+  // Syntax A: @[youtube](VIDEO_ID_OR_URL) or ![video](VIDEO_URL)
+  html = html.replace(/@\[youtube\]\(([^)]+)\)/gi, (_, src) => {
+    let videoId = src.trim();
+    if (videoId.includes("v=")) {
+      videoId = videoId.split("v=")[1].split("&")[0];
+    } else if (videoId.includes("youtu.be/")) {
+      videoId = videoId.split("youtu.be/")[1].split("?")[0];
+    } else if (videoId.includes("embed/")) {
+      videoId = videoId.split("embed/")[1].split("?")[0];
+    }
+    return `\n\n<div class="my-8 overflow-hidden rounded-2xl border border-primary/20 bg-card shadow-2xl relative p-1 sm:p-2">
+      <div class="flex items-center justify-between px-3 py-2 bg-accent/40 rounded-t-xl border-b border-border/50 text-xs font-semibold text-muted-foreground mb-2" dir="rtl">
+        <div class="flex items-center gap-2">
+          <span class="inline-block w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></span>
+          <span class="font-bold text-foreground">مشغّل الفيديو التعليمي (شرح عملي دقيق)</span>
+        </div>
+        <span class="text-[10px] bg-primary/20 text-primary font-bold px-2.5 py-0.5 rounded-full">شرح تفاعلي 🔥</span>
+      </div>
+      <div class="relative w-full aspect-video rounded-xl overflow-hidden bg-black/90">
+        <iframe src="https://www.youtube-nocookie.com/embed/${videoId}" class="absolute inset-0 w-full h-full border-0 rounded-xl" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+      </div>
+    </div>\n\n`;
+  });
+
+  html = html.replace(/!\[video\]\(([^)]+)\)/gi, (_, src) => {
+    return `\n\n<div class="my-8 overflow-hidden rounded-2xl border border-primary/20 bg-card shadow-2xl relative p-1 sm:p-2">
+      <div class="flex items-center justify-between px-3 py-2 bg-accent/40 rounded-t-xl border-b border-border/50 text-xs font-semibold text-muted-foreground mb-2" dir="rtl">
+        <div class="flex items-center gap-2">
+          <span class="inline-block w-2.5 h-2.5 rounded-full bg-primary animate-pulse"></span>
+          <span class="font-bold text-foreground">مشغّل الفيديو المحلي</span>
+        </div>
+        <span class="text-[10px] bg-primary/20 text-primary font-bold px-2.5 py-0.5 rounded-full">فيديو عالي الدقة</span>
+      </div>
+      <div class="relative w-full aspect-video rounded-xl overflow-hidden bg-black/90">
+        <video src="${src}" controls class="w-full h-full object-contain rounded-xl" preload="metadata"></video>
+      </div>
+    </div>\n\n`;
+  });
+
+  // 2. Code blocks: ```lang ... ```
   html = html.replace(/```(\w*)\n([\s\S]*?)\n```/g, (_, lang, code) => {
     const escaped = code.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     return `\n\n<pre class="language-${lang} bg-muted/80 p-4 rounded-xl overflow-x-auto text-sm my-6 border border-border"><code class="language-${lang}">${escaped}</code></pre>\n\n`;
   });
 
-  // 2. Horizontal Rules: --- or ***
+  // 3. Horizontal Rules: --- or ***
   html = html.replace(/^(\s*[-*_]\s*){3,}$/gm, '\n\n<hr class="my-8 border-border" />\n\n');
 
-  // 3. GitHub style alerts: > [!IMPORTANT]
+  // 4. GitHub style alerts: > [!IMPORTANT]
   html = html.replace(
     /^>\s+\[!(IMPORTANT|WARNING|TIP|NOTE|CAUTION)\]\n([\s\S]*?)(?=\n\n|\n[^>])/gm,
     (_, type, text) => {
@@ -366,13 +406,13 @@ function parseMarkdownToHtml(md: string): string {
     },
   );
 
-  // 4. Blockquotes: > quote
+  // 5. Blockquotes: > quote
   html = html.replace(
     /^>\s+(.+)$/gm,
     '\n\n<blockquote class="border-r-4 border-primary/40 pr-4 py-2 my-4 italic text-muted-foreground bg-accent/20 rounded-l-lg">$1</blockquote>\n\n',
   );
 
-  // 5. Headers: # H1, ## H2, ### H3, #### H4
+  // 6. Headers: # H1, ## H2, ### H3, #### H4
   html = html.replace(
     /^####\s+(.+)$/gm,
     '\n\n<h4 class="text-lg font-bold mt-6 mb-3 font-display text-foreground">$1</h4>\n\n',
@@ -390,7 +430,7 @@ function parseMarkdownToHtml(md: string): string {
     '\n\n<h1 class="text-3xl md:text-4xl font-extrabold mt-12 mb-6 font-display text-foreground">$1</h1>\n\n',
   );
 
-  // 6. Inline elements: bold, italic, code, links
+  // 7. Inline elements: bold, italic, code, links
   html = html.replace(
     /`([^`]+)`/g,
     '<code class="bg-accent px-1.5 py-0.5 rounded text-sm font-mono text-primary">$1</code>',
@@ -402,7 +442,7 @@ function parseMarkdownToHtml(md: string): string {
     '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline font-semibold">$1</a>',
   );
 
-  // 7. Lists: Unordered (- or *) & Ordered (1.)
+  // 8. Lists: Unordered (- or *) & Ordered (1.)
   html = html.replace(/^\s*[-*]\s+(.+)$/gm, '<li class="my-1.5 leading-relaxed">$1</li>');
   html = html.replace(/^\s*\d+\.\s+(.+)$/gm, '<li class="my-1.5 leading-relaxed">$1</li>');
 
@@ -411,13 +451,13 @@ function parseMarkdownToHtml(md: string): string {
     return `\n\n<ul class="list-disc pr-6 my-4 space-y-1 text-muted-foreground">${match}</ul>\n\n`;
   });
 
-  // 8. Process Paragraphs
+  // 9. Process Paragraphs
   const blocks = html.split(/\n\n+/);
   return blocks
     .map((block) => {
       const trimmed = block.trim();
       if (!trimmed) return "";
-      if (/^<(h[1-6]|pre|blockquote|div|ul|ol|hr)/.test(trimmed)) {
+      if (/^<(h[1-6]|pre|blockquote|div|ul|ol|hr|iframe|video|figure)/.test(trimmed)) {
         return trimmed;
       }
       return `<p class="my-4 leading-relaxed text-muted-foreground text-base md:text-lg">${trimmed}</p>`;

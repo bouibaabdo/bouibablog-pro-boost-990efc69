@@ -1,0 +1,18 @@
+{
+  "title": "تشغيل نماذج الذكاء الاصطناعي العملاقة محلياً على جهازك مجاناً وبدون إنترنت (دليل Ollama الشامل)",
+  "slug": "run-local-ai-models-free-ollama-guide",
+  "excerpt": "تعلم كيفية تثبيت وتشغيل نماذج Llama 3 وDeepSeek R1 محلياً على حاسوبك مجاناً وبأعلى خصوصية باستخدام Ollama وOpen WebUI.",
+  "meta_description": "دليل الشامل لتشغيل نماذج الذكاء الاصطناعي محلياً على جهازك مجاناً وبدون إنترنت باستخدام Ollama وOpen WebUI حماية الخصوصية لعام 2026.",
+  "target_keywords": [
+    "تشغيل ذكاء اصطناعي محلي",
+    "Ollama guide Arabic",
+    "DeepSeek R1 local run",
+    "نماذج الذكاء الاصطناعي بدون إنترنت",
+    "Open WebUI installation"
+  ],
+  "thumbnail": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=1200&auto=format&fit=crop&q=80",
+  "category": "AI Tools",
+  "tags": ["Ollama", "Local AI", "DeepSeek", "Llama 3", "Privacy", "Open WebUI"],
+  "created_at": "2026-07-29",
+  "language": "ar"
+}

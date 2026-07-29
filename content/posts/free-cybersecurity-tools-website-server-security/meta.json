@@ -1,0 +1,18 @@
+{
+  "title": "دليل فحص وتأمين المواقع والسيرفرات مجاناً بأقوى أدوات الأمن السيبراني لعام 2026",
+  "slug": "free-cybersecurity-tools-website-server-security",
+  "excerpt": "تعلم كيفية فحص ثغرات موقعك وسيرفرك وحمايته من الاختراق وهجمات DDoS باستخدام أفضل الأدوات المجانية في الأمن السيبراني.",
+  "meta_description": "دليل عملي لفحص وتأمين المواقع والسيرفرات مجاناً لعام 2026. حماية من ثغرات OWASP وDDoS باستخدام أدوات الأمن السيبراني المفتوحة المصدر.",
+  "target_keywords": [
+    "فحص ثغرات المواقع مجاناً",
+    "أدوات الأمن السيبراني 2026",
+    "حماية السيرفر من الاختراق",
+    "OWASP ZAP guide",
+    "Cloudflare WAF free"
+  ],
+  "thumbnail": "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=1200&auto=format&fit=crop&q=80",
+  "category": "Cybersecurity",
+  "tags": ["Cybersecurity", "OWASP", "Cloudflare", "Server Security", "Firewall", "Penetration Testing"],
+  "created_at": "2026-07-29",
+  "language": "ar"
+}

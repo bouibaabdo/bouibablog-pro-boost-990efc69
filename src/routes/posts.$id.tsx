@@ -163,6 +163,7 @@ function PostPage() {
   const [summaryError, setSummaryError] = useState<string | null>(null);
 
   const handleSummarize = async () => {
+    if (!post) return;
     if (summary) {
       setShowSummaryModal(true);
       return;
