@@ -38,6 +38,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ToolsIndexRouteImport } from './routes/tools.index'
 import { Route as PostsIndexRouteImport } from './routes/posts.index'
 import { Route as ToolsTranslateRouteImport } from './routes/tools.translate'
+import { Route as ToolsTempmailRouteImport } from './routes/tools.tempmail'
 import { Route as ToolsSummarizeRouteImport } from './routes/tools.summarize'
 import { Route as ToolsStudyRouteImport } from './routes/tools.study'
 import { Route as ToolsSocialRouteImport } from './routes/tools.social'
@@ -56,6 +57,7 @@ import { Route as AuthenticatedFavoritesRouteImport } from './routes/_authentica
 import { Route as AuthenticatedAdminRouteRouteImport } from './routes/_authenticated/admin/route'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
 import { Route as ApiToolsTextRouteImport } from './routes/api/tools/text'
+import { Route as ApiToolsTempmailRouteImport } from './routes/api/tools/tempmail'
 import { Route as ApiToolsImageRouteImport } from './routes/api/tools/image'
 import { Route as AuthenticatedAdminWorldcupRouteImport } from './routes/_authenticated/admin/worldcup'
 import { Route as AuthenticatedAdminToolsRouteImport } from './routes/_authenticated/admin/tools'
@@ -209,6 +211,11 @@ const ToolsTranslateRoute = ToolsTranslateRouteImport.update({
   path: '/translate',
   getParentRoute: () => ToolsRoute,
 } as any)
+const ToolsTempmailRoute = ToolsTempmailRouteImport.update({
+  id: '/tempmail',
+  path: '/tempmail',
+  getParentRoute: () => ToolsRoute,
+} as any)
 const ToolsSummarizeRoute = ToolsSummarizeRouteImport.update({
   id: '/summarize',
   path: '/summarize',
@@ -299,6 +306,11 @@ const ApiToolsTextRoute = ApiToolsTextRouteImport.update({
   path: '/api/tools/text',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiToolsTempmailRoute = ApiToolsTempmailRouteImport.update({
+  id: '/api/tools/tempmail',
+  path: '/api/tools/tempmail',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiToolsImageRoute = ApiToolsImageRouteImport.update({
   id: '/api/tools/image',
   path: '/api/tools/image',
@@ -387,6 +399,7 @@ export interface FileRoutesByFullPath {
   '/tools/social': typeof ToolsSocialRoute
   '/tools/study': typeof ToolsStudyRoute
   '/tools/summarize': typeof ToolsSummarizeRoute
+  '/tools/tempmail': typeof ToolsTempmailRoute
   '/tools/translate': typeof ToolsTranslateRoute
   '/posts/': typeof PostsIndexRoute
   '/tools/': typeof ToolsIndexRoute
@@ -397,6 +410,7 @@ export interface FileRoutesByFullPath {
   '/admin/tools': typeof AuthenticatedAdminToolsRoute
   '/admin/worldcup': typeof AuthenticatedAdminWorldcupRoute
   '/api/tools/image': typeof ApiToolsImageRoute
+  '/api/tools/tempmail': typeof ApiToolsTempmailRoute
   '/api/tools/text': typeof ApiToolsTextRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -441,6 +455,7 @@ export interface FileRoutesByTo {
   '/tools/social': typeof ToolsSocialRoute
   '/tools/study': typeof ToolsStudyRoute
   '/tools/summarize': typeof ToolsSummarizeRoute
+  '/tools/tempmail': typeof ToolsTempmailRoute
   '/tools/translate': typeof ToolsTranslateRoute
   '/posts': typeof PostsIndexRoute
   '/tools': typeof ToolsIndexRoute
@@ -451,6 +466,7 @@ export interface FileRoutesByTo {
   '/admin/tools': typeof AuthenticatedAdminToolsRoute
   '/admin/worldcup': typeof AuthenticatedAdminWorldcupRoute
   '/api/tools/image': typeof ApiToolsImageRoute
+  '/api/tools/tempmail': typeof ApiToolsTempmailRoute
   '/api/tools/text': typeof ApiToolsTextRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -499,6 +515,7 @@ export interface FileRoutesById {
   '/tools/social': typeof ToolsSocialRoute
   '/tools/study': typeof ToolsStudyRoute
   '/tools/summarize': typeof ToolsSummarizeRoute
+  '/tools/tempmail': typeof ToolsTempmailRoute
   '/tools/translate': typeof ToolsTranslateRoute
   '/posts/': typeof PostsIndexRoute
   '/tools/': typeof ToolsIndexRoute
@@ -509,6 +526,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/tools': typeof AuthenticatedAdminToolsRoute
   '/_authenticated/admin/worldcup': typeof AuthenticatedAdminWorldcupRoute
   '/api/tools/image': typeof ApiToolsImageRoute
+  '/api/tools/tempmail': typeof ApiToolsTempmailRoute
   '/api/tools/text': typeof ApiToolsTextRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -557,6 +575,7 @@ export interface FileRouteTypes {
     | '/tools/social'
     | '/tools/study'
     | '/tools/summarize'
+    | '/tools/tempmail'
     | '/tools/translate'
     | '/posts/'
     | '/tools/'
@@ -567,6 +586,7 @@ export interface FileRouteTypes {
     | '/admin/tools'
     | '/admin/worldcup'
     | '/api/tools/image'
+    | '/api/tools/tempmail'
     | '/api/tools/text'
     | '/admin/'
     | '/lovable/email/queue/process'
@@ -611,6 +631,7 @@ export interface FileRouteTypes {
     | '/tools/social'
     | '/tools/study'
     | '/tools/summarize'
+    | '/tools/tempmail'
     | '/tools/translate'
     | '/posts'
     | '/tools'
@@ -621,6 +642,7 @@ export interface FileRouteTypes {
     | '/admin/tools'
     | '/admin/worldcup'
     | '/api/tools/image'
+    | '/api/tools/tempmail'
     | '/api/tools/text'
     | '/admin'
     | '/lovable/email/queue/process'
@@ -668,6 +690,7 @@ export interface FileRouteTypes {
     | '/tools/social'
     | '/tools/study'
     | '/tools/summarize'
+    | '/tools/tempmail'
     | '/tools/translate'
     | '/posts/'
     | '/tools/'
@@ -678,6 +701,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/tools'
     | '/_authenticated/admin/worldcup'
     | '/api/tools/image'
+    | '/api/tools/tempmail'
     | '/api/tools/text'
     | '/_authenticated/admin/'
     | '/lovable/email/queue/process'
@@ -713,6 +737,7 @@ export interface RootRouteChildren {
   PostsIdRoute: typeof PostsIdRoute
   PostsIndexRoute: typeof PostsIndexRoute
   ApiToolsImageRoute: typeof ApiToolsImageRoute
+  ApiToolsTempmailRoute: typeof ApiToolsTempmailRoute
   ApiToolsTextRoute: typeof ApiToolsTextRoute
   LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
 }
@@ -922,6 +947,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ToolsTranslateRouteImport
       parentRoute: typeof ToolsRoute
     }
+    '/tools/tempmail': {
+      id: '/tools/tempmail'
+      path: '/tempmail'
+      fullPath: '/tools/tempmail'
+      preLoaderRoute: typeof ToolsTempmailRouteImport
+      parentRoute: typeof ToolsRoute
+    }
     '/tools/summarize': {
       id: '/tools/summarize'
       path: '/summarize'
@@ -1048,6 +1080,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiToolsTextRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/tools/tempmail': {
+      id: '/api/tools/tempmail'
+      path: '/api/tools/tempmail'
+      fullPath: '/api/tools/tempmail'
+      preLoaderRoute: typeof ApiToolsTempmailRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/tools/image': {
       id: '/api/tools/image'
       path: '/api/tools/image'
@@ -1160,6 +1199,7 @@ interface ToolsRouteChildren {
   ToolsSocialRoute: typeof ToolsSocialRoute
   ToolsStudyRoute: typeof ToolsStudyRoute
   ToolsSummarizeRoute: typeof ToolsSummarizeRoute
+  ToolsTempmailRoute: typeof ToolsTempmailRoute
   ToolsTranslateRoute: typeof ToolsTranslateRoute
   ToolsIndexRoute: typeof ToolsIndexRoute
 }
@@ -1178,6 +1218,7 @@ const ToolsRouteChildren: ToolsRouteChildren = {
   ToolsSocialRoute: ToolsSocialRoute,
   ToolsStudyRoute: ToolsStudyRoute,
   ToolsSummarizeRoute: ToolsSummarizeRoute,
+  ToolsTempmailRoute: ToolsTempmailRoute,
   ToolsTranslateRoute: ToolsTranslateRoute,
   ToolsIndexRoute: ToolsIndexRoute,
 }
@@ -1214,6 +1255,7 @@ const rootRouteChildren: RootRouteChildren = {
   PostsIdRoute: PostsIdRoute,
   PostsIndexRoute: PostsIndexRoute,
   ApiToolsImageRoute: ApiToolsImageRoute,
+  ApiToolsTempmailRoute: ApiToolsTempmailRoute,
   ApiToolsTextRoute: ApiToolsTextRoute,
   LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,
 }

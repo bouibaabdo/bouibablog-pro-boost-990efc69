@@ -103,6 +103,14 @@ const TOOLS: Array<{
     badge: "جديد ✨",
   },
   {
+    to: "/tools/tempmail",
+    icon: Mail,
+    title: "الإيميل المؤقت",
+    desc: "احصل على بريد إلكتروني مؤقت فوري ومجاني بدون تسجيل. يستقبل الرسائل تلقائياً لحماية بريدك الحقيقي من السبام والتسجيل المزعج.",
+    color: "from-rose-500/10 to-pink-500/10 text-rose-500 dark:text-rose-400",
+    badge: "جديد ✨",
+  },
+  {
     to: "/tools/study",
     icon: GraduationCap,
     title: "المساعد الدراسي الذكي",
