@@ -1,13 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-const MAILTM_BASE = "https://api.mail.tm";
+// ─── Helpers ─────────────────────────────────────────────────────────────────
 
-// Helper: forward errors as JSON responses
 function err(msg: string, status = 400) {
   return Response.json({ error: msg }, { status });
 }
 
-// Generate a random alphanumeric string
 function randomStr(len = 12) {
   const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
   let s = "";
@@ -15,61 +13,159 @@ function randomStr(len = 12) {
   return s;
 }
 
-// Fetch available mail.tm domains
-async function getDomains(): Promise<string[]> {
-  const res = await fetch(`${MAILTM_BASE}/domains?page=1`, {
-    headers: { Accept: "application/json" },
-    signal: AbortSignal.timeout(8000),
-  });
-  if (!res.ok) throw new Error("فشل جلب النطاقات");
-  const data = (await res.json()) as {
-    "hydra:member": Array<{ domain: string; isActive: boolean }>;
-  };
-  return (data["hydra:member"] ?? []).filter((d) => d.isActive).map((d) => d.domain);
+// ─── 1secmail Provider (primary — no auth, simple, reliable) ─────────────────
+
+// Known stable 1secmail domains
+const ONESEC_DOMAINS = [
+  "1secmail.com",
+  "1secmail.org",
+  "1secmail.net",
+  "icznn.com",
+  "ezztt.com",
+  "vjuum.com",
+  "laafd.com",
+  "txcct.com",
+];
+
+// Token format for 1secmail: "1sm:<login>:<domain>"
+function make1smToken(login: string, domain: string) {
+  return `1sm:${login}:${domain}`;
+}
+function parse1smToken(token: string): { login: string; domain: string } | null {
+  if (!token.startsWith("1sm:")) return null;
+  const parts = token.split(":");
+  if (parts.length < 3) return null;
+  return { login: parts[1], domain: parts.slice(2).join(":") };
 }
 
-// Create a new mail.tm account and return token + address
-async function createAccount(): Promise<{ address: string; token: string }> {
-  const domains = await getDomains();
-  if (!domains.length) throw new Error("لا توجد نطاقات متاحة حالياً");
+async function create1smAccount(): Promise<{ address: string; token: string }> {
+  // First try the API's own random generator
+  try {
+    const res = await fetch("https://www.1secmail.com/api/v1/?action=genRandomMailbox&count=1", {
+      signal: AbortSignal.timeout(8000),
+    });
+    if (res.ok) {
+      const [address] = (await res.json()) as string[];
+      if (address && address.includes("@")) {
+        const [login, domain] = address.split("@");
+        return { address, token: make1smToken(login, domain) };
+      }
+    }
+  } catch {
+    // fallthrough to manual generation
+  }
+
+  // Manual fallback: pick a random domain + random login
+  const domain = ONESEC_DOMAINS[Math.floor(Math.random() * ONESEC_DOMAINS.length)];
+  const login = randomStr(10);
+  return { address: `${login}@${domain}`, token: make1smToken(login, domain) };
+}
+
+async function get1smInbox(login: string, domain: string) {
+  const res = await fetch(
+    `https://www.1secmail.com/api/v1/?action=getMessages&login=${encodeURIComponent(login)}&domain=${encodeURIComponent(domain)}`,
+    { signal: AbortSignal.timeout(8000) },
+  );
+  if (!res.ok) throw new Error("فشل جلب الرسائل");
+  const msgs = (await res.json()) as Array<{
+    id: number;
+    from: string;
+    subject: string;
+    date: string;
+  }>;
+  return msgs.map((m) => ({
+    id: String(m.id),
+    from: { address: m.from, name: m.from },
+    subject: m.subject || "(بلا موضوع)",
+    intro: "",
+    createdAt: m.date,
+    seen: false,
+  }));
+}
+
+async function get1smMessage(login: string, domain: string, id: string) {
+  const res = await fetch(
+    `https://www.1secmail.com/api/v1/?action=readMessage&login=${encodeURIComponent(login)}&domain=${encodeURIComponent(domain)}&id=${encodeURIComponent(id)}`,
+    { signal: AbortSignal.timeout(8000) },
+  );
+  if (!res.ok) throw new Error("فشل جلب الرسالة");
+  const data = (await res.json()) as {
+    id: number;
+    from: string;
+    to: string;
+    subject: string;
+    date: string;
+    body: string;
+    htmlBody: string;
+    attachments?: Array<{ filename: string; contentType: string; size: number }>;
+  };
+  return {
+    id: String(data.id),
+    from: { address: data.from, name: data.from },
+    to: [{ address: data.to, name: data.to }],
+    subject: data.subject || "(بلا موضوع)",
+    text: data.body || "",
+    html: data.htmlBody || "",
+    createdAt: data.date,
+    attachments: (data.attachments ?? []).map((a) => ({ filename: a.filename, size: a.size })),
+  };
+}
+
+// ─── mail.tm Provider (secondary fallback) ────────────────────────────────────
+
+const MAILTM_BASE = "https://api.mail.tm";
+
+async function getMailtmDomains(): Promise<string[]> {
+  const res = await fetch(`${MAILTM_BASE}/domains?page=1`, {
+    headers: { Accept: "application/json" },
+    signal: AbortSignal.timeout(6000),
+  });
+  if (!res.ok) return [];
+  const data = (await res.json()) as {
+    "hydra:member": Array<{ domain: string; isActive?: boolean }>;
+  };
+  // Accept all domains, active or not (some providers omit isActive)
+  return (data["hydra:member"] ?? []).map((d) => d.domain).filter(Boolean);
+}
+
+async function createMailtmAccount(): Promise<{ address: string; token: string }> {
+  const domains = await getMailtmDomains();
+  if (!domains.length) throw new Error("mail.tm: no domains");
 
   const domain = domains[0];
   const username = randomStr(10);
-  const password = randomStr(16) + "A1!"; // meets complexity reqs
+  const password = randomStr(14) + "A1!";
   const address = `${username}@${domain}`;
 
-  // Create account
   const accRes = await fetch(`${MAILTM_BASE}/accounts`, {
     method: "POST",
     headers: { "Content-Type": "application/json", Accept: "application/json" },
     body: JSON.stringify({ address, password }),
     signal: AbortSignal.timeout(10000),
   });
-  if (!accRes.ok) {
-    const e = (await accRes.json().catch(() => ({}))) as { detail?: string };
-    throw new Error(e.detail || "فشل إنشاء الحساب");
-  }
+  if (!accRes.ok) throw new Error("mail.tm: account creation failed");
 
-  // Get JWT token
   const tokRes = await fetch(`${MAILTM_BASE}/token`, {
     method: "POST",
     headers: { "Content-Type": "application/json", Accept: "application/json" },
     body: JSON.stringify({ address, password }),
     signal: AbortSignal.timeout(8000),
   });
-  if (!tokRes.ok) throw new Error("فشل الحصول على التوكن");
+  if (!tokRes.ok) throw new Error("mail.tm: token failed");
   const { token } = (await tokRes.json()) as { token: string };
-
   return { address, token };
 }
+
+// ─── Route ────────────────────────────────────────────────────────────────────
 
 export const Route = createFileRoute("/api/tools/tempmail")({
   server: {
     handlers: {
-      // POST /api/tools/tempmail → Create new temporary email account
+      // POST → create a new temporary inbox
+      // Strategy: 1secmail first (reliable, no auth), mail.tm as fallback
       POST: async () => {
         try {
-          // Admin enable/disable check
+          // Admin toggle
           try {
             const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
             const { data: tool } = await supabaseAdmin
@@ -84,17 +180,29 @@ export const Route = createFileRoute("/api/tools/tempmail")({
             // fail open
           }
 
-          const { address, token } = await createAccount();
-          return Response.json({ address, token });
+          // 1. Try 1secmail (primary — simple, reliable)
+          try {
+            const result = await create1smAccount();
+            return Response.json(result);
+          } catch {
+            // 2. Fallback: mail.tm
+          }
+
+          try {
+            const result = await createMailtmAccount();
+            return Response.json(result);
+          } catch {
+            // Both providers failed
+          }
+
+          return err("تعذّر إنشاء الإيميل المؤقت. يرجى المحاولة مجدداً بعد لحظات.", 503);
         } catch (e) {
           const msg = e instanceof Error ? e.message : "خطأ غير متوقع";
           return err(msg, 500);
         }
       },
 
-      // GET /api/tools/tempmail?action=inbox&token=... → Fetch messages list
-      // GET /api/tools/tempmail?action=message&id=...&token=... → Fetch single message
-      // GET /api/tools/tempmail?action=delete&token=... → Delete account
+      // GET → inbox / message / delete
       GET: async ({ request }) => {
         const url = new URL(request.url);
         const action = url.searchParams.get("action");
@@ -102,11 +210,36 @@ export const Route = createFileRoute("/api/tools/tempmail")({
 
         if (!token) return err("توكن مفقود");
 
-        const authHeader = { Authorization: `Bearer ${token}`, Accept: "application/json" };
-
         try {
+          // ── 1secmail branch ──────────────────────────────────────────────
+          const parsed1sm = parse1smToken(token);
+          if (parsed1sm) {
+            const { login, domain } = parsed1sm;
+
+            if (action === "inbox") {
+              const messages = await get1smInbox(login, domain);
+              return Response.json({ messages, total: messages.length });
+            }
+
+            if (action === "message") {
+              const id = url.searchParams.get("id");
+              if (!id) return err("معرّف الرسالة مفقود");
+              const msg = await get1smMessage(login, domain, id);
+              return Response.json(msg);
+            }
+
+            if (action === "delete") {
+              // 1secmail has no delete API — just confirm to client
+              return Response.json({ deleted: true });
+            }
+
+            return err("إجراء غير معروف");
+          }
+
+          // ── mail.tm branch ───────────────────────────────────────────────
+          const authHeader = { Authorization: `Bearer ${token}`, Accept: "application/json" };
+
           if (action === "inbox") {
-            // Fetch messages list (page 1, newest first)
             const res = await fetch(`${MAILTM_BASE}/messages?page=1`, {
               headers: authHeader,
               signal: AbortSignal.timeout(8000),
@@ -163,14 +296,12 @@ export const Route = createFileRoute("/api/tools/tempmail")({
           }
 
           if (action === "delete") {
-            // Fetch account id first
             const meRes = await fetch(`${MAILTM_BASE}/me`, {
               headers: authHeader,
               signal: AbortSignal.timeout(6000),
             });
             if (!meRes.ok) return err("فشل جلب بيانات الحساب", 500);
             const me = (await meRes.json()) as { id: string };
-            // Delete account
             const delRes = await fetch(`${MAILTM_BASE}/accounts/${me.id}`, {
               method: "DELETE",
               headers: authHeader,
