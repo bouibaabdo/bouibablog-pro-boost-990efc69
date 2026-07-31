@@ -116,7 +116,7 @@ export function RobotBeeCanvas({ isReducedMotion }: RealBeeCanvasProps) {
       const scaleMultiplier = scaleBase * responsiveFactor;
 
       // Convert world position ([-3, 3]) to canvas screen coordinates
-      let centerX = width / 2 + position[0] * (width / (isMobile ? 4.5 : 6));
+      const centerX = width / 2 + position[0] * (width / (isMobile ? 4.5 : 6));
       let centerY = height / 2 - position[1] * (height / (isMobile ? 3.5 : 4));
 
       // Handle Active Touch Reaction Animations

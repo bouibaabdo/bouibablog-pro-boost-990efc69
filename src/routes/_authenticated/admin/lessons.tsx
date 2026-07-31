@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any, no-empty */
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {

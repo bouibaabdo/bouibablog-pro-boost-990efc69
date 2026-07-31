@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any, no-empty */
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { SiteHeader } from "@/components/site-header";

@@ -21,6 +21,7 @@ import {
   Share2,
   PenLine,
   GraduationCap,
+  Bot,
 } from "lucide-react";
 import { useEffect, useState, useMemo } from "react";
 import type { LucideIcon } from "lucide-react";
@@ -91,6 +92,14 @@ const TOOLS: Array<{
     title: "مولّد السيرة الذاتية (CV)",
     desc: "أدخل معلوماتك واحصل على سيرة ذاتية احترافية جاهزة مع نصائح لزيادة فرص القبول.",
     color: "from-sky-500/10 to-blue-500/10 text-sky-500 dark:text-sky-400",
+    badge: "جديد ✨",
+  },
+  {
+    to: "/tools/agent",
+    icon: Bot,
+    title: "العميل الذكي (AI Agent)",
+    desc: "صمم حلولًا مؤتمتة وابنِ وكيل ذكاء اصطناعي (AI Agent) مخصصًا لمهمتك مع خطة عمل تفصيلية وأدوات مقترحة.",
+    color: "from-cyan-500/10 to-blue-500/10 text-cyan-500 dark:text-cyan-400",
     badge: "جديد ✨",
   },
   {

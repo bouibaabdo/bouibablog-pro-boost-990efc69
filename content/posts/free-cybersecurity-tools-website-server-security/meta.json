@@ -12,7 +12,14 @@
   ],
   "thumbnail": "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=1200&auto=format&fit=crop&q=80",
   "category": "Cybersecurity",
-  "tags": ["Cybersecurity", "OWASP", "Cloudflare", "Server Security", "Firewall", "Penetration Testing"],
+  "tags": [
+    "Cybersecurity",
+    "OWASP",
+    "Cloudflare",
+    "Server Security",
+    "Firewall",
+    "Penetration Testing"
+  ],
   "created_at": "2026-07-29",
   "language": "ar"
 }

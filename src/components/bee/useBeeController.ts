@@ -47,7 +47,7 @@ export function useBeeController({ isReducedMotion }: BeeControllerOptions) {
       const normY = -(e.clientY / window.innerHeight - 0.5) * 2;
 
       let targetX = normX * BEE_CONFIG.edgeMarginX * mult;
-      let targetY = normY * BEE_CONFIG.edgeMarginY * mult;
+      const targetY = normY * BEE_CONFIG.edgeMarginY * mult;
 
       // Keep robot bee away from center reading area
       if (Math.abs(targetX) < BEE_CONFIG.safeZoneCenterRadius) {

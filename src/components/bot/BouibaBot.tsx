@@ -238,12 +238,12 @@ function drawRobot(
     ctx.strokeStyle = "#00F2FE";
     ctx.lineWidth = 3 * s;
     ctx.lineCap = "round";
-    
+
     // Left eye arc
     ctx.beginPath();
     ctx.arc(-8 * s, -8 * s, 4 * s, Math.PI, 0);
     ctx.stroke();
-    
+
     // Right eye arc
     ctx.beginPath();
     ctx.arc(8 * s, -8 * s, 4 * s, Math.PI, 0);
@@ -254,7 +254,7 @@ function drawRobot(
     ctx.arc(-8 * s, -10 * s, 4 * s, 0, Math.PI * 2);
     ctx.arc(8 * s, -10 * s, 4 * s, 0, Math.PI * 2);
     ctx.fill();
-    
+
     // Expressive high-tech eye shines
     ctx.fillStyle = "rgba(255, 255, 255, 0.95)";
     ctx.beginPath();

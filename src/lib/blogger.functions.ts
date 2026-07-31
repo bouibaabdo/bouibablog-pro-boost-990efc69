@@ -207,11 +207,11 @@ export function cleanExcerpt(text: string): string {
   let cleaned = text;
 
   // 1. Strip up to the reading time keyword
-  // eslint-disable-next-line no-misleading-character-class
+
   cleaned = cleaned.replace(/^.*?(?:دقائق|دقيقة|ساعات|ساعة)\s*(?:[|&nbsp;\-⏱️📅\s\uFE0F]*)/gu, "");
 
   // 2. Strip up to a date-like pattern followed by separator
-  // eslint-disable-next-line no-misleading-character-class
+
   cleaned = cleaned.replace(
     /^.*?(?:يناير|فبراير|مارس|أبريل|مايو|يونيو|يوليو|أغسطس|سبتمبر|أكتوبر|نوفمبر|ديسمبر)\s+\d{4}\s*(?:[|&nbsp;\-⏱️📅\s\uFE0F]*)/gu,
     "",
@@ -489,7 +489,7 @@ async function loadLocalPosts(): Promise<BloggerPost[]> {
 
         const contentHtml = parseMarkdownToHtml(postContent);
 
-        let thumbnail =
+        const thumbnail =
           meta.thumbnail ||
           meta.cover_image ||
           (meta.slug?.includes("ollama") || meta.slug?.includes("n8n")
@@ -648,7 +648,8 @@ export const getPosts = createServerFn({ method: "GET" })
 async function signPostVideos(contentHtml: string): Promise<string> {
   if (!contentHtml) return contentHtml;
 
-  const supabaseUrlRegex = /https:\/\/jqcyfrwexjlnxcekngzb\.supabase\.co\/storage\/v1\/object\/public\/lessons\/([^"'\s>]+)/g;
+  const supabaseUrlRegex =
+    /https:\/\/jqcyfrwexjlnxcekngzb\.supabase\.co\/storage\/v1\/object\/public\/lessons\/([^"'\s>]+)/g;
   const gcsUrlRegex = /gcs:\/\/([^\/]+)\/([^"'\s>]+)/g;
 
   let newHtml = contentHtml;
@@ -656,7 +657,7 @@ async function signPostVideos(contentHtml: string): Promise<string> {
   try {
     const { createClient } = await import("@supabase/supabase-js");
     const { resolveGCSOrSupabaseUrl } = await import("@/lib/lessons.functions");
-    
+
     const key = process.env.SUPABASE_PUBLISHABLE_KEY;
     const url = process.env.SUPABASE_URL;
 
@@ -688,7 +689,11 @@ async function signPostVideos(contentHtml: string): Promise<string> {
       const bucket = match[1];
       const objectPath = match[2];
       try {
-        const signedUrl = await resolveGCSOrSupabaseUrl(supabase, "lessons", `gcs://${bucket}/${objectPath}`);
+        const signedUrl = await resolveGCSOrSupabaseUrl(
+          supabase,
+          "lessons",
+          `gcs://${bucket}/${objectPath}`,
+        );
         if (signedUrl) {
           newHtml = newHtml.replace(fullUrl, signedUrl);
         }

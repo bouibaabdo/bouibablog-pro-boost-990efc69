@@ -12,7 +12,13 @@
   ],
   "thumbnail": "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=1200&auto=format&fit=crop&q=80",
   "category": "Video Production",
-  "tags": ["Video Production", "AI Video", "YouTube Automation", "Content Creation", "Free AI Tools"],
+  "tags": [
+    "Video Production",
+    "AI Video",
+    "YouTube Automation",
+    "Content Creation",
+    "Free AI Tools"
+  ],
   "created_at": "2026-07-29",
   "language": "ar"
 }

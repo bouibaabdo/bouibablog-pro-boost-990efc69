@@ -50,6 +50,7 @@ import { Route as ToolsIdeasRouteImport } from './routes/tools.ideas'
 import { Route as ToolsEmailRouteImport } from './routes/tools.email'
 import { Route as ToolsCvRouteImport } from './routes/tools.cv'
 import { Route as ToolsCodeRouteImport } from './routes/tools.code'
+import { Route as ToolsAgentRouteImport } from './routes/tools.agent'
 import { Route as PostsIdRouteImport } from './routes/posts.$id'
 import { Route as AuthenticatedFavoritesRouteImport } from './routes/_authenticated/favorites'
 import { Route as AuthenticatedAdminRouteRouteImport } from './routes/_authenticated/admin/route'
@@ -268,6 +269,11 @@ const ToolsCodeRoute = ToolsCodeRouteImport.update({
   path: '/code',
   getParentRoute: () => ToolsRoute,
 } as any)
+const ToolsAgentRoute = ToolsAgentRouteImport.update({
+  id: '/agent',
+  path: '/agent',
+  getParentRoute: () => ToolsRoute,
+} as any)
 const PostsIdRoute = PostsIdRouteImport.update({
   id: '/posts/$id',
   path: '/posts/$id',
@@ -368,6 +374,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AuthenticatedAdminRouteRouteWithChildren
   '/favorites': typeof AuthenticatedFavoritesRoute
   '/posts/$id': typeof PostsIdRoute
+  '/tools/agent': typeof ToolsAgentRoute
   '/tools/code': typeof ToolsCodeRoute
   '/tools/cv': typeof ToolsCvRoute
   '/tools/email': typeof ToolsEmailRoute
@@ -421,6 +428,7 @@ export interface FileRoutesByTo {
   '/worldcup': typeof WorldcupRoute
   '/favorites': typeof AuthenticatedFavoritesRoute
   '/posts/$id': typeof PostsIdRoute
+  '/tools/agent': typeof ToolsAgentRoute
   '/tools/code': typeof ToolsCodeRoute
   '/tools/cv': typeof ToolsCvRoute
   '/tools/email': typeof ToolsEmailRoute
@@ -478,6 +486,7 @@ export interface FileRoutesById {
   '/_authenticated/admin': typeof AuthenticatedAdminRouteRouteWithChildren
   '/_authenticated/favorites': typeof AuthenticatedFavoritesRoute
   '/posts/$id': typeof PostsIdRoute
+  '/tools/agent': typeof ToolsAgentRoute
   '/tools/code': typeof ToolsCodeRoute
   '/tools/cv': typeof ToolsCvRoute
   '/tools/email': typeof ToolsEmailRoute
@@ -535,6 +544,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/favorites'
     | '/posts/$id'
+    | '/tools/agent'
     | '/tools/code'
     | '/tools/cv'
     | '/tools/email'
@@ -588,6 +598,7 @@ export interface FileRouteTypes {
     | '/worldcup'
     | '/favorites'
     | '/posts/$id'
+    | '/tools/agent'
     | '/tools/code'
     | '/tools/cv'
     | '/tools/email'
@@ -644,6 +655,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin'
     | '/_authenticated/favorites'
     | '/posts/$id'
+    | '/tools/agent'
     | '/tools/code'
     | '/tools/cv'
     | '/tools/email'
@@ -994,6 +1006,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ToolsCodeRouteImport
       parentRoute: typeof ToolsRoute
     }
+    '/tools/agent': {
+      id: '/tools/agent'
+      path: '/agent'
+      fullPath: '/tools/agent'
+      preLoaderRoute: typeof ToolsAgentRouteImport
+      parentRoute: typeof ToolsRoute
+    }
     '/posts/$id': {
       id: '/posts/$id'
       path: '/posts/$id'
@@ -1128,6 +1147,7 @@ const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
 interface ToolsRouteChildren {
+  ToolsAgentRoute: typeof ToolsAgentRoute
   ToolsCodeRoute: typeof ToolsCodeRoute
   ToolsCvRoute: typeof ToolsCvRoute
   ToolsEmailRoute: typeof ToolsEmailRoute
@@ -1145,6 +1165,7 @@ interface ToolsRouteChildren {
 }
 
 const ToolsRouteChildren: ToolsRouteChildren = {
+  ToolsAgentRoute: ToolsAgentRoute,
   ToolsCodeRoute: ToolsCodeRoute,
   ToolsCvRoute: ToolsCvRoute,
   ToolsEmailRoute: ToolsEmailRoute,

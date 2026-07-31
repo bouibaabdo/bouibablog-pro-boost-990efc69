@@ -20,6 +20,7 @@
 قم بتنزيل الأداة من الموقع الرسمي [ollama.com](https://ollama.com).
 
 ### للتثبيت عبر الترمينال (Linux / WSL):
+
 ```bash
 curl -fsSL https://ollama.com/install.sh | sh
 ```
@@ -31,11 +32,13 @@ curl -fsSL https://ollama.com/install.sh | sh
 بعد التثبيت، افتح موجه الأوامر (Terminal / Command Prompt) واكتب الأمر التالي لتشغيل النموذج المفضل لديك:
 
 ### 1. تشغيل نموذج DeepSeek R1 المتقدم:
+
 ```bash
 ollama run deepseek-r1:8b
 ```
 
 ### 2. تشغيل نموذج Llama 3.3 من Meta:
+
 ```bash
 ollama run llama3.3
 ```
@@ -62,21 +65,24 @@ docker run -d -p 3000:8080 --gpunot-required --add-host=host.docker.internal:hos
 
 ## متطلبات التشغيل والأداء الموصى بها
 
-| حجم النموذج | الذاكرة العشوائية (RAM) المطلوب | بطاقة الشاشة (GPU Recommended) |
-| :--- | :--- | :--- |
-| **7B / 8B Models** | 8 GB RAM | RTX 3060 / Apple M1 or higher |
-| **14B / 32B Models** | 16 GB - 32 GB RAM | RTX 4070 / Apple M2 Pro |
-| **70B Models** | 64 GB RAM | RTX 4090 / Mac Studio |
+| حجم النموذج          | الذاكرة العشوائية (RAM) المطلوب | بطاقة الشاشة (GPU Recommended) |
+| :------------------- | :------------------------------ | :----------------------------- |
+| **7B / 8B Models**   | 8 GB RAM                        | RTX 3060 / Apple M1 or higher  |
+| **14B / 32B Models** | 16 GB - 32 GB RAM               | RTX 4070 / Apple M2 Pro        |
+| **70B Models**       | 64 GB RAM                       | RTX 4090 / Mac Studio          |
 
 ---
 
 ## أسئلة شائعة (FAQ)
 
 ### هل يمكنني تشغيل Ollama على جهاز لا يحتوي على بطاقة كارت شاشة خارجي (GPU)؟
+
 نعم! تعمل Ollama بكفاءة ممتازة على المعالج الرئيسي (CPU)، ولكن توفر بطاقة الشاشة (GPU) أو معالجات Apple Silicon زادة ملحوظة في سرعة توليد النصوص.
 
 ### أين يتم تخزين النماذج على الحساب؟
+
 تُحفظ النماذج داخل مجلد النظام الخاص بك (`.ollama/models`) ويمكنك حذف أو إضافة أي نموذج في أي وقت بضغط زر.
 
 ### كيف أربط Ollama مع أدوات الأتمتة مثل n8n؟
+
 تمنحك Ollama منفذاً محلياً افتراضياً عبر `http://localhost:11434` يمكنك إدخاله في نود Ollama داخل n8n لاستخدام النماذج المحلية في الأتمتة.

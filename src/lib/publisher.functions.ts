@@ -69,7 +69,7 @@ export const publishToTelegramFn = createServerFn({ method: "POST" })
 
     try {
       let telegramUrl = `https://api.telegram.org/bot${botToken}/sendPhoto`;
-      let bodyData: any = {
+      const bodyData: any = {
         chat_id: chatId,
         photo: photo,
         caption: text,

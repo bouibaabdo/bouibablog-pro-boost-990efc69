@@ -49,11 +49,11 @@ export const publishPostToFacebookFn = createServerFn({ method: "POST" })
     }) => data,
   )
   .handler(async ({ data }) => {
-    let pageId = (data.pageId || process.env.FACEBOOK_PAGE_ID || DEFAULT_PAGE_ID).trim();
+    const pageId = (data.pageId || process.env.FACEBOOK_PAGE_ID || DEFAULT_PAGE_ID).trim();
 
     // Priority order for token: 1. Server env token (most reliable) -> 2. Client passed token
     const envToken = (process.env.FACEBOOK_PAGE_ACCESS_TOKEN || "").trim();
-    let rawToken = envToken || (data.pageToken || "").trim();
+    const rawToken = envToken || (data.pageToken || "").trim();
 
     if (!pageId || !rawToken) {
       throw new Error("يرجى إدخال Facebook Page Access Token في إعدادات اللوحة.");

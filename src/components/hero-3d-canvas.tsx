@@ -78,13 +78,13 @@ export function Hero3DCanvas() {
       // Rotate Y
       const cosY = Math.cos(ay);
       const sinY = Math.sin(ay);
-      let x = node.x * cosY - node.z * sinY;
+      const x = node.x * cosY - node.z * sinY;
       let z = node.x * sinY + node.z * cosY;
 
       // Rotate X
       const cosX = Math.cos(ax);
       const sinX = Math.sin(ax);
-      let y = node.y * cosX - z * sinX;
+      const y = node.y * cosX - z * sinX;
       z = node.y * sinX + z * cosX;
 
       node.x = x;

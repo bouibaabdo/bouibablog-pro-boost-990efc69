@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { getPosts, optimizeBloggerImage } from "@/lib/blogger.functions";
