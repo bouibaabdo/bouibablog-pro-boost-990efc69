@@ -56,7 +56,9 @@ function parse1smToken(token: string): { login: string; domain: string } | null 
   return { login: parts[1], domain: parts.slice(2).join(":") };
 }
 
-async function create1smAccount(preferredDomain?: string): Promise<{ address: string; token: string }> {
+async function create1smAccount(
+  preferredDomain?: string,
+): Promise<{ address: string; token: string }> {
   // If a preferred domain is provided, use it directly (no API call needed)
   if (preferredDomain) {
     const login = randomStr(10);
@@ -156,7 +158,9 @@ async function getMailtmDomains(): Promise<string[]> {
   }
 }
 
-async function createMailtmAccount(preferredDomain?: string): Promise<{ address: string; token: string }> {
+async function createMailtmAccount(
+  preferredDomain?: string,
+): Promise<{ address: string; token: string }> {
   const domains = preferredDomain ? [preferredDomain] : await getMailtmDomains();
   if (!domains.length) throw new Error("mail.tm: no domains");
   const domain = domains[0];
@@ -348,7 +352,9 @@ export const Route = createFileRoute("/api/tools/tempmail")({
           }
           try {
             const result = await createMailtmAccount(
-              preferredDomain && !preferredDomain.includes("1secmail") ? preferredDomain : undefined,
+              preferredDomain && !preferredDomain.includes("1secmail")
+                ? preferredDomain
+                : undefined,
             );
             return Response.json(result);
           } catch {

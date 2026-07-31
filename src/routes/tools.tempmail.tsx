@@ -163,7 +163,9 @@ function TempMailTool() {
       if (!tok) return;
       setLoadingInbox(true);
       try {
-        const res = await fetch(`/api/tools/tempmail?action=inbox&token=${encodeURIComponent(tok)}`);
+        const res = await fetch(
+          `/api/tools/tempmail?action=inbox&token=${encodeURIComponent(tok)}`,
+        );
         if (res.status === 401) {
           stopAll();
           setError("انتهت الجلسة. أنشئ إيميلاً جديداً.");
@@ -337,7 +339,8 @@ function TempMailTool() {
       <div className="mb-6 flex items-start gap-3 rounded-xl border border-amber-300/50 bg-amber-50/60 dark:bg-amber-950/30 dark:border-amber-500/30 px-4 py-3 text-sm text-amber-800 dark:text-amber-300">
         <AlertTriangle className="h-4 w-4 mt-0.5 shrink-0" />
         <p>
-          <strong>تنبيه:</strong> إذا لم تصل رسائل التفعيل، جرّب تغيير النطاق — بعض المواقع تحجب نطاقات معروفة. اختر نطاقاً مختلفاً وأعد المحاولة.
+          <strong>تنبيه:</strong> إذا لم تصل رسائل التفعيل، جرّب تغيير النطاق — بعض المواقع تحجب
+          نطاقات معروفة. اختر نطاقاً مختلفاً وأعد المحاولة.
         </p>
       </div>
 
@@ -387,7 +390,9 @@ function TempMailTool() {
               >
                 <Globe className="h-4 w-4 text-primary" />
                 النطاق
-                {loadingDomains && <Loader2 className="h-3 w-3 animate-spin text-muted-foreground" />}
+                {loadingDomains && (
+                  <Loader2 className="h-3 w-3 animate-spin text-muted-foreground" />
+                )}
               </label>
               <div className="relative">
                 <select
@@ -458,7 +463,11 @@ function TempMailTool() {
                   onClick={copyAddress}
                   className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-2 text-sm font-semibold hover:bg-accent transition"
                 >
-                  {copied ? <Check className="h-4 w-4 text-emerald-500" /> : <Copy className="h-4 w-4" />}
+                  {copied ? (
+                    <Check className="h-4 w-4 text-emerald-500" />
+                  ) : (
+                    <Copy className="h-4 w-4" />
+                  )}
                   {copied ? "تم النسخ" : "نسخ"}
                 </button>
                 <button
@@ -570,7 +579,9 @@ function TempMailTool() {
                     ) : (
                       <>
                         <MailOpen className="h-9 w-9 text-muted-foreground/40 mb-2" />
-                        <p className="text-sm font-medium text-muted-foreground">لا توجد رسائل بعد</p>
+                        <p className="text-sm font-medium text-muted-foreground">
+                          لا توجد رسائل بعد
+                        </p>
                         <p className="text-xs text-muted-foreground/60 mt-1">
                           يتجدد كل {POLL_MS / 1000} ثوانٍ تلقائياً
                         </p>
@@ -603,7 +614,9 @@ function TempMailTool() {
                         {msg.subject || "(بلا موضوع)"}
                       </p>
                       {msg.intro && (
-                        <p className="text-xs text-muted-foreground/70 truncate mt-0.5">{msg.intro}</p>
+                        <p className="text-xs text-muted-foreground/70 truncate mt-0.5">
+                          {msg.intro}
+                        </p>
                       )}
                     </button>
                   ))
