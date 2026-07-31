@@ -13,21 +13,39 @@ function randomStr(len = 12) {
   return s;
 }
 
-// ─── 1secmail Provider (primary — no auth, simple, reliable) ─────────────────
+// ─── 1secmail Provider ────────────────────────────────────────────────────────
 
-// Known stable 1secmail domains
-const ONESEC_DOMAINS = [
+// Fallback static domains if API fails
+const ONESEC_FALLBACK_DOMAINS = [
   "1secmail.com",
   "1secmail.org",
   "1secmail.net",
-  "icznn.com",
+  "ycznn.com",
   "ezztt.com",
   "vjuum.com",
   "laafd.com",
   "txcct.com",
+  "kzccv.com",
+  "qiott.com",
+  "wuuvo.com",
 ];
 
-// Token format for 1secmail: "1sm:<login>:<domain>"
+async function get1smDomainList(): Promise<string[]> {
+  try {
+    const res = await fetch("https://www.1secmail.com/api/v1/?action=getDomainList", {
+      signal: AbortSignal.timeout(6000),
+    });
+    if (res.ok) {
+      const list = (await res.json()) as string[];
+      if (Array.isArray(list) && list.length > 0) return list;
+    }
+  } catch {
+    // fall through to static list
+  }
+  return ONESEC_FALLBACK_DOMAINS;
+}
+
+// Token format: "1sm:<login>:<domain>"
 function make1smToken(login: string, domain: string) {
   return `1sm:${login}:${domain}`;
 }
@@ -38,25 +56,32 @@ function parse1smToken(token: string): { login: string; domain: string } | null 
   return { login: parts[1], domain: parts.slice(2).join(":") };
 }
 
-async function create1smAccount(): Promise<{ address: string; token: string }> {
-  // First try the API's own random generator
+async function create1smAccount(preferredDomain?: string): Promise<{ address: string; token: string }> {
+  // If a preferred domain is provided, use it directly (no API call needed)
+  if (preferredDomain) {
+    const login = randomStr(10);
+    return { address: `${login}@${preferredDomain}`, token: make1smToken(login, preferredDomain) };
+  }
+
+  // Otherwise try the random mailbox generator
   try {
     const res = await fetch("https://www.1secmail.com/api/v1/?action=genRandomMailbox&count=1", {
       signal: AbortSignal.timeout(8000),
     });
     if (res.ok) {
       const [address] = (await res.json()) as string[];
-      if (address && address.includes("@")) {
+      if (address?.includes("@")) {
         const [login, domain] = address.split("@");
         return { address, token: make1smToken(login, domain) };
       }
     }
   } catch {
-    // fallthrough to manual generation
+    // fall through to manual
   }
 
-  // Manual fallback: pick a random domain + random login
-  const domain = ONESEC_DOMAINS[Math.floor(Math.random() * ONESEC_DOMAINS.length)];
+  // Manual: pick random domain from list
+  const domains = await get1smDomainList();
+  const domain = domains[Math.floor(Math.random() * domains.length)];
   const login = randomStr(10);
   return { address: `${login}@${domain}`, token: make1smToken(login, domain) };
 }
@@ -64,7 +89,7 @@ async function create1smAccount(): Promise<{ address: string; token: string }> {
 async function get1smInbox(login: string, domain: string) {
   const res = await fetch(
     `https://www.1secmail.com/api/v1/?action=getMessages&login=${encodeURIComponent(login)}&domain=${encodeURIComponent(domain)}`,
-    { signal: AbortSignal.timeout(8000) },
+    { signal: AbortSignal.timeout(10000) },
   );
   if (!res.ok) throw new Error("فشل جلب الرسائل");
   const msgs = (await res.json()) as Array<{
@@ -86,7 +111,7 @@ async function get1smInbox(login: string, domain: string) {
 async function get1smMessage(login: string, domain: string, id: string) {
   const res = await fetch(
     `https://www.1secmail.com/api/v1/?action=readMessage&login=${encodeURIComponent(login)}&domain=${encodeURIComponent(domain)}&id=${encodeURIComponent(id)}`,
-    { signal: AbortSignal.timeout(8000) },
+    { signal: AbortSignal.timeout(10000) },
   );
   if (!res.ok) throw new Error("فشل جلب الرسالة");
   const data = (await res.json()) as {
@@ -111,27 +136,29 @@ async function get1smMessage(login: string, domain: string, id: string) {
   };
 }
 
-// ─── mail.tm Provider (secondary fallback) ────────────────────────────────────
+// ─── mail.tm Provider (fallback) ─────────────────────────────────────────────
 
 const MAILTM_BASE = "https://api.mail.tm";
 
 async function getMailtmDomains(): Promise<string[]> {
-  const res = await fetch(`${MAILTM_BASE}/domains?page=1`, {
-    headers: { Accept: "application/json" },
-    signal: AbortSignal.timeout(6000),
-  });
-  if (!res.ok) return [];
-  const data = (await res.json()) as {
-    "hydra:member": Array<{ domain: string; isActive?: boolean }>;
-  };
-  // Accept all domains, active or not (some providers omit isActive)
-  return (data["hydra:member"] ?? []).map((d) => d.domain).filter(Boolean);
+  try {
+    const res = await fetch(`${MAILTM_BASE}/domains?page=1`, {
+      headers: { Accept: "application/json" },
+      signal: AbortSignal.timeout(6000),
+    });
+    if (!res.ok) return [];
+    const data = (await res.json()) as {
+      "hydra:member": Array<{ domain: string; isActive?: boolean }>;
+    };
+    return (data["hydra:member"] ?? []).map((d) => d.domain).filter(Boolean);
+  } catch {
+    return [];
+  }
 }
 
-async function createMailtmAccount(): Promise<{ address: string; token: string }> {
-  const domains = await getMailtmDomains();
+async function createMailtmAccount(preferredDomain?: string): Promise<{ address: string; token: string }> {
+  const domains = preferredDomain ? [preferredDomain] : await getMailtmDomains();
   if (!domains.length) throw new Error("mail.tm: no domains");
-
   const domain = domains[0];
   const username = randomStr(10);
   const password = randomStr(14) + "A1!";
@@ -161,58 +188,31 @@ async function createMailtmAccount(): Promise<{ address: string; token: string }
 export const Route = createFileRoute("/api/tools/tempmail")({
   server: {
     handlers: {
-      // POST → create a new temporary inbox
-      // Strategy: 1secmail first (reliable, no auth), mail.tm as fallback
-      POST: async () => {
-        try {
-          // Admin toggle
-          try {
-            const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-            const { data: tool } = await supabaseAdmin
-              .from("admin_ai_tools")
-              .select("enabled")
-              .eq("tool_key", "tempmail")
-              .maybeSingle();
-            if (tool && tool.enabled === false) {
-              return err("هذه الأداة معطّلة حاليًا.", 403);
-            }
-          } catch {
-            // fail open
-          }
-
-          // 1. Try 1secmail (primary — simple, reliable)
-          try {
-            const result = await create1smAccount();
-            return Response.json(result);
-          } catch {
-            // 2. Fallback: mail.tm
-          }
-
-          try {
-            const result = await createMailtmAccount();
-            return Response.json(result);
-          } catch {
-            // Both providers failed
-          }
-
-          return err("تعذّر إنشاء الإيميل المؤقت. يرجى المحاولة مجدداً بعد لحظات.", 503);
-        } catch (e) {
-          const msg = e instanceof Error ? e.message : "خطأ غير متوقع";
-          return err(msg, 500);
-        }
-      },
-
-      // GET → inbox / message / delete
       GET: async ({ request }) => {
         const url = new URL(request.url);
         const action = url.searchParams.get("action");
         const token = url.searchParams.get("token");
 
+        // ── domains list ────────────────────────────────────────────────────
+        if (action === "domains") {
+          try {
+            const [sm, tm] = await Promise.allSettled([get1smDomainList(), getMailtmDomains()]);
+            const smDomains = sm.status === "fulfilled" ? sm.value : ONESEC_FALLBACK_DOMAINS;
+            const tmDomains = tm.status === "fulfilled" ? tm.value : [];
+            // Merge, deduplicate, sort EDU-adjacent ones first (shorter, less known)
+            const all = [...new Set([...smDomains, ...tmDomains])];
+            return Response.json({ domains: all });
+          } catch {
+            return Response.json({ domains: ONESEC_FALLBACK_DOMAINS });
+          }
+        }
+
+        // ── inbox / message / delete ────────────────────────────────────────
         if (!token) return err("توكن مفقود");
 
         try {
-          // ── 1secmail branch ──────────────────────────────────────────────
           const parsed1sm = parse1smToken(token);
+
           if (parsed1sm) {
             const { login, domain } = parsed1sm;
 
@@ -220,23 +220,20 @@ export const Route = createFileRoute("/api/tools/tempmail")({
               const messages = await get1smInbox(login, domain);
               return Response.json({ messages, total: messages.length });
             }
-
             if (action === "message") {
               const id = url.searchParams.get("id");
               if (!id) return err("معرّف الرسالة مفقود");
               const msg = await get1smMessage(login, domain, id);
               return Response.json(msg);
             }
-
             if (action === "delete") {
-              // 1secmail has no delete API — just confirm to client
+              // 1secmail has no delete API — just respond OK
               return Response.json({ deleted: true });
             }
-
             return err("إجراء غير معروف");
           }
 
-          // ── mail.tm branch ───────────────────────────────────────────────
+          // mail.tm branch
           const authHeader = { Authorization: `Bearer ${token}`, Accept: "application/json" };
 
           if (action === "inbox") {
@@ -262,7 +259,6 @@ export const Route = createFileRoute("/api/tools/tempmail")({
               total: data["hydra:totalItems"] ?? 0,
             });
           }
-
           if (action === "message") {
             const id = url.searchParams.get("id");
             if (!id) return err("معرّف الرسالة مفقود");
@@ -294,7 +290,6 @@ export const Route = createFileRoute("/api/tools/tempmail")({
               attachments: data.attachments ?? [],
             });
           }
-
           if (action === "delete") {
             const meRes = await fetch(`${MAILTM_BASE}/me`, {
               headers: authHeader,
@@ -314,6 +309,55 @@ export const Route = createFileRoute("/api/tools/tempmail")({
           return err("إجراء غير معروف");
         } catch (e) {
           const msg = e instanceof Error ? e.message : "خطأ في الاتصال بخادم الإيميل";
+          return err(msg, 500);
+        }
+      },
+
+      // POST → create inbox (accepts optional JSON body: { domain?: string })
+      POST: async ({ request }) => {
+        try {
+          // Admin toggle
+          try {
+            const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+            const { data: tool } = await supabaseAdmin
+              .from("admin_ai_tools")
+              .select("enabled")
+              .eq("tool_key", "tempmail")
+              .maybeSingle();
+            if (tool && tool.enabled === false) {
+              return err("هذه الأداة معطّلة حاليًا.", 403);
+            }
+          } catch {
+            // fail open
+          }
+
+          let preferredDomain: string | undefined;
+          try {
+            const body = (await request.json()) as { domain?: string };
+            preferredDomain = body.domain;
+          } catch {
+            // no body — OK
+          }
+
+          // 1. Try 1secmail (primary)
+          try {
+            const result = await create1smAccount(preferredDomain);
+            return Response.json(result);
+          } catch {
+            // 2. Fallback: mail.tm
+          }
+          try {
+            const result = await createMailtmAccount(
+              preferredDomain && !preferredDomain.includes("1secmail") ? preferredDomain : undefined,
+            );
+            return Response.json(result);
+          } catch {
+            // Both failed
+          }
+
+          return err("تعذّر إنشاء الإيميل المؤقت. يرجى المحاولة مجدداً بعد لحظات.", 503);
+        } catch (e) {
+          const msg = e instanceof Error ? e.message : "خطأ غير متوقع";
           return err(msg, 500);
         }
       },
