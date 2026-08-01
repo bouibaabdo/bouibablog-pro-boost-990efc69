@@ -16,6 +16,7 @@
     "cf:typegen": "npx wrangler types",
     "generate-fb": "node scripts/generate-facebook-posts.js",
     "generate-omni": "node scripts/generate-omni-social-posts.js",
+    "generate:daily-article": "node scripts/generate-daily-article.js",
     "publish-fb": "node scripts/publish-to-facebook.js",
     "get-perm-token": "node scripts/generate-permanent-token.js"
   },
