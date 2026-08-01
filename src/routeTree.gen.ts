@@ -45,6 +45,7 @@ import { Route as ToolsSocialRouteImport } from './routes/tools.social'
 import { Route as ToolsSeoRouteImport } from './routes/tools.seo'
 import { Route as ToolsRoadmapRouteImport } from './routes/tools.roadmap'
 import { Route as ToolsRewriteRouteImport } from './routes/tools.rewrite'
+import { Route as ToolsReelsRouteImport } from './routes/tools.reels'
 import { Route as ToolsPromptRouteImport } from './routes/tools.prompt'
 import { Route as ToolsImageRouteImport } from './routes/tools.image'
 import { Route as ToolsIdeasRouteImport } from './routes/tools.ideas'
@@ -246,6 +247,11 @@ const ToolsRewriteRoute = ToolsRewriteRouteImport.update({
   path: '/rewrite',
   getParentRoute: () => ToolsRoute,
 } as any)
+const ToolsReelsRoute = ToolsReelsRouteImport.update({
+  id: '/reels',
+  path: '/reels',
+  getParentRoute: () => ToolsRoute,
+} as any)
 const ToolsPromptRoute = ToolsPromptRouteImport.update({
   id: '/prompt',
   path: '/prompt',
@@ -393,6 +399,7 @@ export interface FileRoutesByFullPath {
   '/tools/ideas': typeof ToolsIdeasRoute
   '/tools/image': typeof ToolsImageRoute
   '/tools/prompt': typeof ToolsPromptRoute
+  '/tools/reels': typeof ToolsReelsRoute
   '/tools/rewrite': typeof ToolsRewriteRoute
   '/tools/roadmap': typeof ToolsRoadmapRoute
   '/tools/seo': typeof ToolsSeoRoute
@@ -449,6 +456,7 @@ export interface FileRoutesByTo {
   '/tools/ideas': typeof ToolsIdeasRoute
   '/tools/image': typeof ToolsImageRoute
   '/tools/prompt': typeof ToolsPromptRoute
+  '/tools/reels': typeof ToolsReelsRoute
   '/tools/rewrite': typeof ToolsRewriteRoute
   '/tools/roadmap': typeof ToolsRoadmapRoute
   '/tools/seo': typeof ToolsSeoRoute
@@ -509,6 +517,7 @@ export interface FileRoutesById {
   '/tools/ideas': typeof ToolsIdeasRoute
   '/tools/image': typeof ToolsImageRoute
   '/tools/prompt': typeof ToolsPromptRoute
+  '/tools/reels': typeof ToolsReelsRoute
   '/tools/rewrite': typeof ToolsRewriteRoute
   '/tools/roadmap': typeof ToolsRoadmapRoute
   '/tools/seo': typeof ToolsSeoRoute
@@ -569,6 +578,7 @@ export interface FileRouteTypes {
     | '/tools/ideas'
     | '/tools/image'
     | '/tools/prompt'
+    | '/tools/reels'
     | '/tools/rewrite'
     | '/tools/roadmap'
     | '/tools/seo'
@@ -625,6 +635,7 @@ export interface FileRouteTypes {
     | '/tools/ideas'
     | '/tools/image'
     | '/tools/prompt'
+    | '/tools/reels'
     | '/tools/rewrite'
     | '/tools/roadmap'
     | '/tools/seo'
@@ -684,6 +695,7 @@ export interface FileRouteTypes {
     | '/tools/ideas'
     | '/tools/image'
     | '/tools/prompt'
+    | '/tools/reels'
     | '/tools/rewrite'
     | '/tools/roadmap'
     | '/tools/seo'
@@ -996,6 +1008,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ToolsRewriteRouteImport
       parentRoute: typeof ToolsRoute
     }
+    '/tools/reels': {
+      id: '/tools/reels'
+      path: '/reels'
+      fullPath: '/tools/reels'
+      preLoaderRoute: typeof ToolsReelsRouteImport
+      parentRoute: typeof ToolsRoute
+    }
     '/tools/prompt': {
       id: '/tools/prompt'
       path: '/prompt'
@@ -1193,6 +1212,7 @@ interface ToolsRouteChildren {
   ToolsIdeasRoute: typeof ToolsIdeasRoute
   ToolsImageRoute: typeof ToolsImageRoute
   ToolsPromptRoute: typeof ToolsPromptRoute
+  ToolsReelsRoute: typeof ToolsReelsRoute
   ToolsRewriteRoute: typeof ToolsRewriteRoute
   ToolsRoadmapRoute: typeof ToolsRoadmapRoute
   ToolsSeoRoute: typeof ToolsSeoRoute
@@ -1212,6 +1232,7 @@ const ToolsRouteChildren: ToolsRouteChildren = {
   ToolsIdeasRoute: ToolsIdeasRoute,
   ToolsImageRoute: ToolsImageRoute,
   ToolsPromptRoute: ToolsPromptRoute,
+  ToolsReelsRoute: ToolsReelsRoute,
   ToolsRewriteRoute: ToolsRewriteRoute,
   ToolsRoadmapRoute: ToolsRoadmapRoute,
   ToolsSeoRoute: ToolsSeoRoute,

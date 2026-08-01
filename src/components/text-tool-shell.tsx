@@ -14,7 +14,9 @@ type Props = {
     | "email"
     | "social"
     | "rewrite"
-    | "study";
+    | "study"
+    | "agent"
+    | "reels";
   title: string;
   description: string;
   icon: LucideIcon;

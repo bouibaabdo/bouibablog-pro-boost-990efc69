@@ -22,6 +22,7 @@ import {
   PenLine,
   GraduationCap,
   Bot,
+  Video,
 } from "lucide-react";
 import { useEffect, useState, useMemo } from "react";
 import type { LucideIcon } from "lucide-react";
@@ -108,6 +109,14 @@ const TOOLS: Array<{
     title: "الإيميل المؤقت",
     desc: "احصل على بريد إلكتروني مؤقت فوري ومجاني بدون تسجيل. يستقبل الرسائل تلقائياً لحماية بريدك الحقيقي من السبام والتسجيل المزعج.",
     color: "from-rose-500/10 to-pink-500/10 text-rose-500 dark:text-rose-400",
+    badge: "جديد ✨",
+  },
+  {
+    to: "/tools/reels",
+    icon: Video,
+    title: "صانع سيناريو الريلز (AI Reels Creator)",
+    desc: "صمم سيناريو فيديو قصير (Reels / TikTok / Shorts) فيروسي عالي التفاعل يشتمل على الخطاف الصوتي والتوجيهات البصرية ودعوة المتابعين.",
+    color: "from-purple-500/10 to-pink-500/10 text-purple-500 dark:text-purple-400",
     badge: "جديد ✨",
   },
   {
