@@ -1,0 +1,211 @@
+{
+  "name": "Bouiba Academy 2026 - 10 Free AI & Automation Workflows Bundle",
+  "version": "1.0.0",
+  "author": "Bouiba Academy (https://www.bouibacademy.me)",
+  "workflows": [
+    {
+      "id": "workflow-01",
+      "name": "01 - Telegram AI Agent Bot",
+      "description": "Telegram Customer Support AI Bot using Google Gemini 2.5 Flash",
+      "nodes": [
+        {
+          "parameters": { "updates": ["message"] },
+          "name": "Telegram Trigger",
+          "type": "n8n-nodes-base.telegramTrigger",
+          "typeVersion": 1,
+          "position": [250, 300]
+        },
+        {
+          "parameters": {
+            "modelName": "models/gemini-2.5-flash",
+            "options": {}
+          },
+          "name": "Google Gemini Chat Model",
+          "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+          "typeVersion": 1,
+          "position": [450, 300]
+        },
+        {
+          "parameters": {
+            "chatId": "={{ $json.message.chat.id }}",
+            "text": "={{ $json.output }}"
+          },
+          "name": "Send Reply",
+          "type": "n8n-nodes-base.telegram",
+          "typeVersion": 1.1,
+          "position": [650, 300]
+        }
+      ]
+    },
+    {
+      "id": "workflow-02",
+      "name": "02 - YouTube Video Summarizer & Post Converter",
+      "description": "Extract YouTube Transcript & Generate Actionable Bullet Points using Gemini AI",
+      "nodes": [
+        {
+          "parameters": { "httpMethod": "POST", "path": "youtube-summary" },
+          "name": "Webhook Input",
+          "type": "n8n-nodes-base.webhook",
+          "typeVersion": 1,
+          "position": [250, 300]
+        },
+        {
+          "parameters": {
+            "url": "=https://yt.lemnoslife.com/noKey/captions?videoId={{ $json.body.videoId }}",
+            "options": {}
+          },
+          "name": "Fetch Captions",
+          "type": "n8n-nodes-base.httpRequest",
+          "typeVersion": 4.1,
+          "position": [450, 300]
+        },
+        {
+          "parameters": {
+            "prompt": "=Summarize this transcript in 5 key takeaways in Arabic:\n{{ $json.body.transcript }}"
+          },
+          "name": "Gemini Summarizer",
+          "type": "@n8n/n8n-nodes-langchain.chainLlm",
+          "typeVersion": 1.4,
+          "position": [650, 300]
+        }
+      ]
+    },
+    {
+      "id": "workflow-03",
+      "name": "03 - Daily Articles & SEO Scheduler",
+      "description": "Automated Daily AI Article Generator & Social Posts Converter",
+      "nodes": [
+        {
+          "parameters": {
+            "rule": { "interval": [{ "field": "cronExpression", "expression": "0 8 * * *" }] }
+          },
+          "name": "Schedule Daily 8AM",
+          "type": "n8n-nodes-base.cron",
+          "typeVersion": 1,
+          "position": [250, 300]
+        },
+        {
+          "parameters": {
+            "command": "node scripts/generate-daily-article.js"
+          },
+          "name": "Execute Daily Generator",
+          "type": "n8n-nodes-base.executeCommand",
+          "typeVersion": 1,
+          "position": [500, 300]
+        }
+      ]
+    },
+    {
+      "id": "workflow-04",
+      "name": "04 - Web Price & Change Tracker",
+      "description": "Monitor Product Prices and Send Instant Alert on Telegram",
+      "nodes": [
+        {
+          "parameters": {
+            "rule": { "interval": [{ "field": "minutes", "minutesInterval": 30 }] }
+          },
+          "name": "Check Every 30 Min",
+          "type": "n8n-nodes-base.cron",
+          "typeVersion": 1,
+          "position": [250, 300]
+        },
+        {
+          "parameters": {
+            "url": "={{ $json.targetUrl }}",
+            "options": {}
+          },
+          "name": "Scrape Web Page",
+          "type": "n8n-nodes-base.httpRequest",
+          "typeVersion": 4.1,
+          "position": [450, 300]
+        }
+      ]
+    },
+    {
+      "id": "workflow-05",
+      "name": "05 - Smart Email Auto-Responder",
+      "description": "Categorize Incoming Emails and Draft Professional Responses",
+      "nodes": [
+        {
+          "parameters": { "event": "messageReceived" },
+          "name": "IMAP Trigger",
+          "type": "n8n-nodes-base.emailReadImap",
+          "typeVersion": 1,
+          "position": [250, 300]
+        }
+      ]
+    },
+    {
+      "id": "workflow-06",
+      "name": "06 - Multi-Platform Social Media Content Generator",
+      "description": "Convert Article URL to Facebook, LinkedIn & X Posts",
+      "nodes": [
+        {
+          "parameters": { "httpMethod": "POST", "path": "generate-social" },
+          "name": "Webhook Input",
+          "type": "n8n-nodes-base.webhook",
+          "typeVersion": 1,
+          "position": [250, 300]
+        }
+      ]
+    },
+    {
+      "id": "workflow-07",
+      "name": "07 - AI Image Generation Pipeline",
+      "description": "Generate High Resolution AI Images via Free API Pipelines",
+      "nodes": [
+        {
+          "parameters": { "httpMethod": "POST", "path": "generate-image" },
+          "name": "Webhook Input",
+          "type": "n8n-nodes-base.webhook",
+          "typeVersion": 1,
+          "position": [250, 300]
+        }
+      ]
+    },
+    {
+      "id": "workflow-08",
+      "name": "08 - Server Health & Downtime Monitor",
+      "description": "Monitor VPS Uptime and Send Alert on Downtime",
+      "nodes": [
+        {
+          "parameters": {
+            "rule": { "interval": [{ "field": "minutes", "minutesInterval": 5 }] }
+          },
+          "name": "Ping Every 5 Min",
+          "type": "n8n-nodes-base.cron",
+          "typeVersion": 1,
+          "position": [250, 300]
+        }
+      ]
+    },
+    {
+      "id": "workflow-09",
+      "name": "09 - Web Scraping & Data Parser",
+      "description": "Extract Tables from Web Pages and Store in Database",
+      "nodes": [
+        {
+          "parameters": { "httpMethod": "POST", "path": "scrape-data" },
+          "name": "Webhook Input",
+          "type": "n8n-nodes-base.webhook",
+          "typeVersion": 1,
+          "position": [250, 300]
+        }
+      ]
+    },
+    {
+      "id": "workflow-10",
+      "name": "10 - AI Study Flashcards & Quiz Generator",
+      "description": "Convert Study Material into Interactive Quiz Questions & Flashcards",
+      "nodes": [
+        {
+          "parameters": { "httpMethod": "POST", "path": "generate-quiz" },
+          "name": "Webhook Input",
+          "type": "n8n-nodes-base.webhook",
+          "typeVersion": 1,
+          "position": [250, 300]
+        }
+      ]
+    }
+  ]
+}

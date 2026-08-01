@@ -77,8 +77,9 @@
 
 يمكنك استعراض وتحميل ملفات الـ JSON الجاهزة للتدفقات مباشرة من مستودع الأدوات المجانية الخاص بـ **Bouiba Academy**:
 
-- **الرابط المباشر للتحميل:** [تحميل حزمة قوالب n8n المجانية (GitHub Repository)](https://github.com/bouibaabdo/bouibablog-pro-boost-990efc69/tree/main/content/posts/free-n8n-ai-workflows-bundle-2026)
-- **ملاحظة:** جميع القوالب مفتوحة المصدر ومجانية 100% وتعمل مع الإصدارات الحديثة من n8n 2026.
+- **رابط تحميل الحزمة الكاملة (JSON):** [تحميل ملف n8n-workflows-bundle-2026.json المباشر](https://raw.githubusercontent.com/bouibaabdo/bouibablog-pro-boost-990efc69/main/content/posts/free-n8n-ai-workflows-bundle-2026/n8n-workflows-bundle-2026.json)
+- **استعراض مجلد الحزمة والتعليمات (GitHub):** [مجلد حزمة القوالب والدليل الشامل](https://github.com/bouibaabdo/bouibablog-pro-boost-990efc69/tree/main/content/posts/free-n8n-ai-workflows-bundle-2026)
+- **ملاحظة:** جميع القوالب مفتوحة المصدر ومجانية 100% وتعمل مع جميع إصدارات n8n الحديثة (السحابية والمحلية).
 
 ---
 
