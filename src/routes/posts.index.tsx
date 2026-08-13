@@ -6,6 +6,7 @@ import { getPosts, getLabels } from "@/lib/blogger.functions";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { PostCard } from "@/components/post-card";
+import { useLang } from "@/hooks/use-lang";
 
 const searchSchema = z.object({
   label: z.string().optional(),
@@ -94,6 +95,24 @@ function PostsPage() {
   const { label, q } = Route.useSearch();
   const { data } = useSuspenseQuery(makeQuery(label, q));
   const { data: labels } = useSuspenseQuery(labelsQO);
+  const { t, lang } = useLang();
+
+  const heroBadge = lang === "fr" ? "Bibliothèque" : lang === "en" ? "Library" : "المكتبة";
+  const heroTitle = label
+    ? lang === "ar" ? (
+        <><span>مقالات: </span><span className="gradient-text">{label}</span></>
+      ) : lang === "fr" ? (
+        <><span>Articles : </span><span className="gradient-text">{label}</span></>
+      ) : (
+        <><span>Articles: </span><span className="gradient-text">{label}</span></>
+      )
+    : lang === "fr" ? "Tous les articles" : lang === "en" ? "All Articles" : "جميع المقالات";
+  const countLabel =
+    lang === "fr" ? `${data.total} articles publiés` : lang === "en" ? `${data.total} published articles` : `${data.total} مقال منشور`;
+  const emptyLabel =
+    lang === "fr" ? "Aucun article dans cette catégorie." : lang === "en" ? "No articles in this category yet." : "لا توجد مقالات في هذا التصنيف بعد.";
+  const allLabel =
+    lang === "fr" ? "Tout" : lang === "en" ? "All" : "الكل";
 
   return (
     <div className="min-h-screen bg-background">
@@ -101,17 +120,11 @@ function PostsPage() {
       <main>
         <section className="hero-bg border-b border-border">
           <div className="container-page py-14 md:py-20 text-center">
-            <p className="text-sm font-semibold text-primary mb-3">المكتبة</p>
+            <p className="text-sm font-semibold text-primary mb-3">{heroBadge}</p>
             <h1 className="font-display text-4xl md:text-5xl font-extrabold">
-              {label ? (
-                <>
-                  مقالات: <span className="gradient-text">{label}</span>
-                </>
-              ) : (
-                "جميع المقالات"
-              )}
+              {heroTitle}
             </h1>
-            <p className="mt-4 text-muted-foreground">{data.total} مقال منشور</p>
+            <p className="mt-4 text-muted-foreground">{countLabel}</p>
           </div>
         </section>
 
@@ -127,7 +140,7 @@ function PostsPage() {
                   : "bg-surface border-border hover:border-primary hover:text-primary"
               }`}
             >
-              الكل
+              {allLabel}
             </Link>
             {labels.slice(0, 12).map((l) => (
               <Link
@@ -148,7 +161,7 @@ function PostsPage() {
           <h2 className="sr-only">قائمة المقالات</h2>
           {data.posts.length === 0 ? (
             <div className="text-center py-20 text-muted-foreground">
-              لا توجد مقالات في هذا التصنيف بعد.
+              {emptyLabel}
             </div>
           ) : (
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

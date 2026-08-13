@@ -112,6 +112,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
       { rel: "shortcut icon", href: "/favicon.ico", type: "image/x-icon" },
       { rel: "apple-touch-icon", href: "/favicon.png" },
+      /* Google Fonts — multilingual: EN (Inter+Outfit) + FR (Lato+Playfair Display) */
+      { rel: "preconnect", href: "https://fonts.googleapis.com" },
+      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" } as any,
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&family=Lato:wght@400;700&family=Playfair+Display:wght@700;800&family=JetBrains+Mono:wght@400;500&display=swap",
+      },
     ],
     scripts: [
       {
@@ -193,8 +200,8 @@ function RootComponent() {
     if (typeof window === "undefined") return;
 
     const lang =
-      (window.localStorage.getItem("bouiba_lang") as "ar" | "en") ||
-      (document.documentElement.dataset.uiLang as "ar" | "en") ||
+      (window.localStorage.getItem("bouiba_lang") as "ar" | "en" | "fr") ||
+      (document.documentElement.dataset.uiLang as "ar" | "en" | "fr") ||
       "ar";
     if (lang !== "en") return;
 

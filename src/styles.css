@@ -5,153 +5,303 @@
 @import "@fontsource/tajawal/arabic-500.css";
 @import "@fontsource/cairo/arabic-700.css";
 
+/* ─────────────────────────────────────────────────────────────────────────────
+   Bouiba Academy — Design System v2.0
+   Multilingual: العربية (AR) · Français (FR) · English (EN)
+   Author: Bouiba Academy
+   ─────────────────────────────────────────────────────────────────────────── */
+
 @custom-variant dark (&:is(.dark *));
 
-@theme inline {
-  --font-sans: "Tajawal", "Tajawal-fallback", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Cairo", "Cairo-fallback", ui-sans-serif, system-ui, sans-serif;
+/* ─── FONT SYSTEM ─────────────────────────────────────────────────────────── */
+/*
+ * AR  → Tajawal (body) + Cairo (headings)     — loaded via fontsource above
+ * EN  → Inter (body) + Outfit (headings)      — loaded via Google Fonts CDN
+ * FR  → Lato (body) + Playfair Display (h)    — loaded via Google Fonts CDN
+ * Mono→ JetBrains Mono                        — for code blocks
+ */
 
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+@theme inline {
+  /* ── Font Families ──────────────────────────────────────────────────────── */
+  --font-sans:    "Tajawal",           "Tajawal-fallback",    ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Cairo",             "Cairo-fallback",      ui-sans-serif, system-ui, sans-serif;
+  --font-latin:   "Inter",             "Inter-fallback",      ui-sans-serif, system-ui, sans-serif;
+  --font-latin-display: "Outfit",      "Outfit-fallback",     ui-sans-serif, system-ui, sans-serif;
+  --font-french:  "Lato",              "Lato-fallback",       ui-sans-serif, system-ui, sans-serif;
+  --font-french-display: "Playfair Display", "Georgia",       ui-serif, serif;
+  --font-mono:    "JetBrains Mono",    "Fira Code",           ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* ── Radii ──────────────────────────────────────────────────────────────── */
+  --radius-sm:  calc(var(--radius) - 4px);
+  --radius-md:  calc(var(--radius) - 2px);
+  --radius-lg:  var(--radius);
+  --radius-xl:  calc(var(--radius) + 4px);
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
 
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary-glow: var(--primary-glow);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --color-surface: var(--surface);
-  --color-surface-muted: var(--surface-muted);
+  /* ── Color Tokens (mapped to CSS custom props) ──────────────────────────── */
+  --color-background:          var(--background);
+  --color-foreground:          var(--foreground);
+  --color-card:                var(--card);
+  --color-card-foreground:     var(--card-foreground);
+  --color-popover:             var(--popover);
+  --color-popover-foreground:  var(--popover-foreground);
 
-  --shadow-elegant: 0 16px 40px -12px color-mix(in oklab, var(--primary) 20%, transparent);
-  --shadow-soft: 0 8px 30px -10px color-mix(in oklab, var(--primary) 8%, transparent);
-  --shadow-card: 0 2px 8px -1px oklch(0 0 0 / 0.04), 0 1px 3px 0 oklch(0 0 0 / 0.02);
+  --color-primary:             var(--primary);
+  --color-primary-foreground:  var(--primary-foreground);
+  --color-primary-glow:        var(--primary-glow);
+
+  --color-secondary:           var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-amber:               var(--amber);
+  --color-amber-foreground:    var(--amber-foreground);
+
+  --color-violet:              var(--violet);
+  --color-violet-foreground:   var(--violet-foreground);
+
+  --color-cobalt:              var(--cobalt);
+  --color-cobalt-foreground:   var(--cobalt-foreground);
+
+  --color-muted:               var(--muted);
+  --color-muted-foreground:    var(--muted-foreground);
+  --color-accent:              var(--accent);
+  --color-accent-foreground:   var(--accent-foreground);
+  --color-destructive:         var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border:              var(--border);
+  --color-input:               var(--input);
+  --color-ring:                var(--ring);
+  --color-surface:             var(--surface);
+  --color-surface-muted:       var(--surface-muted);
+
+  /* ── Shadows ────────────────────────────────────────────────────────────── */
+  --shadow-elegant:     0 16px 40px -12px color-mix(in oklab, var(--primary) 20%, transparent);
+  --shadow-soft:        0 8px 30px -10px  color-mix(in oklab, var(--primary) 8%, transparent);
+  --shadow-card:        0 2px 8px -1px oklch(0 0 0 / 0.04), 0 1px 3px 0 oklch(0 0 0 / 0.02);
   --shadow-header:
     0 1px 0 color-mix(in oklab, var(--border) 40%, transparent),
     0 12px 40px -16px color-mix(in oklab, var(--primary) 12%, transparent);
-  --shadow-glow: 0 0 24px -4px color-mix(in oklab, var(--primary) 25%, transparent);
+  --shadow-glow:        0 0 24px -4px color-mix(in oklab, var(--primary) 25%, transparent);
   --shadow-glow-strong: 0 0 40px -6px color-mix(in oklab, var(--primary) 40%, transparent);
+  --shadow-amber-glow:  0 0 24px -4px color-mix(in oklab, var(--amber) 30%, transparent);
+  --shadow-violet-glow: 0 0 24px -4px color-mix(in oklab, var(--violet) 30%, transparent);
+  --shadow-cobalt-glow: 0 0 24px -4px color-mix(in oklab, var(--cobalt) 30%, transparent);
 }
 
+/* ─── LIGHT MODE TOKENS ───────────────────────────────────────────────────── */
 :root {
   --radius: 0.75rem;
 
-  /* Refined Editorial Deep Teal Palette — MIT Tech Review & HBR Arabic Style */
-  --background: oklch(0.99 0.002 90); /* Warm soft editorial off-white #FAFAFA */
-  --foreground: oklch(0.18 0.015 240); /* Dark Slate/Charcoal #0F172A */
+  /* ── Base Surfaces — Warm Editorial Off-white */
+  --background:    oklch(0.99 0.002 90);   /* #FAFAF8 — warm soft off-white  */
+  --foreground:    oklch(0.18 0.015 240);  /* #0F172A — dark charcoal        */
+  --surface:       oklch(1 0 0);           /* #FFFFFF — pure white           */
+  --surface-muted: oklch(0.975 0.004 240); /* #F8FAFC — crisp slate-50       */
 
-  --surface: oklch(1 0 0); /* Pure White #FFFFFF */
-  --surface-muted: oklch(0.975 0.004 240); /* Crisp Slate-50 #F8FAFC */
+  --card:                oklch(1 0 0);
+  --card-foreground:     oklch(0.18 0.015 240);
+  --popover:             oklch(1 0 0);
+  --popover-foreground:  oklch(0.18 0.015 240);
 
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.18 0.015 240);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.18 0.015 240);
+  /* ── Primary — Deep Editorial Teal (AR + General) */
+  --primary:             oklch(0.48 0.12 185);  /* #0D6E6E deep teal  */
+  --primary-foreground:  oklch(0.99 0.003 185);
+  --primary-glow:        oklch(0.56 0.11 185);
 
-  --primary: oklch(0.48 0.12 185); /* Deep Editorial Teal #0D6E6E */
-  --primary-foreground: oklch(0.99 0.003 185);
-  --primary-glow: oklch(0.56 0.11 185);
-
-  --secondary: oklch(0.965 0.006 240);
+  /* ── Secondary — Neutral Slate */
+  --secondary:            oklch(0.965 0.006 240);
   --secondary-foreground: oklch(0.2 0.02 240);
 
-  --muted: oklch(0.965 0.005 240);
-  --muted-foreground: oklch(0.45 0.015 240); /* Slate-600 #475569 */
+  /* ── Amber — Warm Gold (badges, highlights, AI tools) */
+  --amber:                oklch(0.78 0.18 75);   /* #E8A800 golden amber */
+  --amber-foreground:     oklch(0.18 0.04 75);
 
-  --accent: oklch(0.955 0.012 185); /* Subtle Editorial Teal Tint #F0FDF4 */
-  --accent-foreground: oklch(0.4 0.12 185);
+  /* ── Violet — Electric Violet (AI tools, premium features) */
+  --violet:               oklch(0.55 0.18 290);  /* #7C3AED violet      */
+  --violet-foreground:    oklch(0.99 0.003 290);
 
-  --destructive: oklch(0.55 0.2 25);
+  /* ── Cobalt — French Language Accent */
+  --cobalt:               oklch(0.52 0.15 250);  /* #1E40AF cobalt blue */
+  --cobalt-foreground:    oklch(0.99 0 0);
+
+  /* ── Supporting */
+  --muted:                oklch(0.965 0.005 240);
+  --muted-foreground:     oklch(0.45 0.015 240);  /* #475569 slate-600  */
+  --accent:               oklch(0.955 0.012 185);
+  --accent-foreground:    oklch(0.4 0.12 185);
+  --destructive:          oklch(0.55 0.2 25);
   --destructive-foreground: oklch(0.99 0 0);
+  --border:               oklch(0.915 0.005 240); /* #E2E8F0             */
+  --input:                oklch(0.915 0.005 240);
+  --ring:                 oklch(0.48 0.12 185);
 
-  --border: oklch(0.915 0.005 240); /* Crisp neutral border #E2E8F0 */
-  --input: oklch(0.915 0.005 240);
-  --ring: oklch(0.48 0.12 185);
-
-  --gradient-hero: linear-gradient(180deg, var(--background), var(--surface-muted));
+  /* ── Gradients ──────────────────────────────────────────────────────────── */
+  --gradient-hero:    linear-gradient(180deg, var(--background), var(--surface-muted));
   --gradient-primary: linear-gradient(135deg, var(--primary), var(--primary-glow));
-  --gradient-mesh: radial-gradient(
+  --gradient-amber:   linear-gradient(135deg, oklch(0.78 0.18 75), oklch(0.85 0.16 85));
+  --gradient-violet:  linear-gradient(135deg, oklch(0.55 0.18 290), oklch(0.62 0.16 310));
+  --gradient-cobalt:  linear-gradient(135deg, oklch(0.52 0.15 250), oklch(0.60 0.14 265));
+  --gradient-mesh:    radial-gradient(
     at 30% 10%,
     color-mix(in oklab, var(--primary) 6%, transparent) 0px,
     transparent 60%
   );
+  --gradient-hero-rich: radial-gradient(
+    ellipse 80% 60% at 50% 0%,
+    color-mix(in oklab, var(--primary) 10%, transparent),
+    transparent 70%
+  ), linear-gradient(180deg, var(--background), var(--surface));
 }
 
+/* ─── DARK MODE TOKENS ────────────────────────────────────────────────────── */
 .dark {
-  --background: oklch(0.13 0.015 240); /* Deep Slate #0F172A */
-  --foreground: oklch(0.98 0.003 240); /* Bright Off-white #F8FAFC */
-  --surface: oklch(0.16 0.015 240); /* Slate-850 #1E293B */
-  --surface-muted: oklch(0.19 0.015 240); /* Slate-800 #334155 */
-  --card: oklch(0.16 0.015 240);
-  --card-foreground: oklch(0.98 0.003 240);
-  --popover: oklch(0.16 0.015 240);
-  --popover-foreground: oklch(0.98 0.003 240);
-  --primary: oklch(0.68 0.14 185); /* Vivid Teal #14B8A6 */
-  --primary-foreground: oklch(0.12 0.015 240);
-  --primary-glow: oklch(0.72 0.12 185);
-  --secondary: oklch(0.19 0.015 240);
+  --background:    oklch(0.13 0.015 240);  /* #0F172A deep slate      */
+  --foreground:    oklch(0.98 0.003 240);  /* #F8FAFC bright off-white */
+  --surface:       oklch(0.16 0.015 240);  /* #1E293B slate-850        */
+  --surface-muted: oklch(0.19 0.015 240);  /* #334155 slate-800        */
+
+  --card:                oklch(0.16 0.015 240);
+  --card-foreground:     oklch(0.98 0.003 240);
+  --popover:             oklch(0.16 0.015 240);
+  --popover-foreground:  oklch(0.98 0.003 240);
+
+  --primary:             oklch(0.68 0.14 185);  /* #14B8A6 vivid teal  */
+  --primary-foreground:  oklch(0.12 0.015 240);
+  --primary-glow:        oklch(0.72 0.12 185);
+
+  --secondary:            oklch(0.19 0.015 240);
   --secondary-foreground: oklch(0.98 0 0);
-  --muted: oklch(0.19 0.015 240);
-  --muted-foreground: oklch(0.65 0.015 240);
-  --accent: oklch(0.22 0.03 185);
-  --accent-foreground: oklch(0.98 0 0);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 12%);
-  --ring: oklch(0.68 0.14 185);
+
+  --amber:                oklch(0.82 0.16 80);   /* brighter amber in dark */
+  --amber-foreground:     oklch(0.15 0.04 75);
+
+  --violet:               oklch(0.65 0.18 290);  /* lighter violet in dark  */
+  --violet-foreground:    oklch(0.12 0.01 290);
+
+  --cobalt:               oklch(0.64 0.14 250);  /* lighter cobalt in dark  */
+  --cobalt-foreground:    oklch(0.12 0.01 250);
+
+  --muted:                oklch(0.19 0.015 240);
+  --muted-foreground:     oklch(0.65 0.015 240);
+  --accent:               oklch(0.22 0.03 185);
+  --accent-foreground:    oklch(0.98 0 0);
+  --border:               oklch(1 0 0 / 10%);
+  --input:                oklch(1 0 0 / 12%);
+  --ring:                 oklch(0.68 0.14 185);
+
+  --gradient-amber:  linear-gradient(135deg, oklch(0.82 0.16 80),  oklch(0.88 0.14 90));
+  --gradient-violet: linear-gradient(135deg, oklch(0.65 0.18 290), oklch(0.72 0.15 310));
+  --gradient-cobalt: linear-gradient(135deg, oklch(0.64 0.14 250), oklch(0.70 0.12 265));
 }
 
+/* ─── MULTILINGUAL FONT INJECTION ─────────────────────────────────────────── */
+/*
+ * Switch body/heading font automatically based on data-ui-lang attribute
+ * set on <html> by SiteHeader when user changes language.
+ *
+ * Arabic (default): Tajawal + Cairo
+ * English [en]:     Inter + Outfit
+ * French  [fr]:     Lato + Playfair Display
+ */
+
+/* AR — default, already set in @layer base */
+
+[data-ui-lang="en"] body,
+[data-ui-lang="en"] p,
+[data-ui-lang="en"] span,
+[data-ui-lang="en"] li,
+[data-ui-lang="en"] td,
+[data-ui-lang="en"] a {
+  font-family: var(--font-latin);
+}
+
+[data-ui-lang="en"] h1,
+[data-ui-lang="en"] h2,
+[data-ui-lang="en"] h3,
+[data-ui-lang="en"] h4,
+[data-ui-lang="en"] h5,
+[data-ui-lang="en"] h6 {
+  font-family: var(--font-latin-display);
+  letter-spacing: -0.025em;
+}
+
+[data-ui-lang="fr"] body,
+[data-ui-lang="fr"] p,
+[data-ui-lang="fr"] span,
+[data-ui-lang="fr"] li,
+[data-ui-lang="fr"] td,
+[data-ui-lang="fr"] a {
+  font-family: var(--font-french);
+}
+
+[data-ui-lang="fr"] h1,
+[data-ui-lang="fr"] h2,
+[data-ui-lang="fr"] h3,
+[data-ui-lang="fr"] h4,
+[data-ui-lang="fr"] h5,
+[data-ui-lang="fr"] h6 {
+  font-family: var(--font-french-display);
+  letter-spacing: 0;
+}
+
+/* ─── BASE LAYER ──────────────────────────────────────────────────────────── */
 @layer base {
   * {
     border-color: var(--color-border);
   }
+
   html {
     font-family: var(--font-sans);
+    scroll-behavior: smooth;
   }
+
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
+
+  h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);
     letter-spacing: -0.01em;
   }
+
   ::selection {
     background: color-mix(in oklab, var(--primary) 25%, transparent);
   }
+
+  /* Smooth focus ring for accessibility */
+  :focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
 }
 
+/* ─── LAYOUT UTILITIES ────────────────────────────────────────────────────── */
 @utility container-page {
   width: 100%;
   margin-inline: auto;
-  padding-inline: 1.25rem;
+  padding-inline: 1rem;
   max-width: 1200px;
+
+  @media (min-width: 640px)  { padding-inline: 1.5rem; }
+  @media (min-width: 1024px) { padding-inline: 2rem;   }
 }
 
+@utility container-narrow {
+  width: 100%;
+  margin-inline: auto;
+  padding-inline: 1rem;
+  max-width: 800px;
+
+  @media (min-width: 640px) { padding-inline: 1.5rem; }
+}
+
+/* ─── TEXT UTILITIES ──────────────────────────────────────────────────────── */
 @utility gradient-text {
   background: var(--gradient-primary);
   -webkit-background-clip: text;
@@ -159,14 +309,37 @@
   color: transparent;
 }
 
+@utility gradient-text-amber {
+  background: var(--gradient-amber);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility gradient-text-violet {
+  background: var(--gradient-violet);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility gradient-text-cobalt {
+  background: var(--gradient-cobalt);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ─── BACKGROUND UTILITIES ────────────────────────────────────────────────── */
 @utility hero-bg {
-  background: var(--gradient-hero);
+  background: var(--gradient-hero-rich);
 }
 
 @utility mesh-bg {
   background-image: var(--gradient-mesh);
 }
 
+/* ─── GLASS UTILITIES ─────────────────────────────────────────────────────── */
 @utility glass-header {
   background: color-mix(in oklab, var(--background) 72%, transparent);
   backdrop-filter: blur(20px) saturate(180%);
@@ -182,6 +355,15 @@
   border: 1px solid color-mix(in oklab, var(--border) 50%, transparent);
 }
 
+@utility glass-card {
+  background: color-mix(in oklab, var(--card) 90%, transparent);
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  border: 1px solid color-mix(in oklab, var(--border) 60%, transparent);
+  box-shadow: var(--shadow-card);
+}
+
+/* ─── LOGO UTILITY ────────────────────────────────────────────────────────── */
 @utility logo-mark {
   position: relative;
   display: flex;
@@ -223,6 +405,7 @@
   }
 }
 
+/* ─── NAV UTILITIES ───────────────────────────────────────────────────────── */
 @utility nav-link {
   position: relative;
   display: inline-flex;
@@ -272,6 +455,7 @@
   }
 }
 
+/* ─── BUTTON UTILITIES ────────────────────────────────────────────────────── */
 @utility btn-premium {
   position: relative;
   display: inline-flex;
@@ -310,6 +494,167 @@
   }
 }
 
+@utility btn-amber {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--gradient-amber);
+  padding-inline: 1.25rem;
+  padding-block: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-amber-foreground);
+  box-shadow: var(--shadow-amber-glow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 16px 40px -12px color-mix(in oklab, var(--amber) 35%, transparent);
+  }
+}
+
+@utility btn-violet {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--gradient-violet);
+  padding-inline: 1.25rem;
+  padding-block: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-violet-foreground);
+  box-shadow: var(--shadow-violet-glow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 16px 40px -12px color-mix(in oklab, var(--violet) 35%, transparent);
+  }
+}
+
+/* ─── BADGE UTILITIES ─────────────────────────────────────────────────────── */
+@utility badge-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border-radius: 9999px;
+  background: color-mix(in oklab, var(--primary) 12%, transparent);
+  border: 1px solid color-mix(in oklab, var(--primary) 25%, transparent);
+  padding-inline: 0.625rem;
+  padding-block: 0.25rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  letter-spacing: 0.02em;
+}
+
+@utility badge-amber {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border-radius: 9999px;
+  background: color-mix(in oklab, var(--amber) 12%, transparent);
+  border: 1px solid color-mix(in oklab, var(--amber) 25%, transparent);
+  padding-inline: 0.625rem;
+  padding-block: 0.25rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: oklch(0.55 0.16 75);
+  letter-spacing: 0.02em;
+}
+
+@utility badge-violet {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border-radius: 9999px;
+  background: color-mix(in oklab, var(--violet) 12%, transparent);
+  border: 1px solid color-mix(in oklab, var(--violet) 25%, transparent);
+  padding-inline: 0.625rem;
+  padding-block: 0.25rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--color-violet);
+  letter-spacing: 0.02em;
+}
+
+@utility badge-cobalt {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border-radius: 9999px;
+  background: color-mix(in oklab, var(--cobalt) 12%, transparent);
+  border: 1px solid color-mix(in oklab, var(--cobalt) 25%, transparent);
+  padding-inline: 0.625rem;
+  padding-block: 0.25rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--color-cobalt);
+  letter-spacing: 0.02em;
+}
+
+/* ─── SECTION UTILITIES ───────────────────────────────────────────────────── */
+@utility section-divider {
+  position: relative;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in oklab, var(--border) 80%, transparent) 20%,
+      color-mix(in oklab, var(--border) 80%, transparent) 80%,
+      transparent
+    );
+  }
+}
+
+/* ─── CARD UTILITIES ──────────────────────────────────────────────────────── */
+@utility card-hover {
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    border-color: color-mix(in oklab, var(--primary) 35%, transparent);
+    box-shadow: var(--shadow-soft);
+    transform: translateY(-2px);
+  }
+}
+
+/* ─── LANG INDICATOR UTILITIES ────────────────────────────────────────────── */
+@utility lang-ar {
+  color: var(--color-primary);
+  border-color: color-mix(in oklab, var(--primary) 30%, transparent);
+  background: color-mix(in oklab, var(--primary) 8%, transparent);
+}
+
+@utility lang-en {
+  color: oklch(0.52 0.14 145);
+  border-color: oklch(0.52 0.14 145 / 30%);
+  background: oklch(0.52 0.14 145 / 8%);
+}
+
+@utility lang-fr {
+  color: var(--color-cobalt);
+  border-color: color-mix(in oklab, var(--cobalt) 30%, transparent);
+  background: color-mix(in oklab, var(--cobalt) 8%, transparent);
+}
+
+/* ─── PROSE STYLES (MULTILINGUAL) ────────────────────────────────────────── */
+
+/* Arabic Prose */
 .prose-ar {
   line-height: 1.9;
   color: var(--color-foreground);
@@ -321,15 +666,9 @@
   margin-bottom: 0.6em;
   font-weight: 700;
 }
-.prose-ar h2 {
-  font-size: 1.65rem;
-}
-.prose-ar h3 {
-  font-size: 1.3rem;
-}
-.prose-ar p {
-  margin-bottom: 1.1em;
-}
+.prose-ar h2 { font-size: 1.65rem; }
+.prose-ar h3 { font-size: 1.3rem;  }
+.prose-ar p  { margin-bottom: 1.1em; }
 .prose-ar a {
   color: var(--color-primary);
   text-decoration: underline;
@@ -340,9 +679,7 @@
   padding-inline-start: 1.5rem;
   margin-bottom: 1.1em;
 }
-.prose-ar li {
-  margin-bottom: 0.4em;
-}
+.prose-ar li { margin-bottom: 0.4em; }
 .prose-ar img {
   border-radius: var(--radius-lg);
   margin: 1.5em 0;
@@ -362,28 +699,129 @@
   padding: 0.15em 0.4em;
   border-radius: 0.375rem;
   font-size: 0.875em;
-  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace);
+  font-family: var(--font-mono);
 }
 .prose-ar pre {
-  background: #0f172a !important;
-  color: #f8fafc !important;
+  background: oklch(0.13 0.015 240);
+  color: oklch(0.93 0.005 240);
   padding: 1.25rem;
   border-radius: var(--radius-lg);
   overflow-x: auto;
   margin: 1.5em 0;
   direction: ltr !important;
   text-align: left !important;
-  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace);
+  font-family: var(--font-mono);
   border: 1px solid color-mix(in oklab, var(--color-border) 60%, transparent);
   box-shadow: var(--shadow-card);
 }
 .prose-ar pre code {
   background: transparent !important;
-  color: #e2e8f0 !important;
+  color: oklch(0.88 0.01 240) !important;
   padding: 0 !important;
   border-radius: 0 !important;
   font-size: 0.9em;
   line-height: 1.6;
   direction: ltr !important;
   text-align: left !important;
+}
+
+/* English & French Prose — shared latin styles */
+.prose-en,
+.prose-fr {
+  line-height: 1.75;
+  color: var(--color-foreground);
+}
+.prose-en h1, .prose-en h2, .prose-en h3,
+.prose-fr h1, .prose-fr h2, .prose-fr h3 {
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  font-weight: 700;
+}
+.prose-en h2, .prose-fr h2 { font-size: 1.6rem; }
+.prose-en h3, .prose-fr h3 { font-size: 1.25rem; }
+.prose-en p, .prose-fr p   { margin-bottom: 1em; }
+
+.prose-en {
+  font-family: var(--font-latin);
+}
+.prose-en h1, .prose-en h2, .prose-en h3, .prose-en h4 {
+  font-family: var(--font-latin-display);
+}
+
+.prose-fr {
+  font-family: var(--font-french);
+}
+.prose-fr h1, .prose-fr h2, .prose-fr h3, .prose-fr h4 {
+  font-family: var(--font-french-display);
+}
+
+.prose-en a, .prose-fr a {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.prose-en pre, .prose-fr pre {
+  background: oklch(0.13 0.015 240);
+  color: oklch(0.93 0.005 240);
+  padding: 1.25rem;
+  border-radius: var(--radius-lg);
+  overflow-x: auto;
+  margin: 1.5em 0;
+  font-family: var(--font-mono);
+  border: 1px solid color-mix(in oklab, var(--color-border) 60%, transparent);
+  box-shadow: var(--shadow-card);
+}
+
+.prose-en code, .prose-fr code {
+  background: color-mix(in oklab, var(--color-primary) 12%, transparent);
+  color: var(--color-primary);
+  padding: 0.15em 0.4em;
+  border-radius: 0.375rem;
+  font-size: 0.875em;
+  font-family: var(--font-mono);
+}
+
+/* ─── ANIMATION UTILITIES ─────────────────────────────────────────────────── */
+@utility animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@utility animate-shimmer {
+  animation: shimmer 2.5s linear infinite;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    color-mix(in oklab, var(--primary) 15%, transparent) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-8px); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.94); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@utility animate-fade-up {
+  animation: fade-up 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@utility animate-scale-in {
+  animation: scale-in 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }

@@ -4,8 +4,6 @@ import { useState, useMemo } from "react";
 import {
   ArrowLeft,
   ArrowRight,
-  Sparkles,
-  Trophy,
   Wand2,
   Image as ImageIcon,
   Languages,
@@ -30,7 +28,10 @@ import { PostCard } from "@/components/post-card";
 import { TodayMatchesRail } from "@/components/today-matches-rail";
 import { Hero3DCanvas } from "@/components/hero-3d-canvas";
 import { Tilt3DCard } from "@/components/interactive-3d-card";
+import { SectionHeader } from "@/components/section-header";
+import { useLang } from "@/hooks/use-lang";
 import { toast } from "sonner";
+
 
 const postsQueryOptions = queryOptions({
   queryKey: ["posts", "home"],
@@ -44,9 +45,9 @@ const labelsQueryOptions = queryOptions({
   staleTime: 10 * 60_000,
 });
 
-function formatDate(iso: string) {
+function formatDate(iso: string, locale = "ar-EG-u-nu-latn") {
   try {
-    return new Intl.DateTimeFormat("ar-EG-u-nu-latn", {
+    return new Intl.DateTimeFormat(locale, {
       year: "numeric",
       month: "long",
       day: "numeric",
@@ -162,6 +163,9 @@ function HomePage() {
   const [newsletterEmail, setNewsletterEmail] = useState("");
   const [newsletterSubscribed, setNewsletterSubscribed] = useState(false);
   const navigate = useNavigate();
+  const { t, lang, isRTL } = useLang();
+  const ArrowDir = isRTL ? ArrowLeft : ArrowRight;
+  const dateLocale = lang === "fr" ? "fr-FR" : lang === "en" ? "en-US" : "ar-EG-u-nu-latn";
 
   const posts = data.posts;
   const featured = posts[0];
@@ -208,57 +212,82 @@ function HomePage() {
             {/* Editorial Badge */}
             <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-card/90 backdrop-blur-md px-4 py-1.5 text-xs md:text-sm font-semibold text-primary shadow-sm">
               <ShieldCheck className="h-4 w-4 shrink-0" />
-              <span>منصة تقنية عربية مستقلة • شروحات عملية وأدوات موثوقة</span>
+              <span>{t("hero.badge")}</span>
             </div>
 
             {/* Main Editorial Headline */}
             <h1 className="font-display text-3xl sm:text-5xl md:text-6xl font-black leading-tight tracking-tight text-foreground">
-              المرجع المعرفي العربي <span className="text-primary">للذكاء الاصطناعي</span> والأتمتة
-              التقنية
+              {t("hero.title")}{" "}
+              <span className="gradient-text">{t("hero.title.highlight")}</span>
             </h1>
 
             {/* Editorial Subtitle */}
             <p className="mx-auto max-w-2xl text-base md:text-lg text-muted-foreground leading-relaxed font-normal">
-              نقدم للمطورين وصناع المحتوى والمهتمين بالتقنية شروحات عملية خطوة بخطوة، مراجعات محايدة
-              للنماذج، وأدوات ذكاء اصطناعي تفاعلية دون تعقيد أو حشو.
+              {t("hero.subtitle")}
             </p>
+
+            {/* Language Selection Pills */}
+            <div className="flex items-center justify-center gap-3 flex-wrap">
+              <span className="text-xs text-muted-foreground font-semibold">{t("lang.switchTo")}:</span>
+              {(["ar", "fr", "en"] as const).map((l) => {
+                const flags = { ar: "🇩🇿", fr: "🇫🇷", en: "🇬🇧" };
+                const names = { ar: "العربية", fr: "Français", en: "English" };
+                const isActive = lang === l;
+                return (
+                  <button
+                    key={l}
+                    type="button"
+                    className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-bold transition-all cursor-pointer ${
+                      isActive
+                        ? l === "ar" ? "lang-ar border" : l === "fr" ? "lang-fr border" : "lang-en border"
+                        : "border-border text-muted-foreground hover:border-primary hover:text-primary"
+                    }`}
+                    aria-label={names[l]}
+                    aria-pressed={isActive}
+                  >
+                    <span>{flags[l]}</span>
+                    <span>{names[l]}</span>
+                  </button>
+                );
+              })}
+            </div>
 
             {/* Editorial Instant Search Bar */}
             <form onSubmit={handleSearchSubmit} className="max-w-xl mx-auto pt-2">
               <div className="relative flex items-center rounded-xl border border-border bg-card/95 backdrop-blur-xl p-1.5 shadow-sm transition-all focus-within:border-primary focus-within:ring-1 focus-within:ring-primary/30">
-                <Search className="h-5 w-5 text-muted-foreground mr-3 shrink-0" />
+                <Search className="h-5 w-5 text-muted-foreground mx-3 shrink-0" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="ابحث عن مقال، أداة AI، أو موضوع تقني..."
+                  placeholder={t("hero.search.placeholder")}
                   className="w-full bg-transparent px-2 py-2 text-sm md:text-base outline-none placeholder:text-muted-foreground"
                 />
                 <button
                   type="submit"
                   className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground transition-all hover:opacity-90 shrink-0"
                 >
-                  <span>بحث</span>
-                  <ArrowLeft className="h-4 w-4" />
+                  <span>{t("hero.search.button")}</span>
+                  <ArrowDir className="h-4 w-4" />
                 </button>
               </div>
 
               {/* Fast Tag Suggestions */}
               <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-xs text-muted-foreground">
-                <span className="font-semibold text-foreground/80">المواضيع الشائعة:</span>
+                <span className="font-semibold text-foreground/80">{t("hero.trending")}</span>
                 {[
-                  { label: "Ollama و DeepSeek", query: "Ollama" },
-                  { label: "n8n والأتمتة", query: "n8n" },
-                  { label: "السيو التقني", query: "SEO" },
-                  { label: "أدوات AI المجانية", query: "أدوات" },
-                ].map((t) => (
+                  { label: "Ollama & DeepSeek", query: "Ollama" },
+                  { label: "n8n Automation", query: "n8n" },
+                  { label: "Tech SEO", query: "SEO" },
+                  { label: "Free AI Tools", query: "أدوات" },
+                ].map((tag) => (
                   <Link
-                    key={t.query}
+                    key={tag.query}
                     to="/posts"
-                    search={{ q: t.query }}
+                    search={{ q: tag.query }}
                     className="rounded-md bg-card/90 px-2.5 py-1 border border-border/80 hover:border-primary hover:text-primary transition-colors"
                   >
-                    {t.label}
+                    {tag.label}
                   </Link>
                 ))}
               </div>
@@ -270,15 +299,14 @@ function HomePage() {
         {featured && (
           <section className="container-page py-10 md:py-14 border-b border-border/60">
             <div className="flex items-center justify-between gap-4 mb-6">
-              <div className="flex items-center gap-2">
-                <span className="inline-block h-2 w-2 rounded-full bg-primary" />
-                <h2 className="font-display text-lg md:text-xl font-bold tracking-tight text-foreground">
-                  تغطية خاصة وموصى بها
-                </h2>
-              </div>
-              <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-semibold">
-                <Layers className="h-3.5 w-3.5 text-primary" />
-                <span>مختار من الكادر التحريري</span>
+              <SectionHeader
+                title={t("section.featured")}
+                badge={t("section.featuredSub")}
+                icon={Layers}
+                color="primary"
+                size="md"
+              />
+              <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-semibold hidden md:flex">
               </div>
             </div>
 
@@ -309,11 +337,11 @@ function HomePage() {
                           {featured.labels[0]}
                         </span>
                       )}
-                      <span>{formatDate(featured.published)}</span>
+                      <span>{formatDate(featured.published, dateLocale)}</span>
                       <span>•</span>
                       <span className="flex items-center gap-1">
                         <Clock className="h-3.5 w-3.5" />
-                        {featured.readingMinutes} دقائق قراءة
+                        {featured.readingMinutes} {t("card.minutes")}
                       </span>
                     </div>
 
@@ -327,11 +355,11 @@ function HomePage() {
 
                     <div className="pt-2 flex items-center justify-between">
                       <div className="text-xs text-muted-foreground font-semibold">
-                        بواسطة <span className="text-foreground font-bold">{featured.author}</span>
+                        {featured.author}
                       </div>
                       <div className="inline-flex items-center gap-1.5 text-sm font-bold text-primary">
-                        <span>اقرأ الشرح الكامل</span>
-                        <ArrowLeft className="h-4 w-4" />
+                        <span>{t("card.readMore")}</span>
+                        <ArrowDir className="h-4 w-4" />
                       </div>
                     </div>
                   </div>
@@ -341,39 +369,32 @@ function HomePage() {
           </section>
         )}
 
-        {/* LATEST ARTICLES & TUTORIALS (أحدث الشروحات والمقالات) */}
+        {/* LATEST ARTICLES & TUTORIALS */}
         <section className="container-page py-12 md:py-16">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 border-b border-border/60 pb-4">
-            <div>
-              <div className="flex items-center gap-2 text-xs font-bold text-primary mb-1">
-                <Newspaper className="h-4 w-4" />
-                <span>المكتبة التحريرية</span>
-              </div>
-              <h2 className="font-display text-2xl md:text-3xl font-black text-foreground">
-                أحدث المقالات التقنية وشروحات الذكاء الاصطناعي
-              </h2>
-            </div>
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 border-b border-border/60 pb-6">
+            <SectionHeader
+              title={t("section.latestArticles")}
+              icon={Newspaper}
+              color="primary"
+              size="lg"
+              ctaTo="/posts"
+              ctaLabel={t("nav.viewAllArticles")}
+            />
 
             {/* Category Filter Pills */}
-            <div className="flex items-center gap-2 flex-wrap text-xs font-semibold">
-              {["الكل", "AI Automation", "n8n", "Cybersecurity", "SEO", "Developer Tools"].map(
+            <div className="flex items-center gap-2 flex-wrap text-xs font-semibold shrink-0">
+              {[t("section.allCategories"), "AI Automation", "n8n", "Cybersecurity", "SEO", "Developer Tools"].map(
                 (cat) => (
                   <button
                     key={cat}
-                    onClick={() => setSelectedCategory(cat)}
+                    onClick={() => setSelectedCategory(cat === t("section.allCategories") ? "الكل" : cat)}
                     className={`px-3 py-1.5 rounded-lg border transition-all cursor-pointer ${
-                      selectedCategory === cat
+                      (cat === t("section.allCategories") && selectedCategory === "الكل") || selectedCategory === cat
                         ? "bg-primary text-primary-foreground border-primary font-bold"
                         : "bg-surface border-border text-muted-foreground hover:border-primary/40 hover:text-foreground"
                     }`}
                   >
-                    {cat === "AI Automation"
-                      ? "أتمتة AI"
-                      : cat === "Cybersecurity"
-                        ? "الأمن السيبراني"
-                        : cat === "Developer Tools"
-                          ? "أدوات المطورين"
-                          : cat}
+                    {cat}
                   </button>
                 ),
               )}
@@ -392,8 +413,8 @@ function HomePage() {
               to="/posts"
               className="inline-flex items-center gap-2 rounded-xl border border-border bg-card px-6 py-3 text-sm font-bold text-foreground shadow-sm hover:border-primary hover:text-primary transition-all"
             >
-              <span>تصفح أرشيف المقالات الكامل</span>
-              <ArrowLeft className="h-4 w-4" />
+              <span>{t("nav.viewAllArticles")}</span>
+              <ArrowDir className="h-4 w-4" />
             </Link>
           </div>
         </section>
@@ -402,27 +423,15 @@ function HomePage() {
         <section className="bg-surface-muted/50 border-y border-border/80 py-12 md:py-18">
           <div className="container-page">
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
-              <div className="max-w-2xl space-y-2">
-                <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-bold text-primary">
-                  <Wand2 className="h-3.5 w-3.5" />
-                  <span>حلول وأدوات مجانية تفاعلية</span>
-                </div>
-                <h2 className="font-display text-2xl md:text-3xl font-black text-foreground">
-                  أدوات الذكاء الاصطناعي لزيادة الإنتاجية
-                </h2>
-                <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-                  استخدم تطبيقاتنا الذكية المباشرة لتوليد الصور، تلخيص الوثائق، الترجمة التقنية،
-                  واستكشاف مسارات التعلم.
-                </p>
-              </div>
-
-              <Link
-                to="/tools"
-                className="inline-flex items-center gap-1.5 text-sm font-bold text-primary hover:underline shrink-0"
-              >
-                <span>جميع الأدوات التفاعلية ({TOOL_CARDS.length})</span>
-                <ArrowLeft className="h-4 w-4" />
-              </Link>
+              <SectionHeader
+                title={t("section.aiTools")}
+                subtitle={t("section.aiToolsSub")}
+                icon={Wand2}
+                color="violet"
+                size="lg"
+                ctaTo="/tools"
+                ctaLabel={`${t("nav.viewAllTools")} (${TOOL_CARDS.length})`}
+              />
             </div>
 
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -467,17 +476,16 @@ function HomePage() {
         <section className="container-page py-12 md:py-16">
           <div className="rounded-3xl border border-border bg-card p-8 md:p-12 shadow-sm max-w-4xl mx-auto">
             <div className="grid md:grid-cols-12 gap-8 items-center">
-              <div className="md:col-span-7 space-y-3 text-right">
+              <div className="md:col-span-7 space-y-3">
                 <div className="inline-flex items-center gap-2 rounded-md bg-accent px-3 py-1 text-xs font-bold text-primary border border-primary/20">
                   <Mail className="h-3.5 w-3.5" />
-                  <span>النشرة البريدية الأسبوعية</span>
+                  <span>{t("section.newsletter")}</span>
                 </div>
                 <h3 className="font-display text-2xl md:text-3xl font-black text-foreground">
-                  اشترك في موجز الذكاء الاصطناعي والأتمتة
+                  {t("section.newsletter")}
                 </h3>
                 <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">
-                  نرسل لك كل يوم سبت ملخصاً تحريرياً مكثفاً لأهم الشروحات العملية، أدوات AI الجديدة،
-                  ومستجدات التقنية بدون إعلانات أو إزعاج.
+                  {t("section.newsletterSub")}
                 </p>
               </div>
 
@@ -485,10 +493,7 @@ function HomePage() {
                 {newsletterSubscribed ? (
                   <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300 text-xs font-bold space-y-1 text-center">
                     <CheckCircle2 className="h-6 w-6 text-emerald-500 mx-auto mb-1" />
-                    <div>تم تسجيل بريدك الإلكتروني بنجاح!</div>
-                    <div className="font-normal text-[11px] text-muted-foreground">
-                      ستصلك النشرة القادمة يوم السبت.
-                    </div>
+                    <div>{t("section.newsletterSuccess")}</div>
                   </div>
                 ) : (
                   <form onSubmit={handleNewsletterSubmit} className="space-y-3">
@@ -497,7 +502,7 @@ function HomePage() {
                         type="email"
                         value={newsletterEmail}
                         onChange={(e) => setNewsletterEmail(e.target.value)}
-                        placeholder="أدخل بريدك الإلكتروني الشخصي..."
+                        placeholder={t("section.newsletterPlaceholder")}
                         className="w-full rounded-xl border border-border bg-surface px-4 py-3 text-xs md:text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary/20"
                         required
                       />
@@ -507,10 +512,10 @@ function HomePage() {
                       className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-xs md:text-sm font-bold text-primary-foreground hover:opacity-90 transition-all cursor-pointer shadow-sm"
                     >
                       <Send className="h-4 w-4" />
-                      <span>اشترك مجاناً الآن</span>
+                      <span>{t("section.newsletterCta")}</span>
                     </button>
                     <div className="text-[10px] text-muted-foreground text-center">
-                      🔒 نلتزم بالخصوصية التامة • يمكنك إلغاء الاشتراك بنقرة واحدة في أي وقت.
+                      🔒 {lang === "fr" ? "Confidentialité garantie" : lang === "en" ? "Privacy guaranteed" : "نلتزم بالخصوصية التامة"}
                     </div>
                   </form>
                 )}

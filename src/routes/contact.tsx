@@ -2,6 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { Mail, MessageCircle, Globe } from "lucide-react";
+import { useLang } from "@/hooks/use-lang";
+
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -41,37 +43,61 @@ export const Route = createFileRoute("/contact")({
 });
 
 function ContactPage() {
+  const { lang } = useLang();
+
+  const heroBadge = lang === "fr" ? "Contact" : lang === "en" ? "Contact" : "تواصل";
+  const heroTitle =
+    lang === "fr" ? "Restons en contact" : lang === "en" ? "Let’s Stay in Touch" : "لنبقَ على تواصل";
+  const heroSub =
+    lang === "fr"
+      ? "Question, suggestion ou idée de collaboration ? Nous sommes ravis de recevoir vos messages."
+      : lang === "en"
+      ? "A question, suggestion, or collaboration idea? We’d love to hear from you."
+      : "سؤال، اقتراح، أو فكرة للتعاون؟ يسعدنا استقبال رسائلك.";
+
+  const CONTACT_ITEMS = [
+    {
+      icon: Mail,
+      title: lang === "fr" ? "E-mail" : lang === "en" ? "Email" : "البريد الإلكتروني",
+      value: "contact@bouibacademy.me",
+      href: "mailto:contact@bouibacademy.me",
+    },
+    {
+      icon: MessageCircle,
+      title: lang === "fr" ? "Messages" : lang === "en" ? "Messages" : "الرسائل",
+      value: lang === "fr" ? "Via les réseaux sociaux" : lang === "en" ? "Via social media" : "عبر صفحات التواصل",
+      href: "#",
+    },
+    {
+      icon: Globe,
+      title: lang === "fr" ? "Site web" : lang === "en" ? "Website" : "المدونة",
+      value: "bouibacademy.me",
+      href: "https://www.bouibacademy.me",
+    },
+  ];
+
+  const namePlaceholder = lang === "fr" ? "Votre nom" : lang === "en" ? "Your name" : "الاسم";
+  const emailPlaceholder = lang === "fr" ? "Votre e-mail" : lang === "en" ? "Your email" : "البريد الإلكتروني";
+  const subjectPlaceholder = lang === "fr" ? "Sujet" : lang === "en" ? "Subject" : "الموضوع";
+  const messagePlaceholder = lang === "fr" ? "Votre message..." : lang === "en" ? "Your message..." : "رسالتك...";
+  const sendLabel = lang === "fr" ? "Envoyer le message" : lang === "en" ? "Send Message" : "إرسال الرسالة";
+  const formTitle = lang === "fr" ? "Envoyer un message" : lang === "en" ? "Send a Message" : "أرسل رسالة";
+
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
       <main>
         <section className="hero-bg border-b border-border">
           <div className="container-page py-16 md:py-24 text-center max-w-2xl">
-            <p className="text-sm font-semibold text-primary mb-3">تواصل</p>
-            <h1 className="font-display text-4xl md:text-6xl font-extrabold">لنبقَ على تواصل</h1>
-            <p className="mt-4 text-lg text-foreground/80">
-              سؤال، اقتراح، أو فكرة للتعاون؟ يسعدنا استقبال رسائلك.
-            </p>
+            <p className="text-sm font-semibold text-primary mb-3">{heroBadge}</p>
+            <h1 className="font-display text-4xl md:text-6xl font-extrabold">{heroTitle}</h1>
+            <p className="mt-4 text-lg text-foreground/80">{heroSub}</p>
           </div>
         </section>
 
         <section className="container-page py-16">
           <div className="grid gap-6 md:grid-cols-3 max-w-4xl mx-auto">
-            {[
-              {
-                icon: Mail,
-                title: "البريد الإلكتروني",
-                value: "contact@bouibacademy.me",
-                href: "mailto:contact@bouibacademy.me",
-              },
-              { icon: MessageCircle, title: "الرسائل", value: "عبر صفحات التواصل", href: "#" },
-              {
-                icon: Globe,
-                title: "المدونة",
-                value: "bouibacademy.me",
-                href: "https://www.bouibacademy.me",
-              },
-            ].map((c, i) => (
+            {CONTACT_ITEMS.map((c, i) => (
               <a
                 key={i}
                 href={c.href}
@@ -87,59 +113,51 @@ function ContactPage() {
           </div>
 
           <form className="mt-14 max-w-2xl mx-auto rounded-2xl border border-border bg-card p-8 shadow-card">
-            <h2 className="font-display text-2xl font-bold mb-6">أرسل رسالة</h2>
+            <h2 className="font-display text-2xl font-bold mb-6">{formTitle}</h2>
             <div className="grid gap-4">
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="contact-name" className="sr-only">
-                    الاسم
-                  </label>
+                  <label htmlFor="contact-name" className="sr-only">{namePlaceholder}</label>
                   <input
                     id="contact-name"
                     type="text"
-                    placeholder="الاسم"
-                    aria-label="الاسم"
+                    placeholder={namePlaceholder}
+                    aria-label={namePlaceholder}
                     className="w-full rounded-lg border border-input bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                   />
                 </div>
                 <div>
-                  <label htmlFor="contact-email" className="sr-only">
-                    البريد الإلكتروني
-                  </label>
+                  <label htmlFor="contact-email" className="sr-only">{emailPlaceholder}</label>
                   <input
                     id="contact-email"
                     type="email"
-                    placeholder="البريد الإلكتروني"
-                    aria-label="البريد الإلكتروني"
+                    placeholder={emailPlaceholder}
+                    aria-label={emailPlaceholder}
                     className="w-full rounded-lg border border-input bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                   />
                 </div>
               </div>
-              <label htmlFor="contact-subject" className="sr-only">
-                الموضوع
-              </label>
+              <label htmlFor="contact-subject" className="sr-only">{subjectPlaceholder}</label>
               <input
                 id="contact-subject"
                 type="text"
-                placeholder="الموضوع"
-                aria-label="الموضوع"
+                placeholder={subjectPlaceholder}
+                aria-label={subjectPlaceholder}
                 className="rounded-lg border border-input bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
               />
-              <label htmlFor="contact-message" className="sr-only">
-                الرسالة
-              </label>
+              <label htmlFor="contact-message" className="sr-only">{messagePlaceholder}</label>
               <textarea
                 id="contact-message"
                 rows={5}
-                placeholder="رسالتك..."
-                aria-label="نص الرسالة"
+                placeholder={messagePlaceholder}
+                aria-label={messagePlaceholder}
                 className="rounded-lg border border-input bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring resize-none"
               />
               <button
                 type="button"
                 className="inline-flex items-center justify-center rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-soft hover:opacity-90 transition-all"
               >
-                إرسال الرسالة
+                {sendLabel}
               </button>
             </div>
           </form>

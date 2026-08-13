@@ -16,6 +16,8 @@ import { listLessons } from "@/lib/lessons.functions";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { YOUTUBE_AI_MASTERY } from "@/lib/course-manifests/youtube-ai-mastery";
+import { useLang } from "@/hooks/use-lang";
+import { SectionHeader } from "@/components/section-header";
 
 type LessonItem = {
   id: string;
@@ -74,6 +76,21 @@ function LessonsPage() {
   const featuredCourse = YOUTUBE_AI_MASTERY;
   const totalPublishedVideos =
     featuredCourse.stats.find((s) => s.label === "الفيديوهات")?.value ?? "0";
+  const { t, lang } = useLang();
+
+  const heroBadge = lang === "fr" ? "Cours vidéo" : lang === "en" ? "Video Courses" : "تعلم بالفيديو";
+  const heroTitle = lang === "fr" ? "Cours" : lang === "en" ? "Courses" : "دورات";
+  const heroSub = lang === "fr"
+    ? "Bibliothèque de cours vidéo sur l'IA et ses outils."
+    : lang === "en"
+    ? "Video course library on Artificial Intelligence and its tools."
+    : "مكتبة دورات فيديو حول الذكاء الاصطناعي وأدواته باللغة العربية.";
+  const moduleSectionTitle = lang === "fr" ? "Structure du cours" : lang === "en" ? "Course Structure" : "هيكل الدورة والملفات المرفقة";
+  const moduleSectionSub = lang === "fr"
+    ? "Organisation moderne facilitant le suivi des vidéos et des ressources."
+    : lang === "en"
+    ? "Modern organisation that makes it easy to follow videos and resources."
+    : "تنظيم حديث يسهّل على الزائر متابعة الفيديوهات والموارد.";
 
   const categories = useMemo(() => {
     const s = new Set<string>();
@@ -90,11 +107,9 @@ function LessonsPage() {
       <main>
         <section className="hero-bg border-b border-border">
           <div className="container-page py-12 md:py-16 text-center">
-            <p className="text-sm font-semibold text-primary mb-2">تعلم بالفيديو</p>
-            <h1 className="font-display text-3xl md:text-5xl font-extrabold">دورات</h1>
-            <p className="mt-3 text-muted-foreground max-w-xl mx-auto">
-              مكتبة دورات فيديو حول الذكاء الاصطناعي وأدواته باللغة العربية.
-            </p>
+            <p className="text-sm font-semibold text-primary mb-2">{heroBadge}</p>
+            <h1 className="font-display text-3xl md:text-5xl font-extrabold">{heroTitle}</h1>
+            <p className="mt-3 text-muted-foreground max-w-xl mx-auto">{heroSub}</p>
           </div>
         </section>
 
@@ -184,17 +199,15 @@ function LessonsPage() {
 
           <section id="course-modules" className="mb-10">
             <div className="mb-5 flex items-end justify-between gap-4">
-              <div>
-                <h2 className="font-display text-2xl md:text-3xl font-bold">
-                  هيكل الدورة والملفات المرفقة
-                </h2>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  تنظيم حديث يسهّل على الزائر متابعة الفيديوهات والموارد.
-                </p>
-              </div>
-              <div className="hidden sm:inline-flex items-center gap-2 rounded-full border border-primary/15 bg-primary/5 px-3 py-1.5 text-xs font-semibold text-primary">
+              <SectionHeader
+                title={moduleSectionTitle}
+                subtitle={moduleSectionSub}
+                size="md"
+                color="primary"
+              />
+              <div className="hidden sm:inline-flex items-center gap-2 rounded-full border border-primary/15 bg-primary/5 px-3 py-1.5 text-xs font-semibold text-primary shrink-0">
                 <Video className="h-3.5 w-3.5" />
-                {totalPublishedVideos} فيديو
+                {totalPublishedVideos} {lang === "fr" ? "vidéos" : lang === "en" ? "videos" : "فيديو"}
               </div>
             </div>
 

@@ -1,5 +1,5 @@
-import { Link, useNavigate } from "@tanstack/react-router";
-import { useState, useEffect, useCallback } from "react";
+import { Link } from "@tanstack/react-router";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
   Menu,
@@ -12,16 +12,16 @@ import {
   GraduationCap,
   Cpu,
   HelpCircle,
-  Trophy,
   Info,
   PhoneCall,
   Sparkles,
-  Globe,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { getLabels } from "@/lib/blogger.functions";
 import { listLessons } from "@/lib/lessons.functions";
 import { NavDropdown, type NavDropdownItem } from "@/components/nav-dropdown";
+import { LangSwitcher } from "@/components/lang-switcher";
+import { useLang } from "@/hooks/use-lang";
 import bouibaLogo from "@/assets/bouiba-logo-v3.png.asset.json";
 
 const TOOL_ITEMS_AR: NavDropdownItem[] = [
@@ -98,40 +98,57 @@ const TOOL_ITEMS_EN: NavDropdownItem[] = [
     badge: "New ✨",
   },
   { label: "Study Assistant", to: "/tools/study", description: "Explanations, flashcards & quiz" },
-  {
-    label: "Rewrite & Proofread",
-    to: "/tools/rewrite",
-    description: "Cleaner, correct Arabic text",
-  },
+  { label: "Rewrite & Proofread", to: "/tools/rewrite", description: "Cleaner, correct text" },
   { label: "Social Media Posts", to: "/tools/social", description: "Posts, reels & hashtags" },
   { label: "Email Writer", to: "/tools/email", description: "Ready-to-send professional emails" },
   { label: "Text to Image", to: "/tools/image", description: "Generate AI images from prompts" },
   { label: "Article Summarizer", to: "/tools/summarize", description: "Fast AI summaries" },
-  {
-    label: "Smart Translator",
-    to: "/tools/translate",
-    description: "Accurate multi-language translation",
-  },
+  { label: "Smart Translator", to: "/tools/translate", description: "Accurate multi-language translation" },
   { label: "Idea Generator", to: "/tools/ideas", description: "Content & project ideas" },
   { label: "SEO Assistant", to: "/tools/seo", description: "Optimize search ranking" },
 ];
 
-const SIMPLE_NAV_AR = [
-  { to: "/", label: "الرئيسية" },
-  { to: "/quiz", label: "اختبار AI" },
-  { to: "/about", label: "عن الأكاديمية" },
-  { to: "/contact", label: "تواصل" },
-] as const;
-
-const SIMPLE_NAV_EN = [
-  { to: "/", label: "Home" },
-  { to: "/posts", label: "Posts" },
-  { to: "/lessons", label: "Courses" },
-  { to: "/tools", label: "Tools" },
-  { to: "/quiz", label: "AI Quiz" },
-  { to: "/about", label: "About" },
-  { to: "/contact", label: "Contact" },
-] as const;
+const TOOL_ITEMS_FR: NavDropdownItem[] = [
+  {
+    label: "Feuilles de route",
+    to: "/tools/roadmap",
+    description: "Parcours d'apprentissage interactifs",
+    badge: "Nouveau ✨",
+  },
+  {
+    label: "Créateur de CV",
+    to: "/tools/cv",
+    description: "CV professionnel en secondes",
+    badge: "Nouveau ✨",
+  },
+  {
+    label: "Agent IA",
+    to: "/tools/agent",
+    description: "Créer des agents de tâches personnalisés",
+    badge: "Nouveau ✨",
+  },
+  {
+    label: "Mail temporaire",
+    to: "/tools/tempmail",
+    description: "Boîte de réception jetable en un clic",
+    badge: "Nouveau ✨",
+  },
+  {
+    label: "Créateur de Reels IA",
+    to: "/tools/reels",
+    description: "Générateur de scripts viraux",
+    badge: "Nouveau ✨",
+  },
+  { label: "Assistant études", to: "/tools/study", description: "Explications, fiches & quiz" },
+  { label: "Réécriture & Correction", to: "/tools/rewrite", description: "Texte corrigé et amélioré" },
+  { label: "Posts réseaux sociaux", to: "/tools/social", description: "Publications & hashtags" },
+  { label: "Rédacteur d'e-mails", to: "/tools/email", description: "E-mails professionnels prêts à envoyer" },
+  { label: "Texte en image", to: "/tools/image", description: "Générer des images avec l'IA" },
+  { label: "Résumeur d'articles", to: "/tools/summarize", description: "Résumés IA rapides" },
+  { label: "Traducteur intelligent", to: "/tools/translate", description: "Traduction multilingue précise" },
+  { label: "Générateur d'idées", to: "/tools/ideas", description: "Idées de contenu & projets" },
+  { label: "Assistant SEO", to: "/tools/seo", description: "Optimiser votre classement" },
+];
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
@@ -139,38 +156,7 @@ export function SiteHeader() {
   const [mPosts, setMPosts] = useState(false);
   const [mLessons, setMLessons] = useState(false);
   const [mTools, setMTools] = useState(false);
-  const [lang, setLang] = useState<"ar" | "en">("ar");
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const saved = (localStorage.getItem("bouiba_lang") as "ar" | "en") || "ar";
-      setLang(saved);
-      document.documentElement.lang = "ar";
-      document.documentElement.dir = saved === "ar" ? "rtl" : "ltr";
-      document.documentElement.dataset.uiLang = saved;
-    }
-  }, []);
-
-  const switchLanguage = useCallback((newLang: "ar" | "en") => {
-    setLang(newLang);
-    if (typeof window === "undefined") return;
-
-    localStorage.setItem("bouiba_lang", newLang);
-    document.documentElement.lang = "ar";
-    document.documentElement.dir = newLang === "ar" ? "rtl" : "ltr";
-    document.documentElement.dataset.uiLang = newLang;
-
-    if (newLang === "en") {
-      document.cookie = "googtrans=/ar/en; path=/";
-      document.cookie = `googtrans=/ar/en; path=/; domain=${window.location.hostname}`;
-    } else {
-      document.cookie = "googtrans=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-      document.cookie = `googtrans=; path=/; domain=${window.location.hostname}; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
-    }
-
-    window.location.reload();
-  }, []);
+  const { lang, t, isRTL } = useLang();
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setAuthed(!!data.session));
@@ -219,6 +205,10 @@ export function SiteHeader() {
     to: "/lessons",
   }));
 
+  // Pick tool items based on current language
+  const toolItems =
+    lang === "fr" ? TOOL_ITEMS_FR : lang === "en" ? TOOL_ITEMS_EN : TOOL_ITEMS_AR;
+
   return (
     <>
       <header className="sticky top-0 z-50 w-full border-b border-border/60">
@@ -232,7 +222,6 @@ export function SiteHeader() {
             className="flex items-center gap-2.5 shrink-0 min-w-0"
             aria-label="Bouiba Academy"
           >
-            {/* Logo: 96px WebP (2.7 KiB) instead of 816px PNG (397 KiB) */}
             <picture>
               <source srcSet="/bouiba-logo-96.webp" type="image/webp" />
               <img
@@ -251,22 +240,22 @@ export function SiteHeader() {
           </Link>
 
           {/* ── Desktop nav ──────────────────────────────────────────── */}
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="hidden md:flex items-center gap-1" aria-label="Main navigation">
             <Link
               to="/"
               className="px-3 py-2 rounded-md text-sm font-medium text-muted-foreground transition-colors hover:text-foreground hover:bg-accent/60"
               activeOptions={{ exact: true }}
               activeProps={{ className: "text-foreground bg-accent/60" }}
             >
-              {lang === "en" ? "Home" : "الرئيسية"}
+              {t("nav.home")}
             </Link>
 
             <NavDropdown
-              label={lang === "en" ? "Articles" : "المقالات"}
+              label={t("nav.articles")}
               to="/posts"
               items={postItems}
               footer={{
-                label: lang === "en" ? "View all articles" : "عرض جميع المقالات",
+                label: t("nav.viewAllArticles"),
                 to: "/posts",
               }}
               onLoad={() => {
@@ -275,11 +264,11 @@ export function SiteHeader() {
             />
 
             <NavDropdown
-              label={lang === "en" ? "Courses" : "دورات"}
+              label={t("nav.courses")}
               to="/lessons"
               items={lessonItems}
               footer={{
-                label: lang === "en" ? "View all courses" : "عرض كل الدورات",
+                label: t("nav.viewAllCourses"),
                 to: "/lessons",
               }}
               onLoad={() => {
@@ -288,67 +277,78 @@ export function SiteHeader() {
             />
 
             <NavDropdown
-              label={lang === "en" ? "AI Tools" : "أدوات AI"}
+              label={t("nav.tools")}
               to="/tools"
-              items={lang === "en" ? TOOL_ITEMS_EN : TOOL_ITEMS_AR}
+              items={toolItems}
               footer={{
-                label: lang === "en" ? "Browse all tools" : "استعرض كل الأدوات",
+                label: t("nav.browseAllTools"),
                 to: "/tools",
               }}
               badge={true}
             />
 
-            {(lang === "en" ? SIMPLE_NAV_EN : SIMPLE_NAV_AR).slice(1).map((item, i) => (
-              <Link
-                key={i}
-                to={item.to}
-                className="px-3 py-2 rounded-md text-sm font-medium text-muted-foreground transition-colors hover:text-foreground hover:bg-accent/60"
-                activeProps={{ className: "text-foreground bg-accent/60" }}
-              >
-                {item.label}
-              </Link>
-            ))}
+            <Link
+              to="/quiz"
+              className="px-3 py-2 rounded-md text-sm font-medium text-muted-foreground transition-colors hover:text-foreground hover:bg-accent/60"
+              activeProps={{ className: "text-foreground bg-accent/60" }}
+            >
+              {t("nav.quiz")}
+            </Link>
+
+            <Link
+              to="/about"
+              className="px-3 py-2 rounded-md text-sm font-medium text-muted-foreground transition-colors hover:text-foreground hover:bg-accent/60"
+              activeProps={{ className: "text-foreground bg-accent/60" }}
+            >
+              {t("nav.about")}
+            </Link>
+
+            <Link
+              to="/contact"
+              className="px-3 py-2 rounded-md text-sm font-medium text-muted-foreground transition-colors hover:text-foreground hover:bg-accent/60"
+              activeProps={{ className: "text-foreground bg-accent/60" }}
+            >
+              {t("nav.contact")}
+            </Link>
           </nav>
 
           {/* ── Desktop actions ──────────────────────────────────────── */}
           <div className="hidden md:flex items-center gap-2">
-            <button
-              onClick={() => switchLanguage(lang === "ar" ? "en" : "ar")}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-accent/30 px-2.5 py-1.5 text-xs font-bold text-foreground hover:bg-accent transition-all cursor-pointer"
-              title={lang === "ar" ? "Switch to English" : "التحويل للغة العربية"}
-            >
-              <Globe className="h-3.5 w-3.5 text-primary" />
-              <span>{lang === "ar" ? "EN" : "العربية"}</span>
-            </button>
+            {/* 3-language switcher */}
+            <LangSwitcher variant="compact" />
 
             {authed ? (
               <Link
                 to="/favorites"
-                className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-2 text-sm font-semibold hover:bg-accent"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-2 text-sm font-semibold hover:bg-accent transition-colors"
               >
                 <Star className="h-4 w-4 text-amber-500 fill-amber-500" />
-                {lang === "en" ? "Favorites" : "المفضلة"}
+                {t("auth.favorites")}
               </Link>
             ) : (
               <Link
                 id="btn-login"
                 to="/auth"
-                className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-2 text-sm font-semibold hover:bg-accent"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-2 text-sm font-semibold hover:bg-accent transition-colors"
               >
                 <LogIn className="h-4 w-4" />
-                {lang === "en" ? "Login" : "دخول"}
+                {t("auth.login")}
               </Link>
             )}
+
             <Link
               to="/tools/roadmap"
               className="inline-flex items-center rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-soft transition-all hover:opacity-90 hover:shadow-elegant"
             >
-              {lang === "en" ? "Start Learning" : "ابدأ التعلم"}
+              {t("auth.startLearning")}
             </Link>
           </div>
 
           {/* ── Mobile: hamburger only ──────────────────────────────── */}
           <div className="flex md:hidden items-center gap-2">
+            {/* Compact lang switcher on mobile too */}
+            <LangSwitcher variant="compact" className="scale-90" />
+
             <button
               onClick={() => {
                 const next = !open;
@@ -359,7 +359,7 @@ export function SiteHeader() {
                 }
               }}
               className="inline-flex items-center justify-center rounded-lg p-2.5 text-foreground hover:bg-accent transition-colors"
-              aria-label="القائمة"
+              aria-label={t("nav.menuLabel")}
             >
               {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
@@ -377,8 +377,13 @@ export function SiteHeader() {
           />
 
           {/* Drawer panel */}
-          <div className="relative z-10 w-[85vw] max-w-sm h-full bg-background border-l border-border/50 shadow-2xl p-6 flex flex-col justify-between overflow-y-auto">
-            <div className="space-y-6">
+          <div
+            className={`relative z-10 w-[85vw] max-w-sm h-full bg-background shadow-2xl flex flex-col justify-between overflow-y-auto
+              ${isRTL ? "border-l border-border/50" : "border-r border-border/50"}
+            `}
+          >
+            {/* Inner padding wrapper */}
+            <div className="p-6 space-y-6">
               {/* Drawer Header */}
               <div className="flex items-center justify-between pb-4 border-b border-border/60">
                 <Link
@@ -400,54 +405,57 @@ export function SiteHeader() {
                 <button
                   onClick={() => setOpen(false)}
                   className="rounded-lg p-2 hover:bg-accent text-foreground transition-colors"
-                  aria-label="إغلاق القائمة"
+                  aria-label={t("nav.closeMenu")}
                 >
                   <X className="h-5 w-5" />
                 </button>
               </div>
 
               {/* Navigation Links */}
-              <nav className="flex flex-col gap-2">
+              <nav className="flex flex-col gap-2" aria-label="Mobile navigation">
                 <Link
                   to="/"
                   onClick={() => setOpen(false)}
                   className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-muted-foreground hover:text-foreground hover:bg-accent/40 transition-all group"
                   activeOptions={{ exact: true }}
                   activeProps={{
-                    className: "text-foreground bg-accent/40 border-r-2 border-primary",
+                    className: `text-foreground bg-accent/40 ${isRTL ? "border-r-2" : "border-l-2"} border-primary`,
                   }}
                 >
                   <Home className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
-                  <span>{lang === "en" ? "Home" : "الرئيسية"}</span>
+                  <span>{t("nav.home")}</span>
                 </Link>
 
                 <MobileGroup
-                  label={lang === "en" ? "Articles" : "المقالات"}
+                  label={t("nav.articles")}
                   open={mPosts}
                   onToggle={() => setMPosts((v) => !v)}
                   overviewTo="/posts"
+                  overviewLabel={t("nav.viewAllArticles")}
                   onNavigate={() => setOpen(false)}
                   items={postItems}
                   icon={FileText}
                 />
 
                 <MobileGroup
-                  label={lang === "en" ? "Courses" : "دورات"}
+                  label={t("nav.courses")}
                   open={mLessons}
                   onToggle={() => setMLessons((v) => !v)}
                   overviewTo="/lessons"
+                  overviewLabel={t("nav.viewAllCourses")}
                   onNavigate={() => setOpen(false)}
                   items={lessonItems}
                   icon={GraduationCap}
                 />
 
                 <MobileGroup
-                  label={lang === "en" ? "AI Tools" : "أدوات AI"}
+                  label={t("nav.tools")}
                   open={mTools}
                   onToggle={() => setMTools((v) => !v)}
                   overviewTo="/tools"
+                  overviewLabel={t("nav.browseAllTools")}
                   onNavigate={() => setOpen(false)}
-                  items={lang === "en" ? TOOL_ITEMS_EN : TOOL_ITEMS_AR}
+                  items={toolItems}
                   icon={Cpu}
                   badge={true}
                 />
@@ -457,11 +465,11 @@ export function SiteHeader() {
                   onClick={() => setOpen(false)}
                   className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-muted-foreground hover:text-foreground hover:bg-accent/40 transition-all group"
                   activeProps={{
-                    className: "text-foreground bg-accent/40 border-r-2 border-primary",
+                    className: `text-foreground bg-accent/40 ${isRTL ? "border-r-2" : "border-l-2"} border-primary`,
                   }}
                 >
                   <HelpCircle className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
-                  <span>{lang === "en" ? "AI Quiz" : "اختبار AI"}</span>
+                  <span>{t("nav.quiz")}</span>
                 </Link>
 
                 <Link
@@ -469,11 +477,11 @@ export function SiteHeader() {
                   onClick={() => setOpen(false)}
                   className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-muted-foreground hover:text-foreground hover:bg-accent/40 transition-all group"
                   activeProps={{
-                    className: "text-foreground bg-accent/40 border-r-2 border-primary",
+                    className: `text-foreground bg-accent/40 ${isRTL ? "border-r-2" : "border-l-2"} border-primary`,
                   }}
                 >
                   <Info className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
-                  <span>{lang === "en" ? "About" : "عن الأكاديمية"}</span>
+                  <span>{t("nav.about")}</span>
                 </Link>
 
                 <Link
@@ -481,17 +489,17 @@ export function SiteHeader() {
                   onClick={() => setOpen(false)}
                   className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-muted-foreground hover:text-foreground hover:bg-accent/40 transition-all group"
                   activeProps={{
-                    className: "text-foreground bg-accent/40 border-r-2 border-primary",
+                    className: `text-foreground bg-accent/40 ${isRTL ? "border-r-2" : "border-l-2"} border-primary`,
                   }}
                 >
                   <PhoneCall className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
-                  <span>{lang === "en" ? "Contact" : "تواصل معنا"}</span>
+                  <span>{t("nav.contact")}</span>
                 </Link>
               </nav>
             </div>
 
             {/* Drawer Footer */}
-            <div className="pt-6 border-t border-border/60 space-y-3">
+            <div className="p-6 pt-0 border-t border-border/60 space-y-3">
               {authed ? (
                 <Link
                   to="/favorites"
@@ -499,7 +507,7 @@ export function SiteHeader() {
                   className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl border border-border bg-accent/30 font-semibold text-amber-600 hover:bg-accent transition-colors"
                 >
                   <Star className="h-4 w-4 text-amber-500 fill-amber-500" />
-                  {lang === "en" ? "Favorites" : "المفضلة"}
+                  {t("auth.favorites")}
                 </Link>
               ) : (
                 <Link
@@ -508,30 +516,18 @@ export function SiteHeader() {
                   className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl border border-border bg-accent/30 font-semibold text-foreground hover:bg-accent transition-colors"
                 >
                   <LogIn className="h-4 w-4" />
-                  {lang === "en" ? "Login" : "تسجيل الدخول"}
+                  {t("auth.login")}
                 </Link>
               )}
 
               <Link
                 to="/tools/roadmap"
                 onClick={() => setOpen(false)}
-                className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl bg-gradient-to-r from-primary to-purple-600 text-white font-bold shadow-lg shadow-primary/25 hover:opacity-95 text-center transition-all duration-300"
+                className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl bg-gradient-to-r from-primary to-primary-glow text-white font-bold shadow-lg shadow-primary/25 hover:opacity-95 text-center transition-all duration-300"
               >
                 <Sparkles className="h-4 w-4 text-amber-300 animate-pulse" />
-                {lang === "en" ? "Start Learning" : "ابدأ التعلم (مسار ذكي)"}
+                {t("auth.startLearningFull")}
               </Link>
-
-              <button
-                type="button"
-                onClick={() => {
-                  setOpen(false);
-                  switchLanguage(lang === "ar" ? "en" : "ar");
-                }}
-                className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl border border-border bg-accent/20 font-semibold text-foreground hover:bg-accent transition-colors"
-              >
-                <Globe className="h-4 w-4 text-primary" />
-                <span>{lang === "ar" ? "English" : "العربية"}</span>
-              </button>
             </div>
           </div>
         </div>
@@ -545,6 +541,7 @@ function MobileGroup({
   open,
   onToggle,
   overviewTo,
+  overviewLabel,
   items,
   onNavigate,
   icon: Icon,
@@ -554,11 +551,13 @@ function MobileGroup({
   open: boolean;
   onToggle: () => void;
   overviewTo: string;
+  overviewLabel: string;
   items: NavDropdownItem[];
   onNavigate: () => void;
   icon: React.ComponentType<{ className?: string }>;
   badge?: boolean;
 }) {
+  const { t } = useLang();
   return (
     <div className="rounded-xl overflow-hidden bg-accent/10 border border-border/30 transition-all">
       <button
@@ -593,11 +592,11 @@ function MobileGroup({
             onClick={onNavigate}
             className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold text-primary hover:bg-accent/50 transition-colors"
           >
-            صفحة {label} الرئيسية ←
+            {overviewLabel}
           </Link>
           <div className="grid gap-1 mt-1">
             {items.length === 0 ? (
-              <p className="px-3 py-2 text-xs text-muted-foreground">لا توجد عناصر حالياً</p>
+              <p className="px-3 py-2 text-xs text-muted-foreground">{t("general.noItems")}</p>
             ) : (
               items.map((it, i) => (
                 <Link
