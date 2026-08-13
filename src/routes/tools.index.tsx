@@ -77,7 +77,7 @@ const TOOLS: Array<{
     title: "مُصمم ومُحسن البرومبت الذكي",
     desc: "حوّل أوامرك البسيطة والقصيرة إلى أوامر (Prompts) احترافية ومهيكلة للحصول على أفضل النتائج.",
     color: "from-amber-500/10 to-orange-500/10 text-amber-500 dark:text-amber-400",
-    badge: "جديد ✨",
+    badge: "جديد",
   },
   {
     to: "/tools/code",
@@ -85,7 +85,7 @@ const TOOLS: Array<{
     title: "مساعد البرمجة وشرح الأكواد",
     desc: "الصق أي كود برمجي للحصول على شرح تفصيلي له، وتحديد المشاكل، أو تصحيح الأخطاء مباشرة.",
     color: "from-purple-500/10 to-pink-500/10 text-purple-500 dark:text-purple-400",
-    badge: "جديد ✨",
+    badge: "جديد",
   },
   {
     to: "/tools/cv",
@@ -93,7 +93,7 @@ const TOOLS: Array<{
     title: "مولّد السيرة الذاتية (CV)",
     desc: "أدخل معلوماتك واحصل على سيرة ذاتية احترافية جاهزة مع نصائح لزيادة فرص القبول.",
     color: "from-sky-500/10 to-blue-500/10 text-sky-500 dark:text-sky-400",
-    badge: "جديد ✨",
+    badge: "جديد",
   },
   {
     to: "/tools/agent",
@@ -101,7 +101,7 @@ const TOOLS: Array<{
     title: "العميل الذكي (AI Agent)",
     desc: "صمم حلولًا مؤتمتة وابنِ وكيل ذكاء اصطناعي (AI Agent) مخصصًا لمهمتك مع خطة عمل تفصيلية وأدوات مقترحة.",
     color: "from-cyan-500/10 to-blue-500/10 text-cyan-500 dark:text-cyan-400",
-    badge: "جديد ✨",
+    badge: "جديد",
   },
   {
     to: "/tools/tempmail",
@@ -109,7 +109,7 @@ const TOOLS: Array<{
     title: "الإيميل المؤقت",
     desc: "احصل على بريد إلكتروني مؤقت فوري ومجاني بدون تسجيل. يستقبل الرسائل تلقائياً لحماية بريدك الحقيقي من السبام والتسجيل المزعج.",
     color: "from-rose-500/10 to-pink-500/10 text-rose-500 dark:text-rose-400",
-    badge: "جديد ✨",
+    badge: "جديد",
   },
   {
     to: "/tools/reels",
@@ -117,7 +117,7 @@ const TOOLS: Array<{
     title: "صانع سيناريو الريلز (AI Reels Creator)",
     desc: "صمم سيناريو فيديو قصير (Reels / TikTok / Shorts) فيروسي عالي التفاعل يشتمل على الخطاف الصوتي والتوجيهات البصرية ودعوة المتابعين.",
     color: "from-purple-500/10 to-pink-500/10 text-purple-500 dark:text-purple-400",
-    badge: "جديد ✨",
+    badge: "جديد",
   },
   {
     to: "/tools/study",
@@ -125,7 +125,7 @@ const TOOLS: Array<{
     title: "المساعد الدراسي الذكي",
     desc: "شرح مبسّط لأي درس مع أهم النقاط وبطاقات مراجعة واختبار قصير بالإجابات.",
     color: "from-emerald-500/10 to-green-500/10 text-emerald-500 dark:text-emerald-400",
-    badge: "جديد ✨",
+    badge: "جديد",
   },
   {
     to: "/tools/rewrite",
@@ -133,7 +133,7 @@ const TOOLS: Array<{
     title: "إعادة الصياغة والتدقيق اللغوي",
     desc: "أعد صياغة نصوصك بأسلوب احترافي مع تصحيح الأخطاء الإملائية والنحوية وعلامات الترقيم.",
     color: "from-fuchsia-500/10 to-purple-500/10 text-fuchsia-500 dark:text-fuchsia-400",
-    badge: "جديد ✨",
+    badge: "جديد",
   },
   {
     to: "/tools/social",
@@ -141,7 +141,7 @@ const TOOLS: Array<{
     title: "مولّد منشورات السوشيال ميديا",
     desc: "منشورات وتغريدات وسيناريو ريلز وهاشتاغات عربية جاهزة من موضوع واحد.",
     color: "from-pink-500/10 to-rose-500/10 text-pink-500 dark:text-pink-400",
-    badge: "جديد ✨",
+    badge: "جديد",
   },
   {
     to: "/tools/email",
@@ -149,7 +149,7 @@ const TOOLS: Array<{
     title: "كاتب الرسائل الاحترافية",
     desc: "حوّل فكرتك إلى بريد إلكتروني احترافي جاهز للإرسال بسطر موضوع قوي ونبرة مهذبة.",
     color: "from-teal-500/10 to-cyan-500/10 text-teal-500 dark:text-teal-400",
-    badge: "جديد ✨",
+    badge: "جديد",
   },
   {
     to: "/tools/summarize",

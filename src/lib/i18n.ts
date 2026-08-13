@@ -173,7 +173,7 @@ const ar: Translations = {
   // Tools
   "tools.title": "أدوات الذكاء الاصطناعي المجانية",
   "tools.subtitle": "مجموعة أدوات عربية تفاعلية مجانية",
-  "tools.new": "جديد ✨",
+  "tools.new": "جديد",
   "tools.tryNow": "جرّب الآن",
   // Footer
   "footer.explore": "استكشف",
@@ -271,7 +271,7 @@ const en: Translations = {
   // Tools
   "tools.title": "Free AI Tools",
   "tools.subtitle": "A collection of free interactive AI tools",
-  "tools.new": "New ✨",
+  "tools.new": "New",
   "tools.tryNow": "Try Now",
   // Footer
   "footer.explore": "Explore",
@@ -279,8 +279,8 @@ const en: Translations = {
   "footer.allArticles": "All Articles",
   "footer.courses": "Courses",
   "footer.aiTools": "AI Tools",
-  "footer.englishPosts": "English Posts 🇬🇧",
-  "footer.frenchContent": "French Content 🇫🇷",
+  "footer.englishPosts": "English Posts",
+  "footer.frenchContent": "French Content",
   "footer.aboutUs": "About Us",
   "footer.contactUs": "Contact Us",
   "footer.privacy": "Privacy Policy",
@@ -369,7 +369,7 @@ const fr: Translations = {
   // Tools
   "tools.title": "Outils IA gratuits",
   "tools.subtitle": "Une collection d'outils IA interactifs gratuits",
-  "tools.new": "Nouveau ✨",
+  "tools.new": "Nouveau",
   "tools.tryNow": "Essayer",
   // Footer
   "footer.explore": "Explorer",

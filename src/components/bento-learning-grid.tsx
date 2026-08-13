@@ -58,7 +58,7 @@ export function BentoLearningGrid() {
   const tracksData = {
     n8n: {
       title: lang === "ar" ? "مسار أتمتة العمليات وn8n" : "n8n & Process Automation Track",
-      badge: "الأكثر طلباً 🔥",
+      badge: "الأكثر طلباً",
       description:
         lang === "ar"
           ? "بناء مسارات عمل تلقائية معقّدة، ربط الـ APIs، وأتمتة المهام اليومية باستخدام n8n وMake."
@@ -74,7 +74,7 @@ export function BentoLearningGrid() {
     },
     ai_agents: {
       title: lang === "ar" ? "وكلاء الذكاء الاصطناعي (AI Agents)" : "AI Agents & Autonomous Bots",
-      badge: "تكنولوجيا حديثة 🤖",
+      badge: "تكنولوجيا حديثة",
       description:
         lang === "ar"
           ? "بناء واستضافة وكلاء ذكاء اصطناعي محليين باستخدام Ollama وLangChain مجاناً."
@@ -90,7 +90,7 @@ export function BentoLearningGrid() {
     },
     web_dev: {
       title: lang === "ar" ? "تطوير تطبيقات الويب الذكية" : "Smart Web Dev & Full-stack AI",
-      badge: "شامل 🚀",
+      badge: "شامل",
       description:
         lang === "ar"
           ? "تطوير تطبيقات حديثة باستعمال React, TypeScript, TanStack Start ودمج قدرات الـ AI."
@@ -208,7 +208,7 @@ export function BentoLearningGrid() {
                       : "bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground"
                   }`}
                 >
-                  {key === "n8n" ? "⚡ الأتمتة و n8n" : key === "ai_agents" ? "🤖 AI Agents" : "💻 تطوير الويب"}
+                  {key === "n8n" ? "الأتمتة و n8n" : key === "ai_agents" ? "AI Agents" : "تطوير الويب"}
                 </button>
               ))}
             </div>
@@ -235,7 +235,7 @@ export function BentoLearningGrid() {
                   className="h-7 text-xs gap-1.5 border-primary/30 text-primary hover:bg-primary/10"
                 >
                   <Play className={`w-3 h-3 ${isSimulating ? "animate-spin" : ""}`} />
-                  <span>{isSimulating ? "جاري المحاكاة..." : "تشغيل الاختبار ⚡"}</span>
+                  <span>{isSimulating ? "جاري المحاكاة..." : "تشغيل الاختبار"}</span>
                 </Button>
               </div>
 
@@ -356,7 +356,7 @@ export function BentoLearningGrid() {
               to="/tools"
               className="text-xs font-semibold text-amber hover:text-amber/80 transition-colors"
             >
-              عرض الكل 🧭
+              عرض الكل
             </Link>
           </div>
 
@@ -388,7 +388,7 @@ export function BentoLearningGrid() {
           <div>
             <div className="flex items-center justify-between mb-3">
               <Badge variant="outline" className="border-emerald-500/40 text-emerald-600 bg-emerald-500/10 text-[11px]">
-                💡 كود / نصيحة اليوم التقنية
+                كود / نصيحة اليوم التقنية
               </Badge>
               <Button
                 variant="ghost"
