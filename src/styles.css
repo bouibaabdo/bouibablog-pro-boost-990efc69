@@ -38,6 +38,7 @@
   --radius-xl:  calc(var(--radius) + 4px);
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
+  --radius-bento: 1.5rem;
 
   /* ── Color Tokens (mapped to CSS custom props) ──────────────────────────── */
   --color-background:          var(--background);
@@ -59,6 +60,9 @@
 
   --color-violet:              var(--violet);
   --color-violet-foreground:   var(--violet-foreground);
+
+  --color-emerald:             var(--emerald);
+  --color-emerald-foreground:  var(--emerald-foreground);
 
   --color-cobalt:              var(--cobalt);
   --color-cobalt-foreground:   var(--cobalt-foreground);
@@ -121,6 +125,10 @@
   --violet:               oklch(0.55 0.18 290);  /* #7C3AED violet      */
   --violet-foreground:    oklch(0.99 0.003 290);
 
+  /* ── Emerald — Automation & Success Accents */
+  --emerald:              oklch(0.65 0.18 155);
+  --emerald-foreground:   oklch(0.99 0.003 155);
+
   /* ── Cobalt — French Language Accent */
   --cobalt:               oklch(0.52 0.15 250);  /* #1E40AF cobalt blue */
   --cobalt-foreground:    oklch(0.99 0 0);
@@ -178,6 +186,9 @@
 
   --violet:               oklch(0.65 0.18 290);  /* lighter violet in dark  */
   --violet-foreground:    oklch(0.12 0.01 290);
+
+  --emerald:              oklch(0.72 0.18 155);
+  --emerald-foreground:   oklch(0.12 0.01 155);
 
   --cobalt:               oklch(0.64 0.14 250);  /* lighter cobalt in dark  */
   --cobalt-foreground:    oklch(0.12 0.01 250);
@@ -829,12 +840,20 @@
 /* ─── AI EDITORIAL & BENTO DASHBOARD UTILITIES ────────────────────────────── */
 @utility bento-card {
   position: relative;
-  border-radius: var(--radius-2xl);
-  border: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
-  background: color-mix(in oklab, var(--card) 85%, transparent);
-  backdrop-filter: blur(12px);
+  border-radius: var(--radius-bento);
+  border: 1px solid color-mix(in oklab, var(--border) 75%, transparent);
+  background: color-mix(in oklab, var(--card) 90%, transparent);
+  backdrop-filter: blur(16px);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
+}
+
+@utility bento-card-glow {
+  &:hover {
+    border-color: color-mix(in oklab, var(--primary) 45%, transparent);
+    box-shadow: var(--shadow-soft), var(--shadow-glow);
+    transform: translateY(-2px);
+  }
 }
 
 @utility bento-card-hover {
