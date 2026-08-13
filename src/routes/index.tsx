@@ -31,6 +31,7 @@ import { Hero3DCanvas } from "@/components/hero-3d-canvas";
 import { Tilt3DCard } from "@/components/interactive-3d-card";
 import { SectionHeader } from "@/components/section-header";
 import { AcademyHero } from "@/components/academy-hero";
+import { HeroFuturistic } from "@/components/ui/hero-futuristic";
 import { BentoLearningGrid } from "@/components/bento-learning-grid";
 import { useLang } from "@/hooks/use-lang";
 import { toast } from "sonner";
@@ -198,6 +199,9 @@ function HomePage() {
     <div className="min-h-screen bg-background text-foreground selection:bg-primary/15 selection:text-primary">
       <SiteHeader />
       <main>
+        {/* FUTURISTIC THREE.JS HERO DISPLAY */}
+        <HeroFuturistic />
+
         {/* HERO SECTION — Featuring Interactive Platform Mockup & 3D Neural Canvas Background */}
         <AcademyHero />
 
