@@ -31,6 +31,7 @@ import { Hero3DCanvas } from "@/components/hero-3d-canvas";
 import { Tilt3DCard } from "@/components/interactive-3d-card";
 import { SectionHeader } from "@/components/section-header";
 import { AcademyHero } from "@/components/academy-hero";
+import { BentoLearningGrid } from "@/components/bento-learning-grid";
 import { useLang } from "@/hooks/use-lang";
 import { toast } from "sonner";
 
@@ -199,6 +200,9 @@ function HomePage() {
       <main>
         {/* HERO SECTION — Featuring Interactive Platform Mockup & 3D Neural Canvas Background */}
         <AcademyHero />
+
+        {/* BENTO LEARNING & TOOLS DASHBOARD */}
+        <BentoLearningGrid />
 
         {/* FEATURED COVER STORY WITH 3D TILT SHOWCASE (المقال الرئيسي التحريري) */}
         {featured && (

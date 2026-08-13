@@ -825,3 +825,37 @@
 @utility animate-scale-in {
   animation: scale-in 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
+
+/* ─── AI EDITORIAL & BENTO DASHBOARD UTILITIES ────────────────────────────── */
+@utility bento-card {
+  position: relative;
+  border-radius: var(--radius-2xl);
+  border: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
+  background: color-mix(in oklab, var(--card) 85%, transparent);
+  backdrop-filter: blur(12px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+@utility bento-card-hover {
+  &:hover {
+    border-color: color-mix(in oklab, var(--primary) 40%, transparent);
+    box-shadow: var(--shadow-soft), var(--shadow-glow);
+    transform: translateY(-2px);
+  }
+}
+
+@utility editorial-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.025em;
+  background: color-mix(in oklab, var(--primary) 10%, transparent);
+  color: var(--primary);
+  border: 1px solid color-mix(in oklab, var(--primary) 20%, transparent);
+}
+
