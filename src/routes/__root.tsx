@@ -14,6 +14,7 @@ import appCss from "../styles.css?url";
 import criticalCss from "../critical.css?raw";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { BouibaBot } from "@/components/bot";
+import { CookieConsent } from "@/components/cookie-consent";
 
 function NotFoundComponent() {
   return (
@@ -292,6 +293,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <BouibaBot />
+      <CookieConsent />
       <Outlet />
     </QueryClientProvider>
   );
