@@ -29,6 +29,7 @@ import { TodayMatchesRail } from "@/components/today-matches-rail";
 import { Hero3DCanvas } from "@/components/hero-3d-canvas";
 import { Tilt3DCard } from "@/components/interactive-3d-card";
 import { SectionHeader } from "@/components/section-header";
+import { AcademyHero } from "@/components/academy-hero";
 import { useLang } from "@/hooks/use-lang";
 import { toast } from "sonner";
 
@@ -158,7 +159,6 @@ const TOOL_CARDS = [
 function HomePage() {
   const { data } = useSuspenseQuery(postsQueryOptions);
   const { data: labels } = useSuspenseQuery(labelsQueryOptions);
-  const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("الكل");
   const [newsletterEmail, setNewsletterEmail] = useState("");
   const [newsletterSubscribed, setNewsletterSubscribed] = useState(false);
@@ -182,13 +182,6 @@ function HomePage() {
     );
   }, [posts, selectedCategory]);
 
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate({ to: "/posts", search: { q: searchQuery.trim() } });
-    }
-  };
-
   const handleNewsletterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (newsletterEmail.trim() && newsletterEmail.includes("@")) {
@@ -203,97 +196,8 @@ function HomePage() {
     <div className="min-h-screen bg-background text-foreground selection:bg-primary/15 selection:text-primary">
       <SiteHeader />
       <main>
-        {/* HERO SECTION — Featuring Interactive 3D Neural Canvas Background */}
-        <section className="relative overflow-hidden border-b border-border/80 bg-surface-muted/60 py-14 md:py-24">
-          {/* Interactive 3D Neural Network Canvas */}
-          <Hero3DCanvas />
-
-          <div className="container-page relative z-10 text-center max-w-4xl mx-auto space-y-6">
-            {/* Editorial Badge */}
-            <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-card/90 backdrop-blur-md px-4 py-1.5 text-xs md:text-sm font-semibold text-primary shadow-sm">
-              <ShieldCheck className="h-4 w-4 shrink-0" />
-              <span>{t("hero.badge")}</span>
-            </div>
-
-            {/* Main Editorial Headline */}
-            <h1 className="font-display text-3xl sm:text-5xl md:text-6xl font-black leading-tight tracking-tight text-foreground">
-              {t("hero.title")}{" "}
-              <span className="gradient-text">{t("hero.title.highlight")}</span>
-            </h1>
-
-            {/* Editorial Subtitle */}
-            <p className="mx-auto max-w-2xl text-base md:text-lg text-muted-foreground leading-relaxed font-normal">
-              {t("hero.subtitle")}
-            </p>
-
-            {/* Language Selection Pills */}
-            <div className="flex items-center justify-center gap-3 flex-wrap">
-              <span className="text-xs text-muted-foreground font-semibold">{t("lang.switchTo")}:</span>
-              {(["ar", "fr", "en"] as const).map((l) => {
-                const flags = { ar: "🇩🇿", fr: "🇫🇷", en: "🇬🇧" };
-                const names = { ar: "العربية", fr: "Français", en: "English" };
-                const isActive = lang === l;
-                return (
-                  <button
-                    key={l}
-                    type="button"
-                    className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-bold transition-all cursor-pointer ${
-                      isActive
-                        ? l === "ar" ? "lang-ar border" : l === "fr" ? "lang-fr border" : "lang-en border"
-                        : "border-border text-muted-foreground hover:border-primary hover:text-primary"
-                    }`}
-                    aria-label={names[l]}
-                    aria-pressed={isActive}
-                  >
-                    <span>{flags[l]}</span>
-                    <span>{names[l]}</span>
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Editorial Instant Search Bar */}
-            <form onSubmit={handleSearchSubmit} className="max-w-xl mx-auto pt-2">
-              <div className="relative flex items-center rounded-xl border border-border bg-card/95 backdrop-blur-xl p-1.5 shadow-sm transition-all focus-within:border-primary focus-within:ring-1 focus-within:ring-primary/30">
-                <Search className="h-5 w-5 text-muted-foreground mx-3 shrink-0" />
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder={t("hero.search.placeholder")}
-                  className="w-full bg-transparent px-2 py-2 text-sm md:text-base outline-none placeholder:text-muted-foreground"
-                />
-                <button
-                  type="submit"
-                  className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground transition-all hover:opacity-90 shrink-0"
-                >
-                  <span>{t("hero.search.button")}</span>
-                  <ArrowDir className="h-4 w-4" />
-                </button>
-              </div>
-
-              {/* Fast Tag Suggestions */}
-              <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-xs text-muted-foreground">
-                <span className="font-semibold text-foreground/80">{t("hero.trending")}</span>
-                {[
-                  { label: "Ollama & DeepSeek", query: "Ollama" },
-                  { label: "n8n Automation", query: "n8n" },
-                  { label: "Tech SEO", query: "SEO" },
-                  { label: "Free AI Tools", query: "أدوات" },
-                ].map((tag) => (
-                  <Link
-                    key={tag.query}
-                    to="/posts"
-                    search={{ q: tag.query }}
-                    className="rounded-md bg-card/90 px-2.5 py-1 border border-border/80 hover:border-primary hover:text-primary transition-colors"
-                  >
-                    {tag.label}
-                  </Link>
-                ))}
-              </div>
-            </form>
-          </div>
-        </section>
+        {/* HERO SECTION — Featuring Interactive Platform Mockup & 3D Neural Canvas Background */}
+        <AcademyHero />
 
         {/* FEATURED COVER STORY WITH 3D TILT SHOWCASE (المقال الرئيسي التحريري) */}
         {featured && (
