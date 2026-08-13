@@ -1,3 +1,6 @@
+# Agent config — local only, may contain sensitive tokens
+.agents/mcp_config.json
+
 # Environment secrets — NEVER commit these
 .env
 .env.local
