@@ -47,7 +47,7 @@ const TRACKS: Record<string, TrackData> = {
     icon: Zap,
     level: "من المبتدئ إلى المحترف",
     duration: "14 ساعة تطبيقية",
-    activeStudents: "12,450 طالب",
+    activeStudents: "مئات المتعلمين",
     progress: 85,
     description: "بناء مسارات عمل تلقائية معقّدة، ربط الـ APIs، وأتمتة المهام اليومية باستخدام n8n وMake بدون تعقيد.",
     tags: ["n8n", "Make", "Webhooks", "REST API", "Automation"],
@@ -66,7 +66,7 @@ Status: 200 OK (Executed in 420ms)`,
     icon: Bot,
     level: "متقدم",
     duration: "18 ساعة تطبيقية",
-    activeStudents: "8,920 طالب",
+    activeStudents: "آلاف المتعلمين",
     progress: 72,
     description: "بناء واستضافة وكلاء ذكاء اصطناعي محليين باستخدام Ollama وLangChain وتخصيص النماذج مجاناً.",
     tags: ["Ollama", "LangChain", "Python", "DeepSeek-R1", "RAG"],
@@ -84,7 +84,7 @@ Output: Instant Arabic Technical Summary ✅`,
     icon: Code2,
     level: "متوسط",
     duration: "22 ساعة تطبيقية",
-    activeStudents: "15,800 طالب",
+    activeStudents: "مجتمع نشط ومتنامٍ",
     progress: 90,
     description: "تطوير تطبيقات حديثة باستعمال React, TypeScript, TanStack Start ودمج قدرات الذكاء الاصطناعي.",
     tags: ["React 19", "TypeScript", "TanStack", "Tailwind v4", "Vite"],
@@ -256,10 +256,10 @@ export function AcademyHero() {
               </div>
               <div>
                 <div className="flex items-center gap-1 text-xs font-black text-foreground">
-                  <span>4.9 / 5.0</span>
-                  <span className="text-amber-500 font-bold">★★★★★</span>
+                  <span>محتوى يومي موثوق</span>
+                  <span className="text-amber-500 font-bold">✓</span>
                 </div>
-                <div className="text-[11px] text-muted-foreground font-medium">+50,000 متعلم شغوف</div>
+                <div className="text-[11px] text-muted-foreground font-medium">قراء من 15+ دولة عربية</div>
               </div>
             </div>
 
