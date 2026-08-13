@@ -859,3 +859,40 @@
   border: 1px solid color-mix(in oklab, var(--primary) 20%, transparent);
 }
 
+/* ─── FUTURISTIC HERO ANIMATIONS ─────────────────────────────────────────── */
+.fade-in {
+  animation: fadeInGlitch 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.fade-in-subtitle {
+  animation: fadeInSubtitle 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeInGlitch {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+    filter: blur(8px);
+  }
+  50% {
+    filter: blur(2px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes fadeInSubtitle {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
