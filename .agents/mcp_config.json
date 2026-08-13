@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "webstorm-bouiba": {
+      "serverUrl": "http://127.0.0.1:64542/stream",
+      "headers": {
+        "IJ_MCP_SERVER_PROJECT_PATH": "C:/Users/ABOUI/.antigravity-ide/bouibablog-pro-boost-990efc69"
+      }
+    }
+  }
+}
