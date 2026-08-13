@@ -16,6 +16,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { trackEvent } from "@/lib/analytics";
+import { AdUnit } from "@/components/ad-unit";
 
 function makeQuery(id: string) {
   return queryOptions({
@@ -309,6 +310,9 @@ function PostPage() {
               __html: post.contentHtml.replace(/<h1\b/gi, "<h2").replace(/<\/h1>/gi, "</h2>"),
             }}
           />
+
+          {/* In-Article AdSense Unit */}
+          <AdUnit format="auto" responsive={true} className="my-10" />
 
           {/* Related Articles Section */}
           {relatedPosts.length > 0 && (

@@ -76,39 +76,45 @@ function PrivacyPage() {
 
           <section>
             <h2 className="font-display text-2xl font-bold mb-3">
-              إعلانات Google AdSense والطرف الثالث
+              إعلانات Google AdSense والطرف الثالث وشبكات الإعلان (GDPR & CCPA)
             </h2>
             <p>
-              نستخدم خدمة <strong>Google AdSense</strong> لعرض الإعلانات. تقوم Google وشركاؤها بموجب
-              استخدام ملفات تعريف الارتباط بعرض إعلانات مبنيّة على زياراتك السابقة لهذا الموقع أو
-              مواقع أخرى.
+              نستخدم خدمة <strong>Google AdSense</strong> وبائعي الطرف الثالث لعرض الإعلانات عند زيارتك لموقعنا. تستخدم Google ملفات تعريف الارتباط (Cookies) بما في ذلك كوكيز <strong>DART</strong> لعرض الإعلانات للمستخدمين بناءً على زياراتهم لموقعنا والمواقع الأخرى على الإنترنت.
             </p>
-            <ul className="list-disc pr-6 space-y-2">
+            <ul className="list-disc pr-6 space-y-2 mt-3">
               <li>
-                يمكنك إلغاء الاشتراك في الإعلانات المخصصة عبر زيارة{" "}
+                يستطيع بائعو الطرف الثالث، بما فيهم Google، استخدام ملفات تعريف الارتباط لعرض الإعلانات بناءً على زيارات الزائر السابقة.
+              </li>
+              <li>
+                تتيح ملفات تعريف الارتباط الإعلانية لشركة Google وشركائها إمكانية تقديم إعلانات للمستخدمين استناداً إلى زيارتهم لموقعنا أو مواقع أخرى.
+              </li>
+              <li>
+                يمكن للمستخدمين إلغاء استخدام ملف تعريف الارتباط DART والمحتوى الإعلاني المخصص من خلال زيارة{" "}
                 <a
                   href="https://www.google.com/settings/ads"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-primary underline"
+                  className="text-primary underline font-medium"
                 >
-                  إعدادات إعلانات Google
+                  إعدادات الإعلانات في Google
                 </a>
                 .
               </li>
               <li>
-                يمكنك أيضاً إلغاء اشتراك مزوّدي الطرف الثالث عبر{" "}
+                يمكنك أيضاً إلغاء استخدام ملفات تعريف الارتباط المخصصة للإعلانات من جانب الموردين الخارجيين عن طريق زيارة{" "}
                 <a
                   href="https://www.aboutads.info"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-primary underline"
+                  className="text-primary underline font-medium"
                 >
                   www.aboutads.info
                 </a>
                 .
               </li>
-              <li>قد تستخدم شركات إعلانية أخرى شريكة مع Google كوكيز DART لعرض إعلانات ذات صلة.</li>
+              <li>
+                الامتثال للائحة العامة لحماية البيانات (GDPR): إذا كنت مقيماً في المنطقة الاقتصادية الأوروبية (EEA)، فليدك الحق في الوصول إلى بياناتك الشخصية، أو تصحيحها، أو حذفها، أو تقييد معالجتها، والموافقة المسبقة على ملفات التتبع غير الضرورية.
+              </li>
             </ul>
           </section>
 

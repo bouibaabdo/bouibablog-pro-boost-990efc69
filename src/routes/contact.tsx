@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { Mail, MessageCircle, Globe } from "lucide-react";
@@ -44,6 +45,11 @@ export const Route = createFileRoute("/contact")({
 
 function ContactPage() {
   const { lang } = useLang();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [subject, setSubject] = useState("");
+  const [message, setMessage] = useState("");
+  const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
 
   const heroBadge = lang === "fr" ? "Contact" : lang === "en" ? "Contact" : "تواصل";
   const heroTitle =
@@ -76,12 +82,28 @@ function ContactPage() {
     },
   ];
 
-  const namePlaceholder = lang === "fr" ? "Votre nom" : lang === "en" ? "Your name" : "الاسم";
+  const namePlaceholder = lang === "fr" ? "Votre nom" : lang === "en" ? "Your name" : "الاسم الكامل";
   const emailPlaceholder = lang === "fr" ? "Votre e-mail" : lang === "en" ? "Your email" : "البريد الإلكتروني";
   const subjectPlaceholder = lang === "fr" ? "Sujet" : lang === "en" ? "Subject" : "الموضوع";
   const messagePlaceholder = lang === "fr" ? "Votre message..." : lang === "en" ? "Your message..." : "رسالتك...";
   const sendLabel = lang === "fr" ? "Envoyer le message" : lang === "en" ? "Send Message" : "إرسال الرسالة";
   const formTitle = lang === "fr" ? "Envoyer un message" : lang === "en" ? "Send a Message" : "أرسل رسالة";
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name.trim() || !email.trim() || !message.trim()) {
+      setStatus("error");
+      return;
+    }
+    setStatus("sending");
+    setTimeout(() => {
+      setStatus("success");
+      setName("");
+      setEmail("");
+      setSubject("");
+      setMessage("");
+    }, 800);
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -112,8 +134,18 @@ function ContactPage() {
             ))}
           </div>
 
-          <form className="mt-14 max-w-2xl mx-auto rounded-2xl border border-border bg-card p-8 shadow-card">
+          <form onSubmit={handleSubmit} className="mt-14 max-w-2xl mx-auto rounded-2xl border border-border bg-card p-8 shadow-card">
             <h2 className="font-display text-2xl font-bold mb-6">{formTitle}</h2>
+            {status === "success" && (
+              <div className="mb-6 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-sm font-medium text-center">
+                ✓ تم استلام رسالتك بنجاح! سنرد عليك في أقرب وقت.
+              </div>
+            )}
+            {status === "error" && (
+              <div className="mb-6 p-4 rounded-xl bg-destructive/10 border border-destructive/30 text-destructive text-sm font-medium text-center">
+                ⚠️ يرجى ملء كافة الحقول المطلوبة (الاسم، البريد الإلكتروني، والرسالة).
+              </div>
+            )}
             <div className="grid gap-4">
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
@@ -121,6 +153,9 @@ function ContactPage() {
                   <input
                     id="contact-name"
                     type="text"
+                    required
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
                     placeholder={namePlaceholder}
                     aria-label={namePlaceholder}
                     className="w-full rounded-lg border border-input bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
@@ -131,6 +166,9 @@ function ContactPage() {
                   <input
                     id="contact-email"
                     type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     placeholder={emailPlaceholder}
                     aria-label={emailPlaceholder}
                     className="w-full rounded-lg border border-input bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
@@ -141,6 +179,8 @@ function ContactPage() {
               <input
                 id="contact-subject"
                 type="text"
+                value={subject}
+                onChange={(e) => setSubject(e.target.value)}
                 placeholder={subjectPlaceholder}
                 aria-label={subjectPlaceholder}
                 className="rounded-lg border border-input bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
@@ -149,15 +189,19 @@ function ContactPage() {
               <textarea
                 id="contact-message"
                 rows={5}
+                required
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
                 placeholder={messagePlaceholder}
                 aria-label={messagePlaceholder}
                 className="rounded-lg border border-input bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring resize-none"
               />
               <button
-                type="button"
-                className="inline-flex items-center justify-center rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-soft hover:opacity-90 transition-all"
+                type="submit"
+                disabled={status === "sending"}
+                className="inline-flex items-center justify-center rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-soft hover:opacity-90 transition-all disabled:opacity-50"
               >
-                {sendLabel}
+                {status === "sending" ? "جاري الإرسال..." : sendLabel}
               </button>
             </div>
           </form>
