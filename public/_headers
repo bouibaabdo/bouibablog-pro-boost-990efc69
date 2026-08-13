@@ -36,6 +36,11 @@
 /robots.txt
   Cache-Control: public, max-age=3600
 
+# ads.txt — plain text for AdSense crawler
+/ads.txt
+  Cache-Control: public, max-age=86400
+  Content-Type: text/plain; charset=utf-8
+
 
 # Explicit long cache for static images
 /bouiba-logo-48.webp

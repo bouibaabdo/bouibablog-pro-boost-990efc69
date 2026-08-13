@@ -9,178 +9,73 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as WorldcupRouteImport } from './routes/worldcup'
-import { Route as ToolsRouteImport } from './routes/tools'
-import { Route as TermsOfUseRouteImport } from './routes/terms-of-use'
-import { Route as TermsOfServiceRouteImport } from './routes/terms-of-service'
-import { Route as TermsRouteImport } from './routes/terms'
-import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as SitemapWorldcupDotxmlRouteImport } from './routes/sitemap-worldcup[.]xml'
-import { Route as SitemapVideosDotxmlRouteImport } from './routes/sitemap-videos[.]xml'
-import { Route as SitemapToolsDotxmlRouteImport } from './routes/sitemap-tools[.]xml'
-import { Route as SitemapPostsDotxmlRouteImport } from './routes/sitemap-posts[.]xml'
-import { Route as SitemapPagesDotxmlRouteImport } from './routes/sitemap-pages[.]xml'
-import { Route as SitemapCategoriesDotxmlRouteImport } from './routes/sitemap-categories[.]xml'
-import { Route as QuizRouteImport } from './routes/quiz'
-import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
-import { Route as PrivacyRouteImport } from './routes/privacy'
-import { Route as LessonsRouteImport } from './routes/lessons'
-import { Route as DisclaimerPolicyRouteImport } from './routes/disclaimer-policy'
-import { Route as DisclaimerRouteImport } from './routes/disclaimer'
-import { Route as CoursesRouteImport } from './routes/courses'
-import { Route as ContactRouteImport } from './routes/contact'
-import { Route as AuthRouteImport } from './routes/auth'
-import { Route as ArticlesRouteImport } from './routes/articles'
-import { Route as AiQuizRouteImport } from './routes/ai-quiz'
-import { Route as AboutRouteImport } from './routes/about'
-import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ToolsIndexRouteImport } from './routes/tools.index'
-import { Route as PostsIndexRouteImport } from './routes/posts.index'
-import { Route as ToolsTranslateRouteImport } from './routes/tools.translate'
-import { Route as ToolsTempmailRouteImport } from './routes/tools.tempmail'
-import { Route as ToolsSummarizeRouteImport } from './routes/tools.summarize'
-import { Route as ToolsStudyRouteImport } from './routes/tools.study'
-import { Route as ToolsSocialRouteImport } from './routes/tools.social'
-import { Route as ToolsSeoRouteImport } from './routes/tools.seo'
-import { Route as ToolsRoadmapRouteImport } from './routes/tools.roadmap'
-import { Route as ToolsRewriteRouteImport } from './routes/tools.rewrite'
-import { Route as ToolsReelsRouteImport } from './routes/tools.reels'
-import { Route as ToolsPromptRouteImport } from './routes/tools.prompt'
-import { Route as ToolsImageRouteImport } from './routes/tools.image'
-import { Route as ToolsIdeasRouteImport } from './routes/tools.ideas'
-import { Route as ToolsEmailRouteImport } from './routes/tools.email'
-import { Route as ToolsCvRouteImport } from './routes/tools.cv'
-import { Route as ToolsCodeRouteImport } from './routes/tools.code'
-import { Route as ToolsAgentRouteImport } from './routes/tools.agent'
-import { Route as PostsIdRouteImport } from './routes/posts.$id'
-import { Route as AuthenticatedFavoritesRouteImport } from './routes/_authenticated/favorites'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as AdsDottxtRouteImport } from './routes/ads[.]txt'
+import { Route as AiQuizRouteImport } from './routes/ai-quiz'
+import { Route as ArticlesRouteImport } from './routes/articles'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as CoursesRouteImport } from './routes/courses'
+import { Route as DisclaimerRouteImport } from './routes/disclaimer'
+import { Route as DisclaimerPolicyRouteImport } from './routes/disclaimer-policy'
+import { Route as LessonsRouteImport } from './routes/lessons'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
+import { Route as QuizRouteImport } from './routes/quiz'
+import { Route as SitemapCategoriesDotxmlRouteImport } from './routes/sitemap-categories[.]xml'
+import { Route as SitemapPagesDotxmlRouteImport } from './routes/sitemap-pages[.]xml'
+import { Route as SitemapPostsDotxmlRouteImport } from './routes/sitemap-posts[.]xml'
+import { Route as SitemapToolsDotxmlRouteImport } from './routes/sitemap-tools[.]xml'
+import { Route as SitemapVideosDotxmlRouteImport } from './routes/sitemap-videos[.]xml'
+import { Route as SitemapWorldcupDotxmlRouteImport } from './routes/sitemap-worldcup[.]xml'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as TermsRouteImport } from './routes/terms'
+import { Route as TermsOfServiceRouteImport } from './routes/terms-of-service'
+import { Route as TermsOfUseRouteImport } from './routes/terms-of-use'
+import { Route as ToolsRouteImport } from './routes/tools'
+import { Route as WorldcupRouteImport } from './routes/worldcup'
 import { Route as AuthenticatedAdminRouteRouteImport } from './routes/_authenticated/admin/route'
+import { Route as AuthenticatedFavoritesRouteImport } from './routes/_authenticated/favorites'
+import { Route as PostsIndexRouteImport } from './routes/posts.index'
+import { Route as PostsIdRouteImport } from './routes/posts.$id'
+import { Route as ToolsIndexRouteImport } from './routes/tools.index'
+import { Route as ToolsAgentRouteImport } from './routes/tools.agent'
+import { Route as ToolsCodeRouteImport } from './routes/tools.code'
+import { Route as ToolsCvRouteImport } from './routes/tools.cv'
+import { Route as ToolsEmailRouteImport } from './routes/tools.email'
+import { Route as ToolsIdeasRouteImport } from './routes/tools.ideas'
+import { Route as ToolsImageRouteImport } from './routes/tools.image'
+import { Route as ToolsPromptRouteImport } from './routes/tools.prompt'
+import { Route as ToolsReelsRouteImport } from './routes/tools.reels'
+import { Route as ToolsRewriteRouteImport } from './routes/tools.rewrite'
+import { Route as ToolsRoadmapRouteImport } from './routes/tools.roadmap'
+import { Route as ToolsSeoRouteImport } from './routes/tools.seo'
+import { Route as ToolsSocialRouteImport } from './routes/tools.social'
+import { Route as ToolsStudyRouteImport } from './routes/tools.study'
+import { Route as ToolsSummarizeRouteImport } from './routes/tools.summarize'
+import { Route as ToolsTempmailRouteImport } from './routes/tools.tempmail'
+import { Route as ToolsTranslateRouteImport } from './routes/tools.translate'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
-import { Route as ApiToolsTextRouteImport } from './routes/api/tools/text'
-import { Route as ApiToolsTempmailRouteImport } from './routes/api/tools/tempmail'
-import { Route as ApiToolsImageRouteImport } from './routes/api/tools/image'
-import { Route as AuthenticatedAdminWorldcupRouteImport } from './routes/_authenticated/admin/worldcup'
-import { Route as AuthenticatedAdminToolsRouteImport } from './routes/_authenticated/admin/tools'
-import { Route as AuthenticatedAdminPostsRouteImport } from './routes/_authenticated/admin/posts'
-import { Route as AuthenticatedAdminLessonsRouteImport } from './routes/_authenticated/admin/lessons'
-import { Route as AuthenticatedAdminFacebookRouteImport } from './routes/_authenticated/admin/facebook'
 import { Route as AuthenticatedAdminAnalyticsRouteImport } from './routes/_authenticated/admin/analytics'
+import { Route as AuthenticatedAdminFacebookRouteImport } from './routes/_authenticated/admin/facebook'
+import { Route as AuthenticatedAdminLessonsRouteImport } from './routes/_authenticated/admin/lessons'
+import { Route as AuthenticatedAdminPostsRouteImport } from './routes/_authenticated/admin/posts'
+import { Route as AuthenticatedAdminToolsRouteImport } from './routes/_authenticated/admin/tools'
+import { Route as AuthenticatedAdminWorldcupRouteImport } from './routes/_authenticated/admin/worldcup'
+import { Route as ApiToolsImageRouteImport } from './routes/api/tools/image'
+import { Route as ApiToolsTempmailRouteImport } from './routes/api/tools/tempmail'
+import { Route as ApiToolsTextRouteImport } from './routes/api/tools/text'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 
-const WorldcupRoute = WorldcupRouteImport.update({
-  id: '/worldcup',
-  path: '/worldcup',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ToolsRoute = ToolsRouteImport.update({
-  id: '/tools',
-  path: '/tools',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TermsOfUseRoute = TermsOfUseRouteImport.update({
-  id: '/terms-of-use',
-  path: '/terms-of-use',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TermsOfServiceRoute = TermsOfServiceRouteImport.update({
-  id: '/terms-of-service',
-  path: '/terms-of-service',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TermsRoute = TermsRouteImport.update({
-  id: '/terms',
-  path: '/terms',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
-  id: '/sitemap.xml',
-  path: '/sitemap.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SitemapWorldcupDotxmlRoute = SitemapWorldcupDotxmlRouteImport.update({
-  id: '/sitemap-worldcup.xml',
-  path: '/sitemap-worldcup.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SitemapVideosDotxmlRoute = SitemapVideosDotxmlRouteImport.update({
-  id: '/sitemap-videos.xml',
-  path: '/sitemap-videos.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SitemapToolsDotxmlRoute = SitemapToolsDotxmlRouteImport.update({
-  id: '/sitemap-tools.xml',
-  path: '/sitemap-tools.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SitemapPostsDotxmlRoute = SitemapPostsDotxmlRouteImport.update({
-  id: '/sitemap-posts.xml',
-  path: '/sitemap-posts.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SitemapPagesDotxmlRoute = SitemapPagesDotxmlRouteImport.update({
-  id: '/sitemap-pages.xml',
-  path: '/sitemap-pages.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SitemapCategoriesDotxmlRoute = SitemapCategoriesDotxmlRouteImport.update({
-  id: '/sitemap-categories.xml',
-  path: '/sitemap-categories.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const QuizRoute = QuizRouteImport.update({
-  id: '/quiz',
-  path: '/quiz',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
-  id: '/privacy-policy',
-  path: '/privacy-policy',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PrivacyRoute = PrivacyRouteImport.update({
-  id: '/privacy',
-  path: '/privacy',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LessonsRoute = LessonsRouteImport.update({
-  id: '/lessons',
-  path: '/lessons',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DisclaimerPolicyRoute = DisclaimerPolicyRouteImport.update({
-  id: '/disclaimer-policy',
-  path: '/disclaimer-policy',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DisclaimerRoute = DisclaimerRouteImport.update({
-  id: '/disclaimer',
-  path: '/disclaimer',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CoursesRoute = CoursesRouteImport.update({
-  id: '/courses',
-  path: '/courses',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ContactRoute = ContactRouteImport.update({
-  id: '/contact',
-  path: '/contact',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthRoute = AuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ArticlesRoute = ArticlesRouteImport.update({
-  id: '/articles',
-  path: '/articles',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AiQuizRoute = AiQuizRouteImport.update({
-  id: '/ai-quiz',
-  path: '/ai-quiz',
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -188,13 +83,144 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
-  id: '/_authenticated',
+const AdsDottxtRoute = AdsDottxtRouteImport.update({
+  id: '/ads.txt',
+  path: '/ads.txt',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const AiQuizRoute = AiQuizRouteImport.update({
+  id: '/ai-quiz',
+  path: '/ai-quiz',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArticlesRoute = ArticlesRouteImport.update({
+  id: '/articles',
+  path: '/articles',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CoursesRoute = CoursesRouteImport.update({
+  id: '/courses',
+  path: '/courses',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DisclaimerRoute = DisclaimerRouteImport.update({
+  id: '/disclaimer',
+  path: '/disclaimer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DisclaimerPolicyRoute = DisclaimerPolicyRouteImport.update({
+  id: '/disclaimer-policy',
+  path: '/disclaimer-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LessonsRoute = LessonsRouteImport.update({
+  id: '/lessons',
+  path: '/lessons',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
+  id: '/privacy-policy',
+  path: '/privacy-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const QuizRoute = QuizRouteImport.update({
+  id: '/quiz',
+  path: '/quiz',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapCategoriesDotxmlRoute = SitemapCategoriesDotxmlRouteImport.update({
+  id: '/sitemap-categories.xml',
+  path: '/sitemap-categories.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapPagesDotxmlRoute = SitemapPagesDotxmlRouteImport.update({
+  id: '/sitemap-pages.xml',
+  path: '/sitemap-pages.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapPostsDotxmlRoute = SitemapPostsDotxmlRouteImport.update({
+  id: '/sitemap-posts.xml',
+  path: '/sitemap-posts.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapToolsDotxmlRoute = SitemapToolsDotxmlRouteImport.update({
+  id: '/sitemap-tools.xml',
+  path: '/sitemap-tools.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapVideosDotxmlRoute = SitemapVideosDotxmlRouteImport.update({
+  id: '/sitemap-videos.xml',
+  path: '/sitemap-videos.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapWorldcupDotxmlRoute = SitemapWorldcupDotxmlRouteImport.update({
+  id: '/sitemap-worldcup.xml',
+  path: '/sitemap-worldcup.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsOfServiceRoute = TermsOfServiceRouteImport.update({
+  id: '/terms-of-service',
+  path: '/terms-of-service',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsOfUseRoute = TermsOfUseRouteImport.update({
+  id: '/terms-of-use',
+  path: '/terms-of-use',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ToolsRoute = ToolsRouteImport.update({
+  id: '/tools',
+  path: '/tools',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WorldcupRoute = WorldcupRouteImport.update({
+  id: '/worldcup',
+  path: '/worldcup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAdminRouteRoute = AuthenticatedAdminRouteRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedFavoritesRoute = AuthenticatedFavoritesRouteImport.update({
+  id: '/favorites',
+  path: '/favorites',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const PostsIndexRoute = PostsIndexRouteImport.update({
+  id: '/posts/',
+  path: '/posts/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PostsIdRoute = PostsIdRouteImport.update({
+  id: '/posts/$id',
+  path: '/posts/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ToolsIndexRoute = ToolsIndexRouteImport.update({
@@ -202,79 +228,9 @@ const ToolsIndexRoute = ToolsIndexRouteImport.update({
   path: '/',
   getParentRoute: () => ToolsRoute,
 } as any)
-const PostsIndexRoute = PostsIndexRouteImport.update({
-  id: '/posts/',
-  path: '/posts/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ToolsTranslateRoute = ToolsTranslateRouteImport.update({
-  id: '/translate',
-  path: '/translate',
-  getParentRoute: () => ToolsRoute,
-} as any)
-const ToolsTempmailRoute = ToolsTempmailRouteImport.update({
-  id: '/tempmail',
-  path: '/tempmail',
-  getParentRoute: () => ToolsRoute,
-} as any)
-const ToolsSummarizeRoute = ToolsSummarizeRouteImport.update({
-  id: '/summarize',
-  path: '/summarize',
-  getParentRoute: () => ToolsRoute,
-} as any)
-const ToolsStudyRoute = ToolsStudyRouteImport.update({
-  id: '/study',
-  path: '/study',
-  getParentRoute: () => ToolsRoute,
-} as any)
-const ToolsSocialRoute = ToolsSocialRouteImport.update({
-  id: '/social',
-  path: '/social',
-  getParentRoute: () => ToolsRoute,
-} as any)
-const ToolsSeoRoute = ToolsSeoRouteImport.update({
-  id: '/seo',
-  path: '/seo',
-  getParentRoute: () => ToolsRoute,
-} as any)
-const ToolsRoadmapRoute = ToolsRoadmapRouteImport.update({
-  id: '/roadmap',
-  path: '/roadmap',
-  getParentRoute: () => ToolsRoute,
-} as any)
-const ToolsRewriteRoute = ToolsRewriteRouteImport.update({
-  id: '/rewrite',
-  path: '/rewrite',
-  getParentRoute: () => ToolsRoute,
-} as any)
-const ToolsReelsRoute = ToolsReelsRouteImport.update({
-  id: '/reels',
-  path: '/reels',
-  getParentRoute: () => ToolsRoute,
-} as any)
-const ToolsPromptRoute = ToolsPromptRouteImport.update({
-  id: '/prompt',
-  path: '/prompt',
-  getParentRoute: () => ToolsRoute,
-} as any)
-const ToolsImageRoute = ToolsImageRouteImport.update({
-  id: '/image',
-  path: '/image',
-  getParentRoute: () => ToolsRoute,
-} as any)
-const ToolsIdeasRoute = ToolsIdeasRouteImport.update({
-  id: '/ideas',
-  path: '/ideas',
-  getParentRoute: () => ToolsRoute,
-} as any)
-const ToolsEmailRoute = ToolsEmailRouteImport.update({
-  id: '/email',
-  path: '/email',
-  getParentRoute: () => ToolsRoute,
-} as any)
-const ToolsCvRoute = ToolsCvRouteImport.update({
-  id: '/cv',
-  path: '/cv',
+const ToolsAgentRoute = ToolsAgentRouteImport.update({
+  id: '/agent',
+  path: '/agent',
   getParentRoute: () => ToolsRoute,
 } as any)
 const ToolsCodeRoute = ToolsCodeRouteImport.update({
@@ -282,66 +238,85 @@ const ToolsCodeRoute = ToolsCodeRouteImport.update({
   path: '/code',
   getParentRoute: () => ToolsRoute,
 } as any)
-const ToolsAgentRoute = ToolsAgentRouteImport.update({
-  id: '/agent',
-  path: '/agent',
+const ToolsCvRoute = ToolsCvRouteImport.update({
+  id: '/cv',
+  path: '/cv',
   getParentRoute: () => ToolsRoute,
 } as any)
-const PostsIdRoute = PostsIdRouteImport.update({
-  id: '/posts/$id',
-  path: '/posts/$id',
-  getParentRoute: () => rootRouteImport,
+const ToolsEmailRoute = ToolsEmailRouteImport.update({
+  id: '/email',
+  path: '/email',
+  getParentRoute: () => ToolsRoute,
 } as any)
-const AuthenticatedFavoritesRoute = AuthenticatedFavoritesRouteImport.update({
-  id: '/favorites',
-  path: '/favorites',
-  getParentRoute: () => AuthenticatedRouteRoute,
+const ToolsIdeasRoute = ToolsIdeasRouteImport.update({
+  id: '/ideas',
+  path: '/ideas',
+  getParentRoute: () => ToolsRoute,
 } as any)
-const AuthenticatedAdminRouteRoute = AuthenticatedAdminRouteRouteImport.update({
-  id: '/admin',
-  path: '/admin',
-  getParentRoute: () => AuthenticatedRouteRoute,
+const ToolsImageRoute = ToolsImageRouteImport.update({
+  id: '/image',
+  path: '/image',
+  getParentRoute: () => ToolsRoute,
+} as any)
+const ToolsPromptRoute = ToolsPromptRouteImport.update({
+  id: '/prompt',
+  path: '/prompt',
+  getParentRoute: () => ToolsRoute,
+} as any)
+const ToolsReelsRoute = ToolsReelsRouteImport.update({
+  id: '/reels',
+  path: '/reels',
+  getParentRoute: () => ToolsRoute,
+} as any)
+const ToolsRewriteRoute = ToolsRewriteRouteImport.update({
+  id: '/rewrite',
+  path: '/rewrite',
+  getParentRoute: () => ToolsRoute,
+} as any)
+const ToolsRoadmapRoute = ToolsRoadmapRouteImport.update({
+  id: '/roadmap',
+  path: '/roadmap',
+  getParentRoute: () => ToolsRoute,
+} as any)
+const ToolsSeoRoute = ToolsSeoRouteImport.update({
+  id: '/seo',
+  path: '/seo',
+  getParentRoute: () => ToolsRoute,
+} as any)
+const ToolsSocialRoute = ToolsSocialRouteImport.update({
+  id: '/social',
+  path: '/social',
+  getParentRoute: () => ToolsRoute,
+} as any)
+const ToolsStudyRoute = ToolsStudyRouteImport.update({
+  id: '/study',
+  path: '/study',
+  getParentRoute: () => ToolsRoute,
+} as any)
+const ToolsSummarizeRoute = ToolsSummarizeRouteImport.update({
+  id: '/summarize',
+  path: '/summarize',
+  getParentRoute: () => ToolsRoute,
+} as any)
+const ToolsTempmailRoute = ToolsTempmailRouteImport.update({
+  id: '/tempmail',
+  path: '/tempmail',
+  getParentRoute: () => ToolsRoute,
+} as any)
+const ToolsTranslateRoute = ToolsTranslateRouteImport.update({
+  id: '/translate',
+  path: '/translate',
+  getParentRoute: () => ToolsRoute,
 } as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AuthenticatedAdminRouteRoute,
 } as any)
-const ApiToolsTextRoute = ApiToolsTextRouteImport.update({
-  id: '/api/tools/text',
-  path: '/api/tools/text',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiToolsTempmailRoute = ApiToolsTempmailRouteImport.update({
-  id: '/api/tools/tempmail',
-  path: '/api/tools/tempmail',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiToolsImageRoute = ApiToolsImageRouteImport.update({
-  id: '/api/tools/image',
-  path: '/api/tools/image',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthenticatedAdminWorldcupRoute =
-  AuthenticatedAdminWorldcupRouteImport.update({
-    id: '/worldcup',
-    path: '/worldcup',
-    getParentRoute: () => AuthenticatedAdminRouteRoute,
-  } as any)
-const AuthenticatedAdminToolsRoute = AuthenticatedAdminToolsRouteImport.update({
-  id: '/tools',
-  path: '/tools',
-  getParentRoute: () => AuthenticatedAdminRouteRoute,
-} as any)
-const AuthenticatedAdminPostsRoute = AuthenticatedAdminPostsRouteImport.update({
-  id: '/posts',
-  path: '/posts',
-  getParentRoute: () => AuthenticatedAdminRouteRoute,
-} as any)
-const AuthenticatedAdminLessonsRoute =
-  AuthenticatedAdminLessonsRouteImport.update({
-    id: '/lessons',
-    path: '/lessons',
+const AuthenticatedAdminAnalyticsRoute =
+  AuthenticatedAdminAnalyticsRouteImport.update({
+    id: '/analytics',
+    path: '/analytics',
     getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
 const AuthenticatedAdminFacebookRoute =
@@ -350,12 +325,43 @@ const AuthenticatedAdminFacebookRoute =
     path: '/facebook',
     getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
-const AuthenticatedAdminAnalyticsRoute =
-  AuthenticatedAdminAnalyticsRouteImport.update({
-    id: '/analytics',
-    path: '/analytics',
+const AuthenticatedAdminLessonsRoute =
+  AuthenticatedAdminLessonsRouteImport.update({
+    id: '/lessons',
+    path: '/lessons',
     getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
+const AuthenticatedAdminPostsRoute = AuthenticatedAdminPostsRouteImport.update({
+  id: '/posts',
+  path: '/posts',
+  getParentRoute: () => AuthenticatedAdminRouteRoute,
+} as any)
+const AuthenticatedAdminToolsRoute = AuthenticatedAdminToolsRouteImport.update({
+  id: '/tools',
+  path: '/tools',
+  getParentRoute: () => AuthenticatedAdminRouteRoute,
+} as any)
+const AuthenticatedAdminWorldcupRoute =
+  AuthenticatedAdminWorldcupRouteImport.update({
+    id: '/worldcup',
+    path: '/worldcup',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const ApiToolsImageRoute = ApiToolsImageRouteImport.update({
+  id: '/api/tools/image',
+  path: '/api/tools/image',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiToolsTempmailRoute = ApiToolsTempmailRouteImport.update({
+  id: '/api/tools/tempmail',
+  path: '/api/tools/tempmail',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiToolsTextRoute = ApiToolsTextRouteImport.update({
+  id: '/api/tools/text',
+  path: '/api/tools/text',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LovableEmailQueueProcessRoute =
   LovableEmailQueueProcessRouteImport.update({
     id: '/lovable/email/queue/process',
@@ -366,6 +372,7 @@ const LovableEmailQueueProcessRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/ads.txt': typeof AdsDottxtRoute
   '/ai-quiz': typeof AiQuizRoute
   '/articles': typeof ArticlesRoute
   '/auth': typeof AuthRoute
@@ -425,6 +432,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/ads.txt': typeof AdsDottxtRoute
   '/ai-quiz': typeof AiQuizRoute
   '/articles': typeof ArticlesRoute
   '/auth': typeof AuthRoute
@@ -484,6 +492,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/about': typeof AboutRoute
+  '/ads.txt': typeof AdsDottxtRoute
   '/ai-quiz': typeof AiQuizRoute
   '/articles': typeof ArticlesRoute
   '/auth': typeof AuthRoute
@@ -545,6 +554,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/ads.txt'
     | '/ai-quiz'
     | '/articles'
     | '/auth'
@@ -604,6 +614,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/ads.txt'
     | '/ai-quiz'
     | '/articles'
     | '/auth'
@@ -662,6 +673,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/about'
+    | '/ads.txt'
     | '/ai-quiz'
     | '/articles'
     | '/auth'
@@ -723,6 +735,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AboutRoute: typeof AboutRoute
+  AdsDottxtRoute: typeof AdsDottxtRoute
   AiQuizRoute: typeof AiQuizRoute
   ArticlesRoute: typeof ArticlesRoute
   AuthRoute: typeof AuthRoute
@@ -756,172 +769,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/worldcup': {
-      id: '/worldcup'
-      path: '/worldcup'
-      fullPath: '/worldcup'
-      preLoaderRoute: typeof WorldcupRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/tools': {
-      id: '/tools'
-      path: '/tools'
-      fullPath: '/tools'
-      preLoaderRoute: typeof ToolsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/terms-of-use': {
-      id: '/terms-of-use'
-      path: '/terms-of-use'
-      fullPath: '/terms-of-use'
-      preLoaderRoute: typeof TermsOfUseRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/terms-of-service': {
-      id: '/terms-of-service'
-      path: '/terms-of-service'
-      fullPath: '/terms-of-service'
-      preLoaderRoute: typeof TermsOfServiceRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/terms': {
-      id: '/terms'
-      path: '/terms'
-      fullPath: '/terms'
-      preLoaderRoute: typeof TermsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sitemap.xml': {
-      id: '/sitemap.xml'
-      path: '/sitemap.xml'
-      fullPath: '/sitemap.xml'
-      preLoaderRoute: typeof SitemapDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sitemap-worldcup.xml': {
-      id: '/sitemap-worldcup.xml'
-      path: '/sitemap-worldcup.xml'
-      fullPath: '/sitemap-worldcup.xml'
-      preLoaderRoute: typeof SitemapWorldcupDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sitemap-videos.xml': {
-      id: '/sitemap-videos.xml'
-      path: '/sitemap-videos.xml'
-      fullPath: '/sitemap-videos.xml'
-      preLoaderRoute: typeof SitemapVideosDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sitemap-tools.xml': {
-      id: '/sitemap-tools.xml'
-      path: '/sitemap-tools.xml'
-      fullPath: '/sitemap-tools.xml'
-      preLoaderRoute: typeof SitemapToolsDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sitemap-posts.xml': {
-      id: '/sitemap-posts.xml'
-      path: '/sitemap-posts.xml'
-      fullPath: '/sitemap-posts.xml'
-      preLoaderRoute: typeof SitemapPostsDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sitemap-pages.xml': {
-      id: '/sitemap-pages.xml'
-      path: '/sitemap-pages.xml'
-      fullPath: '/sitemap-pages.xml'
-      preLoaderRoute: typeof SitemapPagesDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sitemap-categories.xml': {
-      id: '/sitemap-categories.xml'
-      path: '/sitemap-categories.xml'
-      fullPath: '/sitemap-categories.xml'
-      preLoaderRoute: typeof SitemapCategoriesDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/quiz': {
-      id: '/quiz'
-      path: '/quiz'
-      fullPath: '/quiz'
-      preLoaderRoute: typeof QuizRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/privacy-policy': {
-      id: '/privacy-policy'
-      path: '/privacy-policy'
-      fullPath: '/privacy-policy'
-      preLoaderRoute: typeof PrivacyPolicyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/privacy': {
-      id: '/privacy'
-      path: '/privacy'
-      fullPath: '/privacy'
-      preLoaderRoute: typeof PrivacyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/lessons': {
-      id: '/lessons'
-      path: '/lessons'
-      fullPath: '/lessons'
-      preLoaderRoute: typeof LessonsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/disclaimer-policy': {
-      id: '/disclaimer-policy'
-      path: '/disclaimer-policy'
-      fullPath: '/disclaimer-policy'
-      preLoaderRoute: typeof DisclaimerPolicyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/disclaimer': {
-      id: '/disclaimer'
-      path: '/disclaimer'
-      fullPath: '/disclaimer'
-      preLoaderRoute: typeof DisclaimerRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/courses': {
-      id: '/courses'
-      path: '/courses'
-      fullPath: '/courses'
-      preLoaderRoute: typeof CoursesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/contact': {
-      id: '/contact'
-      path: '/contact'
-      fullPath: '/contact'
-      preLoaderRoute: typeof ContactRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/articles': {
-      id: '/articles'
-      path: '/articles'
-      fullPath: '/articles'
-      preLoaderRoute: typeof ArticlesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/ai-quiz': {
-      id: '/ai-quiz'
-      path: '/ai-quiz'
-      fullPath: '/ai-quiz'
-      preLoaderRoute: typeof AiQuizRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated': {
@@ -931,11 +783,207 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ads.txt': {
+      id: '/ads.txt'
+      path: '/ads.txt'
+      fullPath: '/ads.txt'
+      preLoaderRoute: typeof AdsDottxtRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ai-quiz': {
+      id: '/ai-quiz'
+      path: '/ai-quiz'
+      fullPath: '/ai-quiz'
+      preLoaderRoute: typeof AiQuizRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/articles': {
+      id: '/articles'
+      path: '/articles'
+      fullPath: '/articles'
+      preLoaderRoute: typeof ArticlesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/courses': {
+      id: '/courses'
+      path: '/courses'
+      fullPath: '/courses'
+      preLoaderRoute: typeof CoursesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/disclaimer': {
+      id: '/disclaimer'
+      path: '/disclaimer'
+      fullPath: '/disclaimer'
+      preLoaderRoute: typeof DisclaimerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/disclaimer-policy': {
+      id: '/disclaimer-policy'
+      path: '/disclaimer-policy'
+      fullPath: '/disclaimer-policy'
+      preLoaderRoute: typeof DisclaimerPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lessons': {
+      id: '/lessons'
+      path: '/lessons'
+      fullPath: '/lessons'
+      preLoaderRoute: typeof LessonsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy-policy': {
+      id: '/privacy-policy'
+      path: '/privacy-policy'
+      fullPath: '/privacy-policy'
+      preLoaderRoute: typeof PrivacyPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/quiz': {
+      id: '/quiz'
+      path: '/quiz'
+      fullPath: '/quiz'
+      preLoaderRoute: typeof QuizRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap-categories.xml': {
+      id: '/sitemap-categories.xml'
+      path: '/sitemap-categories.xml'
+      fullPath: '/sitemap-categories.xml'
+      preLoaderRoute: typeof SitemapCategoriesDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap-pages.xml': {
+      id: '/sitemap-pages.xml'
+      path: '/sitemap-pages.xml'
+      fullPath: '/sitemap-pages.xml'
+      preLoaderRoute: typeof SitemapPagesDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap-posts.xml': {
+      id: '/sitemap-posts.xml'
+      path: '/sitemap-posts.xml'
+      fullPath: '/sitemap-posts.xml'
+      preLoaderRoute: typeof SitemapPostsDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap-tools.xml': {
+      id: '/sitemap-tools.xml'
+      path: '/sitemap-tools.xml'
+      fullPath: '/sitemap-tools.xml'
+      preLoaderRoute: typeof SitemapToolsDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap-videos.xml': {
+      id: '/sitemap-videos.xml'
+      path: '/sitemap-videos.xml'
+      fullPath: '/sitemap-videos.xml'
+      preLoaderRoute: typeof SitemapVideosDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap-worldcup.xml': {
+      id: '/sitemap-worldcup.xml'
+      path: '/sitemap-worldcup.xml'
+      fullPath: '/sitemap-worldcup.xml'
+      preLoaderRoute: typeof SitemapWorldcupDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms-of-service': {
+      id: '/terms-of-service'
+      path: '/terms-of-service'
+      fullPath: '/terms-of-service'
+      preLoaderRoute: typeof TermsOfServiceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms-of-use': {
+      id: '/terms-of-use'
+      path: '/terms-of-use'
+      fullPath: '/terms-of-use'
+      preLoaderRoute: typeof TermsOfUseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tools': {
+      id: '/tools'
+      path: '/tools'
+      fullPath: '/tools'
+      preLoaderRoute: typeof ToolsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/worldcup': {
+      id: '/worldcup'
+      path: '/worldcup'
+      fullPath: '/worldcup'
+      preLoaderRoute: typeof WorldcupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/favorites': {
+      id: '/_authenticated/favorites'
+      path: '/favorites'
+      fullPath: '/favorites'
+      preLoaderRoute: typeof AuthenticatedFavoritesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/posts/': {
+      id: '/posts/'
+      path: '/posts'
+      fullPath: '/posts/'
+      preLoaderRoute: typeof PostsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/posts/$id': {
+      id: '/posts/$id'
+      path: '/posts/$id'
+      fullPath: '/posts/$id'
+      preLoaderRoute: typeof PostsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/tools/': {
@@ -945,109 +993,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ToolsIndexRouteImport
       parentRoute: typeof ToolsRoute
     }
-    '/posts/': {
-      id: '/posts/'
-      path: '/posts'
-      fullPath: '/posts/'
-      preLoaderRoute: typeof PostsIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/tools/translate': {
-      id: '/tools/translate'
-      path: '/translate'
-      fullPath: '/tools/translate'
-      preLoaderRoute: typeof ToolsTranslateRouteImport
-      parentRoute: typeof ToolsRoute
-    }
-    '/tools/tempmail': {
-      id: '/tools/tempmail'
-      path: '/tempmail'
-      fullPath: '/tools/tempmail'
-      preLoaderRoute: typeof ToolsTempmailRouteImport
-      parentRoute: typeof ToolsRoute
-    }
-    '/tools/summarize': {
-      id: '/tools/summarize'
-      path: '/summarize'
-      fullPath: '/tools/summarize'
-      preLoaderRoute: typeof ToolsSummarizeRouteImport
-      parentRoute: typeof ToolsRoute
-    }
-    '/tools/study': {
-      id: '/tools/study'
-      path: '/study'
-      fullPath: '/tools/study'
-      preLoaderRoute: typeof ToolsStudyRouteImport
-      parentRoute: typeof ToolsRoute
-    }
-    '/tools/social': {
-      id: '/tools/social'
-      path: '/social'
-      fullPath: '/tools/social'
-      preLoaderRoute: typeof ToolsSocialRouteImport
-      parentRoute: typeof ToolsRoute
-    }
-    '/tools/seo': {
-      id: '/tools/seo'
-      path: '/seo'
-      fullPath: '/tools/seo'
-      preLoaderRoute: typeof ToolsSeoRouteImport
-      parentRoute: typeof ToolsRoute
-    }
-    '/tools/roadmap': {
-      id: '/tools/roadmap'
-      path: '/roadmap'
-      fullPath: '/tools/roadmap'
-      preLoaderRoute: typeof ToolsRoadmapRouteImport
-      parentRoute: typeof ToolsRoute
-    }
-    '/tools/rewrite': {
-      id: '/tools/rewrite'
-      path: '/rewrite'
-      fullPath: '/tools/rewrite'
-      preLoaderRoute: typeof ToolsRewriteRouteImport
-      parentRoute: typeof ToolsRoute
-    }
-    '/tools/reels': {
-      id: '/tools/reels'
-      path: '/reels'
-      fullPath: '/tools/reels'
-      preLoaderRoute: typeof ToolsReelsRouteImport
-      parentRoute: typeof ToolsRoute
-    }
-    '/tools/prompt': {
-      id: '/tools/prompt'
-      path: '/prompt'
-      fullPath: '/tools/prompt'
-      preLoaderRoute: typeof ToolsPromptRouteImport
-      parentRoute: typeof ToolsRoute
-    }
-    '/tools/image': {
-      id: '/tools/image'
-      path: '/image'
-      fullPath: '/tools/image'
-      preLoaderRoute: typeof ToolsImageRouteImport
-      parentRoute: typeof ToolsRoute
-    }
-    '/tools/ideas': {
-      id: '/tools/ideas'
-      path: '/ideas'
-      fullPath: '/tools/ideas'
-      preLoaderRoute: typeof ToolsIdeasRouteImport
-      parentRoute: typeof ToolsRoute
-    }
-    '/tools/email': {
-      id: '/tools/email'
-      path: '/email'
-      fullPath: '/tools/email'
-      preLoaderRoute: typeof ToolsEmailRouteImport
-      parentRoute: typeof ToolsRoute
-    }
-    '/tools/cv': {
-      id: '/tools/cv'
-      path: '/cv'
-      fullPath: '/tools/cv'
-      preLoaderRoute: typeof ToolsCvRouteImport
+    '/tools/agent': {
+      id: '/tools/agent'
+      path: '/agent'
+      fullPath: '/tools/agent'
+      preLoaderRoute: typeof ToolsAgentRouteImport
       parentRoute: typeof ToolsRoute
     }
     '/tools/code': {
@@ -1057,33 +1007,103 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ToolsCodeRouteImport
       parentRoute: typeof ToolsRoute
     }
-    '/tools/agent': {
-      id: '/tools/agent'
-      path: '/agent'
-      fullPath: '/tools/agent'
-      preLoaderRoute: typeof ToolsAgentRouteImport
+    '/tools/cv': {
+      id: '/tools/cv'
+      path: '/cv'
+      fullPath: '/tools/cv'
+      preLoaderRoute: typeof ToolsCvRouteImport
       parentRoute: typeof ToolsRoute
     }
-    '/posts/$id': {
-      id: '/posts/$id'
-      path: '/posts/$id'
-      fullPath: '/posts/$id'
-      preLoaderRoute: typeof PostsIdRouteImport
-      parentRoute: typeof rootRouteImport
+    '/tools/email': {
+      id: '/tools/email'
+      path: '/email'
+      fullPath: '/tools/email'
+      preLoaderRoute: typeof ToolsEmailRouteImport
+      parentRoute: typeof ToolsRoute
     }
-    '/_authenticated/favorites': {
-      id: '/_authenticated/favorites'
-      path: '/favorites'
-      fullPath: '/favorites'
-      preLoaderRoute: typeof AuthenticatedFavoritesRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+    '/tools/ideas': {
+      id: '/tools/ideas'
+      path: '/ideas'
+      fullPath: '/tools/ideas'
+      preLoaderRoute: typeof ToolsIdeasRouteImport
+      parentRoute: typeof ToolsRoute
     }
-    '/_authenticated/admin': {
-      id: '/_authenticated/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AuthenticatedAdminRouteRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+    '/tools/image': {
+      id: '/tools/image'
+      path: '/image'
+      fullPath: '/tools/image'
+      preLoaderRoute: typeof ToolsImageRouteImport
+      parentRoute: typeof ToolsRoute
+    }
+    '/tools/prompt': {
+      id: '/tools/prompt'
+      path: '/prompt'
+      fullPath: '/tools/prompt'
+      preLoaderRoute: typeof ToolsPromptRouteImport
+      parentRoute: typeof ToolsRoute
+    }
+    '/tools/reels': {
+      id: '/tools/reels'
+      path: '/reels'
+      fullPath: '/tools/reels'
+      preLoaderRoute: typeof ToolsReelsRouteImport
+      parentRoute: typeof ToolsRoute
+    }
+    '/tools/rewrite': {
+      id: '/tools/rewrite'
+      path: '/rewrite'
+      fullPath: '/tools/rewrite'
+      preLoaderRoute: typeof ToolsRewriteRouteImport
+      parentRoute: typeof ToolsRoute
+    }
+    '/tools/roadmap': {
+      id: '/tools/roadmap'
+      path: '/roadmap'
+      fullPath: '/tools/roadmap'
+      preLoaderRoute: typeof ToolsRoadmapRouteImport
+      parentRoute: typeof ToolsRoute
+    }
+    '/tools/seo': {
+      id: '/tools/seo'
+      path: '/seo'
+      fullPath: '/tools/seo'
+      preLoaderRoute: typeof ToolsSeoRouteImport
+      parentRoute: typeof ToolsRoute
+    }
+    '/tools/social': {
+      id: '/tools/social'
+      path: '/social'
+      fullPath: '/tools/social'
+      preLoaderRoute: typeof ToolsSocialRouteImport
+      parentRoute: typeof ToolsRoute
+    }
+    '/tools/study': {
+      id: '/tools/study'
+      path: '/study'
+      fullPath: '/tools/study'
+      preLoaderRoute: typeof ToolsStudyRouteImport
+      parentRoute: typeof ToolsRoute
+    }
+    '/tools/summarize': {
+      id: '/tools/summarize'
+      path: '/summarize'
+      fullPath: '/tools/summarize'
+      preLoaderRoute: typeof ToolsSummarizeRouteImport
+      parentRoute: typeof ToolsRoute
+    }
+    '/tools/tempmail': {
+      id: '/tools/tempmail'
+      path: '/tempmail'
+      fullPath: '/tools/tempmail'
+      preLoaderRoute: typeof ToolsTempmailRouteImport
+      parentRoute: typeof ToolsRoute
+    }
+    '/tools/translate': {
+      id: '/tools/translate'
+      path: '/translate'
+      fullPath: '/tools/translate'
+      preLoaderRoute: typeof ToolsTranslateRouteImport
+      parentRoute: typeof ToolsRoute
     }
     '/_authenticated/admin/': {
       id: '/_authenticated/admin/'
@@ -1092,53 +1112,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
-    '/api/tools/text': {
-      id: '/api/tools/text'
-      path: '/api/tools/text'
-      fullPath: '/api/tools/text'
-      preLoaderRoute: typeof ApiToolsTextRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/tools/tempmail': {
-      id: '/api/tools/tempmail'
-      path: '/api/tools/tempmail'
-      fullPath: '/api/tools/tempmail'
-      preLoaderRoute: typeof ApiToolsTempmailRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/tools/image': {
-      id: '/api/tools/image'
-      path: '/api/tools/image'
-      fullPath: '/api/tools/image'
-      preLoaderRoute: typeof ApiToolsImageRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/admin/worldcup': {
-      id: '/_authenticated/admin/worldcup'
-      path: '/worldcup'
-      fullPath: '/admin/worldcup'
-      preLoaderRoute: typeof AuthenticatedAdminWorldcupRouteImport
-      parentRoute: typeof AuthenticatedAdminRouteRoute
-    }
-    '/_authenticated/admin/tools': {
-      id: '/_authenticated/admin/tools'
-      path: '/tools'
-      fullPath: '/admin/tools'
-      preLoaderRoute: typeof AuthenticatedAdminToolsRouteImport
-      parentRoute: typeof AuthenticatedAdminRouteRoute
-    }
-    '/_authenticated/admin/posts': {
-      id: '/_authenticated/admin/posts'
-      path: '/posts'
-      fullPath: '/admin/posts'
-      preLoaderRoute: typeof AuthenticatedAdminPostsRouteImport
-      parentRoute: typeof AuthenticatedAdminRouteRoute
-    }
-    '/_authenticated/admin/lessons': {
-      id: '/_authenticated/admin/lessons'
-      path: '/lessons'
-      fullPath: '/admin/lessons'
-      preLoaderRoute: typeof AuthenticatedAdminLessonsRouteImport
+    '/_authenticated/admin/analytics': {
+      id: '/_authenticated/admin/analytics'
+      path: '/analytics'
+      fullPath: '/admin/analytics'
+      preLoaderRoute: typeof AuthenticatedAdminAnalyticsRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
     '/_authenticated/admin/facebook': {
@@ -1148,12 +1126,54 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminFacebookRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
-    '/_authenticated/admin/analytics': {
-      id: '/_authenticated/admin/analytics'
-      path: '/analytics'
-      fullPath: '/admin/analytics'
-      preLoaderRoute: typeof AuthenticatedAdminAnalyticsRouteImport
+    '/_authenticated/admin/lessons': {
+      id: '/_authenticated/admin/lessons'
+      path: '/lessons'
+      fullPath: '/admin/lessons'
+      preLoaderRoute: typeof AuthenticatedAdminLessonsRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/posts': {
+      id: '/_authenticated/admin/posts'
+      path: '/posts'
+      fullPath: '/admin/posts'
+      preLoaderRoute: typeof AuthenticatedAdminPostsRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/tools': {
+      id: '/_authenticated/admin/tools'
+      path: '/tools'
+      fullPath: '/admin/tools'
+      preLoaderRoute: typeof AuthenticatedAdminToolsRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/worldcup': {
+      id: '/_authenticated/admin/worldcup'
+      path: '/worldcup'
+      fullPath: '/admin/worldcup'
+      preLoaderRoute: typeof AuthenticatedAdminWorldcupRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/api/tools/image': {
+      id: '/api/tools/image'
+      path: '/api/tools/image'
+      fullPath: '/api/tools/image'
+      preLoaderRoute: typeof ApiToolsImageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/tools/tempmail': {
+      id: '/api/tools/tempmail'
+      path: '/api/tools/tempmail'
+      fullPath: '/api/tools/tempmail'
+      preLoaderRoute: typeof ApiToolsTempmailRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/tools/text': {
+      id: '/api/tools/text'
+      path: '/api/tools/text'
+      fullPath: '/api/tools/text'
+      preLoaderRoute: typeof ApiToolsTextRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/lovable/email/queue/process': {
       id: '/lovable/email/queue/process'
@@ -1250,6 +1270,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AboutRoute: AboutRoute,
+  AdsDottxtRoute: AdsDottxtRoute,
   AiQuizRoute: AiQuizRoute,
   ArticlesRoute: ArticlesRoute,
   AuthRoute: AuthRoute,
@@ -1283,13 +1304,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
