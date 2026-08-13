@@ -199,9 +199,6 @@ function HomePage() {
     <div className="min-h-screen bg-background text-foreground selection:bg-primary/15 selection:text-primary">
       <SiteHeader />
       <main>
-        {/* FUTURISTIC THREE.JS HERO DISPLAY */}
-        <HeroFuturistic />
-
         {/* HERO SECTION — Featuring Interactive Platform Mockup & 3D Neural Canvas Background */}
         <AcademyHero />
 
