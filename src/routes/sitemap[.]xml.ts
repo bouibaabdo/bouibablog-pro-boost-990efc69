@@ -13,7 +13,6 @@ export const Route = createFileRoute("/sitemap.xml")({
           `${BASE_URL}/sitemap-categories.xml`,
           `${BASE_URL}/sitemap-videos.xml`,
           `${BASE_URL}/sitemap-tools.xml`,
-          `${BASE_URL}/sitemap-worldcup.xml`,
         ];
 
         const body = sitemaps
