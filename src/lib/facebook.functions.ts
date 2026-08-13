@@ -48,7 +48,13 @@ export const publishPostToFacebookFn = createServerFn({ method: "POST" })
       };
     }) => data,
   )
-  .handler(async ({ data }) => {
+  .handler(async ({ data }): Promise<{
+    success: true;
+    postId: string;
+    commentSuccess: boolean;
+    postUrl: string;
+    message: string;
+  }> => {
     const pageId = (data.pageId || process.env.FACEBOOK_PAGE_ID || DEFAULT_PAGE_ID).trim();
 
     // Priority order for token: 1. Server env token (most reliable) -> 2. Client passed token
@@ -165,7 +171,7 @@ export const publishPostToFacebookFn = createServerFn({ method: "POST" })
     // 3. Add First Comment with Article Link
     let commentSuccess = false;
     if (post.facebook_comment_link) {
-      const targets = [createdPostId, createdPhotoId].filter(Boolean) as string[];
+      const targets = ([createdPostId, createdPhotoId] as Array<string | null>).filter((id): id is string => id !== null);
 
       for (const targetId of targets) {
         try {

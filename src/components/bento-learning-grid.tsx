@@ -38,7 +38,7 @@ interface WorkflowStep {
 }
 
 export function BentoLearningGrid() {
-  const { lang, isRtl } = useLang();
+  const { lang, isRTL } = useLang();
 
   // Selected Track State
   const [activeTrack, setActiveTrack] = useState<"n8n" | "ai_agents" | "web_dev">("n8n");
@@ -176,7 +176,7 @@ export function BentoLearningGrid() {
             className="inline-flex items-center gap-2 text-xs sm:text-sm font-medium text-primary hover:text-primary-glow transition-colors bg-primary/10 hover:bg-primary/20 px-4 py-2 rounded-xl border border-primary/20"
           >
             <span>جميع المسارات والدروس</span>
-            {isRtl ? <ArrowLeft className="w-4 h-4" /> : <ArrowRight className="w-4 h-4" />}
+            {isRTL ? <ArrowLeft className="w-4 h-4" /> : <ArrowRight className="w-4 h-4" />}
           </Link>
         </div>
       </div>
@@ -285,7 +285,7 @@ export function BentoLearningGrid() {
               className="inline-flex items-center gap-2 text-xs font-semibold text-primary hover:underline"
             >
               <span>بدء التعلم في هذا المسار</span>
-              {isRtl ? <ArrowLeft className="w-3.5 h-3.5" /> : <ArrowRight className="w-3.5 h-3.5" />}
+              {isRTL ? <ArrowLeft className="w-3.5 h-3.5" /> : <ArrowRight className="w-3.5 h-3.5" />}
             </Link>
           </div>
         </div>
