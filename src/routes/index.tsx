@@ -20,6 +20,7 @@ import {
   Code2,
   Send,
   Layers,
+  Trophy,
 } from "lucide-react";
 import { getPosts, getLabels, optimizeBloggerImage } from "@/lib/blogger.functions";
 import { SiteHeader } from "@/components/site-header";
