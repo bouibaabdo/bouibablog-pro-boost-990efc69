@@ -4,6 +4,7 @@ Allow: /
 # Block admin/authenticated routes from indexing
 Disallow: /admin
 Disallow: /admin/
+Disallow: /worldcup
 
 # Sitemap index
 Sitemap: https://www.bouibacademy.me/sitemap.xml
@@ -12,4 +13,3 @@ Sitemap: https://www.bouibacademy.me/sitemap-posts.xml
 Sitemap: https://www.bouibacademy.me/sitemap-categories.xml
 Sitemap: https://www.bouibacademy.me/sitemap-videos.xml
 Sitemap: https://www.bouibacademy.me/sitemap-tools.xml
-Sitemap: https://www.bouibacademy.me/sitemap-worldcup.xml

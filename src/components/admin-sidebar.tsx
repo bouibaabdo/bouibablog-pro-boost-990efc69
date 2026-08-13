@@ -27,7 +27,6 @@ const items = [
   { title: "نظرة عامة", url: "/admin", icon: LayoutDashboard, exact: true },
   { title: "المقالات", url: "/admin/posts", icon: FileText },
   { title: "دروس الفيديو", url: "/admin/lessons", icon: Video },
-  { title: "كأس العالم", url: "/admin/worldcup", icon: Trophy },
   { title: "أدوات AI", url: "/admin/tools", icon: Sparkles },
   { title: "التحليلات", url: "/admin/analytics", icon: BarChart3 },
 ];

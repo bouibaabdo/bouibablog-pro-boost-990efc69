@@ -5,7 +5,6 @@ import { Calendar, Clock, ArrowRight, Tag, Sparkles, Loader2, BrainCircuit } fro
 import { getPost, getPosts } from "@/lib/blogger.functions";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
-import { TodayMatchesRail } from "@/components/today-matches-rail";
 import { PostCard } from "@/components/post-card";
 import { Button } from "@/components/ui/button";
 import {
@@ -330,8 +329,6 @@ function PostPage() {
           )}
         </div>
       </article>
-
-      <TodayMatchesRail variant="article" max={8} />
 
       <SiteFooter />
 

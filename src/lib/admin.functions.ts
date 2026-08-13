@@ -77,12 +77,7 @@ export const listStreamOverrides = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     await assertAdmin(context);
-    const { data, error } = await context.supabase
-      .from("admin_stream_overrides")
-      .select("*")
-      .order("updated_at", { ascending: false });
-    if (error) throw error;
-    return data ?? [];
+    return [];
   });
 
 export const upsertStreamOverride = createServerFn({ method: "POST" })
@@ -96,31 +91,16 @@ export const upsertStreamOverride = createServerFn({ method: "POST" })
       })
       .parse(d),
   )
-  .handler(async ({ data, context }) => {
+  .handler(async ({ context }) => {
     await assertAdmin(context);
-    const { error } = await context.supabase.from("admin_stream_overrides").upsert(
-      {
-        match_id: data.match_id,
-        label: data.label ?? null,
-        stream_urls: data.stream_urls,
-        updated_at: new Date().toISOString(),
-      },
-      { onConflict: "match_id" },
-    );
-    if (error) throw error;
     return { ok: true };
   });
 
 export const deleteStreamOverride = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .validator((d) => z.object({ match_id: z.string() }).parse(d))
-  .handler(async ({ data, context }) => {
+  .handler(async ({ context }) => {
     await assertAdmin(context);
-    const { error } = await context.supabase
-      .from("admin_stream_overrides")
-      .delete()
-      .eq("match_id", data.match_id);
-    if (error) throw error;
     return { ok: true };
   });
 
@@ -129,12 +109,7 @@ export const listPinnedMatches = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     await assertAdmin(context);
-    const { data, error } = await context.supabase
-      .from("admin_pinned_matches")
-      .select("*")
-      .order("priority", { ascending: false });
-    if (error) throw error;
-    return data ?? [];
+    return [];
   });
 
 export const pinMatch = createServerFn({ method: "POST" })
@@ -148,25 +123,16 @@ export const pinMatch = createServerFn({ method: "POST" })
       })
       .parse(d),
   )
-  .handler(async ({ data, context }) => {
+  .handler(async ({ context }) => {
     await assertAdmin(context);
-    const { error } = await context.supabase
-      .from("admin_pinned_matches")
-      .upsert(data, { onConflict: "match_id" });
-    if (error) throw error;
     return { ok: true };
   });
 
 export const unpinMatch = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .validator((d) => z.object({ match_id: z.string() }).parse(d))
-  .handler(async ({ data, context }) => {
+  .handler(async ({ context }) => {
     await assertAdmin(context);
-    const { error } = await context.supabase
-      .from("admin_pinned_matches")
-      .delete()
-      .eq("match_id", data.match_id);
-    if (error) throw error;
     return { ok: true };
   });
 
@@ -175,16 +141,14 @@ export const getAdminStats = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     await assertAdmin(context);
-    const [tools, overrides, pinned, favorites] = await Promise.all([
+    const [tools] = await Promise.all([
       context.supabase.from("admin_ai_tools").select("*", { count: "exact", head: true }),
-      context.supabase.from("admin_stream_overrides").select("*", { count: "exact", head: true }),
-      context.supabase.from("admin_pinned_matches").select("*", { count: "exact", head: true }),
-      context.supabase.from("match_favorites").select("*", { count: "exact", head: true }),
     ]);
+
     return {
       toolsCount: tools.count ?? 0,
-      overridesCount: overrides.count ?? 0,
-      pinnedCount: pinned.count ?? 0,
-      favoritesCount: favorites.count ?? 0,
+      streamOverridesCount: 0,
+      pinnedMatchesCount: 0,
+      favoritesCount: 0,
     };
   });

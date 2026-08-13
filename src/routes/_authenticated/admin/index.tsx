@@ -19,31 +19,10 @@ function AdminOverview() {
   const cards = [
     {
       title: "أدوات AI المتاحة",
-      value: stats?.toolsCount,
+      value: stats?.toolsCount ?? 0,
       icon: Sparkles,
       color: "text-purple-500",
       bg: "from-purple-500/10 to-indigo-500/10",
-    },
-    {
-      title: "روابط بث مخصصة",
-      value: stats?.overridesCount,
-      icon: Radio,
-      color: "text-blue-500",
-      bg: "from-blue-500/10 to-sky-500/10",
-    },
-    {
-      title: "مباريات مثبّتة",
-      value: stats?.pinnedCount,
-      icon: Pin,
-      color: "text-emerald-500",
-      bg: "from-emerald-500/10 to-teal-500/10",
-    },
-    {
-      title: "متابعات المستخدمين",
-      value: stats?.favoritesCount,
-      icon: Heart,
-      color: "text-rose-500",
-      bg: "from-rose-500/10 to-pink-500/10",
     },
   ];
 

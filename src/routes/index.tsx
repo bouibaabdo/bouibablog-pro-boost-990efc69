@@ -26,7 +26,6 @@ import { getPosts, getLabels, optimizeBloggerImage } from "@/lib/blogger.functio
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { PostCard } from "@/components/post-card";
-import { TodayMatchesRail } from "@/components/today-matches-rail";
 import { Hero3DCanvas } from "@/components/hero-3d-canvas";
 import { Tilt3DCard } from "@/components/interactive-3d-card";
 import { SectionHeader } from "@/components/section-header";
@@ -463,26 +462,6 @@ function HomePage() {
             </div>
           </section>
         )}
-
-        {/* MINIMAL TODAY'S MATCHES DETAILS CARD */}
-        <section className="container-page pb-12">
-          <div className="max-w-xl mx-auto rounded-xl border border-border bg-card/60 p-4 shadow-sm">
-            <details className="group">
-              <summary className="flex items-center justify-between cursor-pointer list-none select-none">
-                <div className="flex items-center gap-2 text-xs font-bold text-muted-foreground">
-                  <Trophy className="h-3.5 w-3.5 text-amber-500" />
-                  <span>جدول الرياضة (مباريات اليوم)</span>
-                </div>
-                <span className="text-[10px] text-primary group-open:rotate-180 transition-transform">
-                  ▼
-                </span>
-              </summary>
-              <div className="mt-3 pt-3 border-t border-border/40">
-                <TodayMatchesRail variant="article" max={4} />
-              </div>
-            </details>
-          </div>
-        </section>
       </main>
       <SiteFooter />
     </div>

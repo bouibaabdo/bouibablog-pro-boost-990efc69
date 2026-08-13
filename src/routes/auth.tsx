@@ -14,7 +14,7 @@ export const Route = createFileRoute("/auth")({
       { title: "تسجيل الدخول | Bouiba Academy" },
       {
         name: "description",
-        content: "سجل دخولك لحفظ مبارياتك المفضلة وتفعيل تنبيهات كأس العالم 2026.",
+        content: "سجل دخولك لحفظ دروسك ومقالاتك المفضلة ومتابعة تقدمك التعليمي.",
         key: "description",
       },
       { name: "robots", content: "noindex", key: "robots" },
@@ -99,7 +99,7 @@ function AuthPage() {
               {mode === "signin" ? "أهلاً بعودتك" : "أنشئ حسابك"}
             </h1>
             <p className="mt-2 text-sm text-muted-foreground">
-              احفظ مبارياتك المفضلة واستلم تذكيرات قبل انطلاقها
+              احفظ دروسك ومقالاتك المفضلة واستكمل التعلم من أي مكان
             </p>
           </div>
 
